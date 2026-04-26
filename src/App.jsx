@@ -88,7 +88,7 @@ function useSpotRate() {
 const GLOBAL_CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap');
   * { -webkit-tap-highlight-color:transparent; box-sizing:border-box; }
-  body { margin:0; }
+  body { margin:0; background:#F6EFDE; }
   @keyframes pulse      { 0%,100%{opacity:1} 50%{opacity:.55} }
   @keyframes fadeSlide  { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
   @keyframes stickyDrop { from{opacity:0;transform:translateY(-12px)} to{opacity:1;transform:translateY(0)} }
