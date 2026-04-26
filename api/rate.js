@@ -30,19 +30,19 @@ export default async function handler(req, res) {
   }
 
   try {
-    const r = await fetch(`${FIREBASE_DB_URL}/websitesettings/statesymbolmap/Karnataka/Symbols.json?auth=${idToken}`);
+    const r = await fetch(`${FIREBASE_DB_URL}/liverates.json?auth=${idToken}`);
     liverates = await r.json();
     if (!liverates || typeof liverates !== 'object') throw new Error('Bad shape');
   } catch (e) {
     return res.status(500).json({ step: 3, error: e.message });
   }
 
-  const gold = liverates['GOLD999MUM'] ??
-    Object.values(liverates).find(v => v?.Name === 'GOLD999MUM');
+  const gold = liverates['GOLDBLR999IND'] ??
+    Object.values(liverates).find(v => v?.Name === 'GOLDBLR999IND');
 
   if (!gold) {
     return res.status(404).json({
-      error: 'GOLD999MUM not found',
+      error: 'GOLDBLR999IND not found',
       availableKeys: Object.keys(liverates).slice(0, 30),
     });
   }
@@ -55,6 +55,6 @@ export default async function handler(req, res) {
     sellPer10g,
     sellPerGram: sellPer10g / 10,
     updatedAt: new Date().toISOString(),
-    source: 'GOLD999MUM @ rsbl-spot-gold-silver-prices.firebaseio.com',
+    source: 'GOLDBLR999IND @ Augmont Karnataka',
   });
 }
