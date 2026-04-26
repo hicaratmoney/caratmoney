@@ -162,7 +162,7 @@ function HomePage({ navigate, spot }) {
     marginBottom:'14px', border:'1px solid rgba(15,23,42,.04)',
   };
   return (
-    <div style={{ minHeight:'100vh', background:BG, fontFamily:SANS, color:'#0B1120' }}>
+    <div style={{ minHeight:'100dvh', background:BG, fontFamily:SANS, color:'#0B1120' }}>
       <RateStrip spot={spot} />
       <div style={{ maxWidth:'520px', margin:'0 auto', padding:'0 14px 40px' }}>
 
@@ -272,7 +272,7 @@ function SellPage({ navigate, spot }) {
   const lbl = { fontSize:'13.5px', fontWeight:600, color:'#1F2937', display:'block', marginBottom:'6px' };
 
   return (
-    <div style={{ minHeight:'100vh', background:BG, fontFamily:SANS, color:'#0B1120' }}>
+    <div style={{ minHeight:'100dvh', background:BG, fontFamily:SANS, color:'#0B1120' }}>
       <RateStrip spot={spot} />
       <div style={{ maxWidth:'520px', margin:'0 auto', padding:'0 14px 40px' }}>
         <BackBtn navigate={navigate} />
@@ -586,7 +586,7 @@ function MarginPage({ navigate, spot }) {
   const rateTime = fmtTime(spot.updatedAt);
 
   return (
-    <div style={{ minHeight:'100vh', background:BG, fontFamily:SANS, color:'#0B1120', paddingTop:stickyVisible?'52px':0, transition:'padding-top .3s ease' }}>
+    <div style={{ minHeight:'100dvh', background:BG, fontFamily:SANS, color:'#0B1120', paddingTop:stickyVisible?'52px':0, transition:'padding-top .3s ease' }}>
 
       {/* ── Sticky bar ─────────────────────────────────────────────────── */}
       {stickyVisible && (
