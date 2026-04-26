@@ -182,35 +182,33 @@ function HomePage({ navigate, spot }) {
           <div style={{ fontSize:'10.5px', fontWeight:800, letterSpacing:'0.14em', color:'#94A3B8', marginBottom:'14px' }}>
             TODAY'S BUY RATE IN YOUR CITY
           </div>
-          <div style={{ display:'flex', alignItems:'baseline', flexWrap:'wrap', gap:'6px 10px', marginBottom:'4px' }}>
+         <div style={{ marginBottom:'4px' }}>
             {spot.loading && !spot.display
               ? <span style={{ fontFamily:SERIF, fontSize:'40px', fontWeight:700, color:'#D7C9A0' }}>Loading…</span>
               : <>
-                  <span style={{ fontFamily:SERIF, fontSize:'46px', fontWeight:700, lineHeight:1, letterSpacing:'-0.03em', color:'#0B1120' }}>₹{fmt(r24, 0)}</span>
-                  <span style={{ fontFamily:SERIF, fontSize:'17px', color:'#64748B' }}>/g · 24K</span>
-                  <span style={{ fontFamily:SERIF, fontSize:'17px', color:'#94A3B8', marginLeft:'6px' }}>·</span>
-                  <span style={{ fontFamily:SERIF, fontSize:'17px', color:'#64748B' }}>₹{fmt(r22, 0)}/g · 22K</span>
-                  <span
-                    onClick={() => setShowGstTip(v => !v)}
-                    style={{ fontSize:'13px', color:'#B8860B', cursor:'pointer', marginLeft:'4px', userSelect:'none' }}
-                    title="About this rate"
-                  >ⓘ</span>
+                  <div style={{ display:'flex', alignItems:'baseline', gap:'6px' }}>
+                    <span style={{ fontFamily:SERIF, fontSize:'46px', fontWeight:700, lineHeight:1, letterSpacing:'-0.03em', color:'#0B1120' }}>₹{fmt(r24, 0)}</span>
+                    <span style={{ fontFamily:SERIF, fontSize:'17px', color:'#64748B' }}>/g · 24K</span>
+                  </div>
+                  <div style={{ display:'flex', alignItems:'baseline', gap:'6px', marginTop:'8px' }}>
+                    <span style={{ fontFamily:SERIF, fontSize:'46px', fontWeight:700, lineHeight:1, letterSpacing:'-0.03em', color:'#0B1120' }}>₹{fmt(r22, 0)}</span>
+                    <span style={{ fontFamily:SERIF, fontSize:'17px', color:'#64748B' }}>/g · 22K</span>
+                    <span onClick={() => setShowGstTip(v => !v)} style={{ fontSize:'13px', color:'#B8860B', cursor:'pointer', userSelect:'none' }}>ⓘ</span>
+                  </div>
+                  {showGstTip && (
+                    <div style={{ fontSize:'12px', color:'#64748B', background:'#FEF9EC', border:'1px solid rgba(184,134,11,.2)', borderRadius:'8px', padding:'8px 12px', marginTop:'8px', lineHeight:1.55 }}>
+                      GST-inclusive rate shown. If you're GST-registered, we pass the tax credit back to you.
+                    </div>
+                  )}
                 </>
             }
           </div>
-          {showGstTip && (
-            <div style={{ fontSize:'12px', color:'#64748B', background:'#FEF9EC', border:'1px solid rgba(184,134,11,.2)', borderRadius:'8px', padding:'8px 12px', marginBottom:'8px', lineHeight:1.55 }}>
-              GST-inclusive rate shown. If you're GST-registered, we pass the tax credit back to you.
-            </div>
           )}
           <div style={{ fontSize:'11.5px', color:'#94A3B8', marginTop:'12px', fontStyle:'italic', fontFamily:SERIF, lineHeight:1.5 }}>
             {spot.error && !spot.updatedAt
               ? 'Live rate temporarily unavailable'
               : time ? `Live rate · Updated ${time}` : 'Fetching live rate…'}
           </div>
-          <div style={{ fontSize:'11.5px', color:'#94A3B8', textAlign:'center', marginBottom:'14px', lineHeight:1.6 }}>
-          GST-inclusive rate shown. GST-registered? We pass the tax credit back to you.
-        </div>
         </div>
 
         {/* Sell Card */}
