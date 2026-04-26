@@ -190,9 +190,9 @@ function HomePage({ navigate, spot }) {
                     <span style={{ fontFamily:SERIF, fontSize:'46px', fontWeight:700, lineHeight:1, letterSpacing:'-0.03em', color:'#0B1120' }}>₹{fmt(r24, 0)}</span>
                     <span style={{ fontFamily:SERIF, fontSize:'17px', color:'#64748B' }}>/g · 24K</span>
                   </div>
-                  <div style={{ display:'flex', alignItems:'baseline', gap:'6px', marginTop:'8px' }}>
-                    <span style={{ fontFamily:SERIF, fontSize:'46px', fontWeight:700, lineHeight:1, letterSpacing:'-0.03em', color:'#0B1120' }}>₹{fmt(r22, 0)}</span>
-                    <span style={{ fontFamily:SERIF, fontSize:'17px', color:'#64748B' }}>/g · 22K</span>
+                  <div style={{ display:'flex', alignItems:'baseline', gap:'6px', marginTop:'10px', paddingTop:'10px', borderTop:'1px dashed #EEF2F6' }}>
+                    <span style={{ fontFamily:SERIF, fontSize:'20px', fontWeight:600, color:'#334155', letterSpacing:'-0.02em' }}>₹{fmt(r22, 0)}</span>
+                    <span style={{ fontSize:'13px', color:'#94A3B8' }}>/g · 22K</span>
                     <span onClick={() => setShowGstTip(v => !v)} style={{ fontSize:'13px', color:'#B8860B', cursor:'pointer', userSelect:'none' }}>ⓘ</span>
                   </div>
                   {showGstTip && (
