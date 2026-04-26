@@ -30,7 +30,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const r = await fetch(`${FIREBASE_DB_URL}/liverates.json?auth=${idToken}`);
+    const r = await fetch(`${FIREBASE_DB_URL}/websitesettings/statesymbolmap.json?auth=${idToken}`);
     liverates = await r.json();
     if (!liverates || typeof liverates !== 'object') throw new Error('Bad shape');
   } catch (e) {
