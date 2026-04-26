@@ -14,7 +14,7 @@
 const FIREBASE_API_KEY = 'AlzaSyD5C_xIP9tcbI4c7norSC6ohi8RVtoU7IY';
 const FIREBASE_DB_URL  = 'https://rsbl-spot-gold-silver-prices-default-rtdb.firebaseio.com';
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   try {
     // Step 1: Augmont custom token (server→server, no CORS issue)
     const tokenRes = await fetch('https://spot.augmont.com/token/100', {
