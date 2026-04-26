@@ -288,7 +288,7 @@ function SellPage({ navigate, spot }) {
 
           <div style={{ marginBottom:'16px' }}>
             <label style={lbl}>Full name</label>
-            <input type="text" placeholder="e.g. Priya Sharma" value={name} onChange={e => setName(e.target.value)} style={inp} />
+            <input type="text" placeholder="e.g. Priya S" value={name} onChange={e => setName(e.target.value)} style={inp} />
           </div>
 
           <div style={{ marginBottom:'16px' }}>
