@@ -114,7 +114,7 @@ function RateStrip({ spot }) {
     ? 'Fetching live rate…'
     : spot.error && !spot.updatedAt
       ? '⚠ Rate unavailable'
-      : time ? `Updated ${time}` : '';
+      : time ? time : '';
   return (
     <div style={{
       background: '#FAF2DC', borderBottom: '1px solid rgba(184,134,11,.15)',
