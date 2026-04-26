@@ -2,7 +2,7 @@ export default async function handler(req, res) {
   res.setHeader('Content-Type', 'application/json');
   
   const FIREBASE_API_KEY = 'AIzaSyD5C_xlP9tcbl4c7norSC6ohi8RVtoU7lY';
-  const FIREBASE_DB_URL = 'https://rsbl-spot-gold-silver-prices.firebaseio.com';
+  const FIREBASE_DB_URL  = 'https://rsbl-spot-gold-silver-prices.firebaseio.com';
 
   let customToken, idToken, liverates;
 
@@ -37,23 +37,24 @@ export default async function handler(req, res) {
     return res.status(500).json({ step: 3, error: e.message });
   }
 
-  return res.status(200).json({
-    keys: Object.keys(liverates).slice(0, 10),
-    firstEntry: Object.values(liverates)[0],
-  });
+  const gold = liverates['GOLD999MUM'] ??
+    Object.values(liverates).find(v => v?.Name === 'GOLD999MUM');
 
-  const gold = Object.values(liverates).find(v => v?.Name === 'Gold Without GST');
   if (!gold) {
     return res.status(404).json({
-      step: 4,
-      error: 'Gold Without GST not found',
-      availableNames: Object.values(liverates).map(v => v?.Name).filter(Boolean).slice(0, 20),
+      error: 'GOLD999MUM not found',
+      availableKeys: Object.keys(liverates).slice(0, 30),
     });
   }
 
   const sellPer10g = gold.Sell ?? gold.Bid ?? gold.Ask;
-  if (!sellPer10g) return res.status(500).json({ step: 5, error: 'No price field', keys: Object.keys(gold) });
+  if (!sellPer10g) return res.status(500).json({ error: 'No price field', keys: Object.keys(gold) });
 
   res.setHeader('Cache-Control', 's-maxage=55, stale-while-revalidate=10');
-  return res.json({ sellPer10g, sellPerGram: sellPer10g / 10, updatedAt: new Date().toISOString() });
+  return res.json({
+    sellPer10g,
+    sellPerGram: sellPer10g / 10,
+    updatedAt: new Date().toISOString(),
+    source: 'GOLD999MUM @ rsbl-spot-gold-silver-prices.firebaseio.com',
+  });
 }
