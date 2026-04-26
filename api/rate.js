@@ -37,6 +37,11 @@ export default async function handler(req, res) {
     return res.status(500).json({ step: 3, error: e.message });
   }
 
+  return res.status(200).json({
+    keys: Object.keys(liverates).slice(0, 10),
+    firstEntry: Object.values(liverates)[0],
+  });
+
   const gold = Object.values(liverates).find(v => v?.Name === 'Gold Without GST');
   if (!gold) {
     return res.status(404).json({
