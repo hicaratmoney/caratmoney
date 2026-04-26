@@ -203,7 +203,7 @@ function HomePage({ navigate, spot }) {
                 </>
             }
           </div>
-          )}
+          
           <div style={{ fontSize:'11.5px', color:'#94A3B8', marginTop:'12px', fontStyle:'italic', fontFamily:SERIF, lineHeight:1.5 }}>
             {spot.error && !spot.updatedAt
               ? 'Live rate temporarily unavailable'
