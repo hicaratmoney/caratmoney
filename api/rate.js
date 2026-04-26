@@ -1,8 +1,8 @@
 export default async function handler(req, res) {
   res.setHeader('Content-Type', 'application/json');
   
-  const FIREBASE_API_KEY = 'AIzaSyD5C_xIP9tcbI4c7norSC6ohi8RVtoU7IY';
-  const FIREBASE_DB_URL  = 'https://rsbl-spot-gold-silver-prices-default-rtdb.firebaseio.com';
+  const FIREBASE_API_KEY = 'AIzaSyD5C_xlP9tcbl4c7norSC6ohi8RVtoU7lY';
+  const FIREBASE_DB_URL = 'https://rsbl-spot-gold-silver-prices-default-rtdb.firebaseio.com';
 
   let customToken, idToken, liverates;
 
