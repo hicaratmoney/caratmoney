@@ -45,19 +45,24 @@ export default async function handler(req, res) {
       throw new Error('Unexpected DB response shape');
     }
 
-    // Step 4: Find GOLD999MUM — try direct key, then scan Name/Symbol fields
-    const gold =
-      liverates['GOLD999MUM'] ??
-      Object.values(liverates).find(
-        v => v && (v.Name === 'GOLD999MUM' || v.Symbol === 'GOLD999MUM')
-      );
+    // Step 4: Find "Gold Without GST" entry by Name field
+    const gold = Object.values(liverates).find(
+      v => v && v.Name === 'Gold Without GST'
+    );
 
     if (!gold) {
-      // Return available keys so the right one can be identified without a deploy
       return res.status(404).json({
-        error: 'GOLD999MUM key not found in /liverates',
-        availableKeys: Object.keys(liverates).slice(0, 30),
+        error: 'Gold Without GST entry not found in /liverates',
+        availableNames: Object.values(liverates)
+          .map(v => v?.Name)
+          .filter(Boolean)
+          .slice(0, 30),
       });
+    }
+
+    const sellPer10g = gold.Sell ?? gold.Bid ?? gold.Ask;
+    if (!sellPer10g || typeof sellPer10g !== 'number') {
+      throw new Error(`No numeric sell price. Fields: ${Object.keys(gold).join(', ')}`);
     }
 
     // Sell = what sellers (gold owners) receive.
