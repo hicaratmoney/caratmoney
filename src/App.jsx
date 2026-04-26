@@ -626,14 +626,12 @@ function MarginPage({ navigate, spot }) {
       )}
 
       {/* ── Rate Strip ─────────────────────────────────────────────────── */}
-      <RateStrip spot={spot} />
 
       <div style={{ maxWidth:'520px', margin:'0 auto', padding:'0 14px 40px' }}>
         <BackBtn navigate={navigate} />
 
         {/* ── Header ───────────────────────────────────────────────────── */}
         <div style={{ textAlign:'center', padding:'10px 6px 20px' }}>
-          <div style={S.pill}><Shield size={11} strokeWidth={2.8} /> INDEPENDENT TOOL</div>
           <h1 style={{ fontFamily:SERIF, fontSize:'34px', fontWeight:700, lineHeight:1.08, letterSpacing:'-0.02em', margin:0, color:'#0B1120', fontVariationSettings:"'opsz' 144" }}>
             Check your gold buyer's <span style={{ color:'#8B6508', fontStyle:'italic' }}>margin</span>
           </h1>
@@ -747,10 +745,6 @@ function MarginPage({ navigate, spot }) {
                     <div style={S.effRate}>₹{fmt(margin1.eff,0)}<span style={S.effUnit}>/g</span></div>
                   </div>
                 </div>
-                <div style={S.effVsSpot}>
-                  vs today's spot rate: <b style={{color:'#0B1120'}}>₹{fmt(calcRate,0)}/g</b>
-                  {rateTime ? <span style={{color:'#B0B8C8'}}> · updated {rateTime}</span> : ''}
-                </div>
                 {isMulti && <div style={S.blendedNote}>Weighted across {margin1.ornamentCount} ornaments · after {feeN}% fee</div>}
               </div>
               <div style={S.marginDivider}/>
@@ -854,7 +848,6 @@ function MarginPage({ navigate, spot }) {
 
         {/* ── Footer ────────────────────────────────────────────────────── */}
         <div style={S.footer}>
-          Spot rate: GOLD999MUM @ Augmont · ₹{fmt(calcRate,0)}/g{rateTime?` · updated ${rateTime}`:''}<br/>
           Local city rates may vary. Use as a directional estimate.
         </div>
       </div>
