@@ -536,7 +536,6 @@ function BuyPage({ navigate, spot }) {
 
   return (
     <div style={{ minHeight:'100dvh', background:BG, fontFamily:SANS, color:'#0B1120' }}>
-      <RateStrip spot={spot} />
       <div style={{ maxWidth:'520px', margin:'0 auto', padding:'0 14px 40px' }}>
         <BackBtn navigate={navigate} />
 
