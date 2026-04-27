@@ -1,17 +1,20 @@
 import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import {
   MessageCircle, TrendingDown, Shield, Sparkles, Info,
-  Plus, Trash2, ChevronDown, ChevronUp, ArrowLeft, Zap,
+  Plus, Minus, Trash2, ChevronDown, ChevronUp, ArrowLeft, Zap,
+  KeyRound, Search, ShieldCheck, X, Share2, Copy, AlertCircle, Check,
 } from 'lucide-react';
 
 // ─── Config ───────────────────────────────────────────────────────────────────
-// Live rate fetched from /api/rate (Vercel serverless → Augmont Spot Firebase).
-// SPOT_FALLBACK used while first fetch is in-flight and on persistent error.
-const SPOT_FALLBACK    = 15578;          // ₹/g — update manually if site is down long-term
+const SPOT_FALLBACK    = 15578;          // ₹/g — fallback if /api/rate is unreachable
 const WHATSAPP_NUMBER  = '918618542353';
-const STONE_RECOVERY   = 0.45;           // α — fraction of stone weight buyer recovers
-const WASTAGE_RECOVERY = 0.80;           // β — fraction of wastage buyer recovers
+const STONE_RECOVERY   = 0.45;
+const WASTAGE_RECOVERY = 0.80;
 const MAX_ORNAMENTS    = 10;
+
+// Buy rate (manually updated; will be wired to live source later — jab.org.in)
+const BUY_RATE_24K  = 15901;             // ₹/g, GST-inclusive
+const BUY_RATE_DATE = '27 Apr 2026';
 
 // ─── Typography + background ──────────────────────────────────────────────────
 const SERIF = "'Fraunces', Georgia, serif";
@@ -28,36 +31,77 @@ const parseNum = v => {
   const n = parseFloat(v);
   return isNaN(n) ? null : n;
 };
-const makeId        = () => `o_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+const makeId = () => `o_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
 const blankOrnament = () => ({ id: makeId(), gross: '', stone: '', wastage: '', purity: '', pricePerGram: '' });
-const fmtTime       = d => d ? d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) : null;
+const fmtTime = d => d ? d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) : null;
 
-// ─── Hash-based routing (zero npm deps) ───────────────────────────────────────
-// Routes:  /  →  /#/     /sell  →  /#/sell     /margin  →  /#/margin
-// Shareable, bookmarkable. Back button works natively via hashchange.
+const copyToClipboard = async text => {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+// ─── Path-based routing (clean URLs, no hash) ────────────────────────────────
 function useRoute() {
-  const getHash = () => window.location.hash.replace(/^#/, '').trim() || '/';
-  const [route, setRoute] = useState(getHash);
+  const getPath = () => window.location.pathname || '/';
+  const [route, setRoute] = useState(getPath);
   useEffect(() => {
-    const h = () => setRoute(getHash());
-    window.addEventListener('hashchange', h);
-    return () => window.removeEventListener('hashchange', h);
+    const h = () => setRoute(getPath());
+    window.addEventListener('popstate', h);
+    return () => window.removeEventListener('popstate', h);
   }, []);
   const navigate = useCallback(path => {
-    window.location.hash = path;
+    window.history.pushState({}, '', path);
+    setRoute(getPath());
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, []);
   return { route, navigate };
 }
 
+// ─── SEO hook — updates title + meta description per route ────────────────────
+const SEO_MAP = {
+  '/': {
+    title: 'Carat Money — Sell Gold at the Best Price in Bangalore',
+    desc:  'Get the best price for your gold. Trusted by 5,000+ customers. Live rates, instant WhatsApp quotes, doorstep service across Bangalore.',
+  },
+  '/sell': {
+    title: 'Sell Gold to Carat Money | Best Buying Rates in Bangalore',
+    desc:  'Get an instant WhatsApp quote for your gold. We come to you. Trusted by 5,000+ sellers across India.',
+  },
+  '/buy': {
+    title: 'Buy 24K Gold Coins | BIS-Hallmarked | Carat Money',
+    desc:  'Buy BIS-hallmarked 24K gold coins online. 999.9 purity. 48-hour open-box delivery. WhatsApp to order.',
+  },
+  '/margin': {
+    title: 'Gold Buyer Margin Calculator | Free Tool by Carat Money',
+    desc:  "Free tool to check what your gold buyer is keeping above the spot rate. Used by 5,000+ sellers across India. Get a fair quote on WhatsApp.",
+  },
+};
+function useSEO(route) {
+  useEffect(() => {
+    const seo = SEO_MAP[route] || SEO_MAP['/'];
+    document.title = seo.title;
+    const ensureMeta = (selector, attr, attrValue, contentValue) => {
+      let el = document.querySelector(selector);
+      if (!el) {
+        el = document.createElement('meta');
+        el.setAttribute(attr, attrValue);
+        document.head.appendChild(el);
+      }
+      el.setAttribute('content', contentValue);
+    };
+    ensureMeta('meta[name="description"]', 'name', 'description', seo.desc);
+    ensureMeta('meta[property="og:title"]', 'property', 'og:title', seo.title);
+    ensureMeta('meta[property="og:description"]', 'property', 'og:description', seo.desc);
+    ensureMeta('meta[property="og:type"]', 'property', 'og:type', 'website');
+    ensureMeta('meta[property="og:url"]', 'property', 'og:url', window.location.href);
+  }, [route]);
+}
+
 // ─── Live spot rate hook ──────────────────────────────────────────────────────
-// Calls /api/rate (Vercel serverless) every 60 s.
-//
-// spot.raw     = GOLD999MUM Sell / 10  →  per gram, used in margin calculations
-//                No GST, no reduction factor — raw market rate.
-//
-// spot.display = raw × 1.03 × 0.975   →  per gram, shown in rate strip + home page
-//                GST-inclusive spot, then 2.5% lower = Carat Money effective buy rate.
 function useSpotRate() {
   const [spot, setSpot] = useState({
     raw: null, display: null, updatedAt: null, loading: true, error: false,
@@ -93,19 +137,22 @@ const GLOBAL_CSS = `
   @keyframes fadeSlide  { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
   @keyframes stickyDrop { from{opacity:0;transform:translateY(-12px)} to{opacity:1;transform:translateY(0)} }
   @keyframes stickySwap { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes slideUp    { from{transform:translateY(100%)} to{transform:translateY(0)} }
+  @keyframes fadeIn     { from{opacity:0} to{opacity:1} }
   input:focus { border-color:#B8860B!important; box-shadow:0 0 0 3px rgba(184,134,11,.12)!important; }
   button:active:not(:disabled) { transform:translateY(1px); }
   button.cm-add:hover        { background:#F6E9C6!important; border-color:#B8860B!important; }
   button.cm-icon:hover       { background:#F1F5F9!important; color:#475569!important; }
   button.cm-icon-danger:hover{ background:#FEE2E2!important; color:#B91C1C!important; }
   button.cm-card:hover       { transform:translateY(-2px)!important; box-shadow:0 16px 40px rgba(15,23,42,.18)!important; }
+  button.cm-step:hover:not(:disabled) { background:#F6E9C6!important; }
+  a.cm-link:hover            { color:#7C5A00!important; }
   input[type=number]::-webkit-inner-spin-button,
   input[type=number]::-webkit-outer-spin-button { -webkit-appearance:none; margin:0; }
   input[type=number] { -moz-appearance:textfield; }
 `;
 
 // ─── Rate Strip ───────────────────────────────────────────────────────────────
-// Shown at top of every page. 18K removed. Shows live update timestamp.
 function RateStrip({ spot }) {
   const r24  = spot.display ?? SPOT_FALLBACK;
   const r22  = Math.round(r24 * 22 / 24);
@@ -156,11 +203,7 @@ function HomePage({ navigate, spot }) {
   const r24  = spot.display ?? SPOT_FALLBACK;
   const r22  = Math.round(r24 * 22 / 24);
   const time = fmtTime(spot.updatedAt);
-  const C = { // card shared style
-    background:'#FFFFFF', borderRadius:'20px', padding:'22px',
-    boxShadow:'0 1px 2px rgba(15,23,42,.04),0 10px 30px rgba(15,23,42,.05)',
-    marginBottom:'14px', border:'1px solid rgba(15,23,42,.04)',
-  };
+
   return (
     <div style={{ minHeight:'100dvh', background:BG, fontFamily:SANS, color:'#0B1120' }}>
       <RateStrip spot={spot} />
@@ -177,12 +220,12 @@ function HomePage({ navigate, spot }) {
           <p style={{ fontSize:'15px', color:'#475569', lineHeight:1.55, margin:0 }}>Trusted by 5,000+ customers across India.</p>
         </div>
 
-        {/* Rate Card */}
-        <div style={{ ...C, border:'1px solid rgba(184,134,11,.08)' }}>
+        {/* Sell Rate Card */}
+        <div style={{ background:'#FFFFFF', borderRadius:'20px', padding:'22px', boxShadow:'0 1px 2px rgba(15,23,42,.04),0 10px 30px rgba(15,23,42,.05)', marginBottom:'14px', border:'1px solid rgba(184,134,11,.08)' }}>
           <div style={{ fontSize:'10.5px', fontWeight:800, letterSpacing:'0.14em', color:'#94A3B8', marginBottom:'14px' }}>
-            TODAY'S BUY RATE IN YOUR CITY
+            CARAT MONEY'S BUY RATE IN YOUR CITY
           </div>
-         <div style={{ marginBottom:'4px' }}>
+          <div style={{ marginBottom:'4px' }}>
             {spot.loading && !spot.display
               ? <span style={{ fontFamily:SERIF, fontSize:'40px', fontWeight:700, color:'#D7C9A0' }}>Loading…</span>
               : <>
@@ -203,7 +246,6 @@ function HomePage({ navigate, spot }) {
                 </>
             }
           </div>
-          
           <div style={{ fontSize:'11.5px', color:'#94A3B8', marginTop:'12px', fontStyle:'italic', fontFamily:SERIF, lineHeight:1.5 }}>
             {spot.error && !spot.updatedAt
               ? 'Live rate temporarily unavailable'
@@ -211,7 +253,7 @@ function HomePage({ navigate, spot }) {
           </div>
         </div>
 
-        {/* Sell Card */}
+        {/* Sell Card — primary */}
         <button className="cm-card" onClick={() => navigate('/sell')} style={{
           width:'100%', background:'#0B1120', borderRadius:'20px', padding:'22px',
           border:'none', cursor:'pointer', textAlign:'left', marginBottom:'12px',
@@ -227,11 +269,11 @@ function HomePage({ navigate, spot }) {
           </div>
         </button>
 
-        {/* Margin Card */}
+        {/* Margin Card — secondary */}
         <button className="cm-card" onClick={() => navigate('/margin')} style={{
           width:'100%', background:'#FFFFFF', borderRadius:'20px', padding:'22px',
           border:'1px solid rgba(15,23,42,.06)', cursor:'pointer', textAlign:'left',
-          marginBottom:'20px', boxShadow:'0 2px 8px rgba(15,23,42,.05)', transition:'transform .2s,box-shadow .2s',
+          marginBottom:'18px', boxShadow:'0 2px 8px rgba(15,23,42,.05)', transition:'transform .2s,box-shadow .2s',
         }}>
           <div style={{ fontSize:'10px', fontWeight:800, letterSpacing:'0.14em', color:'#94A3B8', marginBottom:'8px' }}>CHECK MARGIN</div>
           <div style={{ fontFamily:SERIF, fontSize:'24px', fontWeight:700, color:'#0B1120', letterSpacing:'-0.02em', lineHeight:1.15, marginBottom:'6px' }}>Check your buyer's margin</div>
@@ -240,6 +282,22 @@ function HomePage({ navigate, spot }) {
             <TrendingDown size={14} /> Calculate margin
           </div>
         </button>
+
+        {/* Buy text link — tertiary */}
+        <div style={{
+          padding:'16px 18px', marginBottom:'18px',
+          borderTop:'1px dashed rgba(184,134,11,.25)', borderBottom:'1px dashed rgba(184,134,11,.25)',
+          display:'flex', alignItems:'center', justifyContent:'space-between', gap:'10px',
+        }}>
+          <span style={{ fontSize:'13.5px', color:'#475569' }}>Looking to buy gold?</span>
+          <a className="cm-link" onClick={e => { e.preventDefault(); navigate('/buy'); }} href="/buy" style={{
+            fontSize:'13.5px', fontWeight:700, color:'#8B6508', textDecoration:'none',
+            display:'inline-flex', alignItems:'center', gap:'4px', cursor:'pointer',
+            transition:'color .15s',
+          }}>
+            Buy 24K BIS-hallmarked coins →
+          </a>
+        </div>
 
         <div style={{ fontSize:'11.5px', color:'#8B7F6A', textAlign:'center', lineHeight:1.7, fontFamily:SERIF, fontStyle:'italic' }}>
           ₹100Cr+ gold purchased · 5,000+ customers · 4.9★
@@ -328,10 +386,426 @@ function SellPage({ navigate, spot }) {
   );
 }
 
+// ─── Open Box Delivery Modal ──────────────────────────────────────────────────
+function OpenBoxModal({ onClose }) {
+  const Step = ({ icon, title, desc }) => (
+    <div style={{ display:'flex', gap:'14px', alignItems:'flex-start', marginBottom:'20px' }}>
+      <div style={{
+        width:'48px', height:'48px', borderRadius:'12px',
+        background:'linear-gradient(135deg,#FAF2DC 0%,#F6E9C6 100%)',
+        border:'1px solid rgba(184,134,11,.18)',
+        display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0,
+        color:'#8B6508',
+      }}>{icon}</div>
+      <div>
+        <div style={{ fontFamily:SANS, fontSize:'15px', fontWeight:700, color:'#0B1120', marginBottom:'4px' }}>{title}</div>
+        <div style={{ fontSize:'13.5px', color:'#475569', lineHeight:1.55 }}>{desc}</div>
+      </div>
+    </div>
+  );
+  return (
+    <div onClick={onClose} style={{
+      position:'fixed', inset:0, zIndex:200,
+      background:'rgba(15,23,42,.55)', backdropFilter:'blur(4px)', WebkitBackdropFilter:'blur(4px)',
+      display:'flex', alignItems:'flex-end', justifyContent:'center',
+      animation:'fadeIn .25s ease',
+    }}>
+      <div onClick={e => e.stopPropagation()} style={{
+        background:'#FFFFFF', borderRadius:'24px 24px 0 0',
+        width:'100%', maxWidth:'520px', maxHeight:'92vh', overflowY:'auto',
+        padding:'24px 22px 28px', animation:'slideUp .3s ease',
+      }}>
+        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:'10px', gap:'12px' }}>
+          <h2 style={{ fontFamily:SERIF, fontSize:'24px', fontWeight:700, margin:0, lineHeight:1.15, color:'#0B1120', letterSpacing:'-0.02em' }}>How Open Box Delivery Works</h2>
+          <button onClick={onClose} aria-label="Close" style={{
+            background:'#F1F5F9', border:'none', borderRadius:'50%',
+            width:'32px', height:'32px', display:'flex', alignItems:'center', justifyContent:'center',
+            cursor:'pointer', color:'#475569', flexShrink:0,
+          }}><X size={16} /></button>
+        </div>
+        <p style={{ fontSize:'14px', color:'#475569', lineHeight:1.55, marginTop:0, marginBottom:'24px' }}>
+          We'll open the package at your doorstep so you can check the product before accepting it.
+        </p>
+
+        <Step icon={<KeyRound size={22} strokeWidth={2} />}    title="Share OTP to start"      desc="Give the start OTP to the delivery partner to start verification." />
+        <Step icon={<Search size={22} strokeWidth={2} />}      title="Check the product"       desc="Make sure the product and packaging look right and in good condition." />
+        <Step icon={<ShieldCheck size={22} strokeWidth={2} />} title="Confirm with final OTP"  desc="Share the final OTP only if everything's fine. If not, hand it back to the delivery partner." />
+
+        <div style={{
+          marginTop:'8px', padding:'14px 16px',
+          background:'#FEF3C7', borderRadius:'12px',
+          display:'flex', gap:'10px', alignItems:'flex-start',
+        }}>
+          <AlertCircle size={18} color="#B45309" style={{ flexShrink:0, marginTop:'2px' }} />
+          <div style={{ fontSize:'13px', color:'#7C5A00', lineHeight:1.5, fontWeight:500 }}>
+            Open box delivery orders are checked during delivery, so once they are accepted, they can't be returned.
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Buy Page ────────────────────────────────────────────────────────────────
+function BuyPage({ navigate, spot }) {
+  const [qty, setQty]                     = useState({ '0.1': 0, '0.5': 0, '1': 0 });
+  const [name, setName]                   = useState('');
+  const [mobile, setMobile]               = useState('');
+  const [pincode, setPincode]             = useState('');
+  const [address, setAddress]             = useState('');
+  const [showOpenBox, setShowOpenBox]     = useState(false);
+
+  // Per-coin prices, rounded to whole rupees
+  const prices = {
+    '0.1': Math.round(BUY_RATE_24K * 0.1),
+    '0.5': Math.round(BUY_RATE_24K * 0.5),
+    '1':   Math.round(BUY_RATE_24K * 1.0),
+  };
+
+  const totalCoins  = qty['0.1'] + qty['0.5'] + qty['1'];
+  const totalAmount = qty['0.1'] * prices['0.1'] + qty['0.5'] * prices['0.5'] + qty['1'] * prices['1'];
+
+  const setQ = (size, delta) => setQty(prev => ({
+    ...prev, [size]: Math.max(0, Math.min(99, prev[size] + delta)),
+  }));
+
+  const setMobileG  = v => setMobile(v.replace(/\D/g, '').slice(0, 10));
+  const setPincodeG = v => setPincode(v.replace(/\D/g, '').slice(0, 6));
+  const mobileValid  = mobile.length === 10 && /^[6-9]/.test(mobile);
+  const pincodeValid = pincode.length === 6;
+  const canSubmit    = mobileValid && pincodeValid && name.trim().length >= 2
+                    && address.trim().length >= 8 && totalCoins > 0;
+
+  const onSubmit = () => {
+    if (!canSubmit) return;
+    const lines = ['Hi Carat Money — I want to buy gold coins.', ''];
+    if (qty['1']   > 0) lines.push(`${qty['1']} × 1g  coin  · ₹${fmt(qty['1']   * prices['1'],   0)}`);
+    if (qty['0.5'] > 0) lines.push(`${qty['0.5']} × 0.5g coin · ₹${fmt(qty['0.5'] * prices['0.5'], 0)}`);
+    if (qty['0.1'] > 0) lines.push(`${qty['0.1']} × 0.1g coin · ₹${fmt(qty['0.1'] * prices['0.1'], 0)}`);
+    lines.push('', `Total: ₹${fmt(totalAmount, 0)} (${totalCoins} coins)`, '');
+    lines.push(`Name: ${name.trim()}`);
+    lines.push(`Phone: +91${mobile}`);
+    lines.push(`Pincode: ${pincode}`);
+    lines.push(`Address: ${address.trim()}`);
+    lines.push('', 'Please confirm availability and delivery.');
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(lines.join('\n'))}`, '_blank');
+  };
+
+  const inp = { width:'100%', padding:'13px 14px', fontSize:'16px', border:'1.5px solid #E2E8F0', borderRadius:'12px', background:'#FFFFFF', color:'#0B1120', fontWeight:500, outline:'none', transition:'border-color .15s,box-shadow .15s', WebkitAppearance:'none', fontFamily:SANS };
+  const lbl = { fontSize:'13.5px', fontWeight:600, color:'#1F2937', display:'block', marginBottom:'6px' };
+
+  // Stepper row for one coin size
+  const StepperRow = ({ size, label }) => {
+    const count = qty[size];
+    const subtotal = count * prices[size];
+    return (
+      <div style={{
+        display:'flex', alignItems:'center', gap:'12px',
+        padding:'14px 0', borderTop: size === '0.1' ? '1px dashed #E2E8F0' : '1px dashed #E2E8F0',
+      }}>
+        <div style={{ flex:1, minWidth:0 }}>
+          <div style={{ fontSize:'15px', fontWeight:700, color:'#0B1120', marginBottom:'2px' }}>{label}</div>
+          <div style={{ fontSize:'12.5px', color:'#64748B' }}>₹{fmt(prices[size], 0)} each</div>
+        </div>
+        <div style={{ display:'flex', alignItems:'center', gap:'10px', flexShrink:0 }}>
+          <button className="cm-step" onClick={() => setQ(size, -1)} disabled={count === 0} style={{
+            width:'34px', height:'34px', borderRadius:'10px',
+            background:'#FAF2DC', border:'1.5px solid #D7C9A0', color:'#8B6508',
+            display:'flex', alignItems:'center', justifyContent:'center',
+            cursor: count === 0 ? 'not-allowed' : 'pointer',
+            opacity: count === 0 ? 0.4 : 1, transition:'background .15s',
+          }}><Minus size={16} strokeWidth={2.5} /></button>
+          <span style={{
+            fontFamily:SERIF, fontSize:'20px', fontWeight:700, color:'#0B1120',
+            minWidth:'24px', textAlign:'center', letterSpacing:'-0.01em',
+          }}>{count}</span>
+          <button className="cm-step" onClick={() => setQ(size, +1)} style={{
+            width:'34px', height:'34px', borderRadius:'10px',
+            background:'#FAF2DC', border:'1.5px solid #D7C9A0', color:'#8B6508',
+            display:'flex', alignItems:'center', justifyContent:'center',
+            cursor:'pointer', transition:'background .15s',
+          }}><Plus size={16} strokeWidth={2.5} /></button>
+        </div>
+        <div style={{
+          fontFamily:SERIF, fontSize:'15px', fontWeight:700, color: subtotal > 0 ? '#0B1120' : '#CBD5E1',
+          minWidth:'78px', textAlign:'right', letterSpacing:'-0.01em',
+        }}>₹{fmt(subtotal, 0)}</div>
+      </div>
+    );
+  };
+
+  return (
+    <div style={{ minHeight:'100dvh', background:BG, fontFamily:SANS, color:'#0B1120' }}>
+      <RateStrip spot={spot} />
+      <div style={{ maxWidth:'520px', margin:'0 auto', padding:'0 14px 40px' }}>
+        <BackBtn navigate={navigate} />
+
+        <div style={{ textAlign:'center', padding:'10px 6px 20px' }}>
+          <h1 style={{ fontFamily:SERIF, fontSize:'30px', fontWeight:700, lineHeight:1.1, letterSpacing:'-0.02em', margin:'0 0 8px' }}>
+            Buy <span style={{ color:'#8B6508', fontStyle:'italic' }}>24K</span> gold coins
+          </h1>
+          <p style={{ fontSize:'14.5px', color:'#475569', lineHeight:1.55, margin:0 }}>
+            BIS-hallmarked · 999.9 purity · 48-hour open-box return
+          </p>
+        </div>
+
+        {/* Coin order picker */}
+        <div style={{ background:'#FFFFFF', borderRadius:'20px', padding:'22px', boxShadow:'0 1px 2px rgba(15,23,42,.04),0 10px 30px rgba(15,23,42,.05)', marginBottom:'14px', border:'1px solid rgba(15,23,42,.04)' }}>
+          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'baseline', marginBottom:'8px' }}>
+            <div style={{ fontSize:'10.5px', fontWeight:800, letterSpacing:'0.14em', color:'#94A3B8' }}>TODAY'S COIN PRICES</div>
+            <div style={{ fontSize:'11px', color:'#94A3B8', fontStyle:'italic', fontFamily:SERIF }}>Updated {BUY_RATE_DATE}</div>
+          </div>
+          <div style={{ fontSize:'13px', color:'#475569', marginBottom:'4px' }}>
+            Pick how many coins of each size you'd like.
+          </div>
+
+          <div>
+            <StepperRow size="0.1" label="0.1g coin" />
+            <StepperRow size="0.5" label="0.5g coin" />
+            <StepperRow size="1"   label="1g coin" />
+          </div>
+
+          {/* Total + breakdown */}
+          {totalCoins > 0 ? (
+            <div style={{
+              marginTop:'14px', padding:'16px',
+              background:'#FAF7EF', border:'1px dashed #D7C9A0', borderRadius:'12px',
+            }}>
+              <div style={{ fontSize:'10px', fontWeight:800, letterSpacing:'0.14em', color:'#8B6508', marginBottom:'8px' }}>ORDER TOTAL</div>
+              <div style={{ display:'flex', alignItems:'baseline', gap:'8px', marginBottom:'8px' }}>
+                <span style={{ fontFamily:SERIF, fontSize:'30px', fontWeight:700, color:'#0B1120', letterSpacing:'-0.02em', lineHeight:1 }}>₹{fmt(totalAmount, 0)}</span>
+                <span style={{ fontSize:'13px', color:'#64748B' }}>· {totalCoins} {totalCoins === 1 ? 'coin' : 'coins'}</span>
+              </div>
+              <div style={{ fontSize:'12.5px', color:'#475569', lineHeight:1.7 }}>
+                {qty['1']   > 0 && <>{qty['1']} × 1g (₹{fmt(qty['1']   * prices['1'],   0)})</>}
+                {qty['1']   > 0 && (qty['0.5'] > 0 || qty['0.1'] > 0) && ' + '}
+                {qty['0.5'] > 0 && <>{qty['0.5']} × 0.5g (₹{fmt(qty['0.5'] * prices['0.5'], 0)})</>}
+                {qty['0.5'] > 0 && qty['0.1'] > 0 && ' + '}
+                {qty['0.1'] > 0 && <>{qty['0.1']} × 0.1g (₹{fmt(qty['0.1'] * prices['0.1'], 0)})</>}
+              </div>
+              <div style={{ fontSize:'11px', color:'#94A3B8', marginTop:'8px', fontStyle:'italic', fontFamily:SERIF }}>
+                Prices include 3% GST.
+              </div>
+            </div>
+          ) : (
+            <div style={{
+              marginTop:'14px', padding:'14px 16px',
+              background:'#FEF9EC', borderRadius:'10px',
+              fontSize:'12.5px', color:'#8B6508', textAlign:'center', lineHeight:1.55,
+            }}>
+              Tap + to add coins to your order.
+            </div>
+          )}
+
+          {/* Custom coin note — inline */}
+          <div style={{
+            marginTop:'14px', padding:'14px 16px',
+            background:'#F8FAFC', borderRadius:'10px',
+            fontSize:'12.5px', color:'#475569', lineHeight:1.6, textAlign:'center',
+          }}>
+            Need a custom coin? <a className="cm-link" href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Hi Carat Money — I'm interested in a custom gold coin.")}`} target="_blank" rel="noreferrer" style={{ color:'#8B6508', fontWeight:700, textDecoration:'none' }}>WhatsApp us</a> to discuss specific weights or designs.
+          </div>
+        </div>
+
+        {/* Details form */}
+        <div style={{ background:'#FFFFFF', borderRadius:'20px', padding:'22px', boxShadow:'0 1px 2px rgba(15,23,42,.04),0 10px 30px rgba(15,23,42,.05)', marginBottom:'14px', border:'1px solid rgba(15,23,42,.04)' }}>
+          <div style={{ fontSize:'10.5px', fontWeight:800, letterSpacing:'0.14em', color:'#94A3B8', marginBottom:'20px' }}>DELIVERY DETAILS</div>
+
+          <div style={{ marginBottom:'16px' }}>
+            <label style={lbl}>Full name</label>
+            <input type="text" placeholder="e.g. Priya S" value={name} onChange={e => setName(e.target.value)} style={inp} />
+          </div>
+
+          <div style={{ marginBottom:'16px' }}>
+            <label style={lbl}>Mobile number</label>
+            <div style={{ display:'flex', alignItems:'center', background:'#FFFFFF', borderRadius:'12px', border:'1.5px solid #E2E8F0', overflow:'hidden' }}>
+              <span style={{ padding:'13px 10px 13px 14px', fontSize:'16px', color:'#64748B', fontWeight:600, borderRight:'1px solid #E2E8F0', flexShrink:0 }}>+91</span>
+              <input type="tel" inputMode="numeric" placeholder="10-digit number" value={mobile} onChange={e => setMobileG(e.target.value)} style={{ ...inp, border:'none', borderRadius:0, flex:1, minWidth:0 }} />
+            </div>
+          </div>
+
+          <div style={{ marginBottom:'16px' }}>
+            <label style={lbl}>Pincode</label>
+            <input type="tel" inputMode="numeric" placeholder="6-digit pincode" value={pincode} onChange={e => setPincodeG(e.target.value)} style={inp} />
+          </div>
+
+          <div>
+            <label style={lbl}>Delivery address</label>
+            <textarea placeholder="House / Flat no, street, area, city" value={address} onChange={e => setAddress(e.target.value)}
+              rows={3} style={{ ...inp, resize:'vertical', minHeight:'88px', fontFamily:SANS }} />
+          </div>
+        </div>
+
+        {/* WhatsApp CTA */}
+        <div style={{ background:'linear-gradient(150deg,#0B1120 0%,#1E293B 100%)', color:'#FFFFFF', borderRadius:'20px', padding:'24px 22px', marginBottom:'14px', boxShadow:'0 14px 40px rgba(15,23,42,.22)', position:'relative', overflow:'hidden' }}>
+          <div style={{ position:'absolute', top:'-60px', right:'-60px', width:'200px', height:'200px', borderRadius:'50%', background:'radial-gradient(circle,rgba(184,134,11,.25) 0%,transparent 70%)', pointerEvents:'none' }} />
+          <div style={{ fontFamily:SERIF, fontSize:'22px', fontWeight:700, letterSpacing:'-0.02em', marginBottom:'16px', color:'#FFFFFF', position:'relative' }}>Place your order on WhatsApp</div>
+          <button onClick={onSubmit} disabled={!canSubmit} style={{ width:'100%', padding:'15px', background:'#25D366', color:'#FFFFFF', border:'none', borderRadius:'12px', fontSize:'16px', fontWeight:700, fontFamily:SANS, display:'flex', alignItems:'center', justifyContent:'center', gap:'8px', boxShadow:'0 6px 18px rgba(37,211,102,.38)', opacity:canSubmit?1:0.5, cursor:canSubmit?'pointer':'not-allowed', position:'relative', transition:'opacity .2s' }}>
+            <MessageCircle size={18} /> Send order on WhatsApp
+          </button>
+          <div style={{ fontSize:'11.5px', color:'#94A3B8', marginTop:'12px', textAlign:'center', lineHeight:1.5, position:'relative' }}>
+            We'll confirm availability and arrange delivery.
+          </div>
+        </div>
+
+        {/* Trust strip */}
+        <div style={{ background:'#FFFFFF', borderRadius:'20px', padding:'20px 22px', boxShadow:'0 1px 2px rgba(15,23,42,.04),0 10px 30px rgba(15,23,42,.05)', marginBottom:'14px', border:'1px solid rgba(15,23,42,.04)' }}>
+          <div style={{ fontSize:'10.5px', fontWeight:800, letterSpacing:'0.14em', color:'#94A3B8', marginBottom:'14px' }}>WHY CARAT MONEY</div>
+          {[
+            { icon: <Shield size={16} strokeWidth={2.4} />, text: 'BIS-hallmarked, 999.9 purity', tip: false },
+            { icon: <Check size={16} strokeWidth={2.4} />,  text: '48-hour open-box delivery',   tip: true  },
+            { icon: <Check size={16} strokeWidth={2.4} />,  text: 'Assay certificate included',  tip: false },
+          ].map((item, i) => (
+            <div key={i} style={{
+              display:'flex', alignItems:'center', gap:'10px',
+              padding:'10px 0',
+              borderTop: i === 0 ? 'none' : '1px dashed #EEF2F6',
+            }}>
+              <span style={{ color:'#15803D', flexShrink:0, display:'inline-flex' }}>{item.icon}</span>
+              <span style={{ fontSize:'14px', color:'#0B1120', fontWeight:500, flex:1 }}>{item.text}</span>
+              {item.tip && (
+                <span onClick={() => setShowOpenBox(true)} style={{
+                  fontSize:'13px', color:'#B8860B', cursor:'pointer', userSelect:'none',
+                  padding:'2px 6px',
+                }}>ⓘ</span>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <div style={{ fontSize:'11.5px', color:'#8B7F6A', textAlign:'center', lineHeight:1.7, fontFamily:SERIF, fontStyle:'italic' }}>
+          Coin prices include 3% GST. Free doorstep delivery within Bangalore.
+        </div>
+      </div>
+
+      {showOpenBox && <OpenBoxModal onClose={() => setShowOpenBox(false)} />}
+    </div>
+  );
+}
+
+// ─── Share helpers (Margin page) ──────────────────────────────────────────────
+function ShareSection({ inline }) {
+  const [copied, setCopied] = useState(false);
+  const url = typeof window !== 'undefined' ? `${window.location.origin}/margin` : '';
+  const text = `Found this free tool that shows you what gold buyers keep as margin above the spot rate. Saved me from a bad deal — try it before you sell:\n${url}`;
+
+  const onWhatsApp = () => {
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+  };
+  const onCopy = async () => {
+    const ok = await copyToClipboard(url);
+    if (ok) {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  return (
+    <div style={{
+      background:'linear-gradient(135deg,#FAF2DC 0%,#F6E9C6 100%)',
+      borderRadius:'20px', padding:'24px 22px',
+      border:'1px solid rgba(184,134,11,.18)',
+      marginBottom:'14px', textAlign:'center',
+      animation: inline ? 'fadeSlide .5s ease-out' : 'none',
+    }}>
+      <div style={{ fontFamily:SERIF, fontSize:'22px', fontWeight:700, color:'#0B1120', marginBottom:'6px', letterSpacing:'-0.02em' }}>
+        Found this useful?
+      </div>
+      <div style={{ fontSize:'14px', color:'#475569', marginBottom:'18px', lineHeight:1.55 }}>
+        Share with friends or family who might be selling gold soon.
+      </div>
+      <div style={{ display:'flex', gap:'10px' }}>
+        <button onClick={onWhatsApp} style={{
+          flex:1, padding:'13px', background:'#25D366', color:'#FFFFFF',
+          border:'none', borderRadius:'12px', fontSize:'14.5px', fontWeight:700, fontFamily:SANS,
+          display:'inline-flex', alignItems:'center', justifyContent:'center', gap:'6px',
+          cursor:'pointer', boxShadow:'0 4px 14px rgba(37,211,102,.32)', transition:'opacity .15s',
+        }}>
+          <MessageCircle size={16} /> WhatsApp
+        </button>
+        <button onClick={onCopy} style={{
+          flex:1, padding:'13px', background:'#FFFFFF', color:'#0B1120',
+          border:'1.5px solid #D7C9A0', borderRadius:'12px', fontSize:'14.5px', fontWeight:700, fontFamily:SANS,
+          display:'inline-flex', alignItems:'center', justifyContent:'center', gap:'6px',
+          cursor:'pointer', transition:'background .15s',
+        }}>
+          {copied ? <><Check size={16} color="#15803D" /> Copied</> : <><Copy size={16} /> Copy link</>}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function FloatingShareButton() {
+  const [open, setOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const url = typeof window !== 'undefined' ? `${window.location.origin}/margin` : '';
+  const text = `Found this free tool that shows you what gold buyers keep as margin above the spot rate. Saved me from a bad deal — try it before you sell:\n${url}`;
+
+  const onWhatsApp = () => {
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+    setOpen(false);
+  };
+  const onCopy = async () => {
+    const ok = await copyToClipboard(url);
+    if (ok) { setCopied(true); setTimeout(() => { setCopied(false); setOpen(false); }, 1500); }
+  };
+
+  return (
+    <>
+      {open && (
+        <div onClick={() => setOpen(false)} style={{
+          position:'fixed', inset:0, zIndex:90, background:'rgba(15,23,42,.3)', animation:'fadeIn .2s ease',
+        }} />
+      )}
+      <div style={{
+        position:'fixed', bottom:'20px', left:'20px', zIndex:100,
+        display:'flex', flexDirection:'column-reverse', gap:'10px', alignItems:'flex-start',
+      }}>
+        <button onClick={() => setOpen(v => !v)} style={{
+          background:'#0B1120', color:'#FFFFFF',
+          padding:'12px 18px', borderRadius:'999px',
+          border:'none', cursor:'pointer',
+          display:'inline-flex', alignItems:'center', gap:'8px',
+          fontFamily:SANS, fontSize:'13.5px', fontWeight:700,
+          boxShadow:'0 8px 24px rgba(15,23,42,.32)',
+          animation:'fadeSlide .4s ease-out',
+        }}>
+          <Share2 size={15} strokeWidth={2.5} /> Share tool
+        </button>
+        {open && (
+          <>
+            <button onClick={onWhatsApp} style={{
+              background:'#25D366', color:'#FFFFFF',
+              padding:'11px 16px', borderRadius:'999px',
+              border:'none', cursor:'pointer',
+              display:'inline-flex', alignItems:'center', gap:'7px',
+              fontFamily:SANS, fontSize:'13px', fontWeight:700,
+              boxShadow:'0 6px 18px rgba(37,211,102,.38)',
+              animation:'fadeSlide .25s ease-out',
+            }}>
+              <MessageCircle size={14} /> WhatsApp
+            </button>
+            <button onClick={onCopy} style={{
+              background:'#FFFFFF', color:'#0B1120',
+              padding:'11px 16px', borderRadius:'999px',
+              border:'1.5px solid #D7C9A0', cursor:'pointer',
+              display:'inline-flex', alignItems:'center', gap:'7px',
+              fontFamily:SANS, fontSize:'13px', fontWeight:700,
+              boxShadow:'0 6px 18px rgba(15,23,42,.12)',
+              animation:'fadeSlide .25s ease-out',
+            }}>
+              {copied ? <><Check size={14} color="#15803D" /> Copied</> : <><Copy size={14} /> Copy link</>}
+            </button>
+          </>
+        )}
+      </div>
+    </>
+  );
+}
+
 // ─── Margin Page ──────────────────────────────────────────────────────────────
 function MarginPage({ navigate, spot }) {
-  // calcRate = raw GOLD999MUM sell / 10 per gram — no GST, no reduction factor.
-  // Used directly in all margin calculations as the market benchmark.
   const calcRate = spot.raw ?? SPOT_FALLBACK;
 
   const [ornaments,     setOrnaments]     = useState(() => [blankOrnament()]);
@@ -345,7 +819,6 @@ function MarginPage({ navigate, spot }) {
   const feeN    = parseNum(serviceFee) ?? 0;
   const revN    = parseNum(revisedTotal);
 
-  // Per-ornament derived values — recomputes when live rate updates
   const ornamentData = useMemo(() => ornaments.map(o => {
     const g   = parseNum(o.gross);
     const s   = parseNum(o.stone)   ?? 0;
@@ -360,13 +833,12 @@ function MarginPage({ navigate, spot }) {
       const purity      = p / 100;
       const recoverable = netWeight + STONE_RECOVERY * s + WASTAGE_RECOVERY * w;
       purchaseContrib   = netWeight * ppg;
-      salesContrib      = recoverable * purity * calcRate;   // live rate benchmark
+      salesContrib      = recoverable * purity * calcRate;
       effRate           = ppg / purity;
     }
     return { id: o.id, gross: g, stone: s, wastage: w, purity: p, ppg, netWeight, netError, isValid, purchaseContrib, salesContrib, effRate };
   }), [ornaments, calcRate]);
 
-  // Aggregate margin — buyer quote
   const margin1 = useMemo(() => {
     const valid = ornamentData.filter(d => d.isValid);
     if (!valid.length) return null;
@@ -384,7 +856,6 @@ function MarginPage({ navigate, spot }) {
     };
   }, [ornamentData, feeN]);
 
-  // Aggregate margin — revised offer
   const margin2 = useMemo(() => {
     if (revN === null || revN <= 0) return null;
     const valid = ornamentData.filter(d => d.isValid);
@@ -394,7 +865,6 @@ function MarginPage({ navigate, spot }) {
     return { value: (1 - revN / sumSales) * 100, eff: revN / sumNetPurity, total: revN, purchase_total: revN, sales_total: sumSales };
   }, [revN, ornamentData]);
 
-  // Lot summary for sticky bar phase 1
   const lotSummary = useMemo(() => {
     const w = ornamentData.filter(d => d.netWeight !== null && d.netWeight > 0);
     if (!w.length) return null;
@@ -404,7 +874,6 @@ function MarginPage({ navigate, spot }) {
   const showLotSticky = isMulti && lotSummary !== null && margin1 === null;
   const stickyVisible = margin1 !== null || showLotSticky;
 
-  // Sticky context-switch (buyer quote ↔ revised) on scroll
   const [activeSection, setActiveSection] = useState('first');
   const revisedObserverRef = useRef(null);
   const attachRevisedObserver = useCallback(node => {
@@ -416,7 +885,6 @@ function MarginPage({ navigate, spot }) {
   }, []);
   useEffect(() => () => revisedObserverRef.current?.disconnect(), []);
 
-  // Ghost-state progress text
   const anyNetError  = ornamentData.some(d => d.netError);
   const progressText = (() => {
     if (anyNetError) return "Stone + wastage can't exceed gross. Check the numbers.";
@@ -432,7 +900,6 @@ function MarginPage({ navigate, spot }) {
   })();
   const filled = !isMulti ? [ornamentData[0].gross, ornamentData[0].purity, ornamentData[0].ppg].filter(v => v !== null && v > 0).length : 0;
 
-  // Tone colours
   const tone = v => {
     if (v == null) return { fg:'#64748B', bg:'#F1F5F9', label:'' };
     if (v < 0)    return { fg:'#991B1B', bg:'#FEE2E2', label:'Above spot — verify this' };
@@ -442,7 +909,6 @@ function MarginPage({ navigate, spot }) {
     return               { fg:'#991B1B', bg:'#FEE2E2', label:'Very high — push back hard' };
   };
 
-  // Ornament management
   const updateOrnament = (id, field, value) => setOrnaments(prev => prev.map(o => o.id === id ? { ...o, [field]: value } : o));
   const addOrnament    = () => {
     if (ornaments.length >= MAX_ORNAMENTS) return;
@@ -457,7 +923,6 @@ function MarginPage({ navigate, spot }) {
   };
   const toggleCollapse = id => setCollapsed(prev => { const n = new Set(prev); if (n.has(id)) n.delete(id); else n.add(id); return n; });
 
-  // Validators
   const setWeightF = (id, field, v) => { if (v === '') return updateOrnament(id, field, ''); const n = parseFloat(v); if (isNaN(n) || n < 0) return; updateOrnament(id, field, v); };
   const setPurityF = (id, v)         => { if (v === '') return updateOrnament(id, 'purity', ''); const n = parseFloat(v); if (isNaN(n) || n < 0 || n > 100) return; updateOrnament(id, 'purity', v); };
   const setPriceF  = (id, v)         => { if (v === '') return updateOrnament(id, 'pricePerGram', ''); const [i] = String(v).split('.'); if (i.replace('-','').length > 5) return; const n = parseFloat(v); if (isNaN(n) || n < 0) return; updateOrnament(id, 'pricePerGram', v); };
@@ -466,7 +931,6 @@ function MarginPage({ navigate, spot }) {
   const setMobileG  = v              => setMobile(v.replace(/\D/g, '').slice(0, 10));
   const mobileValid = mobile.length === 10 && /^[6-9]/.test(mobile);
 
-  // WhatsApp CTA
   const onCTA = () => {
     if (!mobileValid) return;
     const body = ['Hi Carat Money — I used the margin checker.', ''];
@@ -487,7 +951,6 @@ function MarginPage({ navigate, spot }) {
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(body.join('\n'))}`, '_blank');
   };
 
-  // Styles
   const S = {
     stickyWrap:      { position:'fixed', top:0, left:0, right:0, zIndex:50, background:'rgba(251,246,236,0.92)', backdropFilter:'blur(10px)', WebkitBackdropFilter:'blur(10px)', borderBottom:'1px solid rgba(184,134,11,.14)', boxShadow:'0 1px 12px rgba(15,23,42,.05)' },
     stickyInner:     { maxWidth:'520px', margin:'0 auto', padding:'11px 18px 11px 16px', display:'flex', alignItems:'center', gap:'10px', borderLeft:'3px solid #B8860B', minHeight:'52px', boxSizing:'border-box' },
@@ -534,7 +997,6 @@ function MarginPage({ navigate, spot }) {
     effAmount:       { fontFamily:SERIF, fontSize:'36px', fontWeight:700, color:'#0B1120', letterSpacing:'-0.025em', lineHeight:1 },
     effRate:         { fontFamily:SERIF, fontSize:'22px', fontWeight:600, color:'#0B1120', letterSpacing:'-0.02em', lineHeight:1 },
     effUnit:         { fontSize:'13px', color:'#64748B', fontWeight:500, marginLeft:'1px' },
-    effVsSpot:       { fontSize:'12px', color:'#64748B', marginTop:'10px' },
     blendedNote:     { fontSize:'10.5px', color:'#94A3B8', marginTop:'4px', fontStyle:'italic', letterSpacing:'0.02em' },
     marginDivider:   { width:'44px', height:'1px', background:'#E2E8F0', margin:'6px auto 2px' },
     effBlockInline:  { background:'rgba(255,255,255,.55)', borderRadius:'10px', padding:'12px 14px', marginBottom:'10px', marginTop:'2px' },
@@ -576,19 +1038,15 @@ function MarginPage({ navigate, spot }) {
     mobileInput:     { flex:1, border:'none', background:'transparent', padding:'14px', fontSize:'16px', fontWeight:600, color:'#0B1120', outline:'none', minWidth:0, WebkitAppearance:'none', fontFamily:SANS },
     ctaButton:       en => ({ width:'100%', padding:'15px', background:'#25D366', color:'#FFFFFF', border:'none', borderRadius:'12px', fontSize:'16px', fontWeight:700, fontFamily:SANS, display:'flex', alignItems:'center', justifyContent:'center', gap:'8px', transition:'opacity .2s,transform .1s', boxShadow:'0 6px 18px rgba(37,211,102,.38)', opacity:en?1:0.5, cursor:en?'pointer':'not-allowed', position:'relative' }),
     ctaDisclaimer:   { fontSize:'11.5px', color:'#94A3B8', marginTop:'12px', textAlign:'center', lineHeight:1.5, position:'relative' },
-    footer:          { fontSize:'11.5px', color:'#8B7F6A', textAlign:'center', padding:'18px 8px 8px', lineHeight:1.7, fontFamily:SERIF, fontStyle:'italic' },
-    pill:            { display:'inline-flex', alignItems:'center', gap:'6px', background:'#FFFFFF', color:'#7C5A00', fontSize:'10.5px', fontWeight:700, letterSpacing:'0.14em', padding:'6px 12px', borderRadius:'999px', marginBottom:'16px', boxShadow:'0 1px 2px rgba(15,23,42,.06),inset 0 0 0 1px rgba(184,134,11,.18)' },
   };
 
   const t1 = tone(margin1?.value);
   const t2 = tone(margin2?.value);
   const collapsedSummary = d => !d.isValid ? 'Incomplete' : `${fmt(d.netWeight)}g · ${d.purity}% · ₹${fmt(d.ppg,0)}/g`;
-  const rateTime = fmtTime(spot.updatedAt);
 
   return (
     <div style={{ minHeight:'100dvh', background:BG, fontFamily:SANS, color:'#0B1120', paddingTop:stickyVisible?'52px':0, transition:'padding-top .3s ease' }}>
 
-      {/* ── Sticky bar ─────────────────────────────────────────────────── */}
       {stickyVisible && (
         <div style={{ ...S.stickyWrap, animation:'stickyDrop .35s cubic-bezier(.2,.8,.2,1)' }}>
           <div style={S.stickyInner}>
@@ -625,12 +1083,9 @@ function MarginPage({ navigate, spot }) {
         </div>
       )}
 
-      {/* ── Rate Strip ─────────────────────────────────────────────────── */}
-
       <div style={{ maxWidth:'520px', margin:'0 auto', padding:'0 14px 40px' }}>
         <BackBtn navigate={navigate} />
 
-        {/* ── Header ───────────────────────────────────────────────────── */}
         <div style={{ textAlign:'center', padding:'10px 6px 20px' }}>
           <h1 style={{ fontFamily:SERIF, fontSize:'34px', fontWeight:700, lineHeight:1.08, letterSpacing:'-0.02em', margin:0, color:'#0B1120', fontVariationSettings:"'opsz' 144" }}>
             Check your gold buyer's <span style={{ color:'#8B6508', fontStyle:'italic' }}>margin</span>
@@ -640,7 +1095,6 @@ function MarginPage({ navigate, spot }) {
           </p>
         </div>
 
-        {/* ── Input Card ───────────────────────────────────────────────── */}
         <div style={S.card}>
           <div style={S.cardLabel}>{isMulti ? `YOUR LOT · ${ornaments.length} ORNAMENTS` : 'WHAT YOUR BUYER TOLD YOU'}</div>
 
@@ -723,7 +1177,6 @@ function MarginPage({ navigate, spot }) {
           </div>
         </div>
 
-        {/* ── Margin Reveal ─────────────────────────────────────────────── */}
         <div style={{...S.card,...S.marginCard}}>
           {margin1 === null ? (
             <div style={S.ghost}>
@@ -796,7 +1249,6 @@ function MarginPage({ navigate, spot }) {
           )}
         </div>
 
-        {/* ── Revised Offer ─────────────────────────────────────────────── */}
         {margin1!==null && (
           <div ref={attachRevisedObserver} style={{...S.card,animation:'fadeSlide .5s ease-out'}}>
             <div style={S.cardLabel}>DID THEY REVISE THE OFFER?</div>
@@ -829,7 +1281,6 @@ function MarginPage({ navigate, spot }) {
           </div>
         )}
 
-        {/* ── CTA ───────────────────────────────────────────────────────── */}
         {margin1!==null && (
           <div style={{...S.ctaCard,animation:'fadeSlide .55s ease-out'}}>
             <div style={S.ctaGlow}/>
@@ -846,11 +1297,12 @@ function MarginPage({ navigate, spot }) {
           </div>
         )}
 
-        {/* ── Footer ────────────────────────────────────────────────────── */}
-        <div style={S.footer}>
-          Local city rates may vary. Use as a directional estimate.
-        </div>
+        {/* Share section — appears after margin reveal */}
+        {margin1 !== null && <ShareSection inline />}
       </div>
+
+      {/* Floating share pill — only after margin is calculated */}
+      {margin1 !== null && <FloatingShareButton />}
     </div>
   );
 }
@@ -858,13 +1310,19 @@ function MarginPage({ navigate, spot }) {
 // ─── App (router) ─────────────────────────────────────────────────────────────
 export default function App() {
   const { route, navigate } = useRoute();
-  const spot = useSpotRate();          // fetched once, shared across all pages
+  const spot = useSpotRate();
+  useSEO(route);
+
+  let page;
+  if      (route === '/sell')   page = <SellPage   navigate={navigate} spot={spot} />;
+  else if (route === '/buy')    page = <BuyPage    navigate={navigate} spot={spot} />;
+  else if (route === '/margin') page = <MarginPage navigate={navigate} spot={spot} />;
+  else                          page = <HomePage   navigate={navigate} spot={spot} />;
+
   return (
     <>
       <style>{GLOBAL_CSS}</style>
-      {route === '/'       && <HomePage   navigate={navigate} spot={spot} />}
-      {route === '/sell'   && <SellPage   navigate={navigate} spot={spot} />}
-      {route === '/margin' && <MarginPage navigate={navigate} spot={spot} />}
+      {page}
     </>
   );
 }
