@@ -172,7 +172,7 @@ function RateStrip({ spot }) {
       </span>
       {[{k:'24K',r:r24},{k:'22K',r:r22}].map(({k,r}) => (
         <span key={k} style={{ color:C.gold3, fontWeight:400, letterSpacing:'0.04em' }}>
-          <span style={{ color:C.gold2, marginRight:'4px' }}>{k}</span>₹{fmt(r,0)}/g
+          <span style={{ color:C.gold2, marginRight:'4px', fontSize:'9px', letterSpacing:'0.1em' }}>{k}</span>₹{fmt(r,0)}/g
         </span>
       ))}
       <span style={{ color: spot.error && !spot.updatedAt ? '#f87171' : `rgba(241,215,141,0.45)`, marginLeft:'auto', letterSpacing:'0.04em' }}>
@@ -277,10 +277,6 @@ function HomePage({ navigate, spot }) {
             <div style={{ fontFamily:MONO, fontSize:'9px', letterSpacing:'0.2em', color:C.gold, textTransform:'uppercase' }}>· The Fair Price for Gold ·</div>
             <div style={{ height:'1px', width:'40px', background:C.gold, opacity:0.5 }}/>
           </div>
-          {/* Main headline */}
-          <h1 style={{ fontFamily:SERIF, fontSize:'32px', fontWeight:350, lineHeight:1.15, letterSpacing:'-0.02em', margin:'0 0 10px', color:C.ink }}>
-            Get the best price<br/>for your <span style={{ fontStyle:'italic', color:C.plum }}>gold</span>
-          </h1>
           {/* Guarantee tagline */}
           <div style={{ fontFamily:SANS, fontSize:'14px', fontWeight:600, color:C.gold, letterSpacing:'0.01em', lineHeight:1.5, marginBottom:'4px' }}>
             We guarantee — nobody can match our price
@@ -401,7 +397,7 @@ function SellPage({ navigate, spot }) {
           <Eyebrow>Your Details</Eyebrow>
           <div style={{ marginBottom:'18px' }}>
             <label style={LBL}>Full name</label>
-            <input type="text" placeholder="e.g. Priya Sharma" value={name} onChange={e=>setName(e.target.value)} style={INP}/>
+            <input type="text" placeholder="e.g. Priya S" value={name} onChange={e=>setName(e.target.value)} style={INP}/>
           </div>
           <div style={{ marginBottom:'18px' }}>
             <label style={LBL}>Mobile number</label>
@@ -581,7 +577,7 @@ function BuyPage({ navigate }) {
           <Eyebrow>Delivery Details</Eyebrow>
           <div style={{ marginBottom:'18px' }}>
             <label style={LBL}>Full name</label>
-            <input type="text" placeholder="e.g. Priya Sharma" value={name} onChange={e=>setName(e.target.value)} style={INP}/>
+            <input type="text" placeholder="e.g. Priya S" value={name} onChange={e=>setName(e.target.value)} style={INP}/>
           </div>
           <div style={{ marginBottom:'18px' }}>
             <label style={LBL}>Mobile number</label>
