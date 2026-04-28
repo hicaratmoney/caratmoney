@@ -97,6 +97,7 @@ function useSEO(route) {
       if (!el) { el = document.createElement('meta'); el.setAttribute(attr, val); document.head.appendChild(el); }
       el.setAttribute('content', content);
     };
+    em('meta[property="og:url"]', 'property', 'og:url', `https://carat.money${route}`);
     em('meta[name="description"]',      'name',     'description',    seo.desc);
     em('meta[property="og:title"]',     'property', 'og:title',       seo.title);
     em('meta[property="og:description"]','property','og:description', seo.desc);
