@@ -97,11 +97,11 @@ function useSEO(route) {
       if (!el) { el = document.createElement('meta'); el.setAttribute(attr, val); document.head.appendChild(el); }
       el.setAttribute('content', content);
     };
-    em('meta[property="og:url"]', 'property', 'og:url', `https://carat.money${route}`);
-    em('meta[name="description"]',      'name',     'description',    seo.desc);
-    em('meta[property="og:title"]',     'property', 'og:title',       seo.title);
-    em('meta[property="og:description"]','property','og:description', seo.desc);
-    em('meta[property="og:type"]',      'property', 'og:type',        'website');
+    em('meta[property="og:url"]',        'property', 'og:url',          `https://carat.money${route}`);
+    em('meta[name="description"]',       'name',     'description',     seo.desc);
+    em('meta[property="og:title"]',      'property', 'og:title',        seo.title);
+    em('meta[property="og:description"]','property', 'og:description',  seo.desc);
+    em('meta[property="og:type"]',       'property', 'og:type',         'website');
   }, [route]);
 }
 
@@ -157,27 +157,18 @@ const LBL = { fontSize:'14px', fontWeight:600, color:C.ink2, display:'block', ma
 
 // ─── Rate Strip ───────────────────────────────────────────────────────────────
 function RateStrip({ spot }) {
-  const r24  = spot.display ?? SPOT_FALLBACK;
-  const r22  = Math.round(r24 * 22 / 24);
-  const time = fmtTime(spot.updatedAt);
-  const status = spot.loading && !spot.updatedAt ? 'Fetching…'
-    : spot.error && !spot.updatedAt ? '⚠ Unavailable'
-    : time ? time : '';
+  const r24 = spot.display ?? SPOT_FALLBACK;
+  const r22 = Math.round(r24 * 22 / 24);
   return (
-    <div style={{
-      background:C.plum, padding:'10px 18px',
-      display:'flex', alignItems:'center', flexWrap:'wrap', gap:'6px 16px',
-      fontFamily:MONO, fontSize:'11px',
-    }}>
+    <div style={{ background:C.plum, padding:'10px 18px', display:'flex', alignItems:'center', flexWrap:'wrap', gap:'6px 16px', fontFamily:MONO, fontSize:'11px' }}>
       <span style={{ display:'inline-flex', alignItems:'center', gap:'5px', fontWeight:500, color:C.gold2, letterSpacing:'0.12em' }}>
         <Zap size={10} strokeWidth={2.5}/> LIVE RATE
       </span>
       {[{k:'24K',r:r24},{k:'22K',r:r22}].map(({k,r}) => (
         <span key={k} style={{ color:C.gold3, fontWeight:400, letterSpacing:'0.04em' }}>
-          <span style={{ color:C.gold2, marginRight:'4px' }}>{k}</span>₹{fmt(r,0)}/g
+          <span style={{ color:C.gold2, marginRight:'4px', fontSize:'9px', letterSpacing:'0.1em' }}>{k}</span>₹{fmt(r,0)}/g
         </span>
       ))}
-
     </div>
   );
 }
@@ -185,68 +176,30 @@ function RateStrip({ spot }) {
 // ─── Back Button ──────────────────────────────────────────────────────────────
 function BackBtn({ navigate }) {
   return (
-    <button onClick={() => navigate('/')} style={{
-      background:'none', border:'none', cursor:'pointer',
-      display:'inline-flex', alignItems:'center', gap:'6px',
-      color:C.gold, fontFamily:MONO, fontSize:'12px', fontWeight:500,
-      padding:'18px 0 8px', letterSpacing:'0.1em', textTransform:'uppercase',
-    }}>
+    <button onClick={() => navigate('/')} style={{ background:'none', border:'none', cursor:'pointer', display:'inline-flex', alignItems:'center', gap:'6px', color:C.gold, fontFamily:MONO, fontSize:'12px', fontWeight:500, padding:'18px 0 8px', letterSpacing:'0.1em', textTransform:'uppercase' }}>
       <ArrowLeft size={14} strokeWidth={2}/> Home
     </button>
   );
 }
 
-// ─── Section eyebrow label ────────────────────────────────────────────────────
+// ─── Eyebrow ──────────────────────────────────────────────────────────────────
 const Eyebrow = ({ children, light }) => (
-  <div style={{
-    fontFamily:MONO, fontSize:'10px', fontWeight:500,
-    letterSpacing:'0.18em', textTransform:'uppercase',
-    color: light ? `rgba(241,215,141,0.6)` : C.mute,
-    marginBottom:'10px',
-  }}>{children}</div>
+  <div style={{ fontFamily:MONO, fontSize:'10px', fontWeight:500, letterSpacing:'0.18em', textTransform:'uppercase', color: light ? `rgba(241,215,141,0.6)` : C.mute, marginBottom:'10px' }}>{children}</div>
 );
 
-// ─── Primary CTA button (gold, rectangular) ───────────────────────────────────
+// ─── Primary CTA button ───────────────────────────────────────────────────────
 const BtnPrimary = ({ onClick, disabled, children, style={} }) => (
-  <button onClick={onClick} disabled={disabled} style={{
-    width:'100%', padding:'15px 20px',
-    background: disabled ? C.paper2 : C.gold2,
-    color: disabled ? C.mute : C.plum,
-    border:'none', borderRadius:'4px',
-    fontSize:'15px', fontWeight:600, fontFamily:SANS,
-    display:'flex', alignItems:'center', justifyContent:'center', gap:'8px',
-    cursor: disabled ? 'not-allowed' : 'pointer',
-    transition:'opacity .2s,transform .1s',
-    letterSpacing:'0.01em',
-    ...style,
-  }}>{children}</button>
+  <button onClick={onClick} disabled={disabled} style={{ width:'100%', padding:'15px 20px', background: disabled ? C.paper2 : C.gold2, color: disabled ? C.mute : C.plum, border:'none', borderRadius:'4px', fontSize:'15px', fontWeight:600, fontFamily:SANS, display:'flex', alignItems:'center', justifyContent:'center', gap:'8px', cursor: disabled ? 'not-allowed' : 'pointer', transition:'opacity .2s,transform .1s', letterSpacing:'0.01em', ...style }}>{children}</button>
 );
 
-// ─── WhatsApp CTA button (pill, green) ────────────────────────────────────────
+// ─── WhatsApp CTA button ──────────────────────────────────────────────────────
 const BtnWhatsApp = ({ onClick, disabled, children }) => (
-  <button onClick={onClick} disabled={disabled} style={{
-    width:'100%', padding:'15px 20px',
-    background:C.green, color:C.white,
-    border:'none', borderRadius:'999px',
-    fontSize:'16px', fontWeight:600, fontFamily:SANS,
-    display:'flex', alignItems:'center', justifyContent:'center', gap:'8px',
-    boxShadow:'0 6px 20px rgba(37,211,102,.32)',
-    opacity: disabled ? 0.5 : 1,
-    cursor: disabled ? 'not-allowed' : 'pointer',
-    transition:'opacity .2s',
-  }}>{children}</button>
+  <button onClick={onClick} disabled={disabled} style={{ width:'100%', padding:'15px 20px', background:C.green, color:C.white, border:'none', borderRadius:'999px', fontSize:'16px', fontWeight:600, fontFamily:SANS, display:'flex', alignItems:'center', justifyContent:'center', gap:'8px', boxShadow:'0 6px 20px rgba(37,211,102,.32)', opacity: disabled ? 0.5 : 1, cursor: disabled ? 'not-allowed' : 'pointer', transition:'opacity .2s' }}>{children}</button>
 );
 
 // ─── Card wrapper ─────────────────────────────────────────────────────────────
 const Card = React.forwardRef(({ children, dark, style={} }, ref) => (
-  <div ref={ref} style={{
-    background: dark ? C.plum : C.white,
-    borderRadius:'8px',
-    border: dark ? `1px solid rgba(224,183,101,.2)` : `1px solid rgba(26,20,38,.1)`,
-    padding:'24px',
-    boxShadow: dark ? '0 8px 32px rgba(43,20,80,.18)' : '0 2px 12px rgba(22,18,31,.06)',
-    ...style,
-  }}>{children}</div>
+  <div ref={ref} style={{ background: dark ? C.plum : C.white, borderRadius:'8px', border: dark ? `1px solid rgba(224,183,101,.2)` : `1px solid rgba(26,20,38,.1)`, padding:'24px', boxShadow: dark ? '0 8px 32px rgba(43,20,80,.18)' : '0 2px 12px rgba(22,18,31,.06)', ...style }}>{children}</div>
 ));
 
 // ─── Home Page ────────────────────────────────────────────────────────────────
@@ -261,24 +214,18 @@ function HomePage({ navigate, spot }) {
       <RateStrip spot={spot}/>
       <div style={{ maxWidth:'520px', margin:'0 auto', padding:'0 18px 48px' }}>
 
-        {/* ── Hero — logo + wordmark ── */}
         <div style={{ textAlign:'center', padding:'40px 12px 32px' }}>
-          {/* Logo mark */}
           <div style={{ display:'flex', justifyContent:'center', marginBottom:'16px' }}>
             <LogoMark size={110} color={C.gold2}/>
           </div>
-          {/* Wordmark */}
           <div style={{ fontFamily:SERIF, fontSize:'42px', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1.05, marginBottom:'6px' }}>
             Carat <span style={{ fontStyle:'italic', color:C.plum }}>Money</span>
           </div>
-          {/* Tagline dot rule */}
           <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:'10px', margin:'10px 0 20px' }}>
             <div style={{ height:'1px', width:'40px', background:C.gold, opacity:0.5 }}/>
             <div style={{ fontFamily:MONO, fontSize:'9px', letterSpacing:'0.2em', color:C.gold, textTransform:'uppercase' }}>· The Fair Price for Gold ·</div>
             <div style={{ height:'1px', width:'40px', background:C.gold, opacity:0.5 }}/>
           </div>
-
-          {/* Guarantee tagline */}
           <div style={{ fontFamily:SANS, fontSize:'14px', fontWeight:600, color:C.gold, letterSpacing:'0.01em', lineHeight:1.5, marginBottom:'4px' }}>
             We guarantee — nobody can match our price
           </div>
@@ -287,7 +234,6 @@ function HomePage({ navigate, spot }) {
           </div>
         </div>
 
-        {/* ── Rate Card ── */}
         <Card dark style={{ marginBottom:'14px' }}>
           <Eyebrow light>Carat Money's Buy Rate in Your City</Eyebrow>
           <div style={{ marginBottom:'4px' }}>
@@ -312,20 +258,11 @@ function HomePage({ navigate, spot }) {
             }
           </div>
           <div style={{ fontFamily:SERIF, fontSize:'12px', color:`rgba(241,215,141,.4)`, marginTop:'14px', fontStyle:'italic' }}>
-            {spot.error && !spot.updatedAt ? 'Live rate temporarily unavailable'
-              : time ? `Live rate · Updated ${time}` : 'Fetching live rate…'}
+            {spot.error && !spot.updatedAt ? 'Live rate temporarily unavailable' : time ? `Live rate · Updated ${time}` : 'Fetching live rate…'}
           </div>
         </Card>
 
-        {/* ── Sell Card ── */}
-        <div onClick={() => navigate('/sell')} style={{
-          background:C.ink, borderRadius:'8px', padding:'24px',
-          border:`1px solid rgba(224,183,101,.12)`,
-          cursor:'pointer', marginBottom:'12px',
-          boxShadow:'0 6px 24px rgba(22,18,31,.18)',
-          position:'relative', overflow:'hidden',
-          transition:'transform .2s,box-shadow .2s',
-        }}>
+        <div onClick={() => navigate('/sell')} style={{ background:C.ink, borderRadius:'8px', padding:'24px', border:`1px solid rgba(224,183,101,.12)`, cursor:'pointer', marginBottom:'12px', boxShadow:'0 6px 24px rgba(22,18,31,.18)', position:'relative', overflow:'hidden', transition:'transform .2s,box-shadow .2s' }}>
           <div style={{ position:'absolute', top:'-50px', right:'-50px', width:'180px', height:'180px', borderRadius:'50%', background:`radial-gradient(circle,rgba(224,183,101,.18) 0%,transparent 70%)`, pointerEvents:'none' }}/>
           <Eyebrow light>Sell Gold</Eyebrow>
           <div style={{ fontFamily:SERIF, fontSize:'26px', fontWeight:350, color:C.white, letterSpacing:'-0.02em', lineHeight:1.15, marginBottom:'8px' }}>Sell to Carat Money</div>
@@ -335,14 +272,7 @@ function HomePage({ navigate, spot }) {
           </div>
         </div>
 
-        {/* ── Margin Card ── */}
-        <div onClick={() => navigate('/margin')} style={{
-          background:C.white, borderRadius:'8px', padding:'24px',
-          border:`1px solid rgba(26,20,38,.1)`,
-          cursor:'pointer', marginBottom:'20px',
-          boxShadow:'0 2px 12px rgba(22,18,31,.06)',
-          transition:'transform .2s,box-shadow .2s',
-        }}>
+        <div onClick={() => navigate('/margin')} style={{ background:C.white, borderRadius:'8px', padding:'24px', border:`1px solid rgba(26,20,38,.1)`, cursor:'pointer', marginBottom:'20px', boxShadow:'0 2px 12px rgba(22,18,31,.06)', transition:'transform .2s,box-shadow .2s' }}>
           <Eyebrow>Check Margin</Eyebrow>
           <div style={{ fontFamily:SERIF, fontSize:'26px', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1.15, marginBottom:'8px' }}>Check your buyer's margin</div>
           <div style={{ fontSize:'15px', color:C.mute, lineHeight:1.55, marginBottom:'20px' }}>See exactly what your buyer is keeping above today's rate.</div>
@@ -351,7 +281,6 @@ function HomePage({ navigate, spot }) {
           </BtnPrimary>
         </div>
 
-        {/* ── Buy text link ── */}
         <div style={{ padding:'16px 0', marginBottom:'16px', borderTop:`1px solid rgba(26,20,38,.12)`, borderBottom:`1px solid rgba(26,20,38,.12)`, display:'flex', alignItems:'center', justifyContent:'space-between', gap:'10px' }}>
           <span style={{ fontSize:'14px', color:C.mute, fontFamily:SANS }}>Looking to buy gold?</span>
           <span onClick={() => navigate('/buy')} style={{ fontSize:'14px', fontWeight:600, color:C.gold, fontFamily:SANS, cursor:'pointer', display:'inline-flex', alignItems:'center', gap:'4px' }}>
@@ -440,9 +369,7 @@ function SellPage({ navigate, spot }) {
 function OpenBoxModal({ onClose }) {
   const Step = ({ icon, title, desc }) => (
     <div style={{ display:'flex', gap:'14px', alignItems:'flex-start', marginBottom:'22px' }}>
-      <div style={{ width:'48px', height:'48px', borderRadius:'6px', background:C.paper2, border:`1px solid rgba(184,136,58,.2)`, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, color:C.gold }}>
-        {icon}
-      </div>
+      <div style={{ width:'48px', height:'48px', borderRadius:'6px', background:C.paper2, border:`1px solid rgba(184,136,58,.2)`, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, color:C.gold }}>{icon}</div>
       <div>
         <div style={{ fontFamily:SANS, fontSize:'16px', fontWeight:600, color:C.ink, marginBottom:'4px' }}>{title}</div>
         <div style={{ fontSize:'14px', color:C.mute, lineHeight:1.55 }}>{desc}</div>
@@ -473,19 +400,19 @@ function OpenBoxModal({ onClose }) {
   );
 }
 
-// ─── Buy Page ────────────────────────────────────────────────────────────────
+// ─── Buy Page ─────────────────────────────────────────────────────────────────
 function BuyPage({ navigate }) {
-  const [qty, setQty]             = useState({'0.1':0,'0.5':0,'1':0});
-  const [name, setName]           = useState('');
-  const [mobile, setMobile]       = useState('');
-  const [pincode, setPincode]     = useState('');
-  const [address, setAddress]     = useState('');
+  const [qty, setQty]                 = useState({'0.1':0,'0.5':0,'1':0});
+  const [name, setName]               = useState('');
+  const [mobile, setMobile]           = useState('');
+  const [pincode, setPincode]         = useState('');
+  const [address, setAddress]         = useState('');
   const [showOpenBox, setShowOpenBox] = useState(false);
 
   const prices = { '0.1':Math.round(BUY_RATE_24K*0.1), '0.5':Math.round(BUY_RATE_24K*0.5), '1':Math.round(BUY_RATE_24K) };
   const totalCoins  = qty['0.1']+qty['0.5']+qty['1'];
   const totalAmount = qty['0.1']*prices['0.1']+qty['0.5']*prices['0.5']+qty['1']*prices['1'];
-  const setQ = (size, delta) => setQty(prev => ({...prev,[size]:Math.max(0,Math.min(99,prev[size]+delta))}));
+  const setQ        = (size, delta) => setQty(prev => ({...prev,[size]:Math.max(0,Math.min(99,prev[size]+delta))}));
   const setMobileG  = v => setMobile(v.replace(/\D/g,'').slice(0,10));
   const setPincodeG = v => setPincode(v.replace(/\D/g,'').slice(0,6));
   const mobileValid = mobile.length===10 && /^[6-9]/.test(mobile);
@@ -511,7 +438,7 @@ function BuyPage({ navigate }) {
           <div style={{ fontFamily:MONO, fontSize:'12px', color:C.mute }}>₹{fmt(prices[size],0)} each · incl. GST</div>
         </div>
         <div style={{ display:'flex', alignItems:'center', gap:'12px', flexShrink:0 }}>
-          <button onClick={()=>setQ(size,-1)} disabled={count===0} style={{ width:'36px', height:'36px', borderRadius:'4px', background: count===0?C.paper2:C.paper, border:`1.5px solid rgba(26,20,38,.15)`, color: count===0?C.mute:C.plum, display:'flex', alignItems:'center', justifyContent:'center', cursor:count===0?'not-allowed':'pointer', opacity:count===0?.4:1 }}>
+          <button onClick={()=>setQ(size,-1)} disabled={count===0} style={{ width:'36px', height:'36px', borderRadius:'4px', background:count===0?C.paper2:C.paper, border:`1.5px solid rgba(26,20,38,.15)`, color:count===0?C.mute:C.plum, display:'flex', alignItems:'center', justifyContent:'center', cursor:count===0?'not-allowed':'pointer', opacity:count===0?.4:1 }}>
             <Minus size={16} strokeWidth={2.5}/>
           </button>
           <span style={{ fontFamily:SERIF, fontSize:'22px', fontWeight:350, color:C.ink, minWidth:'24px', textAlign:'center' }}>{count}</span>
@@ -536,7 +463,6 @@ function BuyPage({ navigate }) {
           </h1>
           <p style={{ fontSize:'15px', color:C.mute, lineHeight:1.55, margin:0 }}>BIS-hallmarked · 999.9 purity · 48-hr open-box return</p>
         </div>
-
         <Card style={{ marginBottom:'14px' }}>
           <div style={{ display:'flex', justifyContent:'space-between', alignItems:'baseline', marginBottom:'6px' }}>
             <Eyebrow>Today's Coin Prices</Eyebrow>
@@ -545,7 +471,6 @@ function BuyPage({ navigate }) {
           <StepperRow size="0.1" label="0.1g coin"/>
           <StepperRow size="0.5" label="0.5g coin"/>
           <StepperRow size="1"   label="1g coin"/>
-
           {totalCoins>0 ? (
             <div style={{ marginTop:'16px', padding:'16px', background:C.plum, borderRadius:'6px', border:`1px solid rgba(224,183,101,.2)` }}>
               <Eyebrow light>Order Total</Eyebrow>
@@ -554,11 +479,11 @@ function BuyPage({ navigate }) {
                 <span style={{ fontFamily:MONO, fontSize:'12px', color:`rgba(241,215,141,.5)` }}>· {totalCoins} {totalCoins===1?'coin':'coins'}</span>
               </div>
               <div style={{ fontFamily:SANS, fontSize:'13px', color:`rgba(241,215,141,.6)`, lineHeight:1.7 }}>
-                {qty['1']>0 && <>{qty['1']} × 1g (₹{fmt(qty['1']*prices['1'],0)})</>}
+                {qty['1']>0&&<>{qty['1']} × 1g (₹{fmt(qty['1']*prices['1'],0)})</>}
                 {qty['1']>0&&(qty['0.5']>0||qty['0.1']>0)&&' + '}
-                {qty['0.5']>0 && <>{qty['0.5']} × 0.5g (₹{fmt(qty['0.5']*prices['0.5'],0)})</>}
+                {qty['0.5']>0&&<>{qty['0.5']} × 0.5g (₹{fmt(qty['0.5']*prices['0.5'],0)})</>}
                 {qty['0.5']>0&&qty['0.1']>0&&' + '}
-                {qty['0.1']>0 && <>{qty['0.1']} × 0.1g (₹{fmt(qty['0.1']*prices['0.1'],0)})</>}
+                {qty['0.1']>0&&<>{qty['0.1']} × 0.1g (₹{fmt(qty['0.1']*prices['0.1'],0)})</>}
               </div>
             </div>
           ) : (
@@ -566,14 +491,12 @@ function BuyPage({ navigate }) {
               Tap + to add coins to your order
             </div>
           )}
-
           <div style={{ marginTop:'14px', padding:'14px', background:`rgba(184,136,58,.08)`, borderRadius:'6px', fontFamily:SANS, fontSize:'13px', color:C.mute, lineHeight:1.6, textAlign:'center', border:`1px solid rgba(184,136,58,.15)` }}>
             Need a custom coin?{' '}
             <a href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Hi Carat Money — I'm interested in a custom gold coin.")}`} target="_blank" rel="noreferrer" style={{ color:C.gold, fontWeight:600, textDecoration:'none' }}>WhatsApp us</a>
             {' '}to discuss specific weights or designs.
           </div>
         </Card>
-
         <Card style={{ marginBottom:'14px' }}>
           <Eyebrow>Delivery Details</Eyebrow>
           <div style={{ marginBottom:'18px' }}>
@@ -596,7 +519,6 @@ function BuyPage({ navigate }) {
             <textarea placeholder="House / Flat no, street, area, city" value={address} onChange={e=>setAddress(e.target.value)} rows={3} style={{ ...INP, resize:'vertical', minHeight:'90px', fontFamily:SANS }}/>
           </div>
         </Card>
-
         <Card dark style={{ marginBottom:'14px' }}>
           <div style={{ fontFamily:SERIF, fontSize:'22px', fontWeight:350, color:C.gold3, letterSpacing:'-0.02em', marginBottom:'18px' }}>Place your order</div>
           <BtnWhatsApp onClick={onSubmit} disabled={!canSubmit}>
@@ -606,13 +528,12 @@ function BuyPage({ navigate }) {
             We'll confirm availability and arrange delivery.
           </div>
         </Card>
-
         <Card style={{ marginBottom:'14px' }}>
           <Eyebrow>Why Carat Money</Eyebrow>
           {[
-            { icon:<Shield size={16} strokeWidth={2}/>,      text:'BIS-hallmarked, 999.9 purity',  tip:false },
-            { icon:<Check size={16} strokeWidth={2}/>,       text:'48-hour open-box delivery',      tip:true  },
-            { icon:<Check size={16} strokeWidth={2}/>,       text:'Assay certificate included',     tip:false },
+            { icon:<Shield size={16} strokeWidth={2}/>, text:'BIS-hallmarked, 999.9 purity', tip:false },
+            { icon:<Check size={16} strokeWidth={2}/>,  text:'48-hour open-box delivery',    tip:true  },
+            { icon:<Check size={16} strokeWidth={2}/>,  text:'Assay certificate included',   tip:false },
           ].map((item,i) => (
             <div key={i} style={{ display:'flex', alignItems:'center', gap:'12px', padding:'12px 0', borderTop:i===0?'none':`1px solid rgba(26,20,38,.08)` }}>
               <span style={{ color:C.gold, flexShrink:0, display:'inline-flex' }}>{item.icon}</span>
@@ -621,7 +542,6 @@ function BuyPage({ navigate }) {
             </div>
           ))}
         </Card>
-
         <div style={{ fontFamily:MONO, fontSize:'11px', color:C.mute, textAlign:'center', lineHeight:1.8, letterSpacing:'0.06em' }}>
           Coin prices include 3% GST · Free doorstep delivery within Bangalore
         </div>
@@ -631,13 +551,13 @@ function BuyPage({ navigate }) {
   );
 }
 
-// ─── Share helpers ─────────────────────────────────────────────────────────────
+// ─── Share Section ────────────────────────────────────────────────────────────
 function ShareSection() {
   const [copied, setCopied] = useState(false);
   const url  = typeof window!=='undefined' ? `${window.location.origin}/margin` : '';
   const text = `Found this free tool that shows you what gold buyers keep as margin above the spot rate. Saved me from a bad deal — try it before you sell:\n${url}`;
   const onWA   = () => window.open(`https://wa.me/?text=${encodeURIComponent(text)}`,'_blank');
-  const onCopy = async () => { const ok = await copyToClipboard(url); if(ok){setCopied(true);setTimeout(()=>setCopied(false),2000);} };
+  const onCopy = async () => { const ok=await copyToClipboard(url); if(ok){setCopied(true);setTimeout(()=>setCopied(false),2000);} };
   return (
     <div style={{ background:C.plum, borderRadius:'8px', padding:'24px', border:`1px solid rgba(224,183,101,.2)`, marginBottom:'14px', textAlign:'center', animation:'fadeSlide .5s ease-out' }}>
       <div style={{ fontFamily:SERIF, fontSize:'22px', fontWeight:350, color:C.gold3, marginBottom:'6px', letterSpacing:'-0.02em' }}>Found this useful?</div>
@@ -654,21 +574,20 @@ function ShareSection() {
   );
 }
 
+// ─── Floating Share Button ────────────────────────────────────────────────────
 function FloatingShareButton({ highlighted }) {
   const [open, setOpen]     = useState(false);
   const [copied, setCopied] = useState(false);
   const [pulsed, setPulsed] = useState(false);
 
   useEffect(() => {
-    if (highlighted && !pulsed) {
-      setPulsed(true);
-    }
+    if (highlighted && !pulsed) setPulsed(true);
   }, [highlighted]);
 
-  const url  = typeof window !== 'undefined' ? `${window.location.origin}/margin` : '';
+  const url  = typeof window!=='undefined' ? `${window.location.origin}/margin` : '';
   const text = `Found this free tool that shows you what gold buyers keep as margin above the spot rate. Saved me from a bad deal — try it before you sell:\n${url}`;
-  const onWA   = () => { window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank'); setOpen(false); };
-  const onCopy = async () => { const ok = await copyToClipboard(url); if (ok) { setCopied(true); setTimeout(() => { setCopied(false); setOpen(false); }, 1500); } };
+  const onWA   = () => { window.open(`https://wa.me/?text=${encodeURIComponent(text)}`,'_blank'); setOpen(false); };
+  const onCopy = async () => { const ok=await copyToClipboard(url); if(ok){setCopied(true);setTimeout(()=>{setCopied(false);setOpen(false);},1500);} };
 
   const btnStyle = highlighted ? {
     background: C.gold2, color: C.plum,
@@ -683,15 +602,9 @@ function FloatingShareButton({ highlighted }) {
 
   return (
     <>
-      {open && <div onClick={() => setOpen(false)} style={{ position:'fixed', inset:0, zIndex:90, background:'rgba(22,18,31,.3)', animation:'fadeIn .2s ease' }}/>}
+      {open && <div onClick={()=>setOpen(false)} style={{ position:'fixed', inset:0, zIndex:90, background:'rgba(22,18,31,.3)', animation:'fadeIn .2s ease' }}/>}
       <div style={{ position:'fixed', bottom:'20px', left:'20px', zIndex:100, display:'flex', flexDirection:'column-reverse', gap:'10px', alignItems:'flex-start' }}>
-        <button onClick={() => setOpen(v => !v)} style={{
-          padding:'12px 18px', borderRadius:'4px',
-          cursor:'pointer', display:'inline-flex', alignItems:'center', gap:'8px',
-          fontFamily:MONO, fontSize:'12px', fontWeight:500, letterSpacing:'0.08em',
-          transition:'background .4s, color .4s, box-shadow .4s',
-          ...btnStyle,
-        }}>
+        <button onClick={()=>setOpen(v=>!v)} style={{ padding:'12px 18px', borderRadius:'4px', cursor:'pointer', display:'inline-flex', alignItems:'center', gap:'8px', fontFamily:MONO, fontSize:'12px', fontWeight:500, letterSpacing:'0.08em', transition:'background .4s, color .4s, box-shadow .4s', ...btnStyle }}>
           <Share2 size={14} strokeWidth={2}/>
           {highlighted ? 'SHARE THIS RESULT' : 'SHARE TOOL'}
         </button>
@@ -700,7 +613,7 @@ function FloatingShareButton({ highlighted }) {
             <MessageCircle size={14}/> WhatsApp
           </button>
           <button onClick={onCopy} style={{ background:C.plum, color:C.gold2, padding:'11px 16px', borderRadius:'4px', border:`1px solid rgba(224,183,101,.3)`, cursor:'pointer', display:'inline-flex', alignItems:'center', gap:'7px', fontFamily:MONO, fontSize:'12px', fontWeight:500, animation:'fadeSlide .25s ease-out' }}>
-            {copied ? <><Check size={14}/>COPIED</> : <><Copy size={14}/>COPY LINK</>}
+            {copied?<><Check size={14}/>COPIED</>:<><Copy size={14}/>COPY LINK</>}
           </button>
         </>}
       </div>
@@ -711,100 +624,115 @@ function FloatingShareButton({ highlighted }) {
 // ─── Margin Page ──────────────────────────────────────────────────────────────
 function MarginPage({ navigate, spot }) {
   const calcRate = spot.raw ?? SPOT_FALLBACK;
+
+  // ── State ─────────────────────────────────────────────────────────────────
   const [ornaments,     setOrnaments]     = useState(()=>[blankOrnament()]);
   const [serviceFee,    setServiceFee]    = useState('');
   const [revisedTotal,  setRevisedTotal]  = useState('');
   const [mobile,        setMobile]        = useState('');
   const [collapsed,     setCollapsed]     = useState(new Set());
   const [showBreakdown, setShowBreakdown] = useState(false);
-  const [shareHighlighted, setShareHighlighted] = useState(false);
-  const marginCardRef = useRef(null);
-  useEffect(() => {
-    if (!marginCardRef.current) return;
-    const io = new IntersectionObserver(([e]) => {
-      if (e.intersectionRatio > 0.5 && margin1 !== null) {
-        setShareHighlighted(true);
-      }
-    }, { threshold: [0, 0.5] });
-    io.observe(marginCardRef.current);
-    return () => io.disconnect();
-  }, [margin1]);
-  const isMulti = ornaments.length>1;
-  const feeN    = parseNum(serviceFee)??0;
+
+  const isMulti = ornaments.length > 1;
+  const feeN    = parseNum(serviceFee) ?? 0;
   const revN    = parseNum(revisedTotal);
 
-  const ornamentData = useMemo(()=>ornaments.map(o=>{
+  // ── Ornament data ─────────────────────────────────────────────────────────
+  const ornamentData = useMemo(() => ornaments.map(o => {
     const g=parseNum(o.gross), s=parseNum(o.stone)??0, w=parseNum(o.wastage)??0, p=parseNum(o.purity), ppg=parseNum(o.pricePerGram);
     const netWeight=g!==null?g-s-w:null, netError=g!==null&&netWeight!==null&&netWeight<=0;
     const isValid=netWeight!==null&&netWeight>0&&p!==null&&p>0&&p<=100&&ppg!==null&&ppg>0;
     let purchaseContrib=null,salesContrib=null,effRate=null;
     if(isValid){const purity=p/100,recoverable=netWeight+STONE_RECOVERY*s+WASTAGE_RECOVERY*w;purchaseContrib=netWeight*ppg;salesContrib=recoverable*purity*calcRate;effRate=ppg/purity;}
     return {id:o.id,gross:g,stone:s,wastage:w,purity:p,ppg,netWeight,netError,isValid,purchaseContrib,salesContrib,effRate};
-  }),[ornaments,calcRate]);
+  }), [ornaments, calcRate]);
 
-  const margin1 = useMemo(()=>{
-    const valid=ornamentData.filter(d=>d.isValid);if(!valid.length)return null;
+  // ── margin1 must be declared before the shareHighlighted useEffect ────────
+  const margin1 = useMemo(() => {
+    const valid=ornamentData.filter(d=>d.isValid); if(!valid.length)return null;
     const fee=feeN/100,sumPR=valid.reduce((a,d)=>a+d.purchaseContrib,0),sumS=valid.reduce((a,d)=>a+d.salesContrib,0),sumNP=valid.reduce((a,d)=>a+d.netWeight*(d.purity/100),0),pt=sumPR*(1-fee);
     return {value:(1-pt/sumS)*100,eff:pt/sumNP,total:pt,purchase_total:pt,sales_total:sumS,ornamentCount:valid.length,totalNetWeight:valid.reduce((a,d)=>a+d.netWeight,0)};
-  },[ornamentData,feeN]);
+  }, [ornamentData, feeN]);
 
-  const margin2 = useMemo(()=>{
+  // ── Share highlight — depends on margin1, so declared after it ───────────
+  const [shareHighlighted, setShareHighlighted] = useState(false);
+  const marginCardRef = useRef(null);
+  useEffect(() => {
+    if (!marginCardRef.current) return;
+    const io = new IntersectionObserver(([e]) => {
+      if (e.intersectionRatio > 0.5 && margin1 !== null) setShareHighlighted(true);
+    }, { threshold: [0, 0.5] });
+    io.observe(marginCardRef.current);
+    return () => io.disconnect();
+  }, [margin1]);
+
+  // ── margin2 ───────────────────────────────────────────────────────────────
+  const margin2 = useMemo(() => {
     if(revN===null||revN<=0)return null;
-    const valid=ornamentData.filter(d=>d.isValid);if(!valid.length)return null;
+    const valid=ornamentData.filter(d=>d.isValid); if(!valid.length)return null;
     const sumS=valid.reduce((a,d)=>a+d.salesContrib,0),sumNP=valid.reduce((a,d)=>a+d.netWeight*(d.purity/100),0);
     return {value:(1-revN/sumS)*100,eff:revN/sumNP,total:revN,purchase_total:revN,sales_total:sumS};
-  },[revN,ornamentData]);
+  }, [revN, ornamentData]);
 
-  const lotSummary = useMemo(()=>{
-    const w=ornamentData.filter(d=>d.netWeight!==null&&d.netWeight>0);if(!w.length)return null;
+  const lotSummary = useMemo(() => {
+    const w=ornamentData.filter(d=>d.netWeight!==null&&d.netWeight>0); if(!w.length)return null;
     return {ornamentCount:ornaments.length,totalGross:w.reduce((a,d)=>a+d.gross,0),totalNet:w.reduce((a,d)=>a+d.netWeight,0)};
-  },[ornamentData,ornaments.length]);
+  }, [ornamentData, ornaments.length]);
 
-  const showLotSticky=isMulti&&lotSummary!==null&&margin1===null;
-  const stickyVisible=margin1!==null||showLotSticky;
+  const showLotSticky = isMulti && lotSummary !== null && margin1 === null;
+  const stickyVisible = margin1 !== null || showLotSticky;
 
-  const [activeSection,setActiveSection]=useState('first');
-  const revisedObserverRef=useRef(null);
-  const attachRevisedObserver=useCallback(node=>{
+  const [activeSection, setActiveSection] = useState('first');
+  const revisedObserverRef = useRef(null);
+  const attachRevisedObserver = useCallback(node => {
     if(revisedObserverRef.current){revisedObserverRef.current.disconnect();revisedObserverRef.current=null;}
     if(!node)return;
     const io=new IntersectionObserver(([e])=>setActiveSection(e.intersectionRatio>0.35?'revised':'first'),{threshold:[0,.35,.6]});
-    io.observe(node);revisedObserverRef.current=io;
-  },[]);
-  useEffect(()=>()=>revisedObserverRef.current?.disconnect(),[]);
+    io.observe(node); revisedObserverRef.current=io;
+  }, []);
+  useEffect(() => ()=>revisedObserverRef.current?.disconnect(), []);
 
-  const anyNetError=ornamentData.some(d=>d.netError);
-  const progressText=(()=>{
-    if(anyNetError)return"Stone + wastage can't exceed gross.";
-    if(margin1!==null)return null;
+  const anyNetError = ornamentData.some(d=>d.netError);
+  const progressText = (() => {
+    if(anyNetError) return "Stone + wastage can't exceed gross.";
+    if(margin1!==null) return null;
     if(!isMulti){const d=ornamentData[0],missing=3-[d.gross,d.purity,d.ppg].filter(v=>v!==null&&v>0).length;
       if(missing===3)return"Fill in what your buyer told you.";if(missing===2)return"Keep going — 2 more fields.";if(missing===1)return"Almost there. One last field.";}
-    return"Complete at least one ornament to see the margin.";
+    return "Complete at least one ornament to see the margin.";
   })();
-  const filled=!isMulti?[ornamentData[0].gross,ornamentData[0].purity,ornamentData[0].ppg].filter(v=>v!==null&&v>0).length:0;
+  const filled = !isMulti ? [ornamentData[0].gross,ornamentData[0].purity,ornamentData[0].ppg].filter(v=>v!==null&&v>0).length : 0;
 
-  const tone=v=>{
-    if(v==null)return{fg:C.mute,bg:C.paper2,label:''};
-    if(v<0) return{fg:'#991B1B',bg:'#FEE2E2',label:'Above spot — verify this'};
-    if(v<6) return{fg:'#15803D',bg:'#DCFCE7',label:'Fair margin'};
-    if(v<10)return{fg:'#B45309',bg:'#FEF3C7',label:'On the higher side'};
-    if(v<15)return{fg:'#B91C1C',bg:'#FEE2E2',label:'High — push back'};
-    return      {fg:'#991B1B',bg:'#FEE2E2',label:'Very high — push back hard'};
+  const tone = v => {
+    if(v==null) return{fg:C.mute,bg:C.paper2,label:''};
+    if(v<0)  return{fg:'#991B1B',bg:'#FEE2E2',label:'Above spot — verify this'};
+    if(v<6)  return{fg:'#15803D',bg:'#DCFCE7',label:'Fair margin'};
+    if(v<10) return{fg:'#B45309',bg:'#FEF3C7',label:'On the higher side'};
+    if(v<15) return{fg:'#B91C1C',bg:'#FEE2E2',label:'High — push back'};
+    return       {fg:'#991B1B',bg:'#FEE2E2',label:'Very high — push back hard'};
   };
 
-  const updateOrnament=(id,field,value)=>setOrnaments(prev=>prev.map(o=>o.id===id?{...o,[field]:value}:o));
-  const addOrnament=()=>{if(ornaments.length>=MAX_ORNAMENTS)return;const vids=ornamentData.filter(d=>d.isValid).map(d=>d.id);setCollapsed(prev=>new Set([...prev,...vids]));setOrnaments(prev=>[...prev,blankOrnament()]);};
-  const removeOrnament=id=>{if(ornaments.length<=1)return;setOrnaments(prev=>prev.filter(o=>o.id!==id));setCollapsed(prev=>{const n=new Set(prev);n.delete(id);return n;});};
-  const toggleCollapse=id=>setCollapsed(prev=>{const n=new Set(prev);if(n.has(id))n.delete(id);else n.add(id);return n;});
-  const setWeightF=(id,field,v)=>{if(v==='')return updateOrnament(id,field,'');const n=parseFloat(v);if(isNaN(n)||n<0)return;updateOrnament(id,field,v);};
-  const setPurityF=(id,v)=>{if(v==='')return updateOrnament(id,'purity','');const n=parseFloat(v);if(isNaN(n)||n<0||n>100)return;updateOrnament(id,'purity',v);};
-  const setPriceF=(id,v)=>{if(v==='')return updateOrnament(id,'pricePerGram','');const[i]=String(v).split('.');if(i.replace('-','').length>5)return;const n=parseFloat(v);if(isNaN(n)||n<0)return;updateOrnament(id,'pricePerGram',v);};
-  const setFeeG=v=>{if(v==='')return setServiceFee('');const n=parseFloat(v);if(isNaN(n)||n<0||n>10)return;setServiceFee(v);};
-  const setRevG=v=>{if(v==='')return setRevisedTotal('');const n=parseFloat(v);if(isNaN(n)||n<0)return;setRevisedTotal(v);};
-  const setMobileG=v=>setMobile(v.replace(/\D/g,'').slice(0,10));
-  const mobileValid=mobile.length===10&&/^[6-9]/.test(mobile);
+  const updateOrnament = (id,field,value) => setOrnaments(prev=>prev.map(o=>o.id===id?{...o,[field]:value}:o));
+  const addOrnament = () => {
+    if(ornaments.length>=MAX_ORNAMENTS)return;
+    const vids=ornamentData.filter(d=>d.isValid).map(d=>d.id);
+    setCollapsed(prev=>new Set([...prev,...vids]));
+    setOrnaments(prev=>[...prev,blankOrnament()]);
+  };
+  const removeOrnament = id => {
+    if(ornaments.length<=1)return;
+    setOrnaments(prev=>prev.filter(o=>o.id!==id));
+    setCollapsed(prev=>{const n=new Set(prev);n.delete(id);return n;});
+  };
+  const toggleCollapse = id => setCollapsed(prev=>{const n=new Set(prev);if(n.has(id))n.delete(id);else n.add(id);return n;});
+  const setWeightF = (id,field,v) => {if(v==='')return updateOrnament(id,field,'');const n=parseFloat(v);if(isNaN(n)||n<0)return;updateOrnament(id,field,v);};
+  const setPurityF = (id,v) => {if(v==='')return updateOrnament(id,'purity','');const n=parseFloat(v);if(isNaN(n)||n<0||n>100)return;updateOrnament(id,'purity',v);};
+  const setPriceF  = (id,v) => {if(v==='')return updateOrnament(id,'pricePerGram','');const[i]=String(v).split('.');if(i.replace('-','').length>5)return;const n=parseFloat(v);if(isNaN(n)||n<0)return;updateOrnament(id,'pricePerGram',v);};
+  const setFeeG    = v => {if(v==='')return setServiceFee('');const n=parseFloat(v);if(isNaN(n)||n<0||n>10)return;setServiceFee(v);};
+  const setRevG    = v => {if(v==='')return setRevisedTotal('');const n=parseFloat(v);if(isNaN(n)||n<0)return;setRevisedTotal(v);};
+  const setMobileG  = v => setMobile(v.replace(/\D/g,'').slice(0,10));
+  const mobileValid = mobile.length===10 && /^[6-9]/.test(mobile);
 
-  const onCTA=()=>{
+  const onCTA = () => {
     if(!mobileValid)return;
     const body=['Hi Carat Money — I used the margin checker.',''];
     if(isMulti&&margin1){body.push(`Lot: ${margin1.ornamentCount} ornaments · ${fmt(margin1.totalNetWeight)}g net`);ornamentData.filter(d=>d.isValid).forEach((d,i)=>body.push(`  ${i+1}. ${fmt(d.netWeight)}g net · ${d.purity}% · ₹${fmt(d.ppg,0)}/g`));}
@@ -817,46 +745,47 @@ function MarginPage({ navigate, spot }) {
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(body.join('\n'))}`,'_blank');
   };
 
-  const t1=tone(margin1?.value), t2=tone(margin2?.value);
-  const collapsedSummary=d=>!d.isValid?'Incomplete':`${fmt(d.netWeight)}g · ${d.purity}% · ₹${fmt(d.ppg,0)}/g`;
+  const t1 = tone(margin1?.value);
+  const t2 = tone(margin2?.value);
+  const collapsedSummary = d => !d.isValid ? 'Incomplete' : `${fmt(d.netWeight)}g · ${d.purity}% · ₹${fmt(d.ppg,0)}/g`;
 
-  // Shared field styles
-  const fldRow={marginBottom:'18px'};
-  const labRow={display:'flex',justifyContent:'space-between',alignItems:'baseline',marginBottom:'7px',gap:'8px'};
-  const lab={fontSize:'14px',fontWeight:600,color:C.ink2,fontFamily:SANS};
-  const unt={fontFamily:MONO,fontSize:'11px',color:C.mute,letterSpacing:'0.04em',textAlign:'right'};
-  const rdOnly={background:C.paper2,color:C.ink,fontWeight:600,border:`1.5px dashed rgba(26,20,38,.2)`,fontSize:'16px',padding:'13px 14px',borderRadius:'4px',minHeight:'48px',display:'flex',alignItems:'center',boxSizing:'border-box'};
-  const errStyle={borderColor:'#DC2626',color:'#DC2626'};
-  const errTxt={fontSize:'13px',color:'#DC2626',marginTop:'6px',fontWeight:500};
-  const pfxWrap={position:'relative'};
-  const pfx={position:'absolute',left:'14px',top:'50%',transform:'translateY(-50%)',fontSize:'16px',color:C.mute,fontWeight:500,pointerEvents:'none',fontFamily:SANS};
+  const fldRow  = { marginBottom:'18px' };
+  const labRow  = { display:'flex', justifyContent:'space-between', alignItems:'baseline', marginBottom:'7px', gap:'8px' };
+  const lab     = { fontSize:'14px', fontWeight:600, color:C.ink2, fontFamily:SANS };
+  const unt     = { fontFamily:MONO, fontSize:'11px', color:C.mute, letterSpacing:'0.04em', textAlign:'right' };
+  const rdOnly  = { background:C.paper2, color:C.ink, fontWeight:600, border:`1.5px dashed rgba(26,20,38,.2)`, fontSize:'16px', padding:'13px 14px', borderRadius:'4px', minHeight:'48px', display:'flex', alignItems:'center', boxSizing:'border-box' };
+  const errStyle= { borderColor:'#DC2626', color:'#DC2626' };
+  const errTxt  = { fontSize:'13px', color:'#DC2626', marginTop:'6px', fontWeight:500 };
+  const pfxWrap = { position:'relative' };
+  const pfx     = { position:'absolute', left:'14px', top:'50%', transform:'translateY(-50%)', fontSize:'16px', color:C.mute, fontWeight:500, pointerEvents:'none', fontFamily:SANS };
 
   return (
     <div style={{ minHeight:'100dvh', background:C.paper, fontFamily:SANS, color:C.ink, paddingTop:stickyVisible?'52px':0, transition:'padding-top .3s ease' }}>
 
       {/* Sticky bar */}
       {stickyVisible && (
-        <div style={{ position:'fixed',top:0,left:0,right:0,zIndex:50,background:`rgba(43,20,80,.96)`,backdropFilter:'blur(10px)',WebkitBackdropFilter:'blur(10px)',borderBottom:`1px solid rgba(224,183,101,.15)`,boxShadow:'0 2px 16px rgba(43,20,80,.2)',animation:'stickyDrop .35s ease' }}>
-          <div style={{ maxWidth:'520px',margin:'0 auto',padding:'12px 18px',display:'flex',alignItems:'center',gap:'10px',borderLeft:`3px solid ${C.gold}`,minHeight:'52px',boxSizing:'border-box' }}>
-            {margin1===null?(
-              <div key="lot" style={{ display:'flex',alignItems:'center',gap:'10px',width:'100%',animation:'stickySwap .25s ease' }}>
-                <span style={{ fontFamily:MONO,fontSize:'9px',fontWeight:500,letterSpacing:'0.14em',color:C.gold2,flexShrink:0 }}>{lotSummary.ornamentCount} ORNAMENTS</span>
-                <span style={{ width:'3px',height:'3px',borderRadius:'50%',background:`rgba(224,183,101,.4)`,flexShrink:0 }}/>
-                <span style={{ fontFamily:SERIF,fontSize:'14px',color:C.gold3,flexShrink:0 }}>{fmt(lotSummary.totalGross)}g gross</span>
-                <span style={{ fontFamily:SERIF,fontSize:'15px',fontWeight:350,color:C.gold3,marginLeft:'auto',flexShrink:0 }}>{fmt(lotSummary.totalNet)}g net</span>
+        <div style={{ position:'fixed', top:0, left:0, right:0, zIndex:50, background:`rgba(43,20,80,.96)`, backdropFilter:'blur(10px)', WebkitBackdropFilter:'blur(10px)', borderBottom:`1px solid rgba(224,183,101,.15)`, boxShadow:'0 2px 16px rgba(43,20,80,.2)', animation:'stickyDrop .35s ease' }}>
+          <div style={{ maxWidth:'520px', margin:'0 auto', padding:'12px 18px', display:'flex', alignItems:'center', gap:'10px', borderLeft:`3px solid ${C.gold}`, minHeight:'52px', boxSizing:'border-box' }}>
+            {margin1===null ? (
+              <div key="lot" style={{ display:'flex', alignItems:'center', gap:'10px', width:'100%', animation:'stickySwap .25s ease' }}>
+                <span style={{ fontFamily:MONO, fontSize:'9px', fontWeight:500, letterSpacing:'0.14em', color:C.gold2, flexShrink:0 }}>{lotSummary.ornamentCount} ORNAMENTS</span>
+                <span style={{ width:'3px', height:'3px', borderRadius:'50%', background:`rgba(224,183,101,.4)`, flexShrink:0 }}/>
+                <span style={{ fontFamily:SERIF, fontSize:'14px', color:C.gold3, flexShrink:0 }}>{fmt(lotSummary.totalGross)}g gross</span>
+                <span style={{ fontFamily:SERIF, fontSize:'15px', fontWeight:350, color:C.gold3, marginLeft:'auto', flexShrink:0 }}>{fmt(lotSummary.totalNet)}g net</span>
               </div>
-            ):(()=>{
+            ) : (() => {
               const showRevised=activeSection==='revised'&&margin2!==null;
-              const t=showRevised?t2:t1,m=showRevised?margin2:margin1,key=showRevised?'r':'f';
+              const t=showRevised?t2:t1, m=showRevised?margin2:margin1, key=showRevised?'r':'f';
               const delta=showRevised&&margin1?margin1.value-margin2.value:null;
               return (
-                <div key={key} style={{ display:'flex',alignItems:'center',gap:'10px',width:'100%',animation:'stickySwap .25s ease' }}>
-                  <span style={{ fontFamily:MONO,fontSize:'9px',fontWeight:500,letterSpacing:'0.14em',color:C.gold2,flexShrink:0 }}>{showRevised?'REVISED':'BUYER QUOTE'}</span>
-                  <span style={{ width:'3px',height:'3px',borderRadius:'50%',background:`rgba(224,183,101,.4)`,flexShrink:0 }}/>
-                  <span style={{ fontFamily:SERIF,fontSize:'20px',fontWeight:350,color:t.fg,letterSpacing:'-0.02em',lineHeight:1,flexShrink:0 }}>{m.value.toFixed(1)}%</span>
-                  {delta!==null&&<span style={{ fontFamily:MONO,fontSize:'10px',fontWeight:500,color:C.gold3,display:'inline-flex',alignItems:'center',gap:'2px',flexShrink:0 }}><TrendingDown size={11}/>{delta>0?`${delta.toFixed(1)}pp`:'no drop'}</span>}
-                  {isMulti?<span style={{ fontFamily:MONO,fontSize:'11px',color:`rgba(241,215,141,.5)`,marginLeft:'auto',flexShrink:0 }}>{margin1.ornamentCount} ornaments · {fmt(margin1.totalNetWeight)}g</span>
-                          :<span style={{ fontFamily:SERIF,fontSize:'14px',fontWeight:350,color:C.gold3,marginLeft:'auto',flexShrink:0 }}>₹{fmt(m.total,0)}</span>}
+                <div key={key} style={{ display:'flex', alignItems:'center', gap:'10px', width:'100%', animation:'stickySwap .25s ease' }}>
+                  <span style={{ fontFamily:MONO, fontSize:'9px', fontWeight:500, letterSpacing:'0.14em', color:C.gold2, flexShrink:0 }}>{showRevised?'REVISED':'BUYER QUOTE'}</span>
+                  <span style={{ width:'3px', height:'3px', borderRadius:'50%', background:`rgba(224,183,101,.4)`, flexShrink:0 }}/>
+                  <span style={{ fontFamily:SERIF, fontSize:'20px', fontWeight:350, color:t.fg, letterSpacing:'-0.02em', lineHeight:1, flexShrink:0 }}>{m.value.toFixed(1)}%</span>
+                  {delta!==null && <span style={{ fontFamily:MONO, fontSize:'10px', fontWeight:500, color:C.gold3, display:'inline-flex', alignItems:'center', gap:'2px', flexShrink:0 }}><TrendingDown size={11}/>{delta>0?`${delta.toFixed(1)}pp`:'no drop'}</span>}
+                  {isMulti
+                    ? <span style={{ fontFamily:MONO, fontSize:'11px', color:`rgba(241,215,141,.5)`, marginLeft:'auto', flexShrink:0 }}>{margin1.ornamentCount} ornaments · {fmt(margin1.totalNetWeight)}g</span>
+                    : <span style={{ fontFamily:SERIF, fontSize:'14px', fontWeight:350, color:C.gold3, marginLeft:'auto', flexShrink:0 }}>₹{fmt(m.total,0)}</span>}
                 </div>
               );
             })()}
@@ -864,51 +793,50 @@ function MarginPage({ navigate, spot }) {
         </div>
       )}
 
-      <div style={{ maxWidth:'520px',margin:'0 auto',padding:'0 18px 48px' }}>
+      <div style={{ maxWidth:'520px', margin:'0 auto', padding:'0 18px 48px' }}>
         <BackBtn navigate={navigate}/>
 
-        <div style={{ textAlign:'center',padding:'10px 0 24px' }}>
-          <h1 style={{ fontFamily:SERIF,fontSize:'34px',fontWeight:350,lineHeight:1.08,letterSpacing:'-0.02em',margin:0,color:C.ink }}>
-            Check your gold buyer's <span style={{ fontStyle:'italic',color:C.plum }}>margin</span>
+        <div style={{ textAlign:'center', padding:'10px 0 24px' }}>
+          <h1 style={{ fontFamily:SERIF, fontSize:'34px', fontWeight:350, lineHeight:1.08, letterSpacing:'-0.02em', margin:0, color:C.ink }}>
+            Check your gold buyer's <span style={{ fontStyle:'italic', color:C.plum }}>margin</span>
           </h1>
-          <p style={{ fontSize:'15px',color:C.mute,marginTop:'12px',lineHeight:1.55,maxWidth:'400px',marginLeft:'auto',marginRight:'auto' }}>
+          <p style={{ fontSize:'15px', color:C.mute, marginTop:'12px', lineHeight:1.55, maxWidth:'400px', marginLeft:'auto', marginRight:'auto' }}>
             Before you sell, see exactly what they're keeping above today's spot price.
           </p>
         </div>
 
         {/* Input card */}
         <Card style={{ marginBottom:'14px' }}>
-          <Eyebrow>{isMulti?`Your Lot · ${ornaments.length} Ornaments`:'What Your Buyer Told You'}</Eyebrow>
-
-          {ornaments.map((o,idx)=>{
-            const d=ornamentData[idx],isCollapsed=isMulti&&collapsed.has(o.id);
+          <Eyebrow>{isMulti ? `Your Lot · ${ornaments.length} Ornaments` : 'What Your Buyer Told You'}</Eyebrow>
+          {ornaments.map((o,idx) => {
+            const d=ornamentData[idx], isCollapsed=isMulti&&collapsed.has(o.id);
             return (
-              <div key={o.id} style={{ paddingTop:idx===0?0:'20px',marginTop:idx===0?0:'20px',borderTop:idx===0?'none':`1px solid rgba(26,20,38,.08)` }}>
-                {isMulti&&(
-                  <div style={{ display:'flex',alignItems:'center',gap:'10px',marginBottom:isCollapsed?0:'16px',cursor:'pointer',userSelect:'none' }} onClick={()=>toggleCollapse(o.id)}>
-                    <div style={{ display:'inline-flex',alignItems:'center',justifyContent:'center',width:'22px',height:'22px',borderRadius:'50%',background:C.paper2,color:C.plum,fontFamily:SERIF,fontSize:'12px',fontWeight:350,flexShrink:0 }}>{idx+1}</div>
-                    <span style={{ fontSize:'14px',fontWeight:600,color:C.ink }}>Ornament {idx+1}</span>
-                    {isCollapsed&&<span style={{ fontSize:'13px',color:C.mute,marginLeft:'4px',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',minWidth:0 }}>· {collapsedSummary(d)}</span>}
-                    <span style={{ marginLeft:'auto',display:'flex',alignItems:'center',gap:'4px',flexShrink:0 }}>
-                      <button style={{ background:'transparent',border:'none',padding:'6px',borderRadius:'4px',cursor:'pointer',color:C.mute,display:'inline-flex',alignItems:'center' }} onClick={e=>{e.stopPropagation();toggleCollapse(o.id);}}>
+              <div key={o.id} style={{ paddingTop:idx===0?0:'20px', marginTop:idx===0?0:'20px', borderTop:idx===0?'none':`1px solid rgba(26,20,38,.08)` }}>
+                {isMulti && (
+                  <div style={{ display:'flex', alignItems:'center', gap:'10px', marginBottom:isCollapsed?0:'16px', cursor:'pointer', userSelect:'none' }} onClick={()=>toggleCollapse(o.id)}>
+                    <div style={{ display:'inline-flex', alignItems:'center', justifyContent:'center', width:'22px', height:'22px', borderRadius:'50%', background:C.paper2, color:C.plum, fontFamily:SERIF, fontSize:'12px', fontWeight:350, flexShrink:0 }}>{idx+1}</div>
+                    <span style={{ fontSize:'14px', fontWeight:600, color:C.ink }}>Ornament {idx+1}</span>
+                    {isCollapsed && <span style={{ fontSize:'13px', color:C.mute, marginLeft:'4px', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', minWidth:0 }}>· {collapsedSummary(d)}</span>}
+                    <span style={{ marginLeft:'auto', display:'flex', alignItems:'center', gap:'4px', flexShrink:0 }}>
+                      <button style={{ background:'transparent', border:'none', padding:'6px', borderRadius:'4px', cursor:'pointer', color:C.mute, display:'inline-flex', alignItems:'center' }} onClick={e=>{e.stopPropagation();toggleCollapse(o.id);}}>
                         {isCollapsed?<ChevronDown size={16}/>:<ChevronUp size={16}/>}
                       </button>
-                      {ornaments.length>1&&<button style={{ background:'transparent',border:'none',padding:'6px',borderRadius:'4px',cursor:'pointer',color:C.mute,display:'inline-flex',alignItems:'center' }} onClick={e=>{e.stopPropagation();removeOrnament(o.id);}}><Trash2 size={15}/></button>}
+                      {ornaments.length>1 && <button style={{ background:'transparent', border:'none', padding:'6px', borderRadius:'4px', cursor:'pointer', color:C.mute, display:'inline-flex', alignItems:'center' }} onClick={e=>{e.stopPropagation();removeOrnament(o.id);}}><Trash2 size={15}/></button>}
                     </span>
                   </div>
                 )}
-                {!isCollapsed&&(
+                {!isCollapsed && (
                   <>
                     <div style={fldRow}>
                       <div style={labRow}><label style={lab}>Gross weight</label><span style={unt}>grams · weighing scale</span></div>
                       <input type="number" inputMode="decimal" placeholder="e.g. 10.25" value={o.gross} onChange={e=>setWeightF(o.id,'gross',e.target.value)} style={INP}/>
                     </div>
-                    <div style={{ display:'flex',gap:'10px',marginBottom:'18px' }}>
-                      <div style={{ flex:1,minWidth:0 }}>
+                    <div style={{ display:'flex', gap:'10px', marginBottom:'18px' }}>
+                      <div style={{ flex:1, minWidth:0 }}>
                         <div style={labRow}><label style={lab}>Stone</label><span style={unt}>g</span></div>
                         <input type="number" inputMode="decimal" placeholder="0" value={o.stone} onChange={e=>setWeightF(o.id,'stone',e.target.value)} style={INP}/>
                       </div>
-                      <div style={{ flex:1,minWidth:0 }}>
+                      <div style={{ flex:1, minWidth:0 }}>
                         <div style={labRow}><label style={lab}>Wastage</label><span style={unt}>g</span></div>
                         <input type="number" inputMode="decimal" placeholder="0" value={o.wastage} onChange={e=>setWeightF(o.id,'wastage',e.target.value)} style={INP}/>
                       </div>
@@ -916,20 +844,20 @@ function MarginPage({ navigate, spot }) {
                     <div style={fldRow}>
                       <div style={labRow}><label style={lab}>Net weight</label><span style={unt}>auto-calculated</span></div>
                       <div style={{...rdOnly,...(d.netError?errStyle:{})}}>{d.netWeight!==null?fmt(d.netWeight):'—'}</div>
-                      {d.netError&&<div style={errTxt}>Net weight must be greater than zero.</div>}
+                      {d.netError && <div style={errTxt}>Net weight must be greater than zero.</div>}
                     </div>
                     <div style={fldRow}>
                       <div style={labRow}><label style={lab}>Purity</label><span style={unt}>% · 2 decimals</span></div>
                       <input type="number" inputMode="decimal" placeholder="e.g. 91.60" step="0.01" value={o.purity} onChange={e=>setPurityF(o.id,e.target.value)} style={INP}/>
-                      <div style={{ fontFamily:SANS,fontSize:'13px',color:C.mute,marginTop:'7px',lineHeight:1.5,display:'flex',alignItems:'flex-start',gap:'5px' }}>
-                        <Info size={13} style={{ flexShrink:0,marginTop:'1px' }}/><span>Ask the buyer to show you the exact reading on their purity machine.</span>
+                      <div style={{ fontFamily:SANS, fontSize:'13px', color:C.mute, marginTop:'7px', lineHeight:1.5, display:'flex', alignItems:'flex-start', gap:'5px' }}>
+                        <Info size={13} style={{ flexShrink:0, marginTop:'1px' }}/><span>Ask the buyer to show you the exact reading on their purity machine.</span>
                       </div>
                     </div>
                     <div style={{ marginBottom:0 }}>
                       <div style={labRow}><label style={lab}>Purchase price per gram</label><span style={unt}>₹/g at stated purity</span></div>
                       <div style={pfxWrap}>
                         <span style={pfx}>₹</span>
-                        <input type="number" inputMode="decimal" placeholder="e.g. 13500" value={o.pricePerGram} onChange={e=>setPriceF(o.id,e.target.value)} style={{ ...INP,paddingLeft:'30px' }}/>
+                        <input type="number" inputMode="decimal" placeholder="e.g. 13500" value={o.pricePerGram} onChange={e=>setPriceF(o.id,e.target.value)} style={{ ...INP, paddingLeft:'30px' }}/>
                       </div>
                     </div>
                   </>
@@ -938,97 +866,98 @@ function MarginPage({ navigate, spot }) {
             );
           })}
 
-          {ornaments.length<MAX_ORNAMENTS&&(
-            <button style={{ width:'100%',marginTop:'20px',padding:'13px',background:C.paper,color:C.gold,border:`1.5px dashed rgba(184,136,58,.4)`,borderRadius:'4px',fontSize:'14px',fontWeight:600,fontFamily:SANS,cursor:'pointer',display:'inline-flex',alignItems:'center',justifyContent:'center',gap:'6px' }} onClick={addOrnament}>
+          {ornaments.length < MAX_ORNAMENTS && (
+            <button style={{ width:'100%', marginTop:'20px', padding:'13px', background:C.paper, color:C.gold, border:`1.5px dashed rgba(184,136,58,.4)`, borderRadius:'4px', fontSize:'14px', fontWeight:600, fontFamily:SANS, cursor:'pointer', display:'inline-flex', alignItems:'center', justifyContent:'center', gap:'6px' }} onClick={addOrnament}>
               <Plus size={16}/>Add another ornament
             </button>
           )}
-          {ornaments.length>=MAX_ORNAMENTS&&(
-            <div style={{ marginTop:'14px',padding:'12px 14px',background:C.paper2,borderRadius:'4px',fontFamily:MONO,fontSize:'11px',color:C.mute,textAlign:'center',lineHeight:1.55,letterSpacing:'0.04em' }}>
-              Max {MAX_ORNAMENTS} ornaments. For larger lots, <a href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" rel="noreferrer" style={{ color:C.gold,fontWeight:500 }}>WhatsApp us</a>.
+          {ornaments.length >= MAX_ORNAMENTS && (
+            <div style={{ marginTop:'14px', padding:'12px 14px', background:C.paper2, borderRadius:'4px', fontFamily:MONO, fontSize:'11px', color:C.mute, textAlign:'center', lineHeight:1.55, letterSpacing:'0.04em' }}>
+              Max {MAX_ORNAMENTS} ornaments. For larger lots, <a href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" rel="noreferrer" style={{ color:C.gold, fontWeight:500 }}>WhatsApp us</a>.
             </div>
           )}
 
-          <div style={{ marginTop:'22px',paddingTop:'20px',borderTop:`1px solid rgba(26,20,38,.08)` }}>
+          <div style={{ marginTop:'22px', paddingTop:'20px', borderTop:`1px solid rgba(26,20,38,.08)` }}>
             <div style={labRow}><label style={lab}>Service fee</label><span style={unt}>% · max 10%</span></div>
             <input type="number" inputMode="decimal" placeholder="e.g. 3" step="0.1" max="10" value={serviceFee} onChange={e=>setFeeG(e.target.value)} style={INP}/>
           </div>
         </Card>
 
-        {/* Margin reveal */}
-        <Card ref={marginCardRef} style={{ textAlign:'center',padding:'32px 24px',minHeight:'180px',display:'flex',alignItems:'center',justifyContent:'center',marginBottom:'14px' }}>
-          {margin1===null?(
-            <div style={{ display:'flex',flexDirection:'column',alignItems:'center',gap:'14px' }}>
+        {/* Margin reveal card — ref attached here for IntersectionObserver */}
+        <Card ref={marginCardRef} style={{ textAlign:'center', padding:'32px 24px', minHeight:'180px', display:'flex', alignItems:'center', justifyContent:'center', marginBottom:'14px' }}>
+          {margin1 === null ? (
+            <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:'14px' }}>
               <Sparkles size={22} color={C.gold} style={{ opacity:0.55 }}/>
-              <div style={{ fontFamily:SERIF,fontSize:'18px',color:C.mute,fontWeight:350,maxWidth:'300px',lineHeight:1.45,fontStyle:'italic',animation:'pulse 2.4s ease-in-out infinite' }}>{progressText}</div>
-              {!isMulti&&<div style={{ display:'flex',gap:'6px',marginTop:'2px' }}>{[0,1,2].map(i=><div key={i} style={{ width:'26px',height:'4px',borderRadius:'4px',background:i<filled?C.gold:C.paper2,transition:'background .3s' }}/>)}</div>}
+              <div style={{ fontFamily:SERIF, fontSize:'18px', color:C.mute, fontWeight:350, maxWidth:'300px', lineHeight:1.45, fontStyle:'italic', animation:'pulse 2.4s ease-in-out infinite' }}>{progressText}</div>
+              {!isMulti && <div style={{ display:'flex', gap:'6px', marginTop:'2px' }}>{[0,1,2].map(i=><div key={i} style={{ width:'26px', height:'4px', borderRadius:'4px', background:i<filled?C.gold:C.paper2, transition:'background .3s' }}/>)}</div>}
             </div>
-          ):(
-            <div style={{ display:'flex',flexDirection:'column',alignItems:'center',gap:'14px',width:'100%',animation:'fadeSlide .45s ease' }}>
-              <div style={{ fontFamily:MONO,fontSize:'10px',fontWeight:500,letterSpacing:'0.16em',color:C.mute,textAlign:'center' }}>
-                BUYER'S MARGIN · BUYER QUOTE{isMulti?` · ${margin1.ornamentCount} ORNAMENTS`:''}
+          ) : (
+            <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:'14px', width:'100%', animation:'fadeSlide .45s ease' }}>
+              <div style={{ fontFamily:MONO, fontSize:'10px', fontWeight:500, letterSpacing:'0.16em', color:C.mute, textAlign:'center' }}>
+                BUYER'S MARGIN · BUYER QUOTE{isMulti ? ` · ${margin1.ornamentCount} ORNAMENTS` : ''}
               </div>
-              {/* Amount + rate box */}
-              <div style={{ background:C.paper2,border:`1px solid rgba(26,20,38,.1)`,borderRadius:'6px',padding:'16px',textAlign:'center',width:'100%',boxSizing:'border-box' }}>
-                <div style={{ display:'flex',flexWrap:'wrap',justifyContent:'center',gap:'12px 28px' }}>
+              <div style={{ background:C.paper2, border:`1px solid rgba(26,20,38,.1)`, borderRadius:'6px', padding:'16px', textAlign:'center', width:'100%', boxSizing:'border-box' }}>
+                <div style={{ display:'flex', flexWrap:'wrap', justifyContent:'center', gap:'12px 28px' }}>
                   <div style={{ textAlign:'center' }}>
-                    <div style={{ fontFamily:MONO,fontSize:'9px',fontWeight:500,letterSpacing:'0.14em',color:C.mute,marginBottom:'6px' }}>YOU RECEIVE</div>
-                    <div style={{ fontFamily:SERIF,fontSize:'36px',fontWeight:350,color:C.ink,letterSpacing:'-0.025em',lineHeight:1 }}>₹{fmt(margin1.total,0)}</div>
+                    <div style={{ fontFamily:MONO, fontSize:'9px', fontWeight:500, letterSpacing:'0.14em', color:C.mute, marginBottom:'6px' }}>YOU RECEIVE</div>
+                    <div style={{ fontFamily:SERIF, fontSize:'36px', fontWeight:350, color:C.ink, letterSpacing:'-0.025em', lineHeight:1 }}>₹{fmt(margin1.total,0)}</div>
                   </div>
                   <div style={{ textAlign:'center' }}>
-                    <div style={{ fontFamily:MONO,fontSize:'9px',fontWeight:500,letterSpacing:'0.14em',color:C.mute,marginBottom:'6px' }}>{isMulti?'BLENDED 24K RATE':'EFFECTIVE 24K RATE'}</div>
-                    <div style={{ fontFamily:SERIF,fontSize:'24px',fontWeight:350,color:C.ink,letterSpacing:'-0.02em',lineHeight:1 }}>₹{fmt(margin1.eff,0)}<span style={{ fontSize:'14px',color:C.mute }}>/g</span></div>
+                    <div style={{ fontFamily:MONO, fontSize:'9px', fontWeight:500, letterSpacing:'0.14em', color:C.mute, marginBottom:'6px' }}>{isMulti?'BLENDED 24K RATE':'EFFECTIVE 24K RATE'}</div>
+                    <div style={{ fontFamily:SERIF, fontSize:'24px', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1 }}>₹{fmt(margin1.eff,0)}<span style={{ fontSize:'14px', color:C.mute }}>/g</span></div>
                   </div>
                 </div>
-                {isMulti&&<div style={{ fontFamily:MONO,fontSize:'10px',color:C.mute,marginTop:'8px',letterSpacing:'0.04em' }}>Weighted across {margin1.ornamentCount} ornaments · after {feeN}% fee</div>}
+                {isMulti && <div style={{ fontFamily:MONO, fontSize:'10px', color:C.mute, marginTop:'8px', letterSpacing:'0.04em' }}>Weighted across {margin1.ornamentCount} ornaments · after {feeN}% fee</div>}
               </div>
-              {/* Big % */}
-              <div style={{ width:'40px',height:'1px',background:C.paper2 }}/>
-              <div style={{ fontFamily:SERIF,fontSize:'68px',fontWeight:350,lineHeight:1,letterSpacing:'-0.04em',color:t1.fg }}>{margin1.value.toFixed(1)}%</div>
-              <div style={{ fontSize:'13px',fontWeight:600,padding:'7px 14px',borderRadius:'4px',background:t1.bg,color:t1.fg,letterSpacing:'0.01em',fontFamily:SANS }}>{t1.label}</div>
+              <div style={{ width:'40px', height:'1px', background:C.paper2 }}/>
+              <div style={{ fontFamily:SERIF, fontSize:'68px', fontWeight:350, lineHeight:1, letterSpacing:'-0.04em', color:t1.fg }}>{margin1.value.toFixed(1)}%</div>
+              <div style={{ fontSize:'13px', fontWeight:600, padding:'7px 14px', borderRadius:'4px', background:t1.bg, color:t1.fg, letterSpacing:'0.01em', fontFamily:SANS }}>{t1.label}</div>
 
-              {isMulti&&(
+              {isMulti && (
                 <>
-                  <button style={{ background:'transparent',border:'none',color:C.gold,fontSize:'12px',fontWeight:500,fontFamily:MONO,cursor:'pointer',display:'inline-flex',alignItems:'center',gap:'4px',padding:'4px 8px',letterSpacing:'0.1em' }} onClick={()=>setShowBreakdown(v=>!v)}>
+                  <button style={{ background:'transparent', border:'none', color:C.gold, fontSize:'12px', fontWeight:500, fontFamily:MONO, cursor:'pointer', display:'inline-flex', alignItems:'center', gap:'4px', padding:'4px 8px', letterSpacing:'0.1em' }} onClick={()=>setShowBreakdown(v=>!v)}>
                     {showBreakdown?<ChevronUp size={14}/>:<ChevronDown size={14}/>}{showBreakdown?'HIDE BREAKDOWN':'PER-ORNAMENT BREAKDOWN'}
                   </button>
-                  {showBreakdown&&(
-                    <div style={{ marginTop:'8px',width:'100%',textAlign:'left',animation:'fadeSlide .3s ease' }}>
-                      {ornamentData.filter(x=>x.isValid).map((d,i)=>{
-                        const fee=feeN/100,effPF=d.effRate*(1-fee),cPF=d.purchaseContrib*(1-fee);
-                        return(
-                          <div key={d.id} style={{ padding:'14px 0',borderTop:i===0?'none':`1px dashed rgba(26,20,38,.08)` }}>
-                            <div style={{ fontFamily:MONO,fontSize:'10px',fontWeight:500,letterSpacing:'0.14em',color:C.gold,marginBottom:'10px',display:'flex',alignItems:'center',gap:'8px' }}>
-                              <span style={{ display:'inline-flex',alignItems:'center',justifyContent:'center',width:'20px',height:'20px',borderRadius:'50%',background:C.paper2,color:C.plum,fontFamily:SERIF,fontSize:'11px' }}>{i+1}</span>
+                  {showBreakdown && (
+                    <div style={{ marginTop:'8px', width:'100%', textAlign:'left', animation:'fadeSlide .3s ease' }}>
+                      {ornamentData.filter(x=>x.isValid).map((d,i) => {
+                        const fee=feeN/100, effPF=d.effRate*(1-fee), cPF=d.purchaseContrib*(1-fee);
+                        return (
+                          <div key={d.id} style={{ padding:'14px 0', borderTop:i===0?'none':`1px dashed rgba(26,20,38,.08)` }}>
+                            <div style={{ fontFamily:MONO, fontSize:'10px', fontWeight:500, letterSpacing:'0.14em', color:C.gold, marginBottom:'10px', display:'flex', alignItems:'center', gap:'8px' }}>
+                              <span style={{ display:'inline-flex', alignItems:'center', justifyContent:'center', width:'20px', height:'20px', borderRadius:'50%', background:C.paper2, color:C.plum, fontFamily:SERIF, fontSize:'11px' }}>{i+1}</span>
                               ORNAMENT {i+1}
                             </div>
-                            <div style={{ display:'grid',gridTemplateColumns:'1fr 1fr',rowGap:'10px',columnGap:'18px' }}>
-                              {[['Net weight',`${fmt(d.netWeight)}g`],['Purity',`${d.purity}%`],['24K rate (post-fee)',`₹${fmt(effPF,0)}/g`],['Sub-total',`₹${fmt(cPF,0)}`]].map(([l,v])=>(
-                                <div key={l} style={{ display:'flex',flexDirection:'column',gap:'2px' }}>
-                                  <span style={{ fontFamily:MONO,fontSize:'10px',color:C.mute,letterSpacing:'0.04em' }}>{l}</span>
-                                  <span style={{ fontSize:'14px',color:C.ink,fontWeight:600,fontFamily:SERIF,letterSpacing:'-0.01em' }}>{v}</span>
+                            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', rowGap:'10px', columnGap:'18px' }}>
+                              {[['Net weight',`${fmt(d.netWeight)}g`],['Purity',`${d.purity}%`],['24K rate (post-fee)',`₹${fmt(effPF,0)}/g`],['Sub-total',`₹${fmt(cPF,0)}`]].map(([l,v]) => (
+                                <div key={l} style={{ display:'flex', flexDirection:'column', gap:'2px' }}>
+                                  <span style={{ fontFamily:MONO, fontSize:'10px', color:C.mute, letterSpacing:'0.04em' }}>{l}</span>
+                                  <span style={{ fontSize:'14px', color:C.ink, fontWeight:600, fontFamily:SERIF, letterSpacing:'-0.01em' }}>{v}</span>
                                 </div>
                               ))}
                             </div>
                           </div>
                         );
                       })}
-                      {(()=>{const valid=ornamentData.filter(x=>x.isValid),tG=valid.reduce((a,d)=>a+d.gross,0),tN=valid.reduce((a,d)=>a+d.netWeight,0),tD=valid.reduce((a,d)=>a+d.stone+d.wastage,0);return(
-                        <div style={{ marginTop:'14px',paddingTop:'16px',borderTop:`1px solid rgba(184,136,58,.2)` }}>
-                          <div style={{ fontFamily:MONO,fontSize:'10px',fontWeight:500,letterSpacing:'0.14em',color:C.gold,marginBottom:'12px',display:'flex',alignItems:'center',gap:'8px' }}>
-                            <span style={{ display:'inline-flex',alignItems:'center',justifyContent:'center',width:'20px',height:'20px',borderRadius:'50%',background:C.gold,color:C.white,fontFamily:SERIF,fontSize:'11px' }}>Σ</span>
-                            TOTAL LOT
+                      {(() => {
+                        const valid=ornamentData.filter(x=>x.isValid),tG=valid.reduce((a,d)=>a+d.gross,0),tN=valid.reduce((a,d)=>a+d.netWeight,0),tD=valid.reduce((a,d)=>a+d.stone+d.wastage,0);
+                        return (
+                          <div style={{ marginTop:'14px', paddingTop:'16px', borderTop:`1px solid rgba(184,136,58,.2)` }}>
+                            <div style={{ fontFamily:MONO, fontSize:'10px', fontWeight:500, letterSpacing:'0.14em', color:C.gold, marginBottom:'12px', display:'flex', alignItems:'center', gap:'8px' }}>
+                              <span style={{ display:'inline-flex', alignItems:'center', justifyContent:'center', width:'20px', height:'20px', borderRadius:'50%', background:C.gold, color:C.white, fontFamily:SERIF, fontSize:'11px' }}>Σ</span>
+                              TOTAL LOT
+                            </div>
+                            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', rowGap:'10px', columnGap:'18px' }}>
+                              {[['Gross weight',`${fmt(tG)}g`],['Total deducted',`${fmt(tD)}g`],['Net weight',`${fmt(tN)}g`],['You receive',`₹${fmt(margin1.total,0)}`]].map(([l,v]) => (
+                                <div key={l} style={{ display:'flex', flexDirection:'column', gap:'2px' }}>
+                                  <span style={{ fontFamily:MONO, fontSize:'10px', color:C.mute, letterSpacing:'0.04em' }}>{l}</span>
+                                  <span style={{ fontSize:'14px', color:C.ink, fontWeight:600, fontFamily:SERIF, letterSpacing:'-0.01em' }}>{v}</span>
+                                </div>
+                              ))}
+                            </div>
                           </div>
-                          <div style={{ display:'grid',gridTemplateColumns:'1fr 1fr',rowGap:'10px',columnGap:'18px' }}>
-                            {[['Gross weight',`${fmt(tG)}g`],['Total deducted',`${fmt(tD)}g`],['Net weight',`${fmt(tN)}g`],['You receive',`₹${fmt(margin1.total,0)}`]].map(([l,v])=>(
-                              <div key={l} style={{ display:'flex',flexDirection:'column',gap:'2px' }}>
-                                <span style={{ fontFamily:MONO,fontSize:'10px',color:C.mute,letterSpacing:'0.04em' }}>{l}</span>
-                                <span style={{ fontSize:'14px',color:C.ink,fontWeight:600,fontFamily:SERIF,letterSpacing:'-0.01em' }}>{v}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      );})()}
+                        );
+                      })()}
                     </div>
                   )}
                 </>
@@ -1038,31 +967,31 @@ function MarginPage({ navigate, spot }) {
         </Card>
 
         {/* Revised offer */}
-        {margin1!==null&&(
+        {margin1 !== null && (
           <div ref={attachRevisedObserver}>
-            <Card style={{ marginBottom:'14px',animation:'fadeSlide .5s ease' }}>
+            <Card style={{ marginBottom:'14px', animation:'fadeSlide .5s ease' }}>
               <Eyebrow>Did They Revise the Offer?</Eyebrow>
-              <div style={{ fontSize:'14px',color:C.mute,lineHeight:1.55,marginBottom:'18px' }}>Buyers usually negotiate. Enter the revised <b style={{ color:C.ink }}>total</b> they're offering{isMulti?' for the full lot':''} — the final amount you'd receive.</div>
+              <div style={{ fontSize:'14px', color:C.mute, lineHeight:1.55, marginBottom:'18px' }}>Buyers usually negotiate. Enter the revised <b style={{ color:C.ink }}>total</b> they're offering{isMulti?' for the full lot':''} — the final amount you'd receive.</div>
               <div style={pfxWrap}>
                 <span style={pfx}>₹</span>
-                <input type="number" inputMode="decimal" placeholder="e.g. 13800" value={revisedTotal} onChange={e=>setRevG(e.target.value)} style={{ ...INP,paddingLeft:'30px' }}/>
+                <input type="number" inputMode="decimal" placeholder="e.g. 13800" value={revisedTotal} onChange={e=>setRevG(e.target.value)} style={{ ...INP, paddingLeft:'30px' }}/>
               </div>
-              {margin2!==null&&(
-                <div style={{ marginTop:'16px',padding:'18px',borderRadius:'6px',textAlign:'center',background:t2.bg,animation:'fadeSlide .3s ease' }}>
-                  <div style={{ fontFamily:MONO,fontSize:'10px',fontWeight:500,letterSpacing:'0.14em',color:C.mute,marginBottom:'8px' }}>REVISED OFFER</div>
-                  <div style={{ display:'flex',flexWrap:'wrap',justifyContent:'center',gap:'10px 24px',marginBottom:'10px' }}>
+              {margin2 !== null && (
+                <div style={{ marginTop:'16px', padding:'18px', borderRadius:'6px', textAlign:'center', background:t2.bg, animation:'fadeSlide .3s ease' }}>
+                  <div style={{ fontFamily:MONO, fontSize:'10px', fontWeight:500, letterSpacing:'0.14em', color:C.mute, marginBottom:'8px' }}>REVISED OFFER</div>
+                  <div style={{ display:'flex', flexWrap:'wrap', justifyContent:'center', gap:'10px 24px', marginBottom:'10px' }}>
                     <div style={{ textAlign:'center' }}>
-                      <div style={{ fontFamily:MONO,fontSize:'9px',color:C.mute,marginBottom:'3px',letterSpacing:'0.1em' }}>YOU RECEIVE</div>
-                      <div style={{ fontFamily:SERIF,fontSize:'28px',fontWeight:350,color:C.ink,letterSpacing:'-0.02em',lineHeight:1 }}>₹{fmt(margin2.total,0)}</div>
+                      <div style={{ fontFamily:MONO, fontSize:'9px', color:C.mute, marginBottom:'3px', letterSpacing:'0.1em' }}>YOU RECEIVE</div>
+                      <div style={{ fontFamily:SERIF, fontSize:'28px', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1 }}>₹{fmt(margin2.total,0)}</div>
                     </div>
                     <div style={{ textAlign:'center' }}>
-                      <div style={{ fontFamily:MONO,fontSize:'9px',color:C.mute,marginBottom:'3px',letterSpacing:'0.1em' }}>{isMulti?'BLENDED RATE':'EFFECTIVE RATE'}</div>
-                      <div style={{ fontFamily:SERIF,fontSize:'18px',fontWeight:350,color:C.ink,letterSpacing:'-0.02em',lineHeight:1 }}>₹{fmt(margin2.eff,0)}/g</div>
+                      <div style={{ fontFamily:MONO, fontSize:'9px', color:C.mute, marginBottom:'3px', letterSpacing:'0.1em' }}>{isMulti?'BLENDED RATE':'EFFECTIVE RATE'}</div>
+                      <div style={{ fontFamily:SERIF, fontSize:'18px', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1 }}>₹{fmt(margin2.eff,0)}/g</div>
                     </div>
                   </div>
-                  <div style={{ fontFamily:SERIF,fontSize:'40px',fontWeight:350,lineHeight:1,letterSpacing:'-0.03em',color:t2.fg }}>{margin2.value.toFixed(1)}%</div>
-                  <div style={{ fontSize:'13px',marginTop:'8px',fontWeight:600,color:C.ink,display:'inline-flex',alignItems:'center',gap:'4px',fontFamily:SANS }}>
-                    {margin2.value<margin1.value?<><TrendingDown size={13}/>Margin dropped by {(margin1.value-margin2.value).toFixed(1)} pp</>:<>No improvement — keep pushing</>}
+                  <div style={{ fontFamily:SERIF, fontSize:'40px', fontWeight:350, lineHeight:1, letterSpacing:'-0.03em', color:t2.fg }}>{margin2.value.toFixed(1)}%</div>
+                  <div style={{ fontSize:'13px', marginTop:'8px', fontWeight:600, color:C.ink, display:'inline-flex', alignItems:'center', gap:'4px', fontFamily:SANS }}>
+                    {margin2.value<margin1.value ? <><TrendingDown size={13}/>Margin dropped by {(margin1.value-margin2.value).toFixed(1)} pp</> : <>No improvement — keep pushing</>}
                   </div>
                 </div>
               )}
@@ -1071,26 +1000,28 @@ function MarginPage({ navigate, spot }) {
         )}
 
         {/* CTA */}
-        {margin1!==null&&(
-          <Card dark style={{ marginBottom:'14px',animation:'fadeSlide .55s ease',position:'relative',overflow:'hidden' }}>
-            <div style={{ position:'absolute',top:'-50px',right:'-50px',width:'160px',height:'160px',borderRadius:'50%',background:`radial-gradient(circle,rgba(224,183,101,.15) 0%,transparent 70%)`,pointerEvents:'none' }}/>
-            <div style={{ fontFamily:SERIF,fontSize:'26px',fontWeight:350,color:C.gold3,letterSpacing:'-0.02em',marginBottom:'10px',position:'relative' }}>Want a better price?</div>
-            <div style={{ fontSize:'14px',color:`rgba(241,215,141,.6)`,lineHeight:1.6,marginBottom:'18px',position:'relative' }}>Share your number and we'll send you a quote on WhatsApp.</div>
-            <div style={{ display:'flex',alignItems:'center',background:C.white,borderRadius:'4px',padding:'0 0 0 14px',overflow:'hidden',marginBottom:'14px',position:'relative' }}>
-              <span style={{ fontSize:'16px',color:C.mute,fontWeight:500,paddingRight:'10px',borderRight:`1px solid rgba(26,20,38,.12)`,fontFamily:SANS }}>+91</span>
-              <input type="tel" inputMode="numeric" placeholder="10-digit mobile number" value={mobile} onChange={e=>setMobileG(e.target.value)} style={{ flex:1,border:'none',background:'transparent',padding:'14px',fontSize:'16px',fontWeight:500,color:C.ink,outline:'none',minWidth:0,fontFamily:SANS }}/>
+        {margin1 !== null && (
+          <Card dark style={{ marginBottom:'14px', animation:'fadeSlide .55s ease', position:'relative', overflow:'hidden' }}>
+            <div style={{ position:'absolute', top:'-50px', right:'-50px', width:'160px', height:'160px', borderRadius:'50%', background:`radial-gradient(circle,rgba(224,183,101,.15) 0%,transparent 70%)`, pointerEvents:'none' }}/>
+            <div style={{ fontFamily:SERIF, fontSize:'26px', fontWeight:350, color:C.gold3, letterSpacing:'-0.02em', marginBottom:'10px', position:'relative' }}>Want a better price?</div>
+            <div style={{ fontSize:'14px', color:`rgba(241,215,141,.6)`, lineHeight:1.6, marginBottom:'18px', position:'relative' }}>Share your number and we'll send you a quote on WhatsApp.</div>
+            <div style={{ display:'flex', alignItems:'center', background:C.white, borderRadius:'4px', padding:'0 0 0 14px', overflow:'hidden', marginBottom:'14px', position:'relative' }}>
+              <span style={{ fontSize:'16px', color:C.mute, fontWeight:500, paddingRight:'10px', borderRight:`1px solid rgba(26,20,38,.12)`, fontFamily:SANS }}>+91</span>
+              <input type="tel" inputMode="numeric" placeholder="10-digit mobile number" value={mobile} onChange={e=>setMobileG(e.target.value)} style={{ flex:1, border:'none', background:'transparent', padding:'14px', fontSize:'16px', fontWeight:500, color:C.ink, outline:'none', minWidth:0, fontFamily:SANS }}/>
             </div>
             <BtnWhatsApp onClick={onCTA} disabled={!mobileValid}>
               <MessageCircle size={18}/> Get a better offer on WhatsApp
             </BtnWhatsApp>
-            <div style={{ fontFamily:MONO,fontSize:'11px',color:`rgba(241,215,141,.35)`,marginTop:'12px',textAlign:'center',lineHeight:1.5,letterSpacing:'0.04em',position:'relative' }}>
+            <div style={{ fontFamily:MONO, fontSize:'11px', color:`rgba(241,215,141,.35)`, marginTop:'12px', textAlign:'center', lineHeight:1.5, letterSpacing:'0.04em', position:'relative' }}>
               By submitting, you agree to be contacted about your gold sale.
             </div>
           </Card>
         )}
 
-        {margin1!==null&&<ShareSection/>}
+        {margin1 !== null && <ShareSection/>}
       </div>
+
+      {/* Floating share button — always visible, highlights on viewport trigger */}
       <FloatingShareButton highlighted={shareHighlighted}/>
     </div>
   );
@@ -1102,9 +1033,9 @@ export default function App() {
   const spot = useSpotRate();
   useSEO(route);
   let page;
-  if      (route==='/sell')   page=<SellPage   navigate={navigate} spot={spot}/>;
-  else if (route==='/buy')    page=<BuyPage    navigate={navigate} spot={spot}/>;
-  else if (route==='/margin') page=<MarginPage navigate={navigate} spot={spot}/>;
-  else                        page=<HomePage   navigate={navigate} spot={spot}/>;
+  if      (route==='/sell')   page = <SellPage   navigate={navigate} spot={spot}/>;
+  else if (route==='/buy')    page = <BuyPage    navigate={navigate} spot={spot}/>;
+  else if (route==='/margin') page = <MarginPage navigate={navigate} spot={spot}/>;
+  else                        page = <HomePage   navigate={navigate} spot={spot}/>;
   return <><style>{GLOBAL_CSS}</style>{page}</>;
 }
