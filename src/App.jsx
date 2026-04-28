@@ -137,6 +137,7 @@ const GLOBAL_CSS = `
   @keyframes stickySwap { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }
   @keyframes slideUp    { from{transform:translateY(100%)} to{transform:translateY(0)} }
   @keyframes fadeIn     { from{opacity:0} to{opacity:1} }
+  @keyframes glowPulse  { 0%{box-shadow:0 0 0 0 rgba(224,183,101,.7)} 50%{box-shadow:0 0 0 14px rgba(224,183,101,0)} 100%{box-shadow:0 0 0 0 rgba(224,183,101,0)} }
   input:focus,textarea:focus { outline:none; border-color:${C.gold}!important; box-shadow:0 0 0 3px rgba(184,136,58,.14)!important; }
   button:active:not(:disabled) { transform:translateY(1px); }
   input[type=number]::-webkit-inner-spin-button,
@@ -237,8 +238,8 @@ const BtnWhatsApp = ({ onClick, disabled, children }) => (
 );
 
 // ─── Card wrapper ─────────────────────────────────────────────────────────────
-const Card = ({ children, dark, style={} }) => (
-  <div style={{
+const Card = React.forwardRef(({ children, dark, style={} }, ref) => (
+  <div ref={ref} style={{
     background: dark ? C.plum : C.white,
     borderRadius:'8px',
     border: dark ? `1px solid rgba(224,183,101,.2)` : `1px solid rgba(26,20,38,.1)`,
@@ -246,7 +247,7 @@ const Card = ({ children, dark, style={} }) => (
     boxShadow: dark ? '0 8px 32px rgba(43,20,80,.18)' : '0 2px 12px rgba(22,18,31,.06)',
     ...style,
   }}>{children}</div>
-);
+));
 
 // ─── Home Page ────────────────────────────────────────────────────────────────
 function HomePage({ navigate, spot }) {
@@ -653,26 +654,53 @@ function ShareSection() {
   );
 }
 
-function FloatingShareButton() {
-  const [open, setOpen] = useState(false);
+function FloatingShareButton({ highlighted }) {
+  const [open, setOpen]     = useState(false);
   const [copied, setCopied] = useState(false);
-  const url  = typeof window!=='undefined' ? `${window.location.origin}/margin` : '';
+  const [pulsed, setPulsed] = useState(false);
+
+  useEffect(() => {
+    if (highlighted && !pulsed) {
+      setPulsed(true);
+    }
+  }, [highlighted]);
+
+  const url  = typeof window !== 'undefined' ? `${window.location.origin}/margin` : '';
   const text = `Found this free tool that shows you what gold buyers keep as margin above the spot rate. Saved me from a bad deal — try it before you sell:\n${url}`;
-  const onWA   = () => { window.open(`https://wa.me/?text=${encodeURIComponent(text)}`,'_blank'); setOpen(false); };
-  const onCopy = async () => { const ok=await copyToClipboard(url); if(ok){setCopied(true);setTimeout(()=>{setCopied(false);setOpen(false);},1500);} };
+  const onWA   = () => { window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank'); setOpen(false); };
+  const onCopy = async () => { const ok = await copyToClipboard(url); if (ok) { setCopied(true); setTimeout(() => { setCopied(false); setOpen(false); }, 1500); } };
+
+  const btnStyle = highlighted ? {
+    background: C.gold2, color: C.plum,
+    border: `1px solid ${C.gold}`,
+    animation: pulsed ? 'glowPulse 0.6s ease-out 1' : 'none',
+    boxShadow: '0 6px 20px rgba(224,183,101,.35)',
+  } : {
+    background: `rgba(43,20,80,.7)`, color: `rgba(241,215,141,.5)`,
+    border: `1px solid rgba(224,183,101,.15)`,
+    boxShadow: '0 4px 14px rgba(43,20,80,.2)',
+  };
+
   return (
     <>
-      {open && <div onClick={()=>setOpen(false)} style={{ position:'fixed', inset:0, zIndex:90, background:'rgba(22,18,31,.3)', animation:'fadeIn .2s ease' }}/>}
+      {open && <div onClick={() => setOpen(false)} style={{ position:'fixed', inset:0, zIndex:90, background:'rgba(22,18,31,.3)', animation:'fadeIn .2s ease' }}/>}
       <div style={{ position:'fixed', bottom:'20px', left:'20px', zIndex:100, display:'flex', flexDirection:'column-reverse', gap:'10px', alignItems:'flex-start' }}>
-        <button onClick={()=>setOpen(v=>!v)} style={{ background:C.plum, color:C.gold2, padding:'12px 18px', borderRadius:'4px', border:`1px solid rgba(224,183,101,.3)`, cursor:'pointer', display:'inline-flex', alignItems:'center', gap:'8px', fontFamily:MONO, fontSize:'12px', fontWeight:500, letterSpacing:'0.08em', boxShadow:'0 6px 20px rgba(43,20,80,.3)', animation:'fadeSlide .4s ease-out' }}>
-          <Share2 size={14} strokeWidth={2}/> SHARE TOOL
+        <button onClick={() => setOpen(v => !v)} style={{
+          padding:'12px 18px', borderRadius:'4px',
+          cursor:'pointer', display:'inline-flex', alignItems:'center', gap:'8px',
+          fontFamily:MONO, fontSize:'12px', fontWeight:500, letterSpacing:'0.08em',
+          transition:'background .4s, color .4s, box-shadow .4s',
+          ...btnStyle,
+        }}>
+          <Share2 size={14} strokeWidth={2}/>
+          {highlighted ? 'SHARE THIS RESULT' : 'SHARE TOOL'}
         </button>
         {open && <>
           <button onClick={onWA} style={{ background:C.green, color:C.white, padding:'11px 16px', borderRadius:'999px', border:'none', cursor:'pointer', display:'inline-flex', alignItems:'center', gap:'7px', fontFamily:SANS, fontSize:'13px', fontWeight:600, boxShadow:'0 4px 14px rgba(37,211,102,.3)', animation:'fadeSlide .25s ease-out' }}>
             <MessageCircle size={14}/> WhatsApp
           </button>
           <button onClick={onCopy} style={{ background:C.plum, color:C.gold2, padding:'11px 16px', borderRadius:'4px', border:`1px solid rgba(224,183,101,.3)`, cursor:'pointer', display:'inline-flex', alignItems:'center', gap:'7px', fontFamily:MONO, fontSize:'12px', fontWeight:500, animation:'fadeSlide .25s ease-out' }}>
-            {copied?<><Check size={14}/>COPIED</>:<><Copy size={14}/>COPY LINK</>}
+            {copied ? <><Check size={14}/>COPIED</> : <><Copy size={14}/>COPY LINK</>}
           </button>
         </>}
       </div>
@@ -689,6 +717,18 @@ function MarginPage({ navigate, spot }) {
   const [mobile,        setMobile]        = useState('');
   const [collapsed,     setCollapsed]     = useState(new Set());
   const [showBreakdown, setShowBreakdown] = useState(false);
+  const [shareHighlighted, setShareHighlighted] = useState(false);
+  const marginCardRef = useRef(null);
+  useEffect(() => {
+    if (!marginCardRef.current) return;
+    const io = new IntersectionObserver(([e]) => {
+      if (e.intersectionRatio > 0.5 && margin1 !== null) {
+        setShareHighlighted(true);
+      }
+    }, { threshold: [0, 0.5] });
+    io.observe(marginCardRef.current);
+    return () => io.disconnect();
+  }, [margin1]);
   const isMulti = ornaments.length>1;
   const feeN    = parseNum(serviceFee)??0;
   const revN    = parseNum(revisedTotal);
@@ -916,7 +956,7 @@ function MarginPage({ navigate, spot }) {
         </Card>
 
         {/* Margin reveal */}
-        <Card style={{ textAlign:'center',padding:'32px 24px',minHeight:'180px',display:'flex',alignItems:'center',justifyContent:'center',marginBottom:'14px' }}>
+        <Card ref={marginCardRef} style={{ textAlign:'center',padding:'32px 24px',minHeight:'180px',display:'flex',alignItems:'center',justifyContent:'center',marginBottom:'14px' }}>
           {margin1===null?(
             <div style={{ display:'flex',flexDirection:'column',alignItems:'center',gap:'14px' }}>
               <Sparkles size={22} color={C.gold} style={{ opacity:0.55 }}/>
@@ -1051,8 +1091,7 @@ function MarginPage({ navigate, spot }) {
 
         {margin1!==null&&<ShareSection/>}
       </div>
-
-      {margin1!==null&&<FloatingShareButton/>}
+      <FloatingShareButton highlighted={shareHighlighted}/>
     </div>
   );
 }
