@@ -36,19 +36,29 @@ const SANS  = "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-seri
 const MONO  = "'JetBrains Mono', 'Courier New', monospace";
 
 // ─── Logo SVG ─────────────────────────────────────────────────────────────────
-function LogoMark({ size = 90, color = C.gold2 }) {
-  const s = size;
-  const h = Math.round(s * 1.3);
+function LogoMark({ size = 110, color = C.gold2 }) {
+  const showInnerRing = size >= 40;
+  const showDots      = size >= 24;
   return (
-    <svg viewBox="0 0 200 260" width={s} height={h} xmlns="http://www.w3.org/2000/svg">
-      <path d="M100 20 C140 20 172 62 172 130 C172 198 140 240 100 240 C60 240 28 198 28 130 C28 62 60 20 100 20 Z"
-        fill="none" stroke={color} strokeWidth="7"/>
-      <path d="M100 32 C134 32 160 70 160 130 C160 190 134 228 100 228 C66 228 40 190 40 130 C40 70 66 32 100 32 Z"
-        fill="none" stroke={color} strokeWidth="1.5" opacity="0.4"/>
-      <text x="100" y="172" textAnchor="middle" fontFamily="Fraunces, serif"
-        fontSize="140" fontStyle="italic" fill={color}>cm</text>
-      <circle cx="100" cy="42" r="3" fill={color}/>
-      <circle cx="100" cy="218" r="3" fill={color}/>
+    <svg viewBox="0 0 200 260" width={size} height={size * 1.3}
+      role="img" aria-label="Carat Money" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M100 10 C 150 10 188 60 188 130 C 188 200 150 250 100 250 C 50 250 12 200 12 130 C 12 60 50 10 100 10 Z"
+        fill="none" stroke={color} strokeWidth="6"/>
+      {showInnerRing && (
+        <path
+          d="M100 22 C 142 22 176 66 176 130 C 176 194 142 238 100 238 C 58 238 24 194 24 130 C 24 66 58 22 100 22 Z"
+          fill="none" stroke={color} strokeWidth="1" opacity="0.45"/>
+      )}
+      <text x="100" y="172" textAnchor="middle"
+        fontFamily="Fraunces, serif" fontSize="170" fontWeight="360"
+        fontStyle="italic" fill={color} letterSpacing="-8">cm</text>
+      {showDots && (
+        <>
+          <circle cx="100" cy="36" r="2" fill={color}/>
+          <circle cx="100" cy="224" r="2" fill={color}/>
+        </>
+      )}
     </svg>
   );
 }
