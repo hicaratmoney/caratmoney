@@ -93,7 +93,7 @@ function useRoute() {
 
 // ─── SEO ──────────────────────────────────────────────────────────────────────
 const SEO_MAP = {
-  '/':       { title:'Carat Money — The Fair Price for Gold', desc:'Get the best price for your gold in Bangalore. Trusted by 5,000+ customers. Live rates, instant WhatsApp quotes.' },
+  '/':       { title:'Carat Money — The Fair Price for Gold', desc:'Check if your gold buyer is giving you a fair deal. Live rates, instant WhatsApp quotes. Trusted by 5,000+ customers in Bangalore.' },
   '/sell':   { title:'Sell Gold to Carat Money | Best Buying Rates', desc:'Get an instant WhatsApp quote. We come to you. Trusted by 5,000+ sellers across India.' },
   '/buy':    { title:'Buy 24K Gold Coins | BIS-Hallmarked | Carat Money', desc:'Buy BIS-hallmarked 24K gold coins. 999.9 purity. 48-hour open-box delivery. WhatsApp to order.' },
   '/margin': { title:'Gold Buyer Margin Calculator | Free Tool by Carat Money', desc:'Free tool to check what your gold buyer is keeping above the spot rate. Used by 5,000+ sellers across India.' },
@@ -272,6 +272,15 @@ function HomePage({ navigate, spot }) {
           </div>
         </Card>
 
+        <div onClick={() => navigate('/margin')} style={{ background:C.white, borderRadius:'8px', padding:'24px', border:`1px solid rgba(26,20,38,.1)`, cursor:'pointer', marginBottom:'20px', boxShadow:'0 2px 12px rgba(22,18,31,.06)', transition:'transform .2s,box-shadow .2s' }}>
+          <Eyebrow>Is your gold buyer cheating you?</Eyebrow>
+          <div style={{ fontFamily:SERIF, fontSize:'26px', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1.15, marginBottom:'8px' }}>Check your buyer's margin</div>
+          <div style={{ fontSize:'15px', color:C.mute, lineHeight:1.55, marginBottom:'20px' }}>See exactly what your buyer is keeping above today's rate.</div>
+          <BtnPrimary style={{ width:'auto', padding:'10px 20px' }}>
+            <TrendingDown size={15}/> Calculate margin
+          </BtnPrimary>
+        </div>
+        
         <div onClick={() => navigate('/sell')} style={{ background:C.ink, borderRadius:'8px', padding:'24px', border:`1px solid rgba(224,183,101,.12)`, cursor:'pointer', marginBottom:'12px', boxShadow:'0 6px 24px rgba(22,18,31,.18)', position:'relative', overflow:'hidden', transition:'transform .2s,box-shadow .2s' }}>
           <div style={{ position:'absolute', top:'-50px', right:'-50px', width:'180px', height:'180px', borderRadius:'50%', background:`radial-gradient(circle,rgba(224,183,101,.18) 0%,transparent 70%)`, pointerEvents:'none' }}/>
           <Eyebrow light>Sell Gold</Eyebrow>
@@ -280,15 +289,6 @@ function HomePage({ navigate, spot }) {
           <div style={{ display:'inline-flex', alignItems:'center', gap:'6px', background:C.green, color:C.white, padding:'10px 20px', borderRadius:'999px', fontSize:'14px', fontWeight:600, fontFamily:SANS }}>
             <MessageCircle size={15}/> Get a quote
           </div>
-        </div>
-
-        <div onClick={() => navigate('/margin')} style={{ background:C.white, borderRadius:'8px', padding:'24px', border:`1px solid rgba(26,20,38,.1)`, cursor:'pointer', marginBottom:'20px', boxShadow:'0 2px 12px rgba(22,18,31,.06)', transition:'transform .2s,box-shadow .2s' }}>
-          <Eyebrow>Check Margin</Eyebrow>
-          <div style={{ fontFamily:SERIF, fontSize:'26px', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1.15, marginBottom:'8px' }}>Check your buyer's margin</div>
-          <div style={{ fontSize:'15px', color:C.mute, lineHeight:1.55, marginBottom:'20px' }}>See exactly what your buyer is keeping above today's rate.</div>
-          <BtnPrimary style={{ width:'auto', padding:'10px 20px' }}>
-            <TrendingDown size={15}/> Calculate margin
-          </BtnPrimary>
         </div>
 
         <div style={{ padding:'16px 0', marginBottom:'16px', borderTop:`1px solid rgba(26,20,38,.12)`, borderBottom:`1px solid rgba(26,20,38,.12)`, display:'flex', alignItems:'center', justifyContent:'space-between', gap:'10px' }}>
