@@ -212,6 +212,20 @@ const Card = React.forwardRef(({ children, dark, style={} }, ref) => (
   <div ref={ref} style={{ background: dark ? C.plum : C.white, borderRadius:'8px', border: dark ? `1px solid rgba(224,183,101,.2)` : `1px solid rgba(26,20,38,.1)`, padding:'24px', boxShadow: dark ? '0 8px 32px rgba(43,20,80,.18)' : '0 2px 12px rgba(22,18,31,.06)', ...style }}>{children}</div>
 ));
 
+// ─── Page Header ────────────────────────────────────────────────────────────────
+function PageHeader() {
+  return (
+    <div style={{ textAlign:'center', padding:'24px 0 16px' }}>
+      <div style={{ display:'flex', justifyContent:'center', marginBottom:'10px' }}>
+        <LogoMark size={64} color={C.gold2}/>
+      </div>
+      <div style={{ fontFamily:SERIF, fontSize:'28px', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1.05 }}>
+        Carat <span style={{ fontStyle:'italic', color:C.plum }}>Money</span>
+      </div>
+    </div>
+  );
+}
+
 // ─── Home Page ────────────────────────────────────────────────────────────────
 function HomePage({ navigate, spot }) {
   const [showGstTip, setShowGstTip] = useState(false);
@@ -327,6 +341,7 @@ function SellPage({ navigate, spot }) {
       <RateStrip spot={spot}/>
       <div style={{ maxWidth:'520px', margin:'0 auto', padding:'0 18px 48px' }}>
         <BackBtn navigate={navigate}/>
+        <PageHeader/>
         <div style={{ textAlign:'center', padding:'12px 0 24px' }}>
           <h1 style={{ fontFamily:SERIF, fontSize:'32px', fontWeight:350, lineHeight:1.1, letterSpacing:'-0.02em', margin:'0 0 8px', color:C.ink }}>
             Sell your gold to <span style={{ fontStyle:'italic', color:C.plum }}>Carat Money</span>
@@ -467,6 +482,7 @@ function BuyPage({ navigate }) {
     <div style={{ minHeight:'100dvh', background:C.paper, fontFamily:SANS, color:C.ink }}>
       <div style={{ maxWidth:'520px', margin:'0 auto', padding:'0 18px 48px' }}>
         <BackBtn navigate={navigate}/>
+        <PageHeader/>
         <div style={{ textAlign:'center', padding:'12px 0 24px' }}>
           <h1 style={{ fontFamily:SERIF, fontSize:'32px', fontWeight:350, lineHeight:1.1, letterSpacing:'-0.02em', margin:'0 0 8px' }}>
             Buy <span style={{ fontStyle:'italic', color:C.plum }}>24K</span> gold coins
@@ -805,13 +821,14 @@ function MarginPage({ navigate, spot }) {
 
       <div style={{ maxWidth:'520px', margin:'0 auto', padding:'0 18px 48px' }}>
         <BackBtn navigate={navigate}/>
+        <PageHeader/>
 
         <div style={{ textAlign:'center', padding:'10px 0 24px' }}>
-          <h1 style={{ fontFamily:SERIF, fontSize:'34px', fontWeight:350, lineHeight:1.08, letterSpacing:'-0.02em', margin:0, color:C.ink }}>
-            Check your gold buyer's <span style={{ fontStyle:'italic', color:C.plum }}>margin</span>
+          <h1 style={{ fontFamily:SERIF, fontSize:'34px', fontWeight:350, lineHeight:1.08, letterSpacing:'-0.02em', margin:'0 0 10px', color:C.ink }}>
+            Is your gold buyer <span style={{ fontStyle:'italic', color:C.plum }}>cheating you?</span>
           </h1>
-          <p style={{ fontSize:'15px', color:C.mute, marginTop:'12px', lineHeight:1.55, maxWidth:'400px', marginLeft:'auto', marginRight:'auto' }}>
-            Before you sell, see exactly what they're keeping above today's spot price.
+          <p style={{ fontSize:'15px', color:C.mute, marginTop:0, lineHeight:1.55, maxWidth:'400px', marginLeft:'auto', marginRight:'auto' }}>
+            Check your gold buyer's margin. See exactly what they're keeping above today's spot price.
           </p>
         </div>
 
