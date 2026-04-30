@@ -64,9 +64,7 @@ export default function handler(req, res) {
   const url     = article
     ? `${SITE}/blog/${article.slug}`
     : `${SITE}/blog`;
-  const image   = article
-    ? `${SITE}/api/og?slug=${article.slug}`
-    : `${SITE}/api/og?slug=blog`;
+  const image = `${SITE}/logo.png`;
 
   const html = `<!DOCTYPE html>
 <html lang="en">
