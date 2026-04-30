@@ -88,7 +88,8 @@ function useRoute() {
     setRoute(get());
     window.scrollTo({ top:0, behavior:'instant' });
   }, []);
-  return { route, navigate };
+  const blogSlug = route.startsWith('/blog/') ? route.replace('/blog/', '') : null;
+  return { route, navigate, blogSlug };
 }
 
 // ─── SEO ──────────────────────────────────────────────────────────────────────
@@ -97,6 +98,7 @@ const SEO_MAP = {
   '/sell':   { title:'Sell Gold to Carat Money | Best Buying Rates', desc:'Get an instant WhatsApp quote. We come to you. Trusted by 5,000+ sellers across India.' },
   '/buy':    { title:'Buy 24K Gold Coins | BIS-Hallmarked | Carat Money', desc:'Buy BIS-hallmarked 24K gold coins. 999.9 purity. 48-hour open-box delivery. WhatsApp to order.' },
   '/margin': { title:'Gold Buyer Margin Calculator | Free Tool by Carat Money', desc:'Free tool to check what your gold buyer is keeping above the spot rate. Used by 5,000+ sellers across India.' },
+  '/blog':   { title:'Gold Selling Tips & Insights | Carat Money Blog', desc:'Expert articles on gold selling, buyer margins, and getting the best price for your gold in India.' },
 };
 function useSEO(route) {
   useEffect(() => {
@@ -212,7 +214,7 @@ const Card = React.forwardRef(({ children, dark, style={} }, ref) => (
   <div ref={ref} style={{ background: dark ? C.plum : C.white, borderRadius:'8px', border: dark ? `1px solid rgba(224,183,101,.2)` : `1px solid rgba(26,20,38,.1)`, padding:'24px', boxShadow: dark ? '0 8px 32px rgba(43,20,80,.18)' : '0 2px 12px rgba(22,18,31,.06)', ...style }}>{children}</div>
 ));
 
-// ─── Page Header ────────────────────────────────────────────────────────────────
+// ─── Page Header ─────────────────────────────────────────────────────────────
 function PageHeader() {
   return (
     <div style={{ textAlign:'center', padding:'24px 0 16px' }}>
@@ -221,6 +223,236 @@ function PageHeader() {
       </div>
       <div style={{ fontFamily:SERIF, fontSize:'28px', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1.05 }}>
         Carat <span style={{ fontStyle:'italic', color:C.plum }}>Money</span>
+      </div>
+    </div>
+  );
+}
+
+// ─── Articles Data ────────────────────────────────────────────────────────────
+// Swap body + meta for CMS API response later — structure stays identical.
+const ARTICLES = [
+  {
+    slug:            'is-your-gold-buyer-cheating-you',
+    title:           'Is your gold buyer cheating you?',
+    excerpt:         "Most gold buyers keep 10–15% above the spot rate. Here's exactly how to check their margin before you sell.",
+    category:        'BUYER MARGINS',
+    readTime:        '4 MIN READ',
+    date:            '27 Apr 2026',
+    primaryCTA:      'margin',
+    midArticleNudge: true,
+    body: [
+      { type:'p',  text:"When you walk into a gold buyer's shop, they have one advantage over you: they know exactly what your gold is worth and you don't. That information gap is where their profit lives — and it's often much larger than most sellers realise." },
+      { type:'h2', text:'What is a buyer\'s margin?' },
+      { type:'p',  text:"Every gold buyer purchases your gold at a price below the market spot rate. The difference between what they pay you and what they can sell it for is their margin. A fair margin covers their operational costs — testing equipment, shop rent, staff. An unfair margin is simply excess profit taken from you." },
+      { type:'p',  text:'In India, buyer margins typically range from 6% to 18% above the spot rate. A margin below 8% is considered fair. Anything above 12% is high. Above 15%, you should walk away.' },
+      { type:'h2', text:'How buyers hide the margin' },
+      { type:'p',  text:'The most common tactics gold buyers use to widen their margin without you noticing:' },
+      { type:'p',  text:'1. Overstating stone weight — they weigh your stones at full value and deduct it entirely, even though they recover a significant portion when melting.' },
+      { type:'p',  text:'2. Understating purity — a machine that reads 91.6% might be reported to you as 89% or 90%. Even a 1% difference on purity translates to hundreds of rupees on a 20g piece.' },
+      { type:'p',  text:'3. Using a stale rate — some buyers use a rate from earlier in the day, even if the live spot rate has moved up significantly since morning.' },
+      { type:'nudge' },
+      { type:'h2', text:'How to check the margin yourself' },
+      { type:'p',  text:"You need four numbers: gross weight, stone weight, wastage, and purity — all of which the buyer must show you. Once you have those, compare what they're offering against the live spot rate." },
+      { type:'p',  text:"Carat Money's margin calculator does this in seconds. Enter what your buyer told you and it shows you exactly what percentage above spot they're keeping. If it's above 12%, push back or walk away." },
+      { type:'p',  text:'Knowledge is your only leverage in a gold buying transaction. Use it.' },
+    ],
+  },
+  {
+    slug:            'what-is-gold-buyer-margin',
+    title:           'What is gold buyer margin and why it matters',
+    excerpt:         'Understanding the margin your buyer keeps is the single most important thing you can do before selling your gold.',
+    category:        'GOLD BASICS',
+    readTime:        '3 MIN READ',
+    date:            '28 Apr 2026',
+    primaryCTA:      'margin',
+    midArticleNudge: false,
+    body: [
+      { type:'p',  text:"Gold buyer margin is the percentage difference between what a buyer pays you and what they can recover when they sell or melt your gold at the current market rate. It's how every gold buyer makes money — and knowing this number puts you in control of the transaction." },
+      { type:'h2', text:'Why the spot rate matters' },
+      { type:'p',  text:'The spot rate is the internationally traded price of 24K gold per gram at any given moment. Every reputable gold buyer in India uses it as their benchmark. When a buyer offers you ₹13,500 per gram for 22K gold and the spot rate implies ₹14,200, they\'re keeping a 4.9% margin.' },
+      { type:'p',  text:"That sounds small. On 50 grams of gold worth ₹7,10,000, that's ₹34,800 in their pocket that could have been yours." },
+      { type:'h2', text:"What's a fair margin?" },
+      { type:'p',  text:'A margin of 5–8% is considered fair in the industry — it covers testing, operations, and a reasonable profit. Margins of 10–15% are on the higher side. Anything above 15% is exploitative, particularly for sellers who don\'t know the spot rate.' },
+      { type:'h2', text:'How to use this information' },
+      { type:'p',  text:"Before you agree to any offer, ask the buyer for their exact purity reading, the stone weight they're deducting, and the rate they're offering per gram. With those three numbers, you can calculate their margin in seconds using our free tool." },
+      { type:'p',  text:'Walk in informed. Walk out with a fair price.' },
+    ],
+  },
+  {
+    slug:            'gold-selling-tips-bangalore',
+    title:           'Selling gold in Bangalore: 5 things to know first',
+    excerpt:         "Bangalore's gold buying market is active — but knowing these five things before you sell can make a significant difference to what you walk away with.",
+    category:        'SELLING TIPS',
+    readTime:        '5 MIN READ',
+    date:            '29 Apr 2026',
+    primaryCTA:      'sell',
+    midArticleNudge: true,
+    body: [
+      { type:'p',  text:'Selling gold in Bangalore can feel overwhelming — dozens of buyers, wildly different offers, and very little transparency. Most sellers accept the first reasonable-sounding offer without realising they could do significantly better. Here\'s what to know before you walk in.' },
+      { type:'h2', text:'1. Check the live rate first' },
+      { type:'p',  text:'Before you visit any buyer, check the live spot rate for gold. This is your benchmark. Any buyer offering more than 10–12% below this rate is taking an unfair margin. Carat Money shows you the live rate on our homepage — free, no registration required.' },
+      { type:'h2', text:'2. Get multiple quotes' },
+      { type:'p',  text:"Don't sell to the first buyer you visit. Get at least two or three quotes. The difference between a 7% margin buyer and a 14% margin buyer on 40 grams of gold is approximately ₹40,000. That's worth a few extra hours." },
+      { type:'nudge' },
+      { type:'h2', text:'3. Ask for the purity reading' },
+      { type:'p',  text:'Insist on seeing the XRF machine reading yourself. Some buyers will show you a number — make sure it matches what\'s printed on the machine screen, not just what they tell you verbally. Even a 1% understatement in purity can cost you thousands.' },
+      { type:'h2', text:'4. Understand the deductions' },
+      { type:'p',  text:"Buyers deduct stone weight and wastage from your gross weight before calculating your payout. Ask exactly how much they're deducting and why. Stone deductions should be weighed separately, not estimated." },
+      { type:'h2', text:'5. You can negotiate' },
+      { type:'p',  text:"Most sellers don't realise that gold buying is negotiable. If you know the margin the buyer is keeping (use our calculator), you have a number to push back on. A buyer keeping 14% will often come down to 10–11% if you simply ask — and know your numbers." },
+    ],
+  },
+];
+
+// ─── Blog Back Button ─────────────────────────────────────────────────────────
+function BlogBackBtn({ navigate }) {
+  return (
+    <button onClick={() => navigate('/blog')} style={{ background:'none', border:'none', cursor:'pointer', display:'inline-flex', alignItems:'center', gap:'6px', color:C.gold, fontFamily:MONO, fontSize:'12px', fontWeight:500, padding:'18px 0 8px', letterSpacing:'0.1em', textTransform:'uppercase' }}>
+      <ArrowLeft size={14} strokeWidth={2}/> Blog
+    </button>
+  );
+}
+
+// ─── Blog Index Page ──────────────────────────────────────────────────────────
+function BlogIndexPage({ navigate }) {
+  return (
+    <div style={{ minHeight:'100dvh', background:C.paper, fontFamily:SANS, color:C.ink }}>
+      <div style={{ maxWidth:'520px', margin:'0 auto', padding:'0 18px 48px' }}>
+        <BackBtn navigate={navigate}/>
+        <PageHeader/>
+        <div style={{ textAlign:'center', marginBottom:'32px' }}>
+          <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:'10px', marginBottom:'14px' }}>
+            <div style={{ height:'1px', flex:1, background:C.gold, opacity:0.25 }}/>
+            <div style={{ fontFamily:MONO, fontSize:'9px', letterSpacing:'0.2em', color:C.gold, textTransform:'uppercase' }}>· GOLD INSIGHTS · CARAT MONEY ·</div>
+            <div style={{ height:'1px', flex:1, background:C.gold, opacity:0.25 }}/>
+          </div>
+          <h1 style={{ fontFamily:SERIF, fontSize:'32px', fontWeight:350, lineHeight:1.1, letterSpacing:'-0.02em', margin:'0 0 8px', color:C.ink }}>
+            Everything you need to know<br/>before you sell your <span style={{ fontStyle:'italic', color:C.plum }}>gold</span>
+          </h1>
+        </div>
+        {ARTICLES.map(a => (
+          <div key={a.slug} onClick={() => navigate(`/blog/${a.slug}`)} style={{ background:C.white, borderRadius:'8px', padding:'24px', border:`1px solid rgba(26,20,38,.1)`, marginBottom:'12px', cursor:'pointer', boxShadow:'0 2px 12px rgba(22,18,31,.06)', transition:'transform .2s,box-shadow .2s' }}
+            onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-2px)';e.currentTarget.style.boxShadow='0 8px 24px rgba(22,18,31,.12)';}}
+            onMouseLeave={e=>{e.currentTarget.style.transform='translateY(0)';e.currentTarget.style.boxShadow='0 2px 12px rgba(22,18,31,.06)';}}
+          >
+            <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'12px' }}>
+              <div style={{ fontFamily:MONO, fontSize:'9px', fontWeight:500, letterSpacing:'0.16em', color:C.gold, textTransform:'uppercase' }}>{a.category}</div>
+              <div style={{ fontFamily:MONO, fontSize:'9px', color:C.mute, letterSpacing:'0.08em' }}>{a.readTime}</div>
+            </div>
+            <h2 style={{ fontFamily:SERIF, fontSize:'22px', fontWeight:350, lineHeight:1.2, letterSpacing:'-0.02em', margin:'0 0 10px', color:C.ink }}>{a.title}</h2>
+            <p style={{ fontSize:'14px', color:C.mute, lineHeight:1.6, margin:'0 0 16px' }}>{a.excerpt}</p>
+            <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+              <div style={{ fontFamily:MONO, fontSize:'10px', color:C.mute, letterSpacing:'0.06em' }}>Carat Money · {a.date}</div>
+              <div style={{ fontFamily:MONO, fontSize:'11px', color:C.gold, fontWeight:500, letterSpacing:'0.08em' }}>READ →</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── Blog Article Page ────────────────────────────────────────────────────────
+function BlogArticlePage({ navigate, slug }) {
+  const article = ARTICLES.find(a => a.slug === slug);
+
+  if (!article) {
+    return (
+      <div style={{ minHeight:'100dvh', background:C.paper, fontFamily:SANS, color:C.ink, display:'flex', alignItems:'center', justifyContent:'center' }}>
+        <div style={{ textAlign:'center', padding:'40px 18px' }}>
+          <div style={{ fontFamily:SERIF, fontSize:'48px', fontWeight:350, color:C.gold2, marginBottom:'16px' }}>404</div>
+          <div style={{ fontFamily:SERIF, fontSize:'22px', color:C.ink, marginBottom:'24px' }}>Article not found</div>
+          <button onClick={() => navigate('/blog')} style={{ fontFamily:MONO, fontSize:'12px', color:C.gold, background:'none', border:`1px solid ${C.gold}`, borderRadius:'4px', padding:'10px 18px', cursor:'pointer', letterSpacing:'0.1em' }}>← BACK TO BLOG</button>
+        </div>
+      </div>
+    );
+  }
+
+  useEffect(() => {
+    document.title = `${article.title} | Carat Money`;
+    const em = (sel, attr, val, content) => {
+      let el = document.querySelector(sel);
+      if (!el) { el = document.createElement('meta'); el.setAttribute(attr, val); document.head.appendChild(el); }
+      el.setAttribute('content', content);
+    };
+    em('meta[name="description"]',        'name',     'description',    article.excerpt);
+    em('meta[property="og:title"]',       'property', 'og:title',       `${article.title} | Carat Money`);
+    em('meta[property="og:description"]', 'property', 'og:description', article.excerpt);
+    em('meta[property="og:url"]',         'property', 'og:url',         `https://carat.money/blog/${article.slug}`);
+    em('meta[property="og:type"]',        'property', 'og:type',        'article');
+  }, [article]);
+
+  const MidNudge = () => (
+    <div onClick={() => navigate('/margin')} style={{ margin:'28px 0', padding:'18px 20px', background:`rgba(184,136,58,.08)`, border:`1px solid rgba(184,136,58,.2)`, borderRadius:'6px', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'space-between', gap:'12px' }}>
+      <div>
+        <div style={{ fontFamily:MONO, fontSize:'9px', fontWeight:500, letterSpacing:'0.16em', color:C.gold, marginBottom:'5px' }}>FREE TOOL</div>
+        <div style={{ fontFamily:SERIF, fontSize:'16px', fontWeight:350, color:C.ink, lineHeight:1.3 }}>Already got a quote? Check your buyer's margin in 30 seconds →</div>
+      </div>
+    </div>
+  );
+
+  const renderBody = () => article.body.map((block, i) => {
+    if (block.type === 'h2') return (
+      <h2 key={i} style={{ fontFamily:SERIF, fontSize:'22px', fontWeight:350, lineHeight:1.2, letterSpacing:'-0.02em', margin:'28px 0 12px', color:C.ink }}>{block.text}</h2>
+    );
+    if (block.type === 'p') return (
+      <p key={i} style={{ fontSize:'16px', color:C.ink2, lineHeight:1.75, margin:'0 0 18px', fontFamily:SANS, fontWeight:400 }}>{block.text}</p>
+    );
+    if (block.type === 'nudge' && article.midArticleNudge) return <MidNudge key={i}/>;
+    return null;
+  });
+
+  return (
+    <div style={{ minHeight:'100dvh', background:C.paper, fontFamily:SANS, color:C.ink }}>
+      <div style={{ maxWidth:'520px', margin:'0 auto', padding:'0 18px 48px' }}>
+        <BlogBackBtn navigate={navigate}/>
+        <PageHeader/>
+
+        <div style={{ marginBottom:'28px' }}>
+          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'14px' }}>
+            <div style={{ fontFamily:MONO, fontSize:'9px', fontWeight:500, letterSpacing:'0.16em', color:C.gold, textTransform:'uppercase' }}>{article.category}</div>
+            <div style={{ fontFamily:MONO, fontSize:'9px', color:C.mute, letterSpacing:'0.08em' }}>{article.readTime}</div>
+          </div>
+          <h1 style={{ fontFamily:SERIF, fontSize:'34px', fontWeight:350, lineHeight:1.08, letterSpacing:'-0.02em', margin:'0 0 14px', color:C.ink }}>{article.title}</h1>
+          <div style={{ fontFamily:MONO, fontSize:'10px', color:C.mute, letterSpacing:'0.06em', paddingBottom:'20px', borderBottom:`1px solid rgba(26,20,38,.08)` }}>
+            Carat Money · {article.date}
+          </div>
+        </div>
+
+        <div style={{ marginBottom:'36px' }}>{renderBody()}</div>
+
+        {/* Bottom CTAs */}
+        <div style={{ borderTop:`1px solid rgba(26,20,38,.08)`, paddingTop:'28px', marginBottom:'24px' }}>
+          <div style={{ fontFamily:MONO, fontSize:'9px', fontWeight:500, letterSpacing:'0.16em', color:C.mute, marginBottom:'14px', textAlign:'center' }}>
+            {article.primaryCTA === 'margin' ? 'READY TO CHECK YOUR BUYER?' : 'READY TO SELL?'}
+          </div>
+          {article.primaryCTA === 'margin' ? (
+            <button onClick={() => navigate('/margin')} style={{ width:'100%', padding:'15px 20px', background:C.gold2, color:C.plum, border:'none', borderRadius:'4px', fontSize:'15px', fontWeight:600, fontFamily:SANS, display:'flex', alignItems:'center', justifyContent:'center', gap:'8px', cursor:'pointer', marginBottom:'10px', letterSpacing:'0.01em' }}>
+              <TrendingDown size={16}/> Check your buyer's margin now
+            </button>
+          ) : (
+            <button onClick={() => navigate('/sell')} style={{ width:'100%', padding:'15px 20px', background:C.gold2, color:C.plum, border:'none', borderRadius:'4px', fontSize:'15px', fontWeight:600, fontFamily:SANS, display:'flex', alignItems:'center', justifyContent:'center', gap:'8px', cursor:'pointer', marginBottom:'10px', letterSpacing:'0.01em' }}>
+              <MessageCircle size={16}/> Get your best price from Carat Money
+            </button>
+          )}
+          <button onClick={() => window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Hi Carat Money — I'd like to get a quote for my gold.")}`, '_blank')} style={{ width:'100%', padding:'14px 20px', background:'transparent', color:C.green, border:`1.5px solid ${C.green}`, borderRadius:'999px', fontSize:'15px', fontWeight:600, fontFamily:SANS, display:'flex', alignItems:'center', justifyContent:'center', gap:'8px', cursor:'pointer', letterSpacing:'0.01em' }}>
+            <MessageCircle size={16}/> Get a better offer on WhatsApp
+          </button>
+        </div>
+
+        {/* Article share */}
+        <div style={{ background:C.plum, borderRadius:'8px', padding:'20px', border:`1px solid rgba(224,183,101,.2)`, textAlign:'center' }}>
+          <div style={{ fontFamily:SERIF, fontSize:'18px', fontWeight:350, color:C.gold3, marginBottom:'6px', letterSpacing:'-0.02em' }}>Found this useful?</div>
+          <div style={{ fontSize:'13px', color:`rgba(241,215,141,.6)`, marginBottom:'16px', lineHeight:1.55 }}>Share with someone selling gold soon.</div>
+          <div style={{ display:'flex', gap:'10px' }}>
+            <button onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(`${article.title} — worth reading before you sell your gold:\nhttps://carat.money/blog/${article.slug}`)}`, '_blank')} style={{ flex:1, padding:'12px', background:C.green, color:C.white, border:'none', borderRadius:'999px', fontSize:'13px', fontWeight:600, fontFamily:SANS, display:'inline-flex', alignItems:'center', justifyContent:'center', gap:'6px', cursor:'pointer' }}>
+              <MessageCircle size={14}/> WhatsApp
+            </button>
+            <button onClick={async () => { await copyToClipboard(`https://carat.money/blog/${article.slug}`); }} style={{ flex:1, padding:'12px', background:'transparent', color:C.gold2, border:`1px solid rgba(224,183,101,.4)`, borderRadius:'4px', fontSize:'13px', fontWeight:600, fontFamily:SANS, display:'inline-flex', alignItems:'center', justifyContent:'center', gap:'6px', cursor:'pointer' }}>
+              <Copy size={14}/> Copy link
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -286,7 +518,7 @@ function HomePage({ navigate, spot }) {
           </div>
         </Card>
 
-        <div onClick={() => navigate('/margin')} style={{ background:C.white, borderRadius:'8px', padding:'24px', border:`1px solid rgba(26,20,38,.1)`, cursor:'pointer', marginBottom:'20px', boxShadow:'0 2px 12px rgba(22,18,31,.06)', transition:'transform .2s,box-shadow .2s' }}>
+        <div onClick={() => navigate('/margin')} style={{ background:C.white, borderRadius:'8px', padding:'24px', border:`1px solid rgba(26,20,38,.1)`, cursor:'pointer', marginBottom:'12px', boxShadow:'0 2px 12px rgba(22,18,31,.06)', transition:'transform .2s,box-shadow .2s' }}>
           <Eyebrow>Is your gold buyer cheating you?</Eyebrow>
           <div style={{ fontFamily:SERIF, fontSize:'26px', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1.15, marginBottom:'8px' }}>Check your buyer's margin</div>
           <div style={{ fontSize:'15px', color:C.mute, lineHeight:1.55, marginBottom:'20px' }}>See exactly what your buyer is keeping above today's rate.</div>
@@ -294,8 +526,8 @@ function HomePage({ navigate, spot }) {
             <TrendingDown size={15}/> Calculate margin
           </BtnPrimary>
         </div>
-        
-        <div onClick={() => navigate('/sell')} style={{ background:C.ink, borderRadius:'8px', padding:'24px', border:`1px solid rgba(224,183,101,.12)`, cursor:'pointer', marginBottom:'12px', boxShadow:'0 6px 24px rgba(22,18,31,.18)', position:'relative', overflow:'hidden', transition:'transform .2s,box-shadow .2s' }}>
+
+        <div onClick={() => navigate('/sell')} style={{ background:C.ink, borderRadius:'8px', padding:'24px', border:`1px solid rgba(224,183,101,.12)`, cursor:'pointer', marginBottom:'20px', boxShadow:'0 6px 24px rgba(22,18,31,.18)', position:'relative', overflow:'hidden', transition:'transform .2s,box-shadow .2s' }}>
           <div style={{ position:'absolute', top:'-50px', right:'-50px', width:'180px', height:'180px', borderRadius:'50%', background:`radial-gradient(circle,rgba(224,183,101,.18) 0%,transparent 70%)`, pointerEvents:'none' }}/>
           <Eyebrow light>Sell Gold</Eyebrow>
           <div style={{ fontFamily:SERIF, fontSize:'26px', fontWeight:350, color:C.white, letterSpacing:'-0.02em', lineHeight:1.15, marginBottom:'8px' }}>Sell to Carat Money</div>
@@ -309,6 +541,12 @@ function HomePage({ navigate, spot }) {
           <span style={{ fontSize:'14px', color:C.mute, fontFamily:SANS }}>Looking to buy gold?</span>
           <span onClick={() => navigate('/buy')} style={{ fontSize:'14px', fontWeight:600, color:C.gold, fontFamily:SANS, cursor:'pointer', display:'inline-flex', alignItems:'center', gap:'4px' }}>
             Buy 24K BIS-hallmarked coins →
+          </span>
+        </div>
+
+        <div style={{ padding:'14px 0', marginBottom:'16px', textAlign:'center' }}>
+          <span onClick={() => navigate('/blog')} style={{ fontFamily:MONO, fontSize:'11px', fontWeight:500, color:C.mute, cursor:'pointer', letterSpacing:'0.1em', textTransform:'uppercase', borderBottom:`1px solid rgba(122,111,98,.3)`, paddingBottom:'2px' }}>
+            · GOLD INSIGHTS BLOG ·
           </span>
         </div>
 
@@ -651,7 +889,6 @@ function FloatingShareButton({ highlighted }) {
 function MarginPage({ navigate, spot }) {
   const calcRate = spot.raw ?? SPOT_FALLBACK;
 
-  // ── State ─────────────────────────────────────────────────────────────────
   const [ornaments,     setOrnaments]     = useState(()=>[blankOrnament()]);
   const [serviceFee,    setServiceFee]    = useState('');
   const [revisedTotal,  setRevisedTotal]  = useState('');
@@ -663,7 +900,6 @@ function MarginPage({ navigate, spot }) {
   const feeN    = parseNum(serviceFee) ?? 0;
   const revN    = parseNum(revisedTotal);
 
-  // ── Ornament data ─────────────────────────────────────────────────────────
   const ornamentData = useMemo(() => ornaments.map(o => {
     const g=parseNum(o.gross), s=parseNum(o.stone)??0, w=parseNum(o.wastage)??0, p=parseNum(o.purity), ppg=parseNum(o.pricePerGram);
     const netWeight=g!==null?g-s-w:null, netError=g!==null&&netWeight!==null&&netWeight<=0;
@@ -673,14 +909,12 @@ function MarginPage({ navigate, spot }) {
     return {id:o.id,gross:g,stone:s,wastage:w,purity:p,ppg,netWeight,netError,isValid,purchaseContrib,salesContrib,effRate};
   }), [ornaments, calcRate]);
 
-  // ── margin1 must be declared before the shareHighlighted useEffect ────────
   const margin1 = useMemo(() => {
     const valid=ornamentData.filter(d=>d.isValid); if(!valid.length)return null;
     const fee=feeN/100,sumPR=valid.reduce((a,d)=>a+d.purchaseContrib,0),sumS=valid.reduce((a,d)=>a+d.salesContrib,0),sumNP=valid.reduce((a,d)=>a+d.netWeight*(d.purity/100),0),pt=sumPR*(1-fee);
     return {value:(1-pt/sumS)*100,eff:pt/sumNP,total:pt,purchase_total:pt,sales_total:sumS,ornamentCount:valid.length,totalNetWeight:valid.reduce((a,d)=>a+d.netWeight,0)};
   }, [ornamentData, feeN]);
 
-  // ── Share highlight — depends on margin1, so declared after it ───────────
   const [shareHighlighted, setShareHighlighted] = useState(false);
   const marginCardRef = useRef(null);
   useEffect(() => {
@@ -692,7 +926,6 @@ function MarginPage({ navigate, spot }) {
     return () => io.disconnect();
   }, [margin1]);
 
-  // ── margin2 ───────────────────────────────────────────────────────────────
   const margin2 = useMemo(() => {
     if(revN===null||revN<=0)return null;
     const valid=ornamentData.filter(d=>d.isValid); if(!valid.length)return null;
@@ -788,7 +1021,6 @@ function MarginPage({ navigate, spot }) {
   return (
     <div style={{ minHeight:'100dvh', background:C.paper, fontFamily:SANS, color:C.ink, paddingTop:stickyVisible?'52px':0, transition:'padding-top .3s ease' }}>
 
-      {/* Sticky bar */}
       {stickyVisible && (
         <div style={{ position:'fixed', top:0, left:0, right:0, zIndex:50, background:`rgba(43,20,80,.96)`, backdropFilter:'blur(10px)', WebkitBackdropFilter:'blur(10px)', borderBottom:`1px solid rgba(224,183,101,.15)`, boxShadow:'0 2px 16px rgba(43,20,80,.2)', animation:'stickyDrop .35s ease' }}>
           <div style={{ maxWidth:'520px', margin:'0 auto', padding:'12px 18px', display:'flex', alignItems:'center', gap:'10px', borderLeft:`3px solid ${C.gold}`, minHeight:'52px', boxSizing:'border-box' }}>
@@ -832,7 +1064,6 @@ function MarginPage({ navigate, spot }) {
           </p>
         </div>
 
-        {/* Input card */}
         <Card style={{ marginBottom:'14px' }}>
           <Eyebrow>{isMulti ? `Your Lot · ${ornaments.length} Ornaments` : 'What Your Buyer Told You'}</Eyebrow>
           {ornaments.map((o,idx) => {
@@ -910,7 +1141,6 @@ function MarginPage({ navigate, spot }) {
           </div>
         </Card>
 
-        {/* Margin reveal card — ref attached here for IntersectionObserver */}
         <Card ref={marginCardRef} style={{ textAlign:'center', padding:'32px 24px', minHeight:'180px', display:'flex', alignItems:'center', justifyContent:'center', marginBottom:'14px' }}>
           {margin1 === null ? (
             <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:'14px' }}>
@@ -993,7 +1223,6 @@ function MarginPage({ navigate, spot }) {
           )}
         </Card>
 
-        {/* Revised offer */}
         {margin1 !== null && (
           <div ref={attachRevisedObserver}>
             <Card style={{ marginBottom:'14px', animation:'fadeSlide .5s ease' }}>
@@ -1026,7 +1255,6 @@ function MarginPage({ navigate, spot }) {
           </div>
         )}
 
-        {/* CTA */}
         {margin1 !== null && (
           <Card dark style={{ marginBottom:'14px', animation:'fadeSlide .55s ease', position:'relative', overflow:'hidden' }}>
             <div style={{ position:'absolute', top:'-50px', right:'-50px', width:'160px', height:'160px', borderRadius:'50%', background:`radial-gradient(circle,rgba(224,183,101,.15) 0%,transparent 70%)`, pointerEvents:'none' }}/>
@@ -1048,7 +1276,6 @@ function MarginPage({ navigate, spot }) {
         {margin1 !== null && <ShareSection/>}
       </div>
 
-      {/* Floating share button — always visible, highlights on viewport trigger */}
       <FloatingShareButton highlighted={shareHighlighted}/>
     </div>
   );
@@ -1056,13 +1283,15 @@ function MarginPage({ navigate, spot }) {
 
 // ─── App ──────────────────────────────────────────────────────────────────────
 export default function App() {
-  const { route, navigate } = useRoute();
+  const { route, navigate, blogSlug } = useRoute();
   const spot = useSpotRate();
-  useSEO(route);
+  useSEO(blogSlug ? '/blog' : route);
   let page;
-  if      (route==='/sell')   page = <SellPage   navigate={navigate} spot={spot}/>;
-  else if (route==='/buy')    page = <BuyPage    navigate={navigate} spot={spot}/>;
-  else if (route==='/margin') page = <MarginPage navigate={navigate} spot={spot}/>;
-  else                        page = <HomePage   navigate={navigate} spot={spot}/>;
+  if      (route==='/sell')   page = <SellPage        navigate={navigate} spot={spot}/>;
+  else if (route==='/buy')    page = <BuyPage          navigate={navigate} spot={spot}/>;
+  else if (route==='/margin') page = <MarginPage       navigate={navigate} spot={spot}/>;
+  else if (route==='/blog')   page = <BlogIndexPage    navigate={navigate}/>;
+  else if (blogSlug)          page = <BlogArticlePage  navigate={navigate} slug={blogSlug}/>;
+  else                        page = <HomePage         navigate={navigate} spot={spot}/>;
   return <><style>{GLOBAL_CSS}</style>{page}</>;
 }
