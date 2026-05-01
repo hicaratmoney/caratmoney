@@ -70,8 +70,15 @@ function HomeLogo() {
   const CYCLE_MS = TOTAL_MS + GAP_MS;
   const START_MS = 800;
 
-  const [tick, setTick]   = useState(0);
-  const [phase, setPhase] = useState('idle');
+  const [tick, setTick]     = useState(0);
+  const [phase, setPhase]   = useState('idle');
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   useEffect(() => {
     let raf, startTime, cycleTimer, initialTimer;
@@ -99,7 +106,7 @@ function HomeLogo() {
 
   const BAR_H = 44;
   const BAR_W = 76;
-  const barY  = 111;
+  const barY  = 149; // 111 + 38px rate strip height
 
   const barTravelEnd = logoX - ovalHalfPx - BAR_W / 2;
   const barEndT      = 0.55;
@@ -112,7 +119,7 @@ function HomeLogo() {
   if (distToOval < approachZone && distToOval >= 0) barScale = distToOval / approachZone;
   if (distToOval < 0) barScale = 0;
 
-  const barVisible = phase === 'running' && t < barEndT && barScale > 0.02;
+  const barVisible = phase === 'running' && !scrolled && t < barEndT && barScale > 0.02;
 
   const shrinkStarted = barRightEdge > (logoX - ovalHalfPx - approachZone);
   const rupeeMaxT     = 0.78;
@@ -154,7 +161,7 @@ function HomeLogo() {
         <circle cx="100" cy="224" r="2" fill={color}/>
       </svg>
 
-      {phase === 'running' && (
+      {phase === 'running' && !scrolled && (
         <svg style={{
           position:'fixed', top:0, left:0,
           width:'100vw', height:'100vh',
@@ -678,11 +685,11 @@ function HomePage({ navigate, spot }) {
                 {/* 24K and 22K on same line — 22K pushed to right edge */}
                 <div style={{ display:'flex', alignItems:'baseline', justifyContent:'space-between', gap:'8px', paddingBottom:'10px', borderBottom:`1px solid rgba(224,183,101,.15)` }}>
                   <div style={{ display:'flex', alignItems:'baseline', gap:'6px', flexShrink:0 }}>
-                    <span style={{ fontFamily:SERIF, fontSize:'56px', fontWeight:350, lineHeight:1, letterSpacing:'-0.03em', color:C.gold3, whiteSpace:'nowrap' }}>₹{fmt(r24,0)}</span>
+                    <span style={{ fontFamily:SERIF, fontSize:'clamp(32px, 9vw, 48px)', fontWeight:350, lineHeight:1, letterSpacing:'-0.03em', color:C.gold3, whiteSpace:'nowrap' }}>₹{fmt(r24,0)}</span>
                     <span style={{ fontFamily:SANS, fontSize:'15px', color:`rgba(241,215,141,.6)`, whiteSpace:'nowrap' }}>/g · 24K</span>
                   </div>
                   <div style={{ display:'flex', alignItems:'baseline', gap:'4px', flexShrink:0 }}>
-                    <span style={{ fontFamily:SERIF, fontSize:'22px', fontWeight:350, color:C.gold2, letterSpacing:'-0.02em', whiteSpace:'nowrap' }}>₹{fmt(r22,0)}</span>
+                    <span style={{ fontFamily:SERIF, fontSize:'clamp(13px, 4vw, 18px)', fontWeight:350, color:C.gold2, letterSpacing:'-0.02em', whiteSpace:'nowrap' }}>₹{fmt(r22,0)}</span>
                     <span style={{ fontFamily:SANS, fontSize:'13px', color:`rgba(241,215,141,.5)`, whiteSpace:'nowrap' }}>/g · 22K</span>
                   </div>
                 </div>
