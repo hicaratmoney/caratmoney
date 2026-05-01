@@ -501,11 +501,11 @@ function HomePage({ navigate, spot }) {
                 {/* 24K and 22K on same line — 22K pushed to right edge */}
                 <div style={{ display:'flex', alignItems:'baseline', justifyContent:'space-between', gap:'4px', paddingBottom:'10px', borderBottom:`1px solid rgba(224,183,101,.15)`, overflow:'hidden' }}>
                   <div style={{ display:'flex', alignItems:'baseline', gap:'6px', flexShrink:1, minWidth:0 }}>
-                  <span style={{ fontFamily:SERIF, fontSize:'48px', fontWeight:350, lineHeight:1, letterSpacing:'-0.03em', color:C.gold3, whiteSpace:'nowrap' }}>₹{fmt(r24,0)}</span>
+                  <span style={{ fontFamily:SERIF, fontSize:'clamp(32px, 10vw, 48px)', fontWeight:350, lineHeight:1, letterSpacing:'-0.03em', color:C.gold3, whiteSpace:'nowrap' }}>₹{fmt(r24,0)}</span>
                   <span style={{ fontFamily:SANS, fontSize:'13px', color:`rgba(241,215,141,.6)`, whiteSpace:'nowrap' }}>/g · 24K</span>
                   </div>
                   <div style={{ display:'flex', alignItems:'baseline', gap:'4px', flexShrink:0 }}>
-                    <span style={{ fontFamily:SERIF, fontSize:'18px', fontWeight:350, color:C.gold2, letterSpacing:'-0.02em', whiteSpace:'nowrap' }}>₹{fmt(r22,0)}</span>
+                    <span style={{ fontFamily:SERIF, fontSize:'clamp(14px, 4.5vw, 18px)', fontWeight:350, color:C.gold2, letterSpacing:'-0.02em', whiteSpace:'nowrap' }}>₹{fmt(r22,0)}</span>
                     <span style={{ fontFamily:SANS, fontSize:'13px', color:`rgba(241,215,141,.5)`, whiteSpace:'nowrap' }}>/g · 22K</span>
                   </div>
                 </div>
