@@ -490,50 +490,74 @@ function HomePage({ navigate, spot }) {
           </div>
         </div>
 
+        {/* ── Rate Card ── */}
         <Card dark style={{ marginBottom:'14px' }}>
-          <Eyebrow light>Carat Money's Buy Rate in Your City</Eyebrow>
-          <div style={{ marginBottom:'4px' }}>
-            {spot.loading && !spot.display
-              ? <span style={{ fontFamily:SERIF, fontSize:'38px', color:`rgba(241,215,141,.4)`, letterSpacing:'-0.02em' }}>Loading…</span>
-              : <>
-                  <div style={{ display:'flex', alignItems:'baseline', gap:'8px' }}>
-                    <span style={{ fontFamily:SERIF, fontSize:'48px', fontWeight:350, lineHeight:1, letterSpacing:'-0.03em', color:C.gold3 }}>₹{fmt(r24,0)}</span>
-                    <span style={{ fontFamily:SANS, fontSize:'16px', color:`rgba(241,215,141,.6)` }}>/g · 24K</span>
-                  </div>
-                  <div style={{ display:'flex', alignItems:'baseline', gap:'8px', marginTop:'12px', paddingTop:'12px', borderTop:`1px solid rgba(224,183,101,.15)` }}>
-                    <span style={{ fontFamily:SERIF, fontSize:'22px', fontWeight:350, color:C.gold2, letterSpacing:'-0.02em' }}>₹{fmt(r22,0)}</span>
-                    <span style={{ fontFamily:SANS, fontSize:'14px', color:`rgba(241,215,141,.5)` }}>/g · 22K</span>
-                    <span onClick={() => setShowGstTip(v=>!v)} style={{ fontSize:'13px', color:C.gold, cursor:'pointer', userSelect:'none', marginLeft:'2px' }}>ⓘ</span>
-                  </div>
-                  {showGstTip && (
-                    <div style={{ marginTop:'10px', padding:'10px 14px', background:`rgba(224,183,101,.1)`, borderRadius:'4px', fontSize:'13px', color:C.gold3, lineHeight:1.55 }}>
-                      GST-inclusive rate shown. If you're GST-registered, we pass the tax credit back to you.
-                    </div>
-                  )}
-                </>
-            }
+          <div style={{ fontFamily:SERIF, fontSize:'26px', fontWeight:350, color:C.gold2, letterSpacing:'-0.02em', lineHeight:1.1, marginBottom:'12px' }}>
+            Carat Money's Buy Rate
           </div>
-          <div style={{ fontFamily:SERIF, fontSize:'12px', color:`rgba(241,215,141,.4)`, marginTop:'14px', fontStyle:'italic' }}>
-            {spot.error && !spot.updatedAt ? 'Live rate temporarily unavailable' : time ? `Live rate · Updated ${time}` : 'Fetching live rate…'}
-          </div>
+          {spot.loading && !spot.display
+            ? <span style={{ fontFamily:SERIF, fontSize:'40px', color:`rgba(241,215,141,.4)`, letterSpacing:'-0.02em' }}>Loading…</span>
+            : <>
+                {/* 24K and 22K on same line — 22K pushed to right edge */}
+                <div style={{ display:'flex', alignItems:'baseline', justifyContent:'space-between', gap:'8px', paddingBottom:'10px', borderBottom:`1px solid rgba(224,183,101,.15)` }}>
+                  <div style={{ display:'flex', alignItems:'baseline', gap:'6px', flexShrink:0 }}>
+                    <span style={{ fontFamily:SERIF, fontSize:'56px', fontWeight:350, lineHeight:1, letterSpacing:'-0.03em', color:C.gold3, whiteSpace:'nowrap' }}>₹{fmt(r24,0)}</span>
+                    <span style={{ fontFamily:SANS, fontSize:'15px', color:`rgba(241,215,141,.6)`, whiteSpace:'nowrap' }}>/g · 24K</span>
+                  </div>
+                  <div style={{ display:'flex', alignItems:'baseline', gap:'4px', flexShrink:0 }}>
+                    <span style={{ fontFamily:SERIF, fontSize:'22px', fontWeight:350, color:C.gold2, letterSpacing:'-0.02em', whiteSpace:'nowrap' }}>₹{fmt(r22,0)}</span>
+                    <span style={{ fontFamily:SANS, fontSize:'13px', color:`rgba(241,215,141,.5)`, whiteSpace:'nowrap' }}>/g · 22K</span>
+                  </div>
+                </div>
+                {/* Timestamp + GST toggle on same line */}
+                <div style={{ display:'flex', alignItems:'center', gap:'8px', marginTop:'10px' }}>
+                  <div style={{ fontFamily:SERIF, fontSize:'12px', color:`rgba(241,215,141,.4)`, fontStyle:'italic', flex:1 }}>
+                    {spot.error && !spot.updatedAt ? 'Live rate temporarily unavailable' : time ? `Live rate · Updated ${time}` : 'Fetching live rate…'}
+                  </div>
+                  <span onClick={() => setShowGstTip(v=>!v)} style={{ fontSize:'13px', color:C.gold, cursor:'pointer', userSelect:'none', flexShrink:0 }}>ⓘ</span>
+                </div>
+                {showGstTip && (
+                  <div style={{ marginTop:'10px', padding:'10px 14px', background:`rgba(224,183,101,.1)`, borderRadius:'4px', fontSize:'13px', color:C.gold3, lineHeight:1.55 }}>
+                    GST-inclusive rate shown. If you're GST-registered, we pass the tax credit back to you.
+                  </div>
+                )}
+              </>
+          }
         </Card>
 
-        <div onClick={() => navigate('/margin')} style={{ background:C.white, borderRadius:'8px', padding:'24px', border:`1px solid rgba(26,20,38,.1)`, cursor:'pointer', marginBottom:'12px', boxShadow:'0 2px 12px rgba(22,18,31,.06)', transition:'transform .2s,box-shadow .2s' }}>
-          <Eyebrow>Is your gold buyer cheating you?</Eyebrow>
-          <div style={{ fontFamily:SERIF, fontSize:'26px', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1.15, marginBottom:'8px' }}>Check your buyer's margin</div>
-          <div style={{ fontSize:'15px', color:C.mute, lineHeight:1.55, marginBottom:'20px' }}>See exactly what your buyer is keeping above today's rate.</div>
-          <BtnPrimary style={{ width:'auto', padding:'10px 20px' }}>
-            <TrendingDown size={15}/> Calculate margin
-          </BtnPrimary>
+        {/* ── Margin Card ── */}
+        <div onClick={() => navigate('/margin')} style={{ background:C.white, borderRadius:'8px', border:`1px solid rgba(26,20,38,.1)`, cursor:'pointer', marginBottom:'12px', boxShadow:'0 2px 12px rgba(22,18,31,.06)', transition:'transform .2s,box-shadow .2s', overflow:'hidden' }}>
+          {/* Image strip */}
+          <div style={{ position:'relative', height:'200px', overflow:'hidden', borderRadius:'8px 8px 0 0' }}>
+            <img src="/img-margin.jpeg" alt="Informed gold seller" style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'center', display:'block' }}/>
+            <div style={{ position:'absolute', bottom:0, left:0, right:0, height:'80px', background:'linear-gradient(to bottom, transparent, #ffffff)' }}/>
+          </div>
+          {/* Text section */}
+          <div style={{ padding:'20px 24px 24px' }}>
+            <div style={{ fontFamily:SERIF, fontSize:'26px', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1.15, marginBottom:'8px' }}>
+              Is your gold buyer cheating you?
+            </div>
+            <div style={{ fontSize:'15px', color:C.mute, lineHeight:1.55, marginBottom:'20px' }}>Check your buyer's margin</div>
+            <BtnPrimary style={{ width:'auto', padding:'10px 20px' }}>
+              <TrendingDown size={15}/> Calculate margin
+            </BtnPrimary>
+          </div>
         </div>
 
-        <div onClick={() => navigate('/sell')} style={{ background:C.ink, borderRadius:'8px', padding:'24px', border:`1px solid rgba(224,183,101,.12)`, cursor:'pointer', marginBottom:'20px', boxShadow:'0 6px 24px rgba(22,18,31,.18)', position:'relative', overflow:'hidden', transition:'transform .2s,box-shadow .2s' }}>
-          <div style={{ position:'absolute', top:'-50px', right:'-50px', width:'180px', height:'180px', borderRadius:'50%', background:`radial-gradient(circle,rgba(224,183,101,.18) 0%,transparent 70%)`, pointerEvents:'none' }}/>
-          <Eyebrow light>Sell Gold</Eyebrow>
-          <div style={{ fontFamily:SERIF, fontSize:'26px', fontWeight:350, color:C.white, letterSpacing:'-0.02em', lineHeight:1.15, marginBottom:'8px' }}>Sell to Carat Money</div>
-          <div style={{ fontSize:'15px', color:`rgba(255,255,255,.55)`, lineHeight:1.55, marginBottom:'20px' }}>Get an instant WhatsApp quote. We come to you.</div>
-          <div style={{ display:'inline-flex', alignItems:'center', gap:'6px', background:C.green, color:C.white, padding:'10px 20px', borderRadius:'999px', fontSize:'14px', fontWeight:600, fontFamily:SANS }}>
-            <MessageCircle size={15}/> Get a quote
+        {/* ── Sell Card ── */}
+        <div onClick={() => navigate('/sell')} style={{ background:C.white, borderRadius:'8px', border:`1px solid rgba(26,20,38,.1)`, cursor:'pointer', marginBottom:'20px', boxShadow:'0 2px 12px rgba(22,18,31,.06)', transition:'transform .2s,box-shadow .2s', overflow:'hidden' }}>
+          {/* Image strip */}
+          <div style={{ position:'relative', height:'200px', overflow:'hidden', borderRadius:'8px 8px 0 0' }}>
+            <img src="/img-sell.jpg" alt="Sell gold to Carat Money" style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'center', display:'block' }}/>
+            <div style={{ position:'absolute', bottom:0, left:0, right:0, height:'80px', background:'linear-gradient(to bottom, transparent, #ffffff)' }}/>
+          </div>
+          {/* Text section */}
+          <div style={{ padding:'20px 24px 24px' }}>
+            <div style={{ fontFamily:SERIF, fontSize:'26px', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1.15, marginBottom:'8px' }}>Sell to Carat Money</div>
+            <div style={{ fontSize:'15px', color:C.mute, lineHeight:1.55, marginBottom:'20px' }}>Get an instant WhatsApp quote. We come to you.</div>
+            <div style={{ display:'inline-flex', alignItems:'center', gap:'6px', background:C.green, color:C.white, padding:'10px 20px', borderRadius:'999px', fontSize:'14px', fontWeight:600, fontFamily:SANS }}>
+              <MessageCircle size={15}/> Get a quote
+            </div>
           </div>
         </div>
 
