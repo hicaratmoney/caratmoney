@@ -530,7 +530,7 @@ function HomePage({ navigate, spot }) {
           {/* Image strip */}
           <div style={{ position:'relative', height:'200px', overflow:'hidden', borderRadius:'8px 8px 0 0' }}>
             <img src="/img-margin.jpeg" alt="Informed gold seller" style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'center', display:'block' }}/>
-            <div style={{ position:'absolute', bottom:0, left:0, right:0, height:'80px', background:'linear-gradient(to bottom, transparent, #ffffff)' }}/>
+            <div style={{ position:'absolute', bottom:0, left:0, right:0, height:'80px', background:'linear-gradient(to bottom, transparent 60%, #ffffff)' }}/>
           </div>
           {/* Text section */}
           <div style={{ padding:'20px 24px 24px' }}>
@@ -549,7 +549,7 @@ function HomePage({ navigate, spot }) {
           {/* Image strip */}
           <div style={{ position:'relative', height:'200px', overflow:'hidden', borderRadius:'8px 8px 0 0' }}>
             <img src="/img-sell.jpg" alt="Sell gold to Carat Money" style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'center', display:'block' }}/>
-            <div style={{ position:'absolute', bottom:0, left:0, right:0, height:'80px', background:'linear-gradient(to bottom, transparent, #ffffff)' }}/>
+            <div style={{ position:'absolute', bottom:0, left:0, right:0, height:'80px', background:'linear-gradient(to bottom, transparent 60%, #ffffff)' }}/>
           </div>
           {/* Text section */}
           <div style={{ padding:'20px 24px 24px' }}>
