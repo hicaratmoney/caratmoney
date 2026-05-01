@@ -63,7 +63,184 @@ function LogoMark({ size = 110, color = C.gold2 }) {
   );
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+// ─── Gold Bar + Logo Animation ───────────────────────────────────────────────
+function HomeLogo() {
+  const TOTAL_MS = 3000;
+  const GAP_MS   = 2000;   // 2s after rupee disappears
+  const CYCLE_MS = TOTAL_MS + GAP_MS;
+  const START_MS = 800;
+
+  const [tick, setTick]   = useState(0);
+  const [phase, setPhase] = useState('idle');
+
+  useEffect(() => {
+    let raf, startTime, cycleTimer, initialTimer;
+    const run = () => {
+      setPhase('running');
+      startTime = performance.now();
+      const animate = now => {
+        const elapsed = now - startTime;
+        setTick(Math.min(elapsed / TOTAL_MS, 1));
+        if (elapsed < TOTAL_MS) raf = requestAnimationFrame(animate);
+        else { setTick(1); setPhase('idle'); }
+      };
+      raf = requestAnimationFrame(animate);
+    };
+    initialTimer = setTimeout(() => { run(); cycleTimer = setInterval(run, CYCLE_MS); }, START_MS);
+    return () => { clearTimeout(initialTimer); clearInterval(cycleTimer); cancelAnimationFrame(raf); };
+  }, []);
+
+  const t       = tick;
+  const screenW = typeof window !== 'undefined' ? window.innerWidth : 390;
+  const logoX   = screenW / 2;
+
+  const ovalHalfPx   = (88 / 200) * 110;
+  const approachZone = 70;
+
+  const BAR_H = 44;
+  const BAR_W = 76;
+  const barY  = 111;
+
+  const barTravelEnd = logoX - ovalHalfPx - BAR_W / 2;
+  const barEndT      = 0.55;
+  const barStartX    = -BAR_W / 2;
+  const barCentreX   = barStartX + Math.min(t / barEndT, 1) * (barTravelEnd - barStartX);
+
+  const barRightEdge = barCentreX + BAR_W / 2;
+  const distToOval   = (logoX - ovalHalfPx) - barRightEdge;
+  let barScale       = 1;
+  if (distToOval < approachZone && distToOval >= 0) barScale = distToOval / approachZone;
+  if (distToOval < 0) barScale = 0;
+
+  const barVisible = phase === 'running' && t < barEndT && barScale > 0.02;
+
+  const shrinkStarted = barRightEdge > (logoX - ovalHalfPx - approachZone);
+  const rupeeMaxT     = 0.78;
+  const cmGlow        = phase === 'running' && shrinkStarted && t < rupeeMaxT && t > 0;
+
+  // Rupee — max size now 56px (double the previous 28px)
+  const rupeeStartT = 0.55;
+  const rupeeEndT   = 0.97;
+  let rupeeSize     = 0;
+  let rupeeX        = logoX + ovalHalfPx;
+  let rupeeOpacity  = 0;
+
+  if (phase === 'running' && t >= rupeeStartT && t <= rupeeEndT) {
+    const rp     = (t - rupeeStartT) / (rupeeEndT - rupeeStartT);
+    rupeeSize    = Math.min(56, 56 * (rp / 0.4));
+    rupeeX       = logoX + ovalHalfPx + rp * (screenW - logoX - ovalHalfPx - 24);
+    rupeeOpacity = rp < 0.72 ? 1 : 1 - (rp - 0.72) / 0.28;
+  }
+
+  const color = C.gold2;
+
+  return (
+    <div style={{ position:'relative', display:'inline-block' }}>
+      <svg viewBox="0 0 200 260" width={110} height={143}
+        role="img" aria-label="Carat Money" xmlns="http://www.w3.org/2000/svg">
+        <path d="M100 10 C 150 10 188 60 188 130 C 188 200 150 250 100 250 C 50 250 12 200 12 130 C 12 60 50 10 100 10 Z"
+          fill="none" stroke={color} strokeWidth="6"/>
+        <path d="M100 22 C 142 22 176 66 176 130 C 176 194 142 238 100 238 C 58 238 24 194 24 130 C 24 66 58 22 100 22 Z"
+          fill="none" stroke={color} strokeWidth="1" opacity="0.45"/>
+        <text x="100" y="172" textAnchor="middle"
+          fontFamily="Fraunces, serif" fontSize="170" fontWeight="360"
+          fontStyle="italic" letterSpacing="-8" fill={color}
+          style={{
+            filter:     cmGlow ? 'drop-shadow(0 0 8px #f1d78d)' : 'none',
+            opacity:    cmGlow ? 1 : 0.85,
+            transition: 'filter 0.25s ease, opacity 0.25s ease',
+          }}>cm</text>
+        <circle cx="100" cy="36"  r="2" fill={color}/>
+        <circle cx="100" cy="224" r="2" fill={color}/>
+      </svg>
+
+      {phase === 'running' && (
+        <svg style={{
+          position:'fixed', top:0, left:0,
+          width:'100vw', height:'100vh',
+          pointerEvents:'none', zIndex:999, overflow:'visible',
+        }}>
+          <defs>
+            <linearGradient id="barTop" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%"   stopColor="#f7e08a"/>
+              <stop offset="40%"  stopColor="#e0b765"/>
+              <stop offset="100%" stopColor="#8a5e1a"/>
+            </linearGradient>
+            <linearGradient id="barFace" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%"   stopColor="#f1d78d"/>
+              <stop offset="50%"  stopColor="#c9922a"/>
+              <stop offset="100%" stopColor="#7a4e12"/>
+            </linearGradient>
+            <linearGradient id="barSide" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%"   stopColor="#b8883a"/>
+              <stop offset="100%" stopColor="#6b3d0a"/>
+            </linearGradient>
+          </defs>
+
+          {barVisible && (() => {
+            const s  = barScale;
+            const w  = BAR_W * s;    // base width (full)
+            const h  = BAR_H * s;
+            const d  = 10 * s;       // 3D depth
+            const cx = barCentreX;
+            const cy = barY;
+
+            // Trapezoid: base is full width, top is narrower (classic gold bar shape)
+            const inset = w * 0.12;  // top edge inset on each side
+            const x  = cx - w / 2;
+            const y  = cy - h / 2;
+
+            // Front face — trapezoid (wider at bottom, narrower at top)
+            const frontPoints = `${x},${y+h} ${x+w},${y+h} ${x+w-inset},${y} ${x+inset},${y}`;
+
+            // Top face — parallelogram connecting top of front to top of back
+            const topPoints = `${x+inset},${y} ${x+w-inset},${y} ${x+w-inset+d},${y-d} ${x+inset+d},${y-d}`;
+
+            // Right side face — trapezoid side
+            const sidePoints = `${x+w},${y+h} ${x+w+d},${y+h-d} ${x+w-inset+d},${y-d} ${x+w-inset},${y}`;
+
+            return (
+              <g>
+                <polygon points={frontPoints} fill="url(#barFace)"/>
+                <polygon points={topPoints}   fill="url(#barTop)"/>
+                <polygon points={sidePoints}  fill="url(#barSide)"/>
+                {/* Vertical ridge lines on front face */}
+                {s > 0.4 && [0.28, 0.72].map((pos, i) => {
+                  const rx = x + w * pos;
+                  const rtopX = x + inset + (w - 2*inset) * pos;
+                  return (
+                    <line key={i}
+                      x1={rtopX} y1={y + 3*s}
+                      x2={rx}    y2={y + h - 3*s}
+                      stroke="#8a5e1a" strokeWidth={1.2*s} opacity="0.55"/>
+                  );
+                })}
+                {/* Shine on front */}
+                {s > 0.5 && (
+                  <polygon
+                    points={`${x+inset+4*s},${y+4*s} ${x+inset+w*0.18},${y+4*s} ${x+w*0.16},${y+h-6*s} ${x+4*s},${y+h-6*s}`}
+                    fill="white" opacity={0.1*s}/>
+                )}
+              </g>
+            );
+          })()}
+
+          {rupeeOpacity > 0 && (
+            <text
+              x={rupeeX} y={barY + rupeeSize * 0.38}
+              textAnchor="middle"
+              fontFamily="Georgia, serif"
+              fontSize={rupeeSize}
+              fill="#e0b765"
+              opacity={rupeeOpacity}
+            >₹</text>
+          )}
+        </svg>
+      )}
+    </div>
+  );
+}
+
 const fmt = (n, d = 2) => {
   if (n === null || n === undefined || isNaN(n) || !isFinite(n)) return '—';
   return Number(n).toLocaleString('en-IN', { minimumFractionDigits: d, maximumFractionDigits: d });
@@ -472,7 +649,7 @@ function HomePage({ navigate, spot }) {
 
         <div style={{ textAlign:'center', padding:'40px 12px 32px' }}>
           <div style={{ display:'flex', justifyContent:'center', marginBottom:'16px' }}>
-            <LogoMark size={110} color={C.gold2}/>
+            <HomeLogo/>
           </div>
           <div style={{ fontFamily:SERIF, fontSize:'42px', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1.05, marginBottom:'6px' }}>
             Carat <span style={{ fontStyle:'italic', color:C.plum }}>Money</span>
@@ -499,13 +676,13 @@ function HomePage({ navigate, spot }) {
             ? <span style={{ fontFamily:SERIF, fontSize:'40px', color:`rgba(241,215,141,.4)`, letterSpacing:'-0.02em' }}>Loading…</span>
             : <>
                 {/* 24K and 22K on same line — 22K pushed to right edge */}
-                <div style={{ display:'flex', alignItems:'baseline', justifyContent:'space-between', gap:'4px', paddingBottom:'10px', borderBottom:`1px solid rgba(224,183,101,.15)`, overflow:'hidden' }}>
-                  <div style={{ display:'flex', alignItems:'baseline', gap:'6px', flexShrink:1, minWidth:0 }}>
-                  <span style={{ fontFamily:SERIF, fontSize:'clamp(32px, 10vw, 48px)', fontWeight:350, lineHeight:1, letterSpacing:'-0.03em', color:C.gold3, whiteSpace:'nowrap' }}>₹{fmt(r24,0)}</span>
-                  <span style={{ fontFamily:SANS, fontSize:'13px', color:`rgba(241,215,141,.6)`, whiteSpace:'nowrap' }}>/g · 24K</span>
+                <div style={{ display:'flex', alignItems:'baseline', justifyContent:'space-between', gap:'8px', paddingBottom:'10px', borderBottom:`1px solid rgba(224,183,101,.15)` }}>
+                  <div style={{ display:'flex', alignItems:'baseline', gap:'6px', flexShrink:0 }}>
+                    <span style={{ fontFamily:SERIF, fontSize:'56px', fontWeight:350, lineHeight:1, letterSpacing:'-0.03em', color:C.gold3, whiteSpace:'nowrap' }}>₹{fmt(r24,0)}</span>
+                    <span style={{ fontFamily:SANS, fontSize:'15px', color:`rgba(241,215,141,.6)`, whiteSpace:'nowrap' }}>/g · 24K</span>
                   </div>
                   <div style={{ display:'flex', alignItems:'baseline', gap:'4px', flexShrink:0 }}>
-                    <span style={{ fontFamily:SERIF, fontSize:'clamp(14px, 4.5vw, 18px)', fontWeight:350, color:C.gold2, letterSpacing:'-0.02em', whiteSpace:'nowrap' }}>₹{fmt(r22,0)}</span>
+                    <span style={{ fontFamily:SERIF, fontSize:'22px', fontWeight:350, color:C.gold2, letterSpacing:'-0.02em', whiteSpace:'nowrap' }}>₹{fmt(r22,0)}</span>
                     <span style={{ fontFamily:SANS, fontSize:'13px', color:`rgba(241,215,141,.5)`, whiteSpace:'nowrap' }}>/g · 22K</span>
                   </div>
                 </div>
@@ -530,7 +707,7 @@ function HomePage({ navigate, spot }) {
           {/* Image strip */}
           <div style={{ position:'relative', height:'200px', overflow:'hidden', borderRadius:'8px 8px 0 0' }}>
             <img src="/img-margin.jpeg" alt="Informed gold seller" style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'center', display:'block' }}/>
-            <div style={{ position:'absolute', bottom:0, left:0, right:0, height:'80px', background:'linear-gradient(to bottom, transparent 60%, #ffffff)' }}/>
+            <div style={{ position:'absolute', bottom:0, left:0, right:0, height:'80px', background:'linear-gradient(to bottom, transparent, #ffffff)' }}/>
           </div>
           {/* Text section */}
           <div style={{ padding:'20px 24px 24px' }}>
@@ -549,7 +726,7 @@ function HomePage({ navigate, spot }) {
           {/* Image strip */}
           <div style={{ position:'relative', height:'200px', overflow:'hidden', borderRadius:'8px 8px 0 0' }}>
             <img src="/img-sell.jpg" alt="Sell gold to Carat Money" style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'center', display:'block' }}/>
-            <div style={{ position:'absolute', bottom:0, left:0, right:0, height:'80px', background:'linear-gradient(to bottom, transparent 60%, #ffffff)' }}/>
+            <div style={{ position:'absolute', bottom:0, left:0, right:0, height:'80px', background:'linear-gradient(to bottom, transparent, #ffffff)' }}/>
           </div>
           {/* Text section */}
           <div style={{ padding:'20px 24px 24px' }}>
