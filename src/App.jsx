@@ -95,7 +95,7 @@ function useRoute() {
 // ─── SEO ──────────────────────────────────────────────────────────────────────
 const SEO_MAP = {
   '/':       { title:'Carat Money — The Fair Price for Gold', desc:'Check if your gold buyer is giving you a fair deal. Live rates, instant WhatsApp quotes. Trusted by 5,000+ customers in Bangalore.' },
-  '/sell':   { title:'Sell Gold to Carat Money | Best Buying Rates', desc:'Get an instant WhatsApp quote. We come to you. Trusted by 5,000+ sellers across India.' },
+  '/sell':   { title:'Sell Gold to Carat Money | Best Buying Rates', desc:'Get an instant WhatsApp quote. Trusted by 5,000+ sellers across India.' },
   '/buy':    { title:'Buy 24K Gold Coins | BIS-Hallmarked | Carat Money', desc:'Buy BIS-hallmarked 24K gold coins. 999.9 purity. 48-hour open-box delivery. WhatsApp to order.' },
   '/margin': { title:'Gold Buyer Margin Calculator | Free Tool by Carat Money', desc:'Free tool to check what your gold buyer is keeping above the spot rate. Used by 5,000+ sellers across India.' },
   '/blog':   { title:'Gold Selling Tips & Insights | Carat Money Blog', desc:'Expert articles on gold selling, buyer margins, and getting the best price for your gold in India.' },
@@ -537,7 +537,7 @@ function HomePage({ navigate, spot }) {
             <div style={{ fontFamily:SERIF, fontSize:'26px', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1.15, marginBottom:'8px' }}>
               Is your gold buyer cheating you?
             </div>
-            <div style={{ fontSize:'15px', color:C.mute, lineHeight:1.55, marginBottom:'20px' }}>Check your buyer's margin</div>
+            <div style={{ fontSize:'15px', color:C.mute, lineHeight:1.55, marginBottom:'20px' }}>Check your buyer's margin.</div>
             <BtnPrimary style={{ width:'auto', padding:'10px 20px' }}>
               <TrendingDown size={15}/> Calculate margin
             </BtnPrimary>
@@ -554,7 +554,7 @@ function HomePage({ navigate, spot }) {
           {/* Text section */}
           <div style={{ padding:'20px 24px 24px' }}>
             <div style={{ fontFamily:SERIF, fontSize:'26px', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1.15, marginBottom:'8px' }}>Sell to Carat Money</div>
-            <div style={{ fontSize:'15px', color:C.mute, lineHeight:1.55, marginBottom:'20px' }}>Get an instant WhatsApp quote. We come to you.</div>
+            <div style={{ fontSize:'15px', color:C.mute, lineHeight:1.55, marginBottom:'20px' }}>Get an instant WhatsApp quote.</div>
             <div style={{ display:'inline-flex', alignItems:'center', gap:'6px', background:C.green, color:C.white, padding:'10px 20px', borderRadius:'999px', fontSize:'14px', fontWeight:600, fontFamily:SANS }}>
               <MessageCircle size={15}/> Get a quote
             </div>
