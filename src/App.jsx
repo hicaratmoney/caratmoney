@@ -507,7 +507,7 @@ function BlogIndexPage({ navigate }) {
         <div style={{ textAlign:'center', marginBottom:'32px' }}>
           <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:'10px', marginBottom:'14px' }}>
             <div style={{ height:'1px', flex:1, background:C.gold, opacity:0.25 }}/>
-            <div style={{ fontFamily:MONO, fontSize:'9px', letterSpacing:'0.2em', color:C.gold, textTransform:'uppercase' }}>· GOLD INSIGHTS · CARAT MONEY ·</div>
+            <div style={{ fontFamily:MONO, fontSize:'9px', letterSpacing:'0.2em', color:C.gold, textTransform:'uppercase' }}>· GOLD INSIGHTS ·</div>
             <div style={{ height:'1px', flex:1, background:C.gold, opacity:0.25 }}/>
           </div>
           <h1 style={{ fontFamily:SERIF, fontSize:'32px', fontWeight:350, lineHeight:1.1, letterSpacing:'-0.02em', margin:'0 0 8px', color:C.ink }}>
