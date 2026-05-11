@@ -22,8 +22,11 @@ const ARTICLES = [
 export default function handler(req, res) {
   // Second hit — user has already seen meta tags, serve SPA
   if (req.url && req.url.includes('spa=1')) {
-    res.setHeader('Location', '/index.html');
-    return res.status(302).end();
+    const fs = require('fs');
+    const path = require('path');
+    const html = fs.readFileSync(path.join(process.cwd(), 'dist', 'index.html'), 'utf8');
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    return res.status(200).send(html);
   }
 
   const path      = req.url || '';
