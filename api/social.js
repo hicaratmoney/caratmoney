@@ -1,8 +1,4 @@
 // api/social.js — OG meta tag injector for blog article URLs
-// Serves meta-tag HTML to all visitors.
-// Real users are instantly redirected to the React SPA via meta refresh.
-// Crawlers (Google, WhatsApp, Telegram) read the meta tags before redirecting.
-
 const SITE = 'https://carat.money';
 
 const ARTICLES = [
@@ -24,21 +20,27 @@ const ARTICLES = [
 ];
 
 export default function handler(req, res) {
-  const path    = req.url || '';
-  const slugMatch = path.match(/\/blog\/([^/?#]+)/);
-  const slug    = slugMatch ? slugMatch[1] : null;
-  const article = slug ? ARTICLES.find(a => a.slug === slug) : null;
+  // Second hit — user has already seen meta tags, serve SPA
+  if (req.url && req.url.includes('spa=1')) {
+    res.setHeader('Location', '/index.html');
+    return res.status(302).end();
+  }
 
-  const title  = article
+  const path      = req.url || '';
+  const slugMatch = path.match(/\/blog\/([^/?#]+)/);
+  const slug      = slugMatch ? slugMatch[1] : null;
+  const article   = slug ? ARTICLES.find(a => a.slug === slug) : null;
+
+  const title = article
     ? `${article.title} | Carat Money`
     : 'Gold Selling Tips & Insights | Carat Money Blog';
-  const desc   = article
+  const desc  = article
     ? article.excerpt
     : 'Expert articles on gold selling, buyer margins, and getting the best price for your gold in India.';
-  const url    = article
+  const url   = article
     ? `${SITE}/blog/${article.slug}`
     : `${SITE}/blog`;
-  const image  = `${SITE}/logo.png`;
+  const image = `${SITE}/logo.png`;
 
   const html = `<!DOCTYPE html>
 <html lang="en">
@@ -59,8 +61,7 @@ export default function handler(req, res) {
   <meta name="twitter:description" content="${desc}"/>
   <meta name="twitter:image"       content="${image}"/>
   <link rel="canonical"            href="${url}"/>
-  <!-- Instant redirect for real users — crawlers read meta tags above first -->
-  <script>window.location.replace("${url}");</script>
+  <script>window.location.replace("${url}?spa=1");</script>
 </head>
 <body>
   <h1>${title}</h1>
