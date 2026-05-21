@@ -1440,6 +1440,7 @@ function MarginPage({ navigate, spot }) {
           const youGet   = margin1.total;
           const fairMid  = margin1.sales_total * 0.95;
           const diff     = fairMid - youGet;
+          const short    = diff > 0;
           return (
             <Card style={{ marginBottom:'14px', animation:'fadeSlide .5s ease', textAlign:'center' }}>
               <Eyebrow>Your Gold's Fair Value</Eyebrow>
@@ -1447,7 +1448,7 @@ function MarginPage({ navigate, spot }) {
                 {fmtRange(fairLow)} – {fmtRange(fairHigh)}
               </div>
               <div style={{ marginBottom:'14px' }}/>
-              {isShort ? (
+              {short ? (
                 <div style={{ padding:'12px 14px', background:'#FEE2E2', borderRadius:'6px', fontSize:'13px', color:'#991B1B', fontWeight:500, lineHeight:1.55 }}>
                   Your buyer is offering <b>₹{fmt(diff,0)} less</b> than a fair price.
                 </div>
