@@ -1441,7 +1441,7 @@ function MarginPage({ navigate, spot }) {
           return (
             <Card style={{ marginBottom:'14px', animation:'fadeSlide .5s ease', textAlign:'center' }}>
               <Eyebrow>Your Gold's Fair Value</Eyebrow>
-              <div style={{ fontFamily:SERIF, fontSize:'68px', fontWeight:350, letterSpacing:'-0.04em', color:C.plum, lineHeight:1, marginBottom:'6px' }}>
+              <div style={{ fontFamily:SERIF, fontSize:'clamp(28px, 8vw, 68px)', fontWeight:350, letterSpacing:'-0.04em', color:C.plum, lineHeight:1, marginBottom:'6px', whiteSpace:'nowrap' }}>
                 {fmtRange(fairLow)} – {fmtRange(fairHigh)}
               </div>
               <div style={{ marginBottom:'14px' }}/>
