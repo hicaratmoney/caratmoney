@@ -24,8 +24,8 @@ const C = {
 // ─── Config ───────────────────────────────────────────────────────────────────
 const SPOT_FALLBACK    = 15578;
 const WHATSAPP_NUMBER  = '918618542353';
-const STONE_RECOVERY   = 0.45;
-const WASTAGE_RECOVERY = 0.80;
+const STONE_RECOVERY   = 0.50;
+const WASTAGE_RECOVERY = 0.95;
 const MAX_ORNAMENTS    = 10;
 const BUY_RATE_24K     = 15901;
 const BUY_RATE_DATE    = '27 Apr 2026';
