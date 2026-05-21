@@ -255,7 +255,7 @@ const fmt = (n, d = 2) => {
 const parseNum = v => { if (v === '' || v == null) return null; const n = parseFloat(v); return isNaN(n) ? null : n; };
 const makeId        = () => `o_${Date.now()}_${Math.random().toString(36).slice(2,7)}`;
 const blankOrnament = () => ({ id: makeId(), gross:'', stone:'', wastage:'', purity:'', pricePerGram:'' });
-const fmtRange = v => v >= 100000 ? `₹${(v/100000).toFixed(2)}L` : `₹${(v/1000).toFixed(2)}K`;
+const fmtRange = v => v >= 100000 ? `₹${(v/100000).toFixed(2)} L` : `₹${(v/1000).toFixed(2)} K`;
 const fmtTime       = d => d ? d.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' }) : null;
 const copyToClipboard = async t => { try { await navigator.clipboard.writeText(t); return true; } catch { return false; } };
 
@@ -1441,12 +1441,10 @@ function MarginPage({ navigate, spot }) {
           return (
             <Card style={{ marginBottom:'14px', animation:'fadeSlide .5s ease', textAlign:'center' }}>
               <Eyebrow>Your Gold's Fair Value</Eyebrow>
-              <div style={{ fontFamily:SERIF, fontSize:'36px', fontWeight:350, letterSpacing:'-0.03em', color:C.plum, lineHeight:1, marginBottom:'6px' }}>
+              <div style={{ fontFamily:SERIF, fontSize:'68px', fontWeight:350, letterSpacing:'-0.04em', color:C.plum, lineHeight:1, marginBottom:'6px' }}>
                 {fmtRange(fairLow)} – {fmtRange(fairHigh)}
               </div>
-              <div style={{ fontFamily:MONO, fontSize:'10px', color:C.mute, letterSpacing:'0.08em', marginBottom:'14px' }}>
-                BASED ON 4–6% FAIR BUYER MARGIN
-              </div>
+              <div style={{ marginBottom:'14px' }}/>
               {isShort ? (
                 <div style={{ padding:'12px 14px', background:'#FEE2E2', borderRadius:'6px', fontSize:'13px', color:'#991B1B', fontWeight:500, lineHeight:1.55 }}>
                   Your buyer is offering <b>₹{fmt(diff,0)} less</b> than a fair price.
