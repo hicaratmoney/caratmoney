@@ -1436,8 +1436,8 @@ function MarginPage({ navigate, spot }) {
           const fairLow  = margin1.sales_total * 0.94;
           const fairHigh = margin1.sales_total * 0.96;
           const youGet   = margin1.total;
-          const diff     = fairLow - youGet;
-          const isShort  = diff > 0;
+          const fairMid  = margin1.sales_total * 0.95;
+          const diff     = fairMid - youGet;
           return (
             <Card style={{ marginBottom:'14px', animation:'fadeSlide .5s ease', textAlign:'center' }}>
               <Eyebrow>Your Gold's Fair Value</Eyebrow>
