@@ -255,6 +255,7 @@ const fmt = (n, d = 2) => {
 const parseNum = v => { if (v === '' || v == null) return null; const n = parseFloat(v); return isNaN(n) ? null : n; };
 const makeId        = () => `o_${Date.now()}_${Math.random().toString(36).slice(2,7)}`;
 const blankOrnament = () => ({ id: makeId(), gross:'', stone:'', wastage:'', purity:'', pricePerGram:'' });
+const fmtRange = v => v >= 100000 ? `₹${(v/100000).toFixed(2)}L` : `₹${(v/1000).toFixed(2)}K`;
 const fmtTime       = d => d ? d.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' }) : null;
 const copyToClipboard = async t => { try { await navigator.clipboard.writeText(t); return true; } catch { return false; } };
 
@@ -1431,42 +1432,38 @@ function MarginPage({ navigate, spot }) {
           )}
         </Card>
 
-        {margin1 !== null && (
-          <div ref={attachRevisedObserver}>
-            <Card style={{ marginBottom:'14px', animation:'fadeSlide .5s ease' }}>
-              <Eyebrow>Did They Revise the Offer?</Eyebrow>
-              <div style={{ fontSize:'14px', color:C.mute, lineHeight:1.55, marginBottom:'18px' }}>Buyers usually negotiate. Enter the revised <b style={{ color:C.ink }}>total</b> they're offering{isMulti?' for the full lot':''} — the final amount you'd receive.</div>
-              <div style={pfxWrap}>
-                <span style={pfx}>₹</span>
-                <input type="number" inputMode="decimal" placeholder="e.g. 13800" value={revisedTotal} onChange={e=>setRevG(e.target.value)} style={{ ...INP, paddingLeft:'30px' }}/>
+        {margin1 !== null && (() => {
+          const fairLow  = margin1.sales_total * 0.94;
+          const fairHigh = margin1.sales_total * 0.96;
+          const youGet   = margin1.total;
+          const diff     = fairLow - youGet;
+          const isShort  = diff > 0;
+          return (
+            <Card style={{ marginBottom:'14px', animation:'fadeSlide .5s ease', textAlign:'center' }}>
+              <Eyebrow>Your Gold's Fair Value</Eyebrow>
+              <div style={{ fontFamily:SERIF, fontSize:'36px', fontWeight:350, letterSpacing:'-0.03em', color:C.plum, lineHeight:1, marginBottom:'6px' }}>
+                {fmtRange(fairLow)} – {fmtRange(fairHigh)}
               </div>
-              {margin2 !== null && (
-                <div style={{ marginTop:'16px', padding:'18px', borderRadius:'6px', textAlign:'center', background:t2.bg, animation:'fadeSlide .3s ease' }}>
-                  <div style={{ fontFamily:MONO, fontSize:'10px', fontWeight:500, letterSpacing:'0.14em', color:C.mute, marginBottom:'8px' }}>REVISED OFFER</div>
-                  <div style={{ display:'flex', flexWrap:'wrap', justifyContent:'center', gap:'10px 24px', marginBottom:'10px' }}>
-                    <div style={{ textAlign:'center' }}>
-                      <div style={{ fontFamily:MONO, fontSize:'9px', color:C.mute, marginBottom:'3px', letterSpacing:'0.1em' }}>YOU RECEIVE</div>
-                      <div style={{ fontFamily:SERIF, fontSize:'28px', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1 }}>₹{fmt(margin2.total,0)}</div>
-                    </div>
-                    <div style={{ textAlign:'center' }}>
-                      <div style={{ fontFamily:MONO, fontSize:'9px', color:C.mute, marginBottom:'3px', letterSpacing:'0.1em' }}>{isMulti?'BLENDED RATE':'EFFECTIVE RATE'}</div>
-                      <div style={{ fontFamily:SERIF, fontSize:'18px', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1 }}>₹{fmt(margin2.eff,0)}/g</div>
-                    </div>
-                  </div>
-                  <div style={{ fontFamily:SERIF, fontSize:'40px', fontWeight:350, lineHeight:1, letterSpacing:'-0.03em', color:t2.fg }}>{margin2.value.toFixed(1)}%</div>
-                  <div style={{ fontSize:'13px', marginTop:'8px', fontWeight:600, color:C.ink, display:'inline-flex', alignItems:'center', gap:'4px', fontFamily:SANS }}>
-                    {margin2.value<margin1.value ? <><TrendingDown size={13}/>Margin dropped by {(margin1.value-margin2.value).toFixed(1)} pp</> : <>No improvement — keep pushing</>}
-                  </div>
+              <div style={{ fontFamily:MONO, fontSize:'10px', color:C.mute, letterSpacing:'0.08em', marginBottom:'14px' }}>
+                BASED ON 4–6% FAIR BUYER MARGIN
+              </div>
+              {isShort ? (
+                <div style={{ padding:'12px 14px', background:'#FEE2E2', borderRadius:'6px', fontSize:'13px', color:'#991B1B', fontWeight:500, lineHeight:1.55 }}>
+                  Your buyer is offering <b>₹{fmt(diff,0)} less</b> than a fair price.
+                </div>
+              ) : (
+                <div style={{ padding:'12px 14px', background:'#DCFCE7', borderRadius:'6px', fontSize:'13px', color:'#15803D', fontWeight:500, lineHeight:1.55 }}>
+                  Your buyer's offer is within the fair range.
                 </div>
               )}
             </Card>
-          </div>
-        )}
+          );
+        })()}
 
         {margin1 !== null && (
           <Card dark style={{ marginBottom:'14px', animation:'fadeSlide .55s ease', position:'relative', overflow:'hidden' }}>
             <div style={{ position:'absolute', top:'-50px', right:'-50px', width:'160px', height:'160px', borderRadius:'50%', background:`radial-gradient(circle,rgba(224,183,101,.15) 0%,transparent 70%)`, pointerEvents:'none' }}/>
-            <div style={{ fontFamily:SERIF, fontSize:'26px', fontWeight:350, color:C.gold3, letterSpacing:'-0.02em', marginBottom:'10px', position:'relative' }}>Want a better price?</div>
+            <div style={{ fontFamily:SERIF, fontSize:'26px', fontWeight:350, color:C.gold3, letterSpacing:'-0.02em', marginBottom:'10px', position:'relative' }}>Get the fair price from Carat Money</div>
             <div style={{ fontSize:'14px', color:`rgba(241,215,141,.6)`, lineHeight:1.6, marginBottom:'18px', position:'relative' }}>Share your number and we'll send you a quote on WhatsApp.</div>
             <div style={{ display:'flex', alignItems:'center', background:C.white, borderRadius:'4px', padding:'0 0 0 14px', overflow:'hidden', marginBottom:'14px', position:'relative' }}>
               <span style={{ fontSize:'16px', color:C.mute, fontWeight:500, paddingRight:'10px', borderRight:`1px solid rgba(26,20,38,.12)`, fontFamily:SANS }}>+91</span>
