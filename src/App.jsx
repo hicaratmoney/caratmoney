@@ -1121,7 +1121,9 @@ function MarginPage({ navigate, spot }) {
   const margin1 = useMemo(() => {
     const valid=ornamentData.filter(d=>d.isValid); if(!valid.length)return null;
     const fee=feeN/100,sumPR=valid.reduce((a,d)=>a+d.purchaseContrib,0),sumS=valid.reduce((a,d)=>a+d.salesContrib,0),sumNP=valid.reduce((a,d)=>a+d.netWeight*(d.purity/100),0),pt=sumPR*(1-fee);
-    return {value:(1-pt/sumS)*100,eff:pt/sumNP,total:pt,purchase_total:pt,sales_total:sumS,ornamentCount:valid.length,totalNetWeight:valid.reduce((a,d)=>a+d.netWeight,0)};
+    const value=(1-pt/sumS)*100;
+    if(!isFinite(value)||isNaN(value))return null;
+    return {value,eff:pt/sumNP,total:pt,purchase_total:pt,sales_total:sumS,ornamentCount:valid.length,totalNetWeight:valid.reduce((a,d)=>a+d.netWeight,0)};
   }, [ornamentData, feeN]);
 
   const [shareHighlighted, setShareHighlighted] = useState(false);
@@ -1171,7 +1173,7 @@ function MarginPage({ navigate, spot }) {
   const filled = !isMulti ? [ornamentData[0].gross,ornamentData[0].purity,ornamentData[0].ppg].filter(v=>v!==null&&v>0).length : 0;
 
   const tone = v => {
-    if(v==null) return{fg:C.mute,bg:C.paper2,label:''};
+    if(v==null||isNaN(v)||!isFinite(v)) return{fg:C.mute,bg:C.paper2,label:''};
     if(v<0)  return{fg:'#991B1B',bg:'#FEE2E2',label:'Above spot — verify this'};
     if(v<6)  return{fg:'#15803D',bg:'#DCFCE7',label:'Fair margin'};
     if(v<10) return{fg:'#B45309',bg:'#FEF3C7',label:'On the higher side'};
