@@ -780,8 +780,8 @@ function HomePage({ navigate, spot }) {
             <a key={label} href={href} target="_blank" rel="noreferrer"
               aria-label={label}
               style={{ width:'44px', height:'44px', borderRadius:'50%', background:C.paper2, border:`1px solid rgba(184,136,58,.2)`, display:'inline-flex', alignItems:'center', justifyContent:'center', transition:'background .2s, border-color .2s' }}
-              onMouseEnter={e => { e.currentTarget.style.background = C.gold; e.currentTarget.style.borderColor = C.gold; }}
-              onMouseLeave={e => { e.currentTarget.style.background = C.paper2; e.currentTarget.style.borderColor = 'rgba(184,136,58,.2)'; }}
+              onMouseEnter={e => { e.currentTarget.style.background = C.plum; e.currentTarget.style.borderColor = C.plum; e.currentTarget.querySelector('svg').style.fill = C.gold3; }}
+              onMouseLeave={e => { e.currentTarget.style.background = C.paper2; e.currentTarget.style.borderColor = 'rgba(184,136,58,.2)'; e.currentTarget.querySelector('svg').style.fill = C.gold; }}
             >
               <svg viewBox="0 0 24 24" width="18" height="18" fill={C.gold} style={{ display:'block' }}>
                 <path d={path}/>
