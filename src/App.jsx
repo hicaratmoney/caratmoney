@@ -777,9 +777,9 @@ function HomePage({ navigate, spot }) {
         </div>
 
         <div style={{ padding:'16px 0', marginBottom:'16px', borderTop:`1px solid rgba(26,20,38,.12)`, borderBottom:`1px solid rgba(26,20,38,.12)`, display:'flex', alignItems:'center', justifyContent:'space-between', gap:'10px' }}>
-          <span style={{ fontSize:'14px', color:C.mute, fontFamily:SANS }}>Looking to buy gold?</span>
+          <span style={{ fontSize:'14px', color:C.mute, fontFamily:SANS }}>Want to buy gold?</span>
           <span onClick={() => navigate('/buy')} style={{ fontSize:'14px', fontWeight:600, color:C.gold, fontFamily:SANS, cursor:'pointer', display:'inline-flex', alignItems:'center', gap:'4px' }}>
-            Buy 24K BIS-hallmarked coins →
+            Buy 24K hallmarked coins →
           </span>
         </div>
 
