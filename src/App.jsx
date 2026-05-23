@@ -645,10 +645,29 @@ function BlogArticlePage({ navigate, slug }) {
 
 // ─── Home Page ────────────────────────────────────────────────────────────────
 function HomePage({ navigate, spot }) {
-  const [showGstTip, setShowGstTip] = useState(false);
+  const [showGstTip,   setShowGstTip]   = useState(false);
+  const [nudgeActive,  setNudgeActive]  = useState(false);
+  const [marginTapped, setMarginTapped] = useState(false);
+  const marginCardRef  = useRef(null);
+  const nudgeFiredRef  = useRef(false);
+
   const r24  = spot.display ?? SPOT_FALLBACK;
   const r22  = Math.round(r24 * 22 / 24);
   const time = fmtTime(spot.updatedAt);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (nudgeFiredRef.current || marginTapped) return;
+      if (!marginCardRef.current) return;
+      const rect = marginCardRef.current.getBoundingClientRect();
+      if (rect.top < 0) return;
+      nudgeFiredRef.current = true;
+      marginCardRef.current.scrollIntoView({ behavior:'smooth', block:'center' });
+      setTimeout(() => setNudgeActive(true), 650);
+      setTimeout(() => setNudgeActive(false), 650 + 2400);
+    }, 5000);
+    return () => clearTimeout(timer);
+  }, [marginTapped]);
 
   return (
     <div style={{ minHeight:'100dvh', background:C.paper, fontFamily:SANS, color:C.ink }}>
@@ -711,7 +730,18 @@ function HomePage({ navigate, spot }) {
         </Card>
 
         {/* ── Margin Card ── */}
-        <div onClick={() => navigate('/margin')} style={{ background:C.white, borderRadius:'8px', border:`1px solid rgba(26,20,38,.1)`, cursor:'pointer', marginBottom:'12px', boxShadow:'0 2px 12px rgba(22,18,31,.06)', transition:'transform .2s,box-shadow .2s', overflow:'hidden' }}>
+        <div
+          ref={marginCardRef}
+          onClick={() => { setMarginTapped(true); navigate('/margin'); }}
+          style={{
+            background:C.white, borderRadius:'8px', cursor:'pointer',
+            marginBottom:'12px', overflow:'hidden',
+            transition:'transform .2s, box-shadow .2s, border-color .2s',
+            border: nudgeActive ? `1.5px solid ${C.gold}` : `1px solid rgba(26,20,38,.1)`,
+            boxShadow: nudgeActive
+              ? `0 0 0 4px rgba(184,136,58,.18), 0 2px 12px rgba(22,18,31,.06)`
+              : '0 2px 12px rgba(22,18,31,.06)',
+          }}>
           {/* Image strip */}
           <div style={{ position:'relative', height:'200px', overflow:'hidden', borderRadius:'8px 8px 0 0' }}>
             <img src="/img-margin.jpeg" alt="Informed gold seller" style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'center', display:'block' }}/>
@@ -723,7 +753,7 @@ function HomePage({ navigate, spot }) {
               Is your gold buyer cheating you?
             </div>
             <div style={{ fontSize:'15px', color:C.mute, lineHeight:1.55, marginBottom:'20px' }}>Check your buyer's margin.</div>
-            <BtnPrimary style={{ width:'auto', padding:'10px 20px' }}>
+            <BtnPrimary style={{ width:'auto', padding:'10px 20px', animation: nudgeActive ? 'glowPulse 0.8s ease-out 3' : 'none' }}>
               <TrendingDown size={15}/> Calculate margin
             </BtnPrimary>
           </div>
