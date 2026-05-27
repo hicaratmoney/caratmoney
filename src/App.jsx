@@ -1544,6 +1544,22 @@ function MarginPage({ navigate, spot }) {
   );
 }
 
+function PartnerRedirect() {
+  useEffect(() => {
+    window.location.replace('https://carat-money-partners.web.app/partner/');
+  }, []);
+  return (
+    <div style={{ minHeight:'100dvh', background:C.paper, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:SANS }}>
+      <div style={{ textAlign:'center', padding:'40px 18px' }}>
+        <LogoMark size={64} color={C.gold2}/>
+        <div style={{ fontFamily:SERIF, fontSize:'22px', fontWeight:350, color:C.ink, marginTop:'16px' }}>
+          Redirecting to Partner Portal…
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── App ──────────────────────────────────────────────────────────────────────
 export default function App() {
   const { route, navigate, blogSlug } = useRoute();
@@ -1554,6 +1570,7 @@ export default function App() {
   else if (route==='/buy')    page = <BuyPage          navigate={navigate} spot={spot}/>;
   else if (route==='/margin') page = <MarginPage       navigate={navigate} spot={spot}/>;
   else if (route==='/blog')   page = <BlogIndexPage    navigate={navigate}/>;
+  else if (route==='/partner') page = <PartnerRedirect/>;
   else if (blogSlug)          page = <BlogArticlePage  navigate={navigate} slug={blogSlug}/>;
   else                        page = <HomePage         navigate={navigate} spot={spot}/>;
   return <><style>{GLOBAL_CSS}</style>{page}</>;
