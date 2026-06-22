@@ -487,6 +487,35 @@ const ARTICLES = [
       { type:'p',  text:"Most sellers don't realise that gold buying is negotiable. If you know the margin the buyer is keeping (use our calculator), you have a number to push back on. A buyer keeping 14% will often come down to 10–11% if you simply ask — and know your numbers." },
     ],
   },
+    {
+    slug:            'how-is-gold-valued-step-by-step',
+    title:           'How is gold valued? A simple step-by-step guide',
+    excerpt:         "Walk through exactly how a buyer values your gold — and the four points where they quietly cheat you.",
+    category:        'GOLD BASICS',
+    readTime:        '3 MIN READ',
+    date:            '23 May 2026',
+    primaryCTA:      'whatsapp',
+    midArticleNudge: true,
+    body: [
+      { type:'p',  text:"You walk into a shop with a 25g gold chain. What happens next decides how much money you take home — and most of it happens in steps you can't see. Here's the whole process, in plain language, with the exact points where buyers cheat." },
+      { type:'h2', text:'Step 1: They weigh your gold' },
+      { type:'p',  text:"First, your chain goes on a scale. Say it weighs 25 grams. This is the gross weight — everything together, gold plus any stones." },
+      { type:'p',  text:"Where they cheat: if your chain has stones, the buyer estimates the stone weight instead of weighing it separately. They'll say your 25g chain has 4g of stones when it really has 2g — and you just lost 2g of gold value." },
+      { type:'h2', text:'Step 2: They remove stone and wastage weight' },
+      { type:'p',  text:"Buyers subtract the stone weight and a 'wastage' amount (gold supposedly lost when melting). On our 25g chain, take out 2g stones and 1g wastage — you're left with 22g of net weight. This 22g is what you actually get paid for." },
+      { type:'p',  text:"Where they cheat: wastage should be tiny or zero with modern melting. Some buyers deduct 5–8% as wastage for no reason. On 25g, a 2g excess wastage deduction is roughly ₹2,000 gone." },
+      { type:'nudge' },
+      { type:'h2', text:'Step 3: They test the purity' },
+      { type:'p',  text:"Your gold is checked on an XRF machine — a spectrometer that shows exactly how pure it is, like 91.6% for 22K. The machine displays the number on a screen." },
+      { type:'p',  text:"Where they cheat: the buyer reads the screen, not you. The machine shows 91.6% but they tell you 89%. That 2.6% gap on 22g of gold is over ₹3,000 — and you'd never know. Always ask to see the screen yourself." },
+      { type:'h2', text:"Step 4: They apply the day's rate" },
+      { type:'p',  text:"Finally, they multiply your net weight by the purity by the day's gold rate. If 24K gold is ₹15,000 per gram, your 22g at 91.6% purity is worth roughly 22 × 0.916 × 15,000 = about ₹3,02,000 before any margin." },
+      { type:'p',  text:"Where they cheat: they use an old rate from the morning when prices have risen, or quote a rate well below the live market price. A 3% lower rate on a ₹3,00,000 chain is ₹9,000 straight out of your pocket." },
+      { type:'h2', text:'Putting it all together' },
+      { type:'p',  text:"Four steps, four places to lose money: inflated stone weight, excess wastage, an understated purity reading, and a stale or low rate. Each one looks small. Together they can cost you 15–20% of your gold's real value." },
+      { type:'p',  text:"The only way to catch it is to know what a fair number looks like before you walk in. Our margin calculator does that in 30 seconds — and factors in a few extra details for a precise figure. Then message us and we'll give you an offer you can compare against." },
+    ],
+  },
 ];
 
 // ─── Blog Back Button ─────────────────────────────────────────────────────────
@@ -609,22 +638,38 @@ function BlogArticlePage({ navigate, slug }) {
         {/* Bottom CTAs */}
         <div style={{ borderTop:`1px solid rgba(26,20,38,.08)`, paddingTop:'28px', marginBottom:'24px' }}>
           <div style={{ fontFamily:MONO, fontSize:'9px', fontWeight:500, letterSpacing:'0.16em', color:C.mute, marginBottom:'14px', textAlign:'center' }}>
-            {article.primaryCTA === 'margin' ? 'READY TO CHECK YOUR BUYER?' : 'READY TO SELL?'}
+            {article.primaryCTA === 'sell' ? 'READY TO SELL?' : 'READY TO CHECK YOUR BUYER?'}
           </div>
-          {article.primaryCTA === 'margin' ? (
-            <button onClick={() => navigate('/margin')} style={{ width:'100%', padding:'15px 20px', background:C.gold2, color:C.plum, border:'none', borderRadius:'4px', fontSize:'15px', fontWeight:600, fontFamily:SANS, display:'flex', alignItems:'center', justifyContent:'center', gap:'8px', cursor:'pointer', marginBottom:'10px', letterSpacing:'0.01em' }}>
-              <TrendingDown size={16}/> Check your buyer's margin now
-            </button>
+          {article.primaryCTA === 'whatsapp' ? (
+            <>
+              <button onClick={() => window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Hi Carat Money — I'd like to get an offer for my gold.")}`, '_blank')} style={{ width:'100%', padding:'15px 20px', background:C.gold2, color:C.plum, border:'none', borderRadius:'4px', fontSize:'15px', fontWeight:600, fontFamily:SANS, display:'flex', alignItems:'center', justifyContent:'center', gap:'8px', cursor:'pointer', marginBottom:'10px', letterSpacing:'0.01em' }}>
+                <MessageCircle size={16}/> Get an offer on WhatsApp
+              </button>
+              <button onClick={() => navigate('/margin')} style={{ width:'100%', padding:'14px 20px', background:'transparent', color:C.gold, border:`1.5px solid ${C.gold}`, borderRadius:'4px', fontSize:'15px', fontWeight:600, fontFamily:SANS, display:'flex', alignItems:'center', justifyContent:'center', gap:'8px', cursor:'pointer', letterSpacing:'0.01em' }}>
+                <TrendingDown size={16}/> Check your buyer's margin now
+              </button>
+            </>
+          ) : article.primaryCTA === 'margin' ? (
+            <>
+              <button onClick={() => navigate('/margin')} style={{ width:'100%', padding:'15px 20px', background:C.gold2, color:C.plum, border:'none', borderRadius:'4px', fontSize:'15px', fontWeight:600, fontFamily:SANS, display:'flex', alignItems:'center', justifyContent:'center', gap:'8px', cursor:'pointer', marginBottom:'10px', letterSpacing:'0.01em' }}>
+                <TrendingDown size={16}/> Check your buyer's margin now
+              </button>
+              <button onClick={() => window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Hi Carat Money — I'd like to get a quote for my gold.")}`, '_blank')} style={{ width:'100%', padding:'14px 20px', background:'transparent', color:C.green, border:`1.5px solid ${C.green}`, borderRadius:'999px', fontSize:'15px', fontWeight:600, fontFamily:SANS, display:'flex', alignItems:'center', justifyContent:'center', gap:'8px', cursor:'pointer', letterSpacing:'0.01em' }}>
+                <MessageCircle size={16}/> Get a better offer on WhatsApp
+              </button>
+            </>
           ) : (
-            <button onClick={() => navigate('/sell')} style={{ width:'100%', padding:'15px 20px', background:C.gold2, color:C.plum, border:'none', borderRadius:'4px', fontSize:'15px', fontWeight:600, fontFamily:SANS, display:'flex', alignItems:'center', justifyContent:'center', gap:'8px', cursor:'pointer', marginBottom:'10px', letterSpacing:'0.01em' }}>
-              <MessageCircle size={16}/> Get your best price from Carat Money
-            </button>
+            <>
+              <button onClick={() => navigate('/sell')} style={{ width:'100%', padding:'15px 20px', background:C.gold2, color:C.plum, border:'none', borderRadius:'4px', fontSize:'15px', fontWeight:600, fontFamily:SANS, display:'flex', alignItems:'center', justifyContent:'center', gap:'8px', cursor:'pointer', marginBottom:'10px', letterSpacing:'0.01em' }}>
+                <MessageCircle size={16}/> Get your best price from Carat Money
+              </button>
+              <button onClick={() => window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Hi Carat Money — I'd like to get a quote for my gold.")}`, '_blank')} style={{ width:'100%', padding:'14px 20px', background:'transparent', color:C.green, border:`1.5px solid ${C.green}`, borderRadius:'999px', fontSize:'15px', fontWeight:600, fontFamily:SANS, display:'flex', alignItems:'center', justifyContent:'center', gap:'8px', cursor:'pointer', letterSpacing:'0.01em' }}>
+                <MessageCircle size={16}/> Get a better offer on WhatsApp
+              </button>
+            </>
           )}
-          <button onClick={() => window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Hi Carat Money — I'd like to get a quote for my gold.")}`, '_blank')} style={{ width:'100%', padding:'14px 20px', background:'transparent', color:C.green, border:`1.5px solid ${C.green}`, borderRadius:'999px', fontSize:'15px', fontWeight:600, fontFamily:SANS, display:'flex', alignItems:'center', justifyContent:'center', gap:'8px', cursor:'pointer', letterSpacing:'0.01em' }}>
-            <MessageCircle size={16}/> Get a better offer on WhatsApp
-          </button>
         </div>
-
+        
         {/* Article share */}
         <div style={{ background:C.plum, borderRadius:'8px', padding:'20px', border:`1px solid rgba(224,183,101,.2)`, textAlign:'center' }}>
           <div style={{ fontFamily:SERIF, fontSize:'18px', fontWeight:350, color:C.gold3, marginBottom:'6px', letterSpacing:'-0.02em' }}>Found this useful?</div>
