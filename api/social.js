@@ -17,6 +17,11 @@ const ARTICLES = [
     title:   'Selling gold in Bangalore: 5 things to know first',
     excerpt: 'Bangalore\'s gold buying market is active — but knowing these five things before you sell can make a significant difference.',
   },
+  {
+    slug:    'how-is-gold-valued-step-by-step',
+    title:   'How is gold valued? A simple step-by-step guide',
+    excerpt: 'Walk through exactly how a buyer values your gold — and the four points where they quietly cheat you.',
+  },
 ];
 
 export default function handler(req, res) {
