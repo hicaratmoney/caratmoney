@@ -828,10 +828,18 @@ function HomePage({ navigate, spot }) {
           </span>
         </div>
 
-        <div style={{ padding:'14px 0', marginBottom:'16px', textAlign:'center' }}>
-          <span onClick={() => navigate('/blog')} style={{ fontFamily:MONO, fontSize:'11px', fontWeight:500, color:C.mute, cursor:'pointer', letterSpacing:'0.1em', textTransform:'uppercase', borderBottom:`1px solid rgba(122,111,98,.3)`, paddingBottom:'2px' }}>
-            · GOLD INSIGHTS BLOG ·
-          </span>
+        <div style={{ padding:'14px 0', marginBottom:'16px' }}>
+          <div style={{ textAlign:'center', marginBottom:'14px' }}>
+            <span onClick={() => navigate('/blog')} style={{ fontFamily:MONO, fontSize:'11px', fontWeight:500, color:C.mute, cursor:'pointer', letterSpacing:'0.1em', textTransform:'uppercase', borderBottom:`1px solid rgba(122,111,98,.3)`, paddingBottom:'2px' }}>
+              · GOLD INSIGHTS BLOG ·
+            </span>
+          </div>
+          {ARTICLES.slice(0,3).map(a => (
+            <div key={a.slug} onClick={() => navigate(`/blog/${a.slug}`)} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'10px 0', borderTop:`1px solid rgba(26,20,38,.06)`, cursor:'pointer', gap:'12px' }}>
+              <span style={{ fontSize:'13px', color:C.ink2, fontFamily:SANS, lineHeight:1.4 }}>{a.title}</span>
+              <span style={{ fontFamily:MONO, fontSize:'11px', color:C.gold, flexShrink:0 }}>→</span>
+            </div>
+          ))}
         </div>
 
         <div style={{ display:'flex', justifyContent:'center', gap:'20px', padding:'8px 0' }}>
