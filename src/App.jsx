@@ -255,7 +255,7 @@ const fmt = (n, d = 2) => {
 const parseNum = v => { if (v === '' || v == null) return null; const n = parseFloat(v); return isNaN(n) ? null : n; };
 const makeId        = () => `o_${Date.now()}_${Math.random().toString(36).slice(2,7)}`;
 const blankOrnament = () => ({ id: makeId(), gross:'', stone:'', wastage:'', purity:'', pricePerGram:'' });
-const fmtRange = v => v >= 100000 ? `₹${(v/100000).toFixed(2)} L` : `₹${(v/1000).toFixed(2)} K`;
+const fmtRange = v => v >= 100000 ? `~₹${(v/100000).toFixed(2)} L` : `~₹${(v/1000).toFixed(2)} K`;
 const fmtTime       = d => d ? d.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' }) : null;
 const copyToClipboard = async t => { try { await navigator.clipboard.writeText(t); return true; } catch { return false; } };
 
@@ -1564,22 +1564,20 @@ function MarginPage({ navigate, spot }) {
         </Card>
 
         {margin1 !== null && (() => {
-          const fairLow  = margin1.sales_total * 0.94;
-          const fairHigh = margin1.sales_total * 0.96;
+          const fairVal  = margin1.sales_total * 0.94;
           const youGet   = margin1.total;
-          const fairMid  = margin1.sales_total * 0.95;
-          const diff     = fairMid - youGet;
+          const diff     = fairVal - youGet;
           const short    = diff > 0;
           return (
             <Card style={{ marginBottom:'14px', animation:'fadeSlide .5s ease', textAlign:'center' }}>
               <Eyebrow>Your Gold's Fair Value</Eyebrow>
               <div style={{ fontFamily:SERIF, fontSize:'clamp(28px, 8vw, 68px)', fontWeight:350, letterSpacing:'-0.04em', color:C.plum, lineHeight:1, marginBottom:'6px', whiteSpace:'nowrap' }}>
-                {fmtRange(fairLow)} – {fmtRange(fairHigh)}
+                {fmtRange(fairVal)}
               </div>
               <div style={{ marginBottom:'14px' }}/>
               {short ? (
                 <div style={{ padding:'12px 14px', background:'#FEE2E2', borderRadius:'6px', fontSize:'13px', color:'#991B1B', fontWeight:500, lineHeight:1.55 }}>
-                  Your buyer is offering <b>₹{fmt(diff,0)} less</b> than a fair price.
+                  Your buyer is offering <b>₹{fmt(Math.abs(diff),0)} less</b> than a fair price.
                 </div>
               ) : (
                 <div style={{ padding:'12px 14px', background:'#DCFCE7', borderRadius:'6px', fontSize:'13px', color:'#15803D', fontWeight:500, lineHeight:1.55 }}>
