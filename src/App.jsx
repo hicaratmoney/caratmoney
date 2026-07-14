@@ -312,7 +312,7 @@ function useSpotRate() {
       const data = await res.json();
       if (data.error) throw new Error(data.error);
       const raw     = Math.round(data.sellPerGram);
-      const display = Math.round(raw * 1.03 * 0.975);
+      const display = Math.round(raw * 1.03 * 0.9625);
       setSpot({ raw, display, updatedAt: new Date(), loading:false, error:false });
     } catch (e) {
       console.warn('[spot]', e.message);
@@ -690,7 +690,8 @@ function BlogArticlePage({ navigate, slug }) {
 
 // ─── Home Page ────────────────────────────────────────────────────────────────
 function HomePage({ navigate, spot }) {
-  const [showGstTip,   setShowGstTip]   = useState(false);
+  const [showGstTip,    setShowGstTip]   = useState(false);
+  const [selectedKarat, setSelectedKarat] = useState('22');
   const [nudgeActive,  setNudgeActive]  = useState(false);
   const [marginTapped, setMarginTapped] = useState(false);
   const marginCardRef  = useRef(null);
@@ -716,7 +717,6 @@ function HomePage({ navigate, spot }) {
 
   return (
     <div style={{ minHeight:'100dvh', background:C.paper, fontFamily:SANS, color:C.ink }}>
-      <RateStrip spot={spot}/>
       <div style={{ maxWidth:'520px', margin:'0 auto', padding:'0 18px 48px' }}>
 
         <div style={{ textAlign:'center', padding:'40px 12px 32px' }}>
@@ -746,31 +746,50 @@ function HomePage({ navigate, spot }) {
           </div>
           {spot.loading && !spot.display
             ? <span style={{ fontFamily:SERIF, fontSize:'40px', color:`rgba(241,215,141,.4)`, letterSpacing:'-0.02em' }}>Loading…</span>
-            : <>
-                {/* 24K and 22K on same line — 22K pushed to right edge */}
-                <div style={{ display:'flex', alignItems:'baseline', justifyContent:'space-between', gap:'8px', paddingBottom:'10px', borderBottom:`1px solid rgba(224,183,101,.15)` }}>
-                  <div style={{ display:'flex', alignItems:'baseline', gap:'6px', flexShrink:0 }}>
-                    <span style={{ fontFamily:SERIF, fontSize:'clamp(32px, 9vw, 48px)', fontWeight:350, lineHeight:1, letterSpacing:'-0.03em', color:C.gold3, whiteSpace:'nowrap' }}>₹{fmt(r24,0)}</span>
-                    <span style={{ fontFamily:SANS, fontSize:'15px', color:`rgba(241,215,141,.6)`, whiteSpace:'nowrap' }}>/g · 24K</span>
-                  </div>
-                  <div style={{ display:'flex', alignItems:'baseline', gap:'4px', flexShrink:0 }}>
-                    <span style={{ fontFamily:SERIF, fontSize:'clamp(13px, 4vw, 18px)', fontWeight:350, color:C.gold2, letterSpacing:'-0.02em', whiteSpace:'nowrap' }}>₹{fmt(r22,0)}</span>
-                    <span style={{ fontFamily:SANS, fontSize:'13px', color:`rgba(241,215,141,.5)`, whiteSpace:'nowrap' }}>/g · 22K</span>
-                  </div>
-                </div>
-                {/* Timestamp + GST toggle on same line */}
-                <div style={{ display:'flex', alignItems:'center', gap:'8px', marginTop:'10px' }}>
-                  <div style={{ fontFamily:SERIF, fontSize:'12px', color:`rgba(241,215,141,.4)`, fontStyle:'italic', flex:1 }}>
-                    {spot.error && !spot.updatedAt ? 'Live rate temporarily unavailable' : time ? `Live rate · Updated ${time}` : 'Fetching live rate…'}
-                  </div>
-                  <span onClick={() => setShowGstTip(v=>!v)} style={{ fontSize:'13px', color:C.gold, cursor:'pointer', userSelect:'none', flexShrink:0 }}>ⓘ</span>
-                </div>
-                {showGstTip && (
-                  <div style={{ marginTop:'10px', padding:'10px 14px', background:`rgba(224,183,101,.1)`, borderRadius:'4px', fontSize:'13px', color:C.gold3, lineHeight:1.55 }}>
-                    GST-inclusive rate shown. If you're GST-registered, we pass the tax credit back to you.
-                  </div>
-                )}
-              </>
+            : (() => {
+                const r18     = Math.round(r24 * 18 / 24);
+                const selRate = selectedKarat === '22' ? r22 : r18;
+                const preGST  = Math.round(r24 / 1.03);
+                return (
+                  <>
+                    {/* 24K — always shown */}
+                    <div style={{ display:'flex', alignItems:'baseline', gap:'6px', marginBottom:'12px' }}>
+                      <span style={{ fontFamily:SERIF, fontSize:'clamp(32px, 9vw, 56px)', fontWeight:350, lineHeight:1, letterSpacing:'-0.03em', color:C.gold3, whiteSpace:'nowrap' }}>₹{fmt(r24,0)}</span>
+                      <span style={{ fontFamily:SANS, fontSize:'13px', color:`rgba(241,215,141,.6)`, whiteSpace:'nowrap' }}>/g · 24K</span>
+                    </div>
+
+                    {/* Karat dropdown + calculated rate */}
+                    <div style={{ display:'flex', alignItems:'center', gap:'12px', paddingTop:'12px', paddingBottom:'12px', borderTop:`1px solid rgba(224,183,101,.15)`, borderBottom:`1px solid rgba(224,183,101,.15)` }}>
+                      <select
+                        value={selectedKarat}
+                        onChange={e => setSelectedKarat(e.target.value)}
+                        style={{ background:'rgba(224,183,101,.12)', border:`1px solid rgba(224,183,101,.3)`, borderRadius:'4px', color:C.gold2, fontFamily:MONO, fontSize:'12px', fontWeight:500, padding:'6px 10px', cursor:'pointer', outline:'none', letterSpacing:'0.08em' }}
+                      >
+                        <option value="22" style={{ background:C.plum }}>22K</option>
+                        <option value="18" style={{ background:C.plum }}>18K</option>
+                      </select>
+                      <div style={{ display:'flex', alignItems:'baseline', gap:'4px' }}>
+                        <span style={{ fontFamily:SERIF, fontSize:'clamp(18px, 5vw, 24px)', fontWeight:350, color:C.gold2, letterSpacing:'-0.02em', whiteSpace:'nowrap' }}>₹{fmt(selRate,0)}</span>
+                        <span style={{ fontFamily:SANS, fontSize:'12px', color:`rgba(241,215,141,.5)`, whiteSpace:'nowrap' }}>/g · {selectedKarat}K</span>
+                      </div>
+                    </div>
+
+                    {/* Timestamp + GST toggle */}
+                    <div style={{ display:'flex', alignItems:'center', gap:'8px', marginTop:'10px' }}>
+                      <div style={{ fontFamily:SERIF, fontSize:'12px', color:`rgba(241,215,141,.4)`, fontStyle:'italic', flex:1 }}>
+                        {spot.error && !spot.updatedAt ? 'Live rate temporarily unavailable' : time ? `Live rate · Updated ${time}` : 'Fetching live rate…'}
+                      </div>
+                      <span onClick={() => setShowGstTip(v=>!v)} style={{ fontSize:'13px', color:C.gold, cursor:'pointer', userSelect:'none', flexShrink:0 }}>ⓘ</span>
+                    </div>
+                    {showGstTip && (
+                      <div style={{ marginTop:'10px', padding:'10px 14px', background:`rgba(224,183,101,.1)`, borderRadius:'4px', fontSize:'13px', color:C.gold3, lineHeight:1.55 }}>
+                        24K without GST: <b>₹{fmt(preGST,0)}/g</b><br/>
+                        GST-inclusive rate shown above. If you're GST-registered, we pass the tax credit back to you.
+                      </div>
+                    )}
+                  </>
+                );
+              })()
           }
         </Card>
 
