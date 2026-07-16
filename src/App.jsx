@@ -864,7 +864,7 @@ function HomePage({ navigate, spot }) {
           <div style={{ fontSize:'13px', color:C.mute, fontFamily:SANS, lineHeight:1.55, marginBottom:'6px' }}>
             Earn on every client you refer. We buy their gold. You get commissions.
           </div>
-          <span onClick={() => navigate('/partner')} style={{ fontSize:'14px', fontWeight:600, color:C.gold, fontFamily:SANS, cursor:'pointer', display:'inline-flex', alignItems:'center', gap:'4px' }}>
+          <span onClick={() => window.open('https://carat-money-partners.web.app/partner/', '_blank')} style={{ fontSize:'14px', fontWeight:600, color:C.gold, fontFamily:SANS, cursor:'pointer', display:'inline-flex', alignItems:'center', gap:'4px' }}>
             Join our Partner Program →
           </span>
         </div>
