@@ -860,7 +860,14 @@ function HomePage({ navigate, spot }) {
             </div>
           ))}
         </div>
-
+        <div style={{ padding:'16px 0', marginBottom:'4px', borderTop:`1px solid rgba(26,20,38,.12)`, borderBottom:`1px solid rgba(26,20,38,.12)` }}>
+          <div style={{ fontSize:'13px', color:C.mute, fontFamily:SANS, lineHeight:1.55, marginBottom:'6px' }}>
+            Earn on every client you refer. We buy their gold. You get commissions.
+          </div>
+          <span onClick={() => navigate('/partner')} style={{ fontSize:'14px', fontWeight:600, color:C.gold, fontFamily:SANS, cursor:'pointer', display:'inline-flex', alignItems:'center', gap:'4px' }}>
+            Join our Partner Program →
+          </span>
+        </div>
         <div style={{ display:'flex', justifyContent:'center', gap:'20px', padding:'8px 0' }}>
           {[
             {
