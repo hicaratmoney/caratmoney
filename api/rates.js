@@ -13,7 +13,7 @@ export default async function handler(req, res) {
     if (data.error) throw new Error(data.error);
 
     const raw  = Math.round(data.sellPerGram);
-    const g24  = Math.round(raw * 1.03 * 0.975);
+    const g24  = Math.round(raw * 1.03 * 0.965);
     const g22  = Math.round(g24 * 22 / 24);
 
     res.setHeader('Cache-Control', 's-maxage=55, stale-while-revalidate=10');
