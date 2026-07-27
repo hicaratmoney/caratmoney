@@ -312,7 +312,7 @@ function useSpotRate() {
       const data = await res.json();
       if (data.error) throw new Error(data.error);
       const raw     = Math.round(data.sellPerGram);
-      const display = Math.round(raw * 1.03 * 0.9625);
+      const display = Math.round(raw * 1.03 * 0.965);
       setSpot({ raw, display, updatedAt: new Date(), loading:false, error:false });
     } catch (e) {
       console.warn('[spot]', e.message);
