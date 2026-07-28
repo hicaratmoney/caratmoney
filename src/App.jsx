@@ -571,7 +571,7 @@ const ARTICLES = [
       { type:'p',  text:"If a buyer won't give you the net weight and the purity reading, you can't run this check — and that refusal is your answer." },
     ],
   },
-
+];
 
 // ============================================================
 // 2. NEWEST-FIRST ORDERING
@@ -587,7 +587,6 @@ const articleDate = (d) => {
 
 const ARTICLES_SORTED = [...ARTICLES].sort((a, b) => articleDate(b.date) - articleDate(a.date));
 
-
 // ============================================================
 // 3. THE ONE-LINE CHANGE
 //    Find where articles are rendered (blog list page AND the
@@ -599,7 +598,6 @@ const ARTICLES_SORTED = [...ARTICLES].sort((a, b) => articleDate(b.date) - artic
 //    Leave ARTICLES.find(a => a.slug === ...) alone — slug
 //    lookups don't care about order.
 // ============================================================
-];
 
 // ─── Blog Back Button ─────────────────────────────────────────────────────────
 function BlogBackBtn({ navigate }) {
