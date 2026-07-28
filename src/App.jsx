@@ -516,6 +516,89 @@ const ARTICLES = [
       { type:'p',  text:"The only way to catch it is to know what a fair number looks like before you walk in. Our margin calculator does that in 30 seconds — and factors in a few extra details for a precise figure. Then message us and we'll give you an offer you can compare against." },
     ],
   },
+  // ============================================================
+// 1. NEW ARTICLE — paste as a new object inside ARTICLES
+//    (position doesn't matter once the sort below is in place)
+// ============================================================
+
+  {
+    slug:            'why-gold-buyers-pay-less-than-spot',
+    title:           'Why gold buyers pay less than today\'s rate',
+    excerpt:         "Every buyer pays below the market rate. Here's exactly where the gap comes from — and the margin we keep, published.",
+    category:        'OUR PRICING',
+    readTime:        '5 MIN READ',
+    date:            '29 Jul 2026',
+    primaryCTA:      'margin',
+    midArticleNudge: true,
+    body: [
+      { type:'p',  text:"Search 'gold rate today' and you'll get a number — somewhere around ₹14,000 per gram for 24K. Walk into a shop with a pair of bangles and the offer will be lower. Often noticeably lower. Most sellers read that gap as being cheated. Sometimes it is. Usually it isn't. But almost nobody in this trade will explain the gap in numbers, which is exactly why it feels like being cheated." },
+      { type:'p',  text:"So here is the explanation, with our own arithmetic attached." },
+
+      { type:'h2', text:'The rate you saw isn\'t the rate for your bangle' },
+      { type:'p',  text:"The quoted rate is a benchmark for pure, refined, investment-grade gold — a 999 bar, in a vault, ready to trade. Your bangles are not that. They're roughly 91.6% gold by design, mixed with copper and silver for hardness, held together with solder that's a different alloy again, possibly set with stones, and shaped into something that has to be melted and refined before it becomes the thing the benchmark actually prices." },
+      { type:'p',  text:"The distance between those two objects is the gap. It isn't one deduction, and it isn't all margin." },
+
+      { type:'h2', text:'Where the gap actually comes from' },
+      { type:'p',  text:"First, purity is measured, not assumed. A piece stamped 916 is nominally 91.6% gold. Tested, it's often slightly different — 91.2%, 91.4%, occasionally higher. Older pieces, pieces made outside the hallmarking regime, and pieces that have been repaired vary more, because solder joints are usually a lower-grade alloy than the body of the piece. This is why any buyer worth dealing with tests in front of you, and why you should never accept a price based on the stamp alone." },
+      { type:'p',  text:"Second, jewellery isn't bullion yet. Before your gold can be sold at the benchmark rate it has to be assayed, melted and refined. That costs money, and it's a real cost the buyer carries, not a fee invented to take from you." },
+      { type:'p',  text:"Third, the buyer's margin. We're a business. We buy below the rate and sell at or near it, and the difference funds the testing equipment, the premises, the staff, the insurance on holding other people's gold, and a profit. Every buyer has this margin. The only question worth asking is whether they'll tell you what it is. Ours is 3–5% below live spot, depending on the piece and the quantity." },
+      { type:'p',  text:"For context, our own guides put a fair industry margin at 5–8%, and anything above 12% as a reason to walk away. We're publishing a number below the range we call fair, because the point of publishing it is that you can check it." },
+
+      { type:'h2', text:'Our formula, written out' },
+      { type:'p',  text:"Gross weight, minus stone and solder weight, gives net gold weight. Net gold weight multiplied by tested purity gives your pure gold content. Pure gold content multiplied by the live spot rate gives gross value. Take 3–5% off that, and you have your payout." },
+      { type:'p',  text:"That's the whole thing. Five lines. There's nothing behind it. If a buyer can't write their own version of this on a piece of paper for you, that tells you something worth knowing." },
+
+      { type:'nudge' },
+
+      { type:'h2', text:'A worked example, every number shown' },
+      { type:'p',  text:"A customer brings in a pair of 22K bangles with stone work. Figures below are illustrative — the rate moves daily." },
+      { type:'p',  text:"The bangles weigh 47.200g on the scale. That's the gross weight. The stones and lac are removed and weighed separately: 3.400g. That leaves a net gold weight of 43.800g." },
+      { type:'p',  text:"XRF puts the purity at 91.4%. So 43.800g at 91.4% gives 40.033g of actual pure gold." },
+      { type:'p',  text:"With live spot at ₹14,300 per gram, that gold is worth about ₹5,72,500 gross. At a 4% margin, the payout is roughly ₹5,49,500." },
+      { type:'p',  text:"Look at what happened at the top of that calculation. 47.2 grams of jewellery contained just over 40 grams of actual gold. That single line — gross weight versus pure gold content — accounts for more of the gap than our margin does, and it's the line most sellers have never had explained to them." },
+      { type:'p',  text:"And for comparison: the same bangles at a 12% margin would pay about ₹5,03,700. That's a difference of roughly ₹45,800 on one transaction, for gold that was tested identically." },
+
+      { type:'h2', text:'What we don\'t deduct' },
+      { type:'p',  text:"Making charges. When you bought that piece you paid for the goldsmith's labour and the showroom's design. That value is real, but it doesn't survive melting — the labour is gone the moment the piece goes into the crucible. Some buyers deduct a further percentage for making charges on resale anyway. There's no basis for it, and we don't." },
+      { type:'p',  text:"A separate wastage percentage. Modern refining recovers almost all of the gold that goes in. Buyers who deduct 5–8% as 'wastage' on top of their margin are charging you twice for the same thing. Our margin is the margin — there is no second deduction behind it under a different name." },
+      { type:'p',  text:"Anything discovered after you've agreed. The number we quote after testing is the number you're paid. If something changes the calculation, you see it before you agree, not after." },
+      { type:'p',  text:"The general principle: if you can't get a deduction explained in weight or percentage terms, it isn't a deduction — it's a discount being taken quietly." },
+
+      { type:'h2', text:'How to check any offer, including ours' },
+      { type:'p',  text:"You don't need a calculator for this. Ask the buyer for two numbers: your net gold weight and your tested purity. Multiply them, and you have your pure gold content in grams." },
+      { type:'p',  text:"Now divide the offer by that number. What you get is the effective rate per gram of pure gold you're actually being paid. Compare it to the day's 24K rate. The difference, as a percentage, is the buyer's entire take — margin, refining, and anything they didn't mention, all in one honest number." },
+      { type:'p',  text:"Run it on our offer. Run it on the shop down the road. It's the only comparison that means anything, because it strips out every difference in how deductions are named and just asks what you actually receive per gram of gold." },
+      { type:'p',  text:"If a buyer won't give you the net weight and the purity reading, you can't run this check — and that refusal is your answer." },
+    ],
+  },
+
+
+// ============================================================
+// 2. NEWEST-FIRST ORDERING
+//    Paste directly BELOW the closing `];` of the ARTICLES array
+// ============================================================
+
+const MONTHS = { Jan:0, Feb:1, Mar:2, Apr:3, May:4, Jun:5, Jul:6, Aug:7, Sep:8, Oct:9, Nov:10, Dec:11 };
+
+const articleDate = (d) => {
+  const [day, mon, year] = d.split(' ');
+  return new Date(+year, MONTHS[mon] ?? 0, +day);
+};
+
+const ARTICLES_SORTED = [...ARTICLES].sort((a, b) => articleDate(b.date) - articleDate(a.date));
+
+
+// ============================================================
+// 3. THE ONE-LINE CHANGE
+//    Find where articles are rendered (blog list page AND the
+//    homepage blog strip) and swap the source array:
+//
+//      ARTICLES.map(...)          ->  ARTICLES_SORTED.map(...)
+//      ARTICLES.slice(0, 3)       ->  ARTICLES_SORTED.slice(0, 3)
+//
+//    Leave ARTICLES.find(a => a.slug === ...) alone — slug
+//    lookups don't care about order.
+// ============================================================
 ];
 
 // ─── Blog Back Button ─────────────────────────────────────────────────────────
