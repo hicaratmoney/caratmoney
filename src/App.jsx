@@ -106,7 +106,7 @@ function HomeLogo() {
 
   const BAR_H = 44;
   const BAR_W = 76;
-  const barY  = 149; // 111 + 38px rate strip height
+  const barY  = 111;
 
   const barTravelEnd = logoX - ovalHalfPx - BAR_W / 2;
   const barEndT      = 0.55;
