@@ -97,9 +97,14 @@ function HomeLogo() {
     return () => { clearTimeout(initialTimer); clearInterval(cycleTimer); cancelAnimationFrame(raf); };
   }, []);
 
-  const t       = tick;
-  const screenW = typeof window !== 'undefined' ? window.innerWidth : 390;
-  const logoX   = screenW / 2;
+  const t = tick;
+  const [screenW, setScreenW] = useState(typeof window !== 'undefined' ? window.innerWidth : 390);
+  useEffect(() => {
+    const onResize = () => setScreenW(window.innerWidth);
+    window.addEventListener('resize', onResize, { passive: true });
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+  const logoX = screenW / 2;
 
   const ovalHalfPx   = (88 / 200) * 110;
   const approachZone = 70;
