@@ -1,6 +1,8 @@
 // api/social.js — OG meta tag injector for blog article URLs
-const SITE = 'https://carat.money';
+const fs   = require('fs');
+const path = require('path');
 
+const SITE = 'https://carat.money';
 const ARTICLES = [
   {
     slug:    'is-your-gold-buyer-cheating-you',
@@ -22,22 +24,27 @@ const ARTICLES = [
     title:   'How is gold valued? A simple step-by-step guide',
     excerpt: 'Walk through exactly how a buyer values your gold — and the four points where they quietly cheat you.',
   },
+  {
+    slug:    'why-gold-buyers-pay-less-than-spot',
+    title:   'Why gold buyers pay less than today\'s rate',
+    excerpt: 'Every buyer pays below the market rate. Here\'s exactly where the gap comes from — and the margin we keep, published.',
+  },
 ];
 
 export default function handler(req, res) {
-  // Second hit — user has already seen meta tags, serve SPA
-  if (req.url && req.url.includes('spa=1')) {
-    const fs = require('fs');
-    const path = require('path');
+  const reqPath   = (req.url || '').split('?')[0];
+  const slugMatch = reqPath.match(/\/blog\/([^/?#]+)/);
+  const slug      = slugMatch ? slugMatch[1] : null;
+  const article   = slug ? ARTICLES.find(a => a.slug === slug) : null;
+
+  // A slug was requested but doesn't exist — don't fabricate meta tags
+  // for a page that isn't real. Serve the plain SPA shell and let the
+  // client-side router show its 404 state.
+  if (slug && !article) {
     const html = fs.readFileSync(path.join(process.cwd(), 'dist', 'index.html'), 'utf8');
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     return res.status(200).send(html);
   }
-
-  const path      = req.url || '';
-  const slugMatch = path.match(/\/blog\/([^/?#]+)/);
-  const slug      = slugMatch ? slugMatch[1] : null;
-  const article   = slug ? ARTICLES.find(a => a.slug === slug) : null;
 
   const title = article
     ? `${article.title} | Carat Money`
@@ -49,14 +56,18 @@ export default function handler(req, res) {
     ? `${SITE}/blog/${article.slug}`
     : `${SITE}/blog`;
   const image = `${SITE}/logo.png`;
+  const ogType = article ? 'article' : 'website';
 
-  const html = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"/>
+  // Pull the real built SPA shell so we inherit its <script> bundle tag,
+  // fonts, and anything else the build injects — we only override <head>
+  // metadata, we don't hand-roll a second shell that can drift from the
+  // real one.
+  const shell = fs.readFileSync(path.join(process.cwd(), 'dist', 'index.html'), 'utf8');
+
+  const metaBlock = `
   <title>${title}</title>
   <meta name="description" content="${desc}"/>
-  <meta property="og:type"         content="article"/>
+  <meta property="og:type"         content="${ogType}"/>
   <meta property="og:url"          content="${url}"/>
   <meta property="og:title"        content="${title}"/>
   <meta property="og:description"  content="${desc}"/>
@@ -68,15 +79,18 @@ export default function handler(req, res) {
   <meta name="twitter:title"       content="${title}"/>
   <meta name="twitter:description" content="${desc}"/>
   <meta name="twitter:image"       content="${image}"/>
-  <link rel="canonical"            href="${url}"/>
-  <script>window.location.replace("${url}?spa=1");</script>
-</head>
-<body>
-  <h1>${title}</h1>
-  <p>${desc}</p>
-  <a href="${url}">Read article</a>
-</body>
-</html>`;
+  <link rel="canonical"            href="${url}"/>`;
+
+  // Replace the shell's build-time <title> and inject our meta block
+  // right after it. Also strip any hardcoded canonical/og tags the
+  // shell already carries, so we don't end up with two of each.
+  const html = shell
+    .replace(/<title>.*?<\/title>/is, '')
+    .replace(/<link rel="canonical"[^>]*>/i, '')
+    .replace(/<meta property="og:[^>]*>/gi, '')
+    .replace(/<meta name="description"[^>]*>/i, '')
+    .replace(/<meta name="twitter:[^>]*>/gi, '')
+    .replace('</head>', `${metaBlock}\n</head>`);
 
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=600');
