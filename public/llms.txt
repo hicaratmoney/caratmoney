@@ -1,0 +1,14 @@
+# Carat Money
+
+Carat Money buys gold from customers in Bangalore and Mumbai, India at transparent, fair prices.
+
+## Tools
+
+- [Gold buyer margin calculator](https://carat.money/margin): Free tool showing what a gold buyer keeps above spot rate
+- [Live gold rates API](https://carat.money/api/rates): Public JSON endpoint for live 24K and 22K rates
+
+## Pages
+
+- [Sell gold](https://carat.money/sell): Get a WhatsApp quote
+- [Buy gold coins](https://carat.money/buy): BIS-hallmarked 24K coins
+- [Blog](https://carat.money/blog): Articles on gold valuation and buyer margins
