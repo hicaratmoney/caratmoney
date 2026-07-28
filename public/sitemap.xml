@@ -26,6 +26,11 @@
     <changefreq>weekly</changefreq>
   </url>
   <url>
+    <loc>https://carat.money/blog/why-gold-buyers-pay-less-than-spot</loc>
+    <priority>0.9</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
     <loc>https://carat.money/blog/is-your-gold-buyer-cheating-you</loc>
     <priority>0.9</priority>
     <changefreq>monthly</changefreq>
