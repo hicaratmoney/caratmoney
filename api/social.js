@@ -15,9 +15,9 @@ const ARTICLES = [
     excerpt: 'Understanding the margin your buyer keeps is the single most important thing you can do before selling your gold.',
   },
   {
-    slug:    'gold-selling-tips-bangalore',
-    title:   'Selling gold in Bangalore: 5 things to know first',
-    excerpt: 'Bangalore\'s gold buying market is active — but knowing these five things before you sell can make a significant difference.',
+    slug:    'gold-selling-tips',
+    title:   'Selling gold: 5 things to know first',
+    excerpt: 'The gold buying market is active — but knowing these five things before you sell can make a significant difference.',
   },
   {
     slug:    'how-is-gold-valued-step-by-step',
