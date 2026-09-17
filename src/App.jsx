@@ -794,11 +794,8 @@ function HomePage({ navigate, spot }) {
           </div>
           <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:'10px', margin:'10px 0 20px' }}>
             <div style={{ height:'1px', width:'40px', background:C.gold, opacity:0.5 }}/>
-            <div style={{ fontFamily:MONO, fontSize:'9px', letterSpacing:'0.2em', color:C.gold, textTransform:'uppercase' }}>· The Fair Price for Gold ·</div>
+            <div style={{ fontFamily:MONO, fontSize:'9px', letterSpacing:'0.2em', color:C.gold, textTransform:'uppercase' }}>· We Buy Gold at Fair Price ·</div>
             <div style={{ height:'1px', width:'40px', background:C.gold, opacity:0.5 }}/>
-          </div>
-          <div style={{ fontFamily:SANS, fontSize:'14px', fontWeight:600, color:C.gold, letterSpacing:'0.01em', lineHeight:1.5, marginBottom:'4px' }}>
-            We Buy Gold at a Fair Price
           </div>
           <div style={{ fontFamily:SANS, fontSize:'14px', fontWeight:600, color:C.gold, letterSpacing:'0.01em', lineHeight:1.5, marginBottom:'4px' }}>
             We guarantee — nobody can match our price
