@@ -798,6 +798,9 @@ function HomePage({ navigate, spot }) {
             <div style={{ height:'1px', width:'40px', background:C.gold, opacity:0.5 }}/>
           </div>
           <div style={{ fontFamily:SANS, fontSize:'14px', fontWeight:600, color:C.gold, letterSpacing:'0.01em', lineHeight:1.5, marginBottom:'4px' }}>
+            We Buy Gold at a Fair Price
+          </div>
+          <div style={{ fontFamily:SANS, fontSize:'14px', fontWeight:600, color:C.gold, letterSpacing:'0.01em', lineHeight:1.5, marginBottom:'4px' }}>
             We guarantee — nobody can match our price
           </div>
           <div style={{ fontFamily:MONO, fontSize:'11px', color:C.mute, letterSpacing:'0.06em' }}>
