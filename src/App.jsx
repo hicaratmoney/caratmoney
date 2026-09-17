@@ -803,6 +803,9 @@ function HomePage({ navigate, spot }) {
           <div style={{ fontFamily:MONO, fontSize:'11px', color:C.mute, letterSpacing:'0.06em' }}>
             5,000+ customers · ₹100Cr+ purchased · 4.9★
           </div>
+          <div style={{ fontFamily:MONO, fontSize:'11px', color:C.mute, letterSpacing:'0.06em', marginTop:'4px' }}>
+            Home pickup available in Bangalore & Mumbai
+          </div>
         </div>
 
         {/* ── Rate Card ── */}
