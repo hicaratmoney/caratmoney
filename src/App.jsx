@@ -859,42 +859,12 @@ function HomePage({ navigate, spot }) {
           }
         </Card>
 
-        {/* ── Margin Card ── */}
-        <div
-          ref={marginCardRef}
-          onClick={() => { setMarginTapped(true); navigate('/margin'); }}
-          style={{
-            background:C.white, borderRadius:'8px', cursor:'pointer',
-            marginBottom:'12px', overflow:'hidden',
-            transition:'transform .2s, box-shadow .2s, border-color .2s',
-            border: nudgeActive ? `1.5px solid ${C.gold}` : `1px solid rgba(26,20,38,.1)`,
-            boxShadow: nudgeActive
-              ? `0 0 0 4px rgba(184,136,58,.18), 0 2px 12px rgba(22,18,31,.06)`
-              : '0 2px 12px rgba(22,18,31,.06)',
-          }}>
-          {/* Image strip */}
-          <div style={{ position:'relative', height:'200px', overflow:'hidden', borderRadius:'8px 8px 0 0' }}>
-            <img src="/img-margin.jpeg" alt="Informed gold seller" style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'center', display:'block' }}/>
-            <div style={{ position:'absolute', bottom:0, left:0, right:0, height:'80px', background:'linear-gradient(to bottom, transparent, #ffffff)' }}/>
-          </div>
-          {/* Text section */}
-          <div style={{ padding:'20px 24px 24px' }}>
-            <div style={{ fontFamily:SERIF, fontSize:'26px', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1.15, marginBottom:'8px' }}>
-              Is your gold buyer cheating you?
-            </div>
-            <div style={{ fontSize:'15px', color:C.mute, lineHeight:1.55, marginBottom:'20px' }}>Check your buyer's margin.</div>
-            <BtnPrimary style={{ width:'auto', padding:'10px 20px', animation: nudgeActive ? 'glowPulse 0.8s ease-out 3' : 'none' }}>
-              <TrendingDown size={15}/> Calculate margin
-            </BtnPrimary>
-          </div>
-        </div>
-
         {/* ── Sell Card ── */}
-        <div onClick={() => navigate('/sell')} style={{ background:C.white, borderRadius:'8px', border:`1px solid rgba(26,20,38,.1)`, cursor:'pointer', marginBottom:'20px', boxShadow:'0 2px 12px rgba(22,18,31,.06)', transition:'transform .2s,box-shadow .2s', overflow:'hidden' }}>
+        <div onClick={() => navigate('/sell')} style={{ background:C.white, borderRadius:'8px', cursor:'pointer', marginBottom:'12px', overflow:'hidden', border:`1px solid rgba(26,20,38,.1)`, boxShadow:'0 2px 12px rgba(22,18,31,.06)', transition:'transform .2s,box-shadow .2s' }}>
           {/* Image strip */}
           <div style={{ position:'relative', height:'200px', overflow:'hidden', borderRadius:'8px 8px 0 0' }}>
-            <img src="/img-sell.jpg" alt="Sell gold to Carat Money" style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'center', display:'block' }}/>
-            <div style={{ position:'absolute', bottom:0, left:0, right:0, height:'80px', background:'linear-gradient(to bottom, transparent, #ffffff)' }}/>
+            <img src="/img-sell.jpg" alt="Sell gold to Carat Money" width="1310" height="701" fetchpriority="high" decoding="async" style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'center', display:'block' }}/>
+            <div style={{ position:'absolute', bottom:0, left:0, right:0, height:'80px', background:'linear-gradient(to bottom, transparent 60%, #ffffff)' }}/>
           </div>
           {/* Text section */}
           <div style={{ padding:'20px 24px 24px' }}>
@@ -903,6 +873,39 @@ function HomePage({ navigate, spot }) {
             <div style={{ display:'inline-flex', alignItems:'center', gap:'6px', background:C.green, color:C.white, padding:'10px 20px', borderRadius:'999px', fontSize:'14px', fontWeight:600, fontFamily:SANS }}>
               <MessageCircle size={15}/> Get a quote
             </div>
+          </div>
+        </div>
+
+        {/* ── Margin Card ── */}
+        <div
+          ref={marginCardRef}
+          onClick={() => { setMarginTapped(true); navigate('/margin'); }}
+          style={{
+            background:C.white, borderRadius:'8px', cursor:'pointer',
+            marginBottom:'20px', overflow:'hidden',
+            transition:'transform .2s, box-shadow .2s, border-color .2s',
+            border: nudgeActive ? `1.5px solid ${C.gold}` : `1px solid rgba(26,20,38,.1)`,
+            boxShadow: nudgeActive
+              ? `0 0 0 4px rgba(184,136,58,.18), 0 2px 12px rgba(22,18,31,.06)`
+              : '0 2px 12px rgba(22,18,31,.06)',
+          }}>
+          {/* Image strip */}
+          <div style={{ position:'relative', height:'200px', overflow:'hidden', borderRadius:'8px 8px 0 0' }}>
+            <img src="/img-margin.jpeg" alt="Informed gold seller" width="1310" height="701" decoding="async" style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'center', display:'block' }}/>
+            <div style={{ position:'absolute', bottom:0, left:0, right:0, height:'80px', background:'linear-gradient(to bottom, transparent 60%, #ffffff)' }}/>
+          </div>
+          {/* Text section */}
+          <div style={{ padding:'20px 24px 24px' }}>
+            <div style={{ fontFamily:SERIF, fontSize:'26px', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1.15, marginBottom:'8px' }}>
+              Is your gold buyer cheating you?
+            </div>
+            <div style={{ fontSize:'15px', color:C.mute, lineHeight:1.55, marginBottom:'20px' }}>Check your buyer's margin.</div>
+            <BtnPrimary style={{
+              width:'auto', padding:'10px 20px',
+              animation: nudgeActive ? 'glowPulse 0.8s ease-out 3' : 'none',
+            }}>
+              <TrendingDown size={15}/> Calculate margin
+            </BtnPrimary>
           </div>
         </div>
 
