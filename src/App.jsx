@@ -811,7 +811,7 @@ function HomePage({ navigate, spot }) {
         {/* ── Rate Card ── */}
         <Card dark style={{ marginBottom:'14px' }}>
           <div style={{ fontFamily:SERIF, fontSize:'26px', fontWeight:350, color:C.gold2, letterSpacing:'-0.02em', lineHeight:1.1, marginBottom:'12px' }}>
-            Carat Money's Buy Rate
+            Our Buy Rate
           </div>
           {spot.loading && !spot.display
             ? <span style={{ fontFamily:SERIF, fontSize:'40px', color:`rgba(241,215,141,.4)`, letterSpacing:'-0.02em' }}>Loading…</span>
@@ -871,7 +871,7 @@ function HomePage({ navigate, spot }) {
           </div>
           {/* Text section */}
           <div style={{ padding:'20px 24px 24px' }}>
-            <div style={{ fontFamily:SERIF, fontSize:'26px', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1.15, marginBottom:'8px' }}>Sell to Carat Money</div>
+            <div style={{ fontFamily:SERIF, fontSize:'26px', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1.15, marginBottom:'8px' }}>Sell to Carat <span style={{ fontStyle:'italic' }}>Money</span></div>
             <div style={{ fontSize:'15px', color:C.mute, lineHeight:1.55, marginBottom:'20px' }}>Get an instant WhatsApp quote.</div>
             <BtnPrimary style={{ width:'auto', padding:'10px 20px' }}>
               <MessageCircle size={15}/> Get a quote
