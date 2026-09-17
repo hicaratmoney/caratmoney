@@ -781,20 +781,6 @@ function HomePage({ navigate, spot }) {
   const r22  = Math.round(r24 * 22 / 24);
   const time = fmtTime(spot.updatedAt);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (nudgeFiredRef.current || marginTapped) return;
-      if (!marginCardRef.current) return;
-      const rect = marginCardRef.current.getBoundingClientRect();
-      if (rect.top < 0) return;
-      nudgeFiredRef.current = true;
-      marginCardRef.current.scrollIntoView({ behavior:'smooth', block:'center' });
-      setTimeout(() => setNudgeActive(true), 650);
-      setTimeout(() => setNudgeActive(false), 650 + 2400);
-    }, 5000);
-    return () => clearTimeout(timer);
-  }, [marginTapped]);
-
   return (
     <div style={{ minHeight:'100dvh', background:C.paper, fontFamily:SANS, color:C.ink }}>
       <div style={{ maxWidth:'520px', margin:'0 auto', padding:'0 18px 48px' }}>
