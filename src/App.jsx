@@ -870,9 +870,9 @@ function HomePage({ navigate, spot }) {
           <div style={{ padding:'20px 24px 24px' }}>
             <div style={{ fontFamily:SERIF, fontSize:'26px', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1.15, marginBottom:'8px' }}>Sell to Carat Money</div>
             <div style={{ fontSize:'15px', color:C.mute, lineHeight:1.55, marginBottom:'20px' }}>Get an instant WhatsApp quote.</div>
-            <div style={{ display:'inline-flex', alignItems:'center', gap:'6px', background:C.green, color:C.white, padding:'10px 20px', borderRadius:'999px', fontSize:'14px', fontWeight:600, fontFamily:SANS }}>
+            <BtnPrimary style={{ width:'auto', padding:'10px 20px' }}>
               <MessageCircle size={15}/> Get a quote
-            </div>
+            </BtnPrimary>
           </div>
         </div>
 
