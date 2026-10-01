@@ -914,7 +914,7 @@ function HomePage({ navigate, spot }) {
 
         <TopBar spot={spot} progress={heroP}/>
         <div style={{ textAlign:'center', padding:'40px 12px 32px' }}>
-          <div style={{ display:'flex', justifyContent:'center', marginBottom:'16px', opacity: 1 - heroP, transform:`scale(${1 - 0.4 * heroP})`, transformOrigin:'top center' }}>
+          <div style={{ display:'flex', justifyContent:'center', marginBottom:'16px', opacity: 1 - heroP }}>
             <HomeLogo/>
           </div>
           <div style={{ fontFamily:SERIF, fontSize:'42px', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1.05, marginBottom:'6px' }}>
