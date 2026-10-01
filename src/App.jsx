@@ -1119,6 +1119,7 @@ function SellPage({ navigate, spot }) {
     <div style={{ minHeight:'100dvh', background:C.paper, fontFamily:SANS, color:C.ink }}>
       <TopBar spot={spot} progress={1}/>
       <div style={{ height:'56px' }}/>
+      <div style={{ maxWidth:'520px', margin:'0 auto', padding:'0 18px 48px' }}>
         <BackBtn navigate={navigate}/>
         <PageHeader/>
         <div style={{ textAlign:'center', padding:'12px 0 24px' }}>
