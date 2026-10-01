@@ -2,7 +2,7 @@ import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react'
 import {
   MessageCircle, TrendingDown, Shield, Sparkles, Info,
   Plus, Minus, Trash2, ChevronDown, ChevronUp, ArrowLeft, Zap,
-  KeyRound, Search, ShieldCheck, X, Share2, Copy, AlertCircle, Check,
+  KeyRound, Search, ShieldCheck, X, Share2, Copy, AlertCircle, Check, Phone,
 } from 'lucide-react';
 
 // ─── Brand Tokens ─────────────────────────────────────────────────────────────
@@ -339,6 +339,8 @@ const GLOBAL_CSS = `
   input[type=number]::-webkit-inner-spin-button,
   input[type=number]::-webkit-outer-spin-button { -webkit-appearance:none; margin:0; }
   input[type=number] { -moz-appearance:textfield; }
+  @media (max-width:420px) { .tb-name { display:none; } }
+  @media (max-width:380px) { .tb-live { display:none; } }
 `;
 
 // ─── Shared input style ───────────────────────────────────────────────────────
@@ -769,7 +771,132 @@ function BlogArticlePage({ navigate, slug }) {
 }
 
 // ─── Home Page ────────────────────────────────────────────────────────────────
+// ─── Scroll progress (0 → 1 over `distance` px) ──────────────────────────────
+function useScrollProgress(distance) {
+  const [p, setP] = useState(0);
+  useEffect(() => {
+    const on = () => setP(Math.min(1, Math.max(0, window.scrollY / distance)));
+    on();
+    window.addEventListener('scroll', on, { passive:true });
+    return () => window.removeEventListener('scroll', on);
+  }, [distance]);
+  return p;
+}
+
+// ─── WhatsApp glyph + contact constants ──────────────────────────────────────
+const WA_MSG      = "Hi. I'm interested in selling gold.";
+const WA_LINK     = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WA_MSG)}`;
+const CALL_NUMBER = '+918618542353';
+const WhatsAppGlyph = ({ size = 16, color = 'currentColor' }) => (
+  <svg viewBox="0 0 24 24" width={size} height={size} fill={color} aria-hidden="true">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+);
+
+// ─── Top Bar (logo · 24K rate · WhatsApp · Call) ─────────────────────────────
+// progress 0 → hidden/light, 1 → solid plum. Home passes scroll progress; other pages pass 1.
+function TopBar({ spot, progress = 1 }) {
+  const p     = progress;
+  const r24   = spot.display ?? SPOT_FALLBACK;
+  const solid = p >= 1;
+  const a     = 0.12 + 0.88 * p;
+  const fade  = 0.35 + 0.65 * p;
+  return (
+    <div style={{
+      position:'fixed', top:0, left:0, right:0, zIndex:100, height:'56px',
+      opacity: Math.min(1, p * 4), pointerEvents: p > 0.05 ? 'auto' : 'none',
+      background: solid ? C.plum : `linear-gradient(90deg, rgba(58,29,110,${a}), rgba(43,20,80,${a}))`,
+      borderBottom: `1px solid rgba(224,183,101,${0.25 * p})`,
+      boxShadow: solid ? '0 2px 16px rgba(43,20,80,.25)' : 'none',
+    }}>
+      <div style={{ maxWidth:'520px', margin:'0 auto', height:'100%', padding:'0 12px', display:'flex', alignItems:'center', gap:'8px' }}>
+        {/* Logo + name */}
+        <div style={{ display:'flex', alignItems:'center', gap:'6px', opacity:p, flexShrink:0 }}>
+          <LogoMark size={22} color={C.gold2}/>
+          <span className="tb-name" style={{ fontFamily:SERIF, fontSize:'16px', fontWeight:350, color:C.gold2, whiteSpace:'nowrap' }}>
+            Carat <span style={{ fontStyle:'italic' }}>Money</span>
+          </span>
+        </div>
+        {/* Rate pill */}
+        <div style={{ display:'flex', alignItems:'center', gap:'5px', padding:'5px 10px', borderRadius:'999px', background:'rgba(0,0,0,.22)', border:'1px solid rgba(224,183,101,.2)', fontFamily:MONO, fontSize:'11px', whiteSpace:'nowrap', flexShrink:0, opacity:fade }}>
+          <span style={{ width:'6px', height:'6px', borderRadius:'50%', background:C.green }}/>
+          <span style={{ color:'rgba(241,215,141,.7)' }}>24K</span>
+          <span className="tb-live" style={{ color:C.gold2 }}>live</span>
+          <span style={{ color:C.gold3 }}>₹{fmt(r24,0)}/g</span>
+        </div>
+        {/* WhatsApp + Call */}
+        <div style={{ marginLeft:'auto', display:'flex', gap:'6px', flexShrink:0, opacity:fade }}>
+          <a href={WA_LINK} target="_blank" rel="noreferrer" style={{ display:'inline-flex', alignItems:'center', gap:'6px', background:C.green, color:C.ink, padding:'7px 12px', borderRadius:'999px', fontFamily:SANS, fontSize:'13px', fontWeight:600, textDecoration:'none', whiteSpace:'nowrap' }}>
+            <WhatsAppGlyph size={15} color={C.ink}/> WhatsApp
+          </a>
+          <a href={`tel:${CALL_NUMBER}`} style={{ display:'inline-flex', alignItems:'center', gap:'6px', background:'transparent', color:C.white, padding:'7px 12px', borderRadius:'999px', border:'1px solid rgba(255,255,255,.3)', fontFamily:SANS, fontSize:'13px', fontWeight:600, textDecoration:'none', whiteSpace:'nowrap' }}>
+            <Phone size={14}/> Call
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── How it works ────────────────────────────────────────────────────────────
+function HowItWorks() {
+  const steps = [
+    'Share your jewellery details and book a pickup slot',
+    'We pick it up from your home',
+    'Get paid instantly',
+  ];
+  return (
+    <div style={{ background:C.white, borderRadius:'8px', border:'1px solid rgba(26,20,38,.1)', boxShadow:'0 2px 12px rgba(22,18,31,.06)', padding:'24px', marginBottom:'20px' }}>
+      <div style={{ fontFamily:SERIF, fontSize:'26px', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1.15, marginBottom:'18px' }}>
+        How it works
+      </div>
+      {steps.map((s, i) => (
+        <div key={i} style={{ display:'flex', alignItems:'center', gap:'14px', padding:'12px 0', borderTop: i === 0 ? 'none' : '1px solid rgba(26,20,38,.08)' }}>
+          <div style={{ width:'32px', height:'32px', borderRadius:'50%', background:C.paper2, border:'1px solid rgba(184,136,58,.25)', color:C.plum, fontFamily:SERIF, fontSize:'16px', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>{i + 1}</div>
+          <div style={{ fontSize:'15px', color:C.ink2, lineHeight:1.5 }}>{s}</div>
+        </div>
+      ))}
+      <BtnPrimary onClick={() => window.open(WA_LINK, '_blank')} style={{ width:'auto', padding:'10px 20px', marginTop:'16px' }}>
+        <WhatsAppGlyph size={15}/> Get a free estimate
+      </BtnPrimary>
+    </div>
+  );
+}
+
+// ─── FAQs ────────────────────────────────────────────────────────────────────
+const FAQS = [
+  { q:'How is the estimated price calculated?', a:'We weigh your gold, test purity on an XRF machine, and multiply the pure gold content by the live 24K rate shown above. You see every number live on your phone screen.' },
+  { q:'Will someone visit my home for pickup?', a:'Yes. An authorised Carat Money agent will book a time with you, test your gold in front of you, and make a firm offer on the spot.' },
+  { q:'Is there any charge for an estimate?', a:"No. Estimates are free with no obligation. You sell only if you're happy with the offer." },
+  { q:'How will I receive the payment?', a:'Instantly, by bank transfer or UPI, as soon as you accept the offer.' },
+];
+function FAQSection() {
+  const [open, setOpen] = useState(null);
+  return (
+    <div style={{ marginBottom:'20px' }}>
+      <div style={{ fontFamily:SERIF, fontSize:'26px', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1.15, marginBottom:'12px' }}>
+        Frequently asked questions
+      </div>
+      {FAQS.map((f, i) => {
+        const isOpen = open === i;
+        return (
+          <div key={i} style={{ borderTop:'1px solid rgba(26,20,38,.12)', borderBottom: i === FAQS.length - 1 ? '1px solid rgba(26,20,38,.12)' : 'none' }}>
+            <button onClick={() => setOpen(isOpen ? null : i)} aria-expanded={isOpen} style={{ width:'100%', background:'none', border:'none', padding:'14px 0', display:'flex', alignItems:'center', justifyContent:'space-between', gap:'12px', cursor:'pointer', textAlign:'left', fontFamily:SANS, fontSize:'15px', fontWeight:600, color:C.ink }}>
+              {f.q}
+              <ChevronDown size={16} color={C.gold} style={{ flexShrink:0, transform: isOpen ? 'rotate(180deg)' : 'none', transition:'transform .2s' }}/>
+            </button>
+            {isOpen && (
+              <div style={{ fontSize:'14px', color:C.mute, lineHeight:1.6, paddingBottom:'14px', animation:'fadeSlide .25s ease' }}>{f.a}</div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 function HomePage({ navigate, spot }) {
+  const heroP = useScrollProgress(180);
   const [showGstTip,    setShowGstTip]   = useState(false);
   const [selectedKarat, setSelectedKarat] = useState('22');
   const [nudgeActive,  setNudgeActive]  = useState(false);
@@ -785,8 +912,9 @@ function HomePage({ navigate, spot }) {
     <div style={{ minHeight:'100dvh', background:C.paper, fontFamily:SANS, color:C.ink }}>
       <div style={{ maxWidth:'520px', margin:'0 auto', padding:'0 18px 48px' }}>
 
+        <TopBar spot={spot} progress={heroP}/>
         <div style={{ textAlign:'center', padding:'40px 12px 32px' }}>
-          <div style={{ display:'flex', justifyContent:'center', marginBottom:'16px' }}>
+          <div style={{ display:'flex', justifyContent:'center', marginBottom:'16px', opacity: 1 - heroP, transform:`scale(${1 - 0.4 * heroP})`, transformOrigin:'top center' }}>
             <HomeLogo/>
           </div>
           <div style={{ fontFamily:SERIF, fontSize:'42px', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1.05, marginBottom:'6px' }}>
@@ -912,12 +1040,8 @@ function HomePage({ navigate, spot }) {
           </div>
         </div>
 
-        <div style={{ padding:'16px 0', marginBottom:'16px', borderTop:`1px solid rgba(26,20,38,.12)`, borderBottom:`1px solid rgba(26,20,38,.12)`, display:'flex', alignItems:'center', justifyContent:'space-between', gap:'10px' }}>
-          <span style={{ fontSize:'14px', color:C.mute, fontFamily:SANS }}>Want to buy gold?</span>
-          <span onClick={() => navigate('/buy')} style={{ fontSize:'14px', fontWeight:600, color:C.gold, fontFamily:SANS, cursor:'pointer', display:'inline-flex', alignItems:'center', gap:'4px' }}>
-            Buy 24K hallmarked coins →
-          </span>
-        </div>
+        <HowItWorks/>
+        <FAQSection/>
 
         <div style={{ padding:'14px 0', marginBottom:'16px' }}>
           <div style={{ textAlign:'center', marginBottom:'14px' }}>
@@ -993,8 +1117,8 @@ function SellPage({ navigate, spot }) {
   };
   return (
     <div style={{ minHeight:'100dvh', background:C.paper, fontFamily:SANS, color:C.ink }}>
-      <RateStrip spot={spot}/>
-      <div style={{ maxWidth:'520px', margin:'0 auto', padding:'0 18px 48px' }}>
+      <TopBar spot={spot} progress={1}/>
+      <div style={{ height:'56px' }}/>
         <BackBtn navigate={navigate}/>
         <PageHeader/>
         <div style={{ textAlign:'center', padding:'12px 0 24px' }}>
@@ -1438,37 +1562,8 @@ function MarginPage({ navigate, spot }) {
   const pfx     = { position:'absolute', left:'14px', top:'50%', transform:'translateY(-50%)', fontSize:'16px', color:C.mute, fontWeight:500, pointerEvents:'none', fontFamily:SANS };
 
   return (
-    <div style={{ minHeight:'100dvh', background:C.paper, fontFamily:SANS, color:C.ink, paddingTop:stickyVisible?'52px':0, transition:'padding-top .3s ease' }}>
-
-      {stickyVisible && (
-        <div style={{ position:'fixed', top:0, left:0, right:0, zIndex:50, background:`rgba(43,20,80,.96)`, backdropFilter:'blur(10px)', WebkitBackdropFilter:'blur(10px)', borderBottom:`1px solid rgba(224,183,101,.15)`, boxShadow:'0 2px 16px rgba(43,20,80,.2)', animation:'stickyDrop .35s ease' }}>
-          <div style={{ maxWidth:'520px', margin:'0 auto', padding:'12px 18px', display:'flex', alignItems:'center', gap:'10px', borderLeft:`3px solid ${C.gold}`, minHeight:'52px', boxSizing:'border-box' }}>
-            {margin1===null ? (
-              <div key="lot" style={{ display:'flex', alignItems:'center', gap:'10px', width:'100%', animation:'stickySwap .25s ease' }}>
-                <span style={{ fontFamily:MONO, fontSize:'9px', fontWeight:500, letterSpacing:'0.14em', color:C.gold2, flexShrink:0 }}>{lotSummary.ornamentCount} ORNAMENTS</span>
-                <span style={{ width:'3px', height:'3px', borderRadius:'50%', background:`rgba(224,183,101,.4)`, flexShrink:0 }}/>
-                <span style={{ fontFamily:SERIF, fontSize:'14px', color:C.gold3, flexShrink:0 }}>{fmt(lotSummary.totalGross)}g gross</span>
-                <span style={{ fontFamily:SERIF, fontSize:'15px', fontWeight:350, color:C.gold3, marginLeft:'auto', flexShrink:0 }}>{fmt(lotSummary.totalNet)}g net</span>
-              </div>
-            ) : (() => {
-              const showRevised=activeSection==='revised'&&margin2!==null;
-              const t=showRevised?t2:t1, m=showRevised?margin2:margin1, key=showRevised?'r':'f';
-              const delta=showRevised&&margin1?margin1.value-margin2.value:null;
-              return (
-                <div key={key} style={{ display:'flex', alignItems:'center', gap:'10px', width:'100%', animation:'stickySwap .25s ease' }}>
-                  <span style={{ fontFamily:MONO, fontSize:'9px', fontWeight:500, letterSpacing:'0.14em', color:C.gold2, flexShrink:0 }}>{showRevised?'REVISED':'BUYER QUOTE'}</span>
-                  <span style={{ width:'3px', height:'3px', borderRadius:'50%', background:`rgba(224,183,101,.4)`, flexShrink:0 }}/>
-                  <span style={{ fontFamily:SERIF, fontSize:'20px', fontWeight:350, color:t.fg, letterSpacing:'-0.02em', lineHeight:1, flexShrink:0 }}>{m.value.toFixed(1)}%</span>
-                  {delta!==null && <span style={{ fontFamily:MONO, fontSize:'10px', fontWeight:500, color:C.gold3, display:'inline-flex', alignItems:'center', gap:'2px', flexShrink:0 }}><TrendingDown size={11}/>{delta>0?`${delta.toFixed(1)}pp`:'no drop'}</span>}
-                  {isMulti
-                    ? <span style={{ fontFamily:MONO, fontSize:'11px', color:`rgba(241,215,141,.5)`, marginLeft:'auto', flexShrink:0 }}>{margin1.ornamentCount} ornaments · {fmt(margin1.totalNetWeight)}g</span>
-                    : <span style={{ fontFamily:SERIF, fontSize:'14px', fontWeight:350, color:C.gold3, marginLeft:'auto', flexShrink:0 }}>₹{fmt(m.total,0)}</span>}
-                </div>
-              );
-            })()}
-          </div>
-        </div>
-      )}
+    <div style={{ minHeight:'100dvh', background:C.paper, fontFamily:SANS, color:C.ink, paddingTop:'56px' }}>
+      <TopBar spot={spot} progress={1}/>
 
       <div style={{ maxWidth:'520px', margin:'0 auto', padding:'0 18px 48px' }}>
         <BackBtn navigate={navigate}/>
