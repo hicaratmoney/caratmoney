@@ -381,12 +381,11 @@ function RateStrip({ spot }) {
 // ─── Back Button ──────────────────────────────────────────────────────────────
 function BackBtn({ navigate }) {
   return (
-    <button onClick={() => navigate('/')} style={{ background:'none', border:'none', cursor:'pointer', display:'inline-flex', alignItems:'center', gap:'6px', color:C.gold, fontFamily:MONO, fontSize:'12px', fontWeight:500, padding:'18px 0 8px', letterSpacing:'0.1em', textTransform:'uppercase' }}>
+    <Link to="/" navigate={navigate} style={{ display:'inline-flex', alignItems:'center', gap:'6px', color:C.gold, fontFamily:MONO, fontSize:'12px', fontWeight:500, padding:'18px 0 8px', letterSpacing:'0.1em', textTransform:'uppercase' }}>
       <ArrowLeft size={14} strokeWidth={2}/> Home
-    </button>
+    </Link>
   );
 }
-
 // ─── Eyebrow ──────────────────────────────────────────────────────────────────
 const Eyebrow = ({ children, light }) => (
   <div style={{ fontFamily:MONO, fontSize:'10px', fontWeight:500, letterSpacing:'0.18em', textTransform:'uppercase', color: light ? `rgba(241,215,141,0.6)` : C.mute, marginBottom:'10px' }}>{children}</div>
@@ -610,9 +609,9 @@ const ARTICLES_SORTED = [...ARTICLES].sort((a, b) => articleDate(b.date) - artic
 // ─── Blog Back Button ─────────────────────────────────────────────────────────
 function BlogBackBtn({ navigate }) {
   return (
-    <button onClick={() => navigate('/blog')} style={{ background:'none', border:'none', cursor:'pointer', display:'inline-flex', alignItems:'center', gap:'6px', color:C.gold, fontFamily:MONO, fontSize:'12px', fontWeight:500, padding:'18px 0 8px', letterSpacing:'0.1em', textTransform:'uppercase' }}>
+    <Link to="/blog" navigate={navigate} style={{ display:'inline-flex', alignItems:'center', gap:'6px', color:C.gold, fontFamily:MONO, fontSize:'12px', fontWeight:500, padding:'18px 0 8px', letterSpacing:'0.1em', textTransform:'uppercase' }}>
       <ArrowLeft size={14} strokeWidth={2}/> Blog
-    </button>
+    </Link>
   );
 }
 
@@ -634,7 +633,7 @@ function BlogIndexPage({ navigate }) {
           </h1>
         </div>
         {ARTICLES.map(a => (
-          <div key={a.slug} onClick={() => navigate(`/blog/${a.slug}`)} style={{ background:C.white, borderRadius:'8px', padding:'24px', border:`1px solid rgba(26,20,38,.1)`, marginBottom:'12px', cursor:'pointer', boxShadow:'0 2px 12px rgba(22,18,31,.06)', transition:'transform .2s,box-shadow .2s' }}
+          <Link key={a.slug} to={`/blog/${a.slug}`} navigate={navigate} style={{ background:C.white, borderRadius:'8px', padding:'24px', border:`1px solid rgba(26,20,38,.1)`, marginBottom:'12px', boxShadow:'0 2px 12px rgba(22,18,31,.06)', transition:'transform .2s,box-shadow .2s' }}
             onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-2px)';e.currentTarget.style.boxShadow='0 8px 24px rgba(22,18,31,.12)';}}
             onMouseLeave={e=>{e.currentTarget.style.transform='translateY(0)';e.currentTarget.style.boxShadow='0 2px 12px rgba(22,18,31,.06)';}}
           >
@@ -648,7 +647,7 @@ function BlogIndexPage({ navigate }) {
               <div style={{ fontFamily:MONO, fontSize:'10px', color:C.mute, letterSpacing:'0.06em' }}>Carat Money · {a.date}</div>
               <div style={{ fontFamily:MONO, fontSize:'11px', color:C.gold, fontWeight:500, letterSpacing:'0.08em' }}>READ →</div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>
@@ -903,6 +902,21 @@ function FAQSection() {
   );
 }
 
+// ─── Crawlable internal link (real <a href>, in-app navigation on click) ─────
+function Link({ to, navigate, children, style, ...rest }) {
+  const onClick = e => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; // allow new-tab clicks
+    e.preventDefault();
+    e.stopPropagation();
+    navigate(to);
+  };
+  return (
+    <a href={to} onClick={onClick} style={{ color:'inherit', textDecoration:'none', display:'block', ...style }} {...rest}>
+      {children}
+    </a>
+  );
+}
+
 function HomePage({ navigate, spot }) {
   const heroP = useScrollProgress(180);
   const [showGstTip,    setShowGstTip]   = useState(false);
@@ -1007,7 +1021,7 @@ function HomePage({ navigate, spot }) {
           </div>
           {/* Text section */}
           <div style={{ padding:'20px 24px 24px' }}>
-            <div style={{ fontFamily:SERIF, fontSize:'26px', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1.15, marginBottom:'8px' }}>Sell to Carat <span style={{ fontStyle:'italic' }}>Money</span></div>
+            <div style={{ fontFamily:SERIF, fontSize:'26px', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1.15, marginBottom:'8px' }}><Link to="/sell" navigate={navigate} style={{ display:'inline' }}><Link to="/sell" navigate={navigate} style={{ display:'inline' }}>Sell to Carat <span style={{ fontStyle:'italic' }}>Money</span></Link></Link></div>
             <div style={{ fontSize:'15px', color:C.mute, lineHeight:1.55, marginBottom:'20px' }}>Get an instant WhatsApp quote.</div>
             <BtnPrimary style={{ width:'auto', padding:'10px 20px' }}>
               <MessageCircle size={15}/> Get a quote
@@ -1036,7 +1050,7 @@ function HomePage({ navigate, spot }) {
           {/* Text section */}
           <div style={{ padding:'20px 24px 24px' }}>
             <div style={{ fontFamily:SERIF, fontSize:'26px', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1.15, marginBottom:'8px' }}>
-              Is your gold buyer cheating you?
+              <Link to="/margin" navigate={navigate} style={{ display:'inline' }}>Is your gold buyer cheating you?</Link>
             </div>
             <div style={{ fontSize:'15px', color:C.mute, lineHeight:1.55, marginBottom:'20px' }}>Check your buyer's margin.</div>
             <BtnPrimary style={{
@@ -1053,15 +1067,15 @@ function HomePage({ navigate, spot }) {
 
         <div style={{ padding:'14px 0', marginBottom:'16px' }}>
           <div style={{ textAlign:'center', marginBottom:'14px' }}>
-            <span onClick={() => navigate('/blog')} style={{ fontFamily:MONO, fontSize:'11px', fontWeight:500, color:C.mute, cursor:'pointer', letterSpacing:'0.1em', textTransform:'uppercase', borderBottom:`1px solid rgba(122,111,98,.3)`, paddingBottom:'2px' }}>
+            <Link to="/blog" navigate={navigate} style={{ display:'inline', fontFamily:MONO, fontSize:'11px', fontWeight:500, color:C.mute, letterSpacing:'0.1em', textTransform:'uppercase', borderBottom:`1px solid rgba(122,111,98,.3)`, paddingBottom:'2px' }}>
               · GOLD INSIGHTS BLOG ·
-            </span>
+            </Link>
           </div>
-          {ARTICLES.slice(0,3).map(a => (
-            <div key={a.slug} onClick={() => navigate(`/blog/${a.slug}`)} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'10px 0', borderTop:`1px solid rgba(26,20,38,.06)`, cursor:'pointer', gap:'12px' }}>
+          {ARTICLES.map(a => (
+            <Link key={a.slug} to={`/blog/${a.slug}`} navigate={navigate} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'10px 0', borderTop:`1px solid rgba(26,20,38,.06)`, gap:'12px' }}>
               <span style={{ fontSize:'13px', color:C.ink2, fontFamily:SANS, lineHeight:1.4 }}>{a.title}</span>
               <span style={{ fontFamily:MONO, fontSize:'11px', color:C.gold, flexShrink:0 }}>→</span>
-            </div>
+            </Link>
           ))}
         </div>
         <div style={{ padding:'16px 0', marginBottom:'4px', borderTop:`1px solid rgba(26,20,38,.12)`, borderBottom:`1px solid rgba(26,20,38,.12)` }}>
