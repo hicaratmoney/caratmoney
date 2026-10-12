@@ -1,4 +1,7 @@
 {
+  "redirects": [
+    { "source": "/blog/gold-selling-tips-bangalore", "destination": "/blog/gold-selling-tips", "permanent": true }
+  ],
   "rewrites": [
     { "source": "/blog/:slug+", "destination": "/api/social?path=/blog/:slug+" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
