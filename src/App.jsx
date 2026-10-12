@@ -1842,3 +1842,4 @@ export default function App() {
   else                        page = <HomePage         navigate={navigate} spot={spot}/>;
   return <><style>{GLOBAL_CSS}</style>{page}</>;
 }
+
