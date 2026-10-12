@@ -23,7 +23,7 @@ const C = {
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 const SPOT_FALLBACK    = 15578;
-const WHATSAPP_NUMBER  = '918618542353';
+const WHATSAPP_NUMBER  = '918169874545';
 const STONE_RECOVERY   = 0.50;
 const WASTAGE_RECOVERY = 0.95;
 const MAX_ORNAMENTS    = 10;
