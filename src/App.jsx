@@ -285,8 +285,15 @@ const SEO_MAP = {
   '/margin': { title:'Gold Buyer Margin Calculator | Free Tool by Carat Money', desc:'Free tool to check what your gold buyer is keeping above the spot rate. Used by 5,000+ sellers across India.' },
   '/blog':   { title:'Gold Selling Tips & Insights | Carat Money Blog', desc:'Expert articles on gold selling, buyer margins, and getting the best price for your gold in India.' },
 };
+function setCanonical(href) {
+  let link = document.querySelector('link[rel="canonical"]');
+  if (!link) { link = document.createElement('link'); link.setAttribute('rel', 'canonical'); document.head.appendChild(link); }
+  link.setAttribute('href', href);
+}
 function useSEO(route) {
   useEffect(() => {
+    if (!route) return;
+    setCanonical(`https://carat.money${route}`);
     const seo = SEO_MAP[route] || SEO_MAP['/'];
     document.title = seo.title;
     const em = (sel, attr, val, content) => {
@@ -666,6 +673,7 @@ function BlogArticlePage({ navigate, slug }) {
 
   useEffect(() => {
     document.title = `${article.title} | Carat Money`;
+    setCanonical(`https://carat.money/blog/${article.slug}`);
     const em = (sel, attr, val, content) => {
       let el = document.querySelector(sel);
       if (!el) { el = document.createElement('meta'); el.setAttribute(attr, val); document.head.appendChild(el); }
@@ -1809,7 +1817,7 @@ function PartnerRedirect() {
 export default function App() {
   const { route, navigate, blogSlug } = useRoute();
   const spot = useSpotRate();
-  useSEO(blogSlug ? '/blog' : route);
+  useSEO(blogSlug ? null : route);
   let page;
   if      (route==='/sell')   page = <SellPage        navigate={navigate} spot={spot}/>;
   else if (route==='/buy')    page = <BuyPage          navigate={navigate} spot={spot}/>;
