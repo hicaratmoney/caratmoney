@@ -269,8 +269,8 @@ function useRoute() {
 
 // ─── SEO ──────────────────────────────────────────────────────────────────────
 const SEO_MAP = {
-  '/':       { title:'Carat Money — Sell Gold at Best Price', desc:'Check if your gold buyer is giving you a fair deal. Live rates, instant WhatsApp quotes. Trusted by 5,000+ customers in Bangalore.' },
-  '/sell':   { title:'Sell Gold to Carat Money | Best Buying Rates', desc:'Get an instant WhatsApp quote. Trusted by 5,000+ sellers across India.' },
+  '/':       { title:'Carat Money — Sell Gold at Best Price', desc:'Sell your gold at a fair price with free home pickup in Bangalore and Mumbai. Live gold rates, XRF testing in front of you and instant payment.' },
+  '/sell':   { title:'Sell Gold to Carat Money | Best Buying Rates', desc:'Get a free quote on WhatsApp and book a home pickup in Bangalore or Mumbai. Your gold is tested in front of you and paid for instantly.' },
   '/buy':    { title:'Buy 24K Gold Coins | BIS-Hallmarked | Carat Money', desc:'Buy BIS-hallmarked 24K gold coins. 999.9 purity. 48-hour open-box delivery. WhatsApp to order.' },
   '/margin': { title:'Gold Buyer Margin Calculator | Free Tool by Carat Money', desc:'Free tool to check what your gold buyer is keeping above the spot rate. Used by 5,000+ sellers across India.' },
   '/blog':   { title:'Gold Selling Tips & Insights | Carat Money Blog', desc:'Expert articles on gold selling, buyer margins, and getting the best price for your gold in India.' },
