@@ -7,3 +7,17 @@
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }
+{
+  "redirects": [
+    {
+      "source": "/p1",
+      "destination": "/?utm_source=poster&utm_medium=sticker&utm_campaign=navi_mumbai&utm_content=en",
+      "permanent": false
+    },
+    {
+      "source": "/p2",
+      "destination": "/?utm_source=poster&utm_medium=sticker&utm_campaign=navi_mumbai&utm_content=hi",
+      "permanent": false
+    }
+  ]
+}
