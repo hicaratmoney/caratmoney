@@ -784,8 +784,8 @@ function useScrollProgress(distance) {
 const WA_MSG      = "Hi. I'm interested in selling gold.";
 const WA_LINK     = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WA_MSG)}`;
 const CALL_NUMBERS = [
-  { tel:'+918169874545', label:'+91 816 987 4545' },
-  { tel:'+919653456868', label:'+91 965 345 6868' },
+  { tel:'+918169874545', label:'816 987 4545' },
+  { tel:'+919653456868', label:'965 345 6868' },
 ];
 
 // Call button that opens a small picker with both numbers
