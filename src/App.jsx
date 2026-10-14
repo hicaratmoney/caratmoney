@@ -35,24 +35,18 @@ const SERIF = "'Fraunces', Georgia, serif";
 const SANS  = "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
 const MONO  = "'JetBrains Mono', 'Courier New', monospace";
 
-// ─── Logo SVG ─────────────────────────────────────────────────────────────────
-function LogoMark({ size = 110, color = C.gold2 }) {
-  const showInnerRing = size >= 40;
-  const showDots      = size >= 24;
+// Carat Money hallmark — spec 13.10.2026 (outer ring 2, hairline 1 @ 45%, "cm" scaled 0.961)
+const CM_OUTER     = 'M100 10 C 150 10 188 60 188 130 C 188 200 150 250 100 250 C 50 250 12 200 12 130 C 12 60 50 10 100 10 Z';
+const CM_INNER     = 'M100 22 C 142 22 176 66 176 130 C 176 194 142 238 100 238 C 58 238 24 194 24 130 C 24 66 58 22 100 22 Z';
+const CM_TRANSFORM = 'translate(100 135) scale(0.961) translate(-98.97 -134.94)';
+const CM_PATH      = 'M56.485 97.880L56.485 97.880Q51.385 97.880 45.988 102.640Q40.590 107.400 36.383 115.900Q32.175 124.400 30.730 135.620L30.730 135.620Q28.520 151.090 32.643 158.485Q36.765 165.880 45.605 165.880L45.605 165.880Q52.150 165.880 58.483 161.290Q64.815 156.700 68.640 146.670L68.640 146.670Q69.150 145.650 69.575 145.735L69.575 145.735Q70.255 145.905 69.830 147.010L69.830 147.010Q65.495 160.185 56.230 166.942Q46.965 173.700 36.170 173.700L36.170 173.700Q24.100 173.700 18.235 165.115Q12.370 156.530 14.750 139.955L14.750 139.955Q16.025 131.115 19.893 123.167Q23.760 115.220 29.498 109.142Q35.235 103.065 42.163 99.622Q49.090 96.180 56.400 96.180L56.400 96.180Q66.260 96.180 71.403 100.855Q76.545 105.530 76.035 112.330L76.035 112.330Q75.780 116.580 73.782 118.535Q71.785 120.490 69.320 120.490L69.320 120.490Q67.025 120.490 65.453 118.917Q63.880 117.345 64.050 114.710L64.050 114.710Q64.135 112.245 64.730 110.162Q65.325 108.080 65.325 105.275L65.325 105.275Q65.325 102.130 63.030 100.005Q60.735 97.880 56.485 97.880ZM111.980 165.030L111.980 165.030L126.600 119.130Q129.405 110.545 128.300 107.442Q127.195 104.340 123.795 104.340L123.795 104.340Q120.310 104.340 114.657 108.377Q109.005 112.415 102.885 121.425Q96.765 130.435 91.750 145.310L91.750 145.310Q89.115 153.300 88.265 157.338Q87.415 161.375 87.415 163.415L87.415 163.415Q87.415 164.690 88.010 165.625Q88.605 166.560 88.605 167.835L88.605 167.835Q88.605 170.300 85.078 171.873Q81.550 173.445 75.515 173.445L75.515 173.445Q71.350 173.445 70.883 171.363Q70.415 169.280 72.115 164.010L72.115 164.010L87.755 116.325Q90.050 109.270 89.540 106.550Q89.030 103.830 86.565 103.830L86.565 103.830Q84.780 103.830 82.358 105.402Q79.935 106.975 76.110 111.480L76.110 111.480Q75.430 112.245 75.005 112.075L75.005 112.075Q74.665 111.990 75.175 111.140L75.175 111.140Q79.680 104.255 85.375 100.515Q91.070 96.775 96.595 96.775L96.595 96.775Q104.415 96.775 104.415 104.085L104.415 104.085Q104.415 107.655 103.055 112.117Q101.695 116.580 99.910 121.170Q98.125 125.760 96.935 129.585L96.935 129.585Q102.970 117.430 109.728 110.248Q116.485 103.065 123.030 99.920Q129.575 96.775 135.015 96.775L135.015 96.775Q143.770 96.775 143.770 104.850L143.770 104.850Q143.770 109.015 141.603 115.390Q139.435 121.765 137.055 129.160L137.055 129.160Q146.065 111.905 156.095 104.340Q166.125 96.775 174.880 96.775L174.880 96.775Q181.765 96.775 183.338 102.045Q184.910 107.315 181.935 117.090L181.935 117.090L170.545 154.575Q168.165 162.565 168.845 164.988Q169.525 167.410 171.735 167.410L171.735 167.410Q173.520 167.410 175.900 165.880Q178.280 164.350 181.680 160.015L181.680 160.015Q182.445 159.080 182.785 159.250L182.785 159.250Q183.295 159.420 182.615 160.695L182.615 160.695Q178.960 166.730 173.817 170.088Q168.675 173.445 161.960 173.445L161.960 173.445Q155.755 173.445 154.183 169.662Q152.610 165.880 154.905 158.145L154.905 158.145L166.805 119.130Q169.355 110.545 168.377 107.442Q167.400 104.340 164 104.340L164 104.340Q160.515 104.340 154.863 108.335Q149.210 112.330 143.048 121.340Q136.885 130.350 131.870 145.395L131.870 145.395Q129.320 153.045 128.470 157.380Q127.620 161.715 127.620 163.755L127.620 163.755Q127.620 165.115 128.215 166.007Q128.810 166.900 128.810 168.090L128.810 168.090Q128.810 170.470 125.240 172.085Q121.670 173.700 115.720 173.700L115.720 173.700Q111.640 173.700 111.130 171.660Q110.620 169.620 111.980 165.030Z';
+
+function CaratMark({ size = 64, color = '#e0b765', showInnerRing = true, showDots = true, style, ...rest }) {
   return (
-    <svg viewBox="0 0 200 260" width={size} height={size * 1.3}
-      role="img" aria-label="Carat Money" xmlns="http://www.w3.org/2000/svg">
-      <path
-        d="M100 10 C 150 10 188 60 188 130 C 188 200 150 250 100 250 C 50 250 12 200 12 130 C 12 60 50 10 100 10 Z"
-        fill="none" stroke={color} strokeWidth="6"/>
-      {showInnerRing && (
-        <path
-          d="M100 22 C 142 22 176 66 176 130 C 176 194 142 238 100 238 C 58 238 24 194 24 130 C 24 66 58 22 100 22 Z"
-          fill="none" stroke={color} strokeWidth="1" opacity="0.45"/>
-      )}
-      <text x="100" y="172" textAnchor="middle"
-        fontFamily="Fraunces, serif" fontSize="170" fontWeight="360"
-        fontStyle="italic" fill={color} letterSpacing="-8">cm</text>
+    <svg viewBox="0 0 200 260" width={size} height={Math.round(size * 1.3)} role="img" aria-label="Carat Money" style={style} {...rest}>
+      <path d={CM_OUTER} fill="none" stroke={color} strokeWidth="2"/>
+      {showInnerRing && <path d={CM_INNER} fill="none" stroke={color} strokeWidth="1" opacity="0.45"/>}
+      <path transform={CM_TRANSFORM} d={CM_PATH} fill={color}/>
       {showDots && (
         <>
           <circle cx="100" cy="36" r="2" fill={color}/>
@@ -145,18 +139,14 @@ function HomeLogo() {
     <div style={{ position:'relative', display:'inline-block' }}>
       <svg viewBox="0 0 200 260" width={110} height={143}
         role="img" aria-label="Carat Money" xmlns="http://www.w3.org/2000/svg">
-        <path d="M100 10 C 150 10 188 60 188 130 C 188 200 150 250 100 250 C 50 250 12 200 12 130 C 12 60 50 10 100 10 Z"
-          fill="none" stroke={color} strokeWidth="6"/>
-        <path d="M100 22 C 142 22 176 66 176 130 C 176 194 142 238 100 238 C 58 238 24 194 24 130 C 24 66 58 22 100 22 Z"
-          fill="none" stroke={color} strokeWidth="1" opacity="0.45"/>
-        <text x="100" y="172" textAnchor="middle"
-          fontFamily="Fraunces, serif" fontSize="170" fontWeight="360"
-          fontStyle="italic" letterSpacing="-8" fill={color}
+        <path d={CM_OUTER} fill="none" stroke={color} strokeWidth="2"/>
+        <path d={CM_INNER} fill="none" stroke={color} strokeWidth="1" opacity="0.45"/>
+        <path transform={CM_TRANSFORM} d={CM_PATH} fill={color}
           style={{
             filter:     cmGlow ? 'drop-shadow(0 0 8px #f1d78d)' : 'none',
             opacity:    cmGlow ? 1 : 0.85,
             transition: 'filter 0.25s ease, opacity 0.25s ease',
-          }}>cm</text>
+          }}/>
         <circle cx="100" cy="36"  r="2" fill={color}/>
         <circle cx="100" cy="224" r="2" fill={color}/>
       </svg>
@@ -850,7 +840,7 @@ function TopBar({ spot, progress = 1 }) {
       <div style={{ maxWidth:'520px', margin:'0 auto', height:'100%', padding:'0 12px', display:'flex', alignItems:'center', gap:'8px' }}>
         {/* Logo + name */}
         <div style={{ display:'flex', alignItems:'center', gap:'6px', opacity:p, flexShrink:0 }}>
-          <LogoMark size={22} color={C.gold2}/>
+          <CaratMark size={28} color={C.gold2}/>
           <span className="tb-name" style={{ fontFamily:SERIF, fontSize:'16px', fontWeight:350, color:C.gold2, whiteSpace:'nowrap' }}>
             Carat <span style={{ fontStyle:'italic' }}>Money</span>
           </span>
