@@ -1,23 +1,11 @@
 {
   "redirects": [
-    { "source": "/blog/gold-selling-tips-bangalore", "destination": "/blog/gold-selling-tips", "permanent": true }
+    { "source": "/blog/gold-selling-tips-bangalore", "destination": "/blog/gold-selling-tips", "permanent": true },
+    { "source": "/p1", "destination": "/?utm_source=poster&utm_medium=sticker&utm_campaign=navi_mumbai&utm_content=en", "permanent": false },
+    { "source": "/p2", "destination": "/?utm_source=poster&utm_medium=sticker&utm_campaign=navi_mumbai&utm_content=hi", "permanent": false }
   ],
   "rewrites": [
     { "source": "/blog/:slug+", "destination": "/api/social?path=/blog/:slug+" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
-  ]
-}
-{
-  "redirects": [
-    {
-      "source": "/p1",
-      "destination": "/?utm_source=poster&utm_medium=sticker&utm_campaign=navi_mumbai&utm_content=en",
-      "permanent": false
-    },
-    {
-      "source": "/p2",
-      "destination": "/?utm_source=poster&utm_medium=sticker&utm_campaign=navi_mumbai&utm_content=hi",
-      "permanent": false
-    }
   ]
 }
