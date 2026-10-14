@@ -269,7 +269,7 @@ function useRoute() {
 
 // ─── SEO ──────────────────────────────────────────────────────────────────────
 const SEO_MAP = {
-  '/':       { title:'Carat Money — The Fair Price for Gold', desc:'Check if your gold buyer is giving you a fair deal. Live rates, instant WhatsApp quotes. Trusted by 5,000+ customers in Bangalore.' },
+  '/':       { title:'Carat Money — Sell Gold at Best Price', desc:'Check if your gold buyer is giving you a fair deal. Live rates, instant WhatsApp quotes. Trusted by 5,000+ customers in Bangalore.' },
   '/sell':   { title:'Sell Gold to Carat Money | Best Buying Rates', desc:'Get an instant WhatsApp quote. Trusted by 5,000+ sellers across India.' },
   '/buy':    { title:'Buy 24K Gold Coins | BIS-Hallmarked | Carat Money', desc:'Buy BIS-hallmarked 24K gold coins. 999.9 purity. 48-hour open-box delivery. WhatsApp to order.' },
   '/margin': { title:'Gold Buyer Margin Calculator | Free Tool by Carat Money', desc:'Free tool to check what your gold buyer is keeping above the spot rate. Used by 5,000+ sellers across India.' },
