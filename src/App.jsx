@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom';
 import React, { useState, useMemo, useRef, useEffect, useLayoutEffect, useCallback, useContext, createContext } from 'react';
 import {
   MessageCircle, TrendingDown, Shield, Sparkles, Info,
@@ -108,6 +109,8 @@ function HeroMark() {
       const start = performance.now();
       const animate = now => {
         const elapsed = now - start;
+        const rr = el.getBoundingClientRect();
+        const tx = document.querySelector('.hero-text'); setGeo({ cx: rr.left + rr.width / 2, cy: rr.top + rr.height / 2, w: rr.width, vw: window.innerWidth, tr: tx ? tx.getBoundingClientRect().right : 0 });
         setTick(Math.min(elapsed / TOTAL_MS, 1));
         if (elapsed < TOTAL_MS) raf = requestAnimationFrame(animate);
         else { setTick(1); setPhase('idle'); }
@@ -123,7 +126,7 @@ function HeroMark() {
   let bar = null, rupee = null, cmGlow = false;
 
   if (active) {
-    const { cx, cy, w, vw } = geo;
+    const { cx, cy, w, vw, tr = 0 } = geo;
     const z        = Math.min(1.5, Math.max(1, w / 110));   // size factor vs the 110px phone logo
     const ovalHalf = (88 / 200) * w;
     const approach = 70 * z;
@@ -131,7 +134,7 @@ function HeroMark() {
     const BAR_H    = 44 * z;
     const barEndT  = 0.55;
     const desk     = vw >= 1024;                          // desktop: start in the gap, never over the headline
-    const startX   = desk ? cx - ovalHalf - BAR_W / 2 - 300 : -BAR_W / 2;
+    const startX   = desk ? Math.max(tr + BAR_W / 2 + 16, cx - ovalHalf - BAR_W / 2 - 300) : -BAR_W / 2;   // desktop: start in the gap right of the calculator
     const endX     = cx - ovalHalf - BAR_W / 2;
     const barX     = startX + Math.min(t / barEndT, 1) * (endX - startX);
     const barRight = barX + BAR_W / 2;
@@ -172,7 +175,7 @@ function HeroMark() {
       </svg>
       <span className="cm-shimmer" aria-hidden="true"/>
 
-      {active && (
+      {active && typeof document !== 'undefined' && createPortal(
         <svg aria-hidden="true" style={{ position:'fixed', top:0, left:0, width:'100vw', height:'100vh', pointerEvents:'none', zIndex:999, overflow:'visible' }}>
           <defs>
             <linearGradient id="cmBarTop" x1="0" y1="0" x2="0" y2="1">
@@ -220,7 +223,8 @@ function HeroMark() {
           {rupee && rupee.opacity > 0 && (
             <text x={rupee.x} y={rupee.y} textAnchor="middle" fontFamily="Georgia, serif" fontSize={rupee.size} fill="#e0b765" opacity={rupee.opacity}>₹</text>
           )}
-        </svg>
+        </svg>,
+        document.body
       )}
     </div>
   );
@@ -443,7 +447,7 @@ const STR = {
     ],
 
     rate_title: 'Our Buy Rate', rate_loading: 'Loading…', rate_updated: 'Live rate · Updated {time}', rate_fetching: 'Fetching live rate…',
-    rate_unavailable: 'Live rate temporarily unavailable', rate_refresh: 'Refreshes every minute · GST inclusive', rate_cta: 'Ask for a quote on WhatsApp', est_live: 'Live 24K', est_gst: 'GST incl.', why_photo: 'Every test happens on screen in front of you: here, 91.78% gold, read as 22K.',
+    rate_unavailable: 'Live rate temporarily unavailable', rate_refresh: 'Refreshes every minute · GST inclusive', rate_cta: 'Ask for a quote on WhatsApp', est_live: 'Live 24K', est_w: 'Weight', why_photo: 'Every test happens on screen in front of you: here, 91.6% gold, read as 22K.',
     gst_excl: '24K without GST:',
     gst_note: "GST-inclusive rate shown above. If you're GST-registered, we pass the tax credit back to you.",
 
@@ -546,7 +550,7 @@ const STR = {
     ],
 
     rate_title: 'हमारा खरीद रेट', rate_loading: 'लोड हो रहा है…', rate_updated: 'लाइव रेट · {time} पर अपडेट', rate_fetching: 'लाइव रेट लाया जा रहा है…',
-    rate_unavailable: 'लाइव रेट अभी उपलब्ध नहीं है', rate_refresh: 'हर मिनट अपडेट होता है · GST सहित', rate_cta: 'WhatsApp पर कोटेशन माँगें', est_live: 'लाइव 24K', est_gst: 'GST सहित', why_photo: 'हर जाँच आपके सामने स्क्रीन पर: यहाँ 91.78% सोना, यानी 22K।',
+    rate_unavailable: 'लाइव रेट अभी उपलब्ध नहीं है', rate_refresh: 'हर मिनट अपडेट होता है · GST सहित', rate_cta: 'WhatsApp पर कोटेशन माँगें', est_live: 'लाइव 24K', est_w: 'वज़न', why_photo: 'हर जाँच आपके सामने स्क्रीन पर: यहाँ 91.6% सोना, यानी 22K।',
     gst_excl: 'GST के बिना 24K:',
     gst_note: 'ऊपर दिखाया गया रेट GST सहित है। अगर आप GST-रजिस्टर्ड हैं, तो हम टैक्स क्रेडिट आपको वापस देते हैं।',
 
@@ -649,7 +653,7 @@ const STR = {
     ],
 
     rate_title: 'आमचा खरेदी दर', rate_loading: 'लोड होत आहे…', rate_updated: 'लाइव्ह दर · {time} ला अपडेट', rate_fetching: 'लाइव्ह दर आणत आहोत…',
-    rate_unavailable: 'लाइव्ह दर सध्या उपलब्ध नाही', rate_refresh: 'दर मिनिटाला अपडेट होतो · GST सह', rate_cta: 'WhatsApp वर कोटेशन मागा', est_live: 'लाइव्ह 24K', est_gst: 'GST सह', why_photo: 'प्रत्येक चाचणी तुमच्यासमोर स्क्रीनवर: इथे 91.78% सोने, म्हणजे 22K.',
+    rate_unavailable: 'लाइव्ह दर सध्या उपलब्ध नाही', rate_refresh: 'दर मिनिटाला अपडेट होतो · GST सह', rate_cta: 'WhatsApp वर कोटेशन मागा', est_live: 'लाइव्ह 24K', est_w: 'वजन', why_photo: 'प्रत्येक चाचणी तुमच्यासमोर स्क्रीनवर: इथे 91.6% सोने, म्हणजे 22K.',
     gst_excl: 'GST शिवाय 24K:',
     gst_note: 'वर दाखवलेला दर GST सह आहे. तुम्ही GST-नोंदणीकृत असाल, तर आम्ही कर क्रेडिट तुम्हाला परत देतो.',
 
@@ -753,7 +757,7 @@ const STR = {
     ],
 
     rate_title: 'ನಮ್ಮ ಖರೀದಿ ದರ', rate_loading: 'ಲೋಡ್ ಆಗುತ್ತಿದೆ…', rate_updated: 'ಲೈವ್ ದರ · {time} ಕ್ಕೆ ಅಪ್‌ಡೇಟ್', rate_fetching: 'ಲೈವ್ ದರ ಪಡೆಯಲಾಗುತ್ತಿದೆ…',
-    rate_unavailable: 'ಲೈವ್ ದರ ತಾತ್ಕಾಲಿಕವಾಗಿ ಲಭ್ಯವಿಲ್ಲ', rate_refresh: 'ಪ್ರತಿ ನಿಮಿಷ ಅಪ್‌ಡೇಟ್ ಆಗುತ್ತದೆ · GST ಸಹಿತ', rate_cta: 'WhatsApp ನಲ್ಲಿ ಕೊಟೇಶನ್ ಕೇಳಿ', est_live: 'ಲೈವ್ 24K', est_gst: 'GST ಸಹಿತ', why_photo: 'ಪ್ರತಿ ಪರೀಕ್ಷೆಯೂ ನಿಮ್ಮ ಮುಂದೆಯೇ ಪರದೆಯ ಮೇಲೆ: ಇಲ್ಲಿ 91.78% ಚಿನ್ನ, ಅಂದರೆ 22K.',
+    rate_unavailable: 'ಲೈವ್ ದರ ತಾತ್ಕಾಲಿಕವಾಗಿ ಲಭ್ಯವಿಲ್ಲ', rate_refresh: 'ಪ್ರತಿ ನಿಮಿಷ ಅಪ್‌ಡೇಟ್ ಆಗುತ್ತದೆ · GST ಸಹಿತ', rate_cta: 'WhatsApp ನಲ್ಲಿ ಕೊಟೇಶನ್ ಕೇಳಿ', est_live: 'ಲೈವ್ 24K', est_w: 'ತೂಕ', why_photo: 'ಪ್ರತಿ ಪರೀಕ್ಷೆಯೂ ನಿಮ್ಮ ಮುಂದೆಯೇ ಪರದೆಯ ಮೇಲೆ: ಇಲ್ಲಿ 91.6% ಚಿನ್ನ, ಅಂದರೆ 22K.',
     gst_excl: 'GST ಇಲ್ಲದೆ 24K:',
     gst_note: 'ಮೇಲೆ ತೋರಿಸಿರುವ ದರ GST ಸಹಿತ. ನೀವು GST ನೋಂದಾಯಿತರಾಗಿದ್ದರೆ, ತೆರಿಗೆ ಕ್ರೆಡಿಟ್ ಅನ್ನು ನಿಮಗೆ ಹಿಂತಿರುಗಿಸುತ್ತೇವೆ.',
 
@@ -1487,6 +1491,7 @@ function TrustIcon({ I, size = 44 }) {
 
 function TrustCompare() {
   const { t } = useT();
+  const [xrfOk, setXrfOk] = useState(true);
   const rows = t('why_rows');
   const [open, setOpen] = useState(0);
   const tag = (
@@ -1505,12 +1510,12 @@ function TrustCompare() {
             <h2 className="cm-h2" style={{ color:C.gold3 }}><Brand text={t('why_title')} color={C.gold2}/></h2>
             <p style={{ fontFamily:SANS, fontSize:'16px', color:'rgba(241,215,141,.75)', lineHeight:1.65, margin:'14px 0 0', maxWidth:'560px' }}>{t('why_intro')}</p>
           </div>
-          <figure className="rv" style={{ margin:0, ...stagger(2) }}>
+          {xrfOk && <figure className="rv" style={{ margin:0, ...stagger(2) }}>
             <div style={{ background:C.white, borderRadius:'14px', padding:'10px', boxShadow:'0 18px 40px rgba(0,0,0,.35)', maxWidth:'360px', margin:'0 auto' }}>
-              <img src="/xrf-test.jpg" alt={t('why_photo')} width="760" height="760" loading="lazy" decoding="async" style={{ display:'block', width:'100%', height:'auto', borderRadius:'8px' }}/>
+               <img src="/xrf-test.jpg" onError={() => setXrfOk(false)} alt={t('why_photo')} width="760" height="760" loading="lazy" decoding="async" style={{ display:'block', width:'100%', height:'auto', borderRadius:'8px' }}/>
             </div>
             <figcaption style={{ fontFamily:SANS, fontSize:'13px', color:'rgba(241,215,141,.7)', margin:'10px auto 0', maxWidth:'360px', textAlign:'center', lineHeight:1.5 }}>{t('why_photo')}</figcaption>
-          </figure>
+          </figure>}
         </div>
         <div className="rv" style={{ background:'rgba(0,0,0,.14)', borderRadius:'10px', border:'1px solid rgba(224,183,101,.18)', padding:'clamp(16px, 3vw, 32px)' }}>
 
@@ -1649,12 +1654,12 @@ function HeroEstimator({ spot, navigate }) {
         <div style={{ fontFamily:SERIF, fontSize:'19px', fontWeight:350, color:C.ink, letterSpacing:'-0.01em' }}>{t('calc_title')}</div>
         <div style={{ display:'inline-flex', alignItems:'center', gap:'6px', fontFamily:SANS, fontSize:'12px', color:C.mute, whiteSpace:'nowrap' }}>
           <span key={r24} style={{ width:'6px', height:'6px', borderRadius:'50%', background:C.green, animation:'dotPing 1.2s ease-out 1' }}/>
-          {t('est_live')} <b style={{ color:C.plum, fontWeight:600 }}>₹{fmt(Math.round(r24A),0)}/g</b> · {t('est_gst')}
+          {t('est_live')} <b style={{ color:C.plum, fontWeight:600 }}>₹{fmt(Math.round(r24A),0)}/g</b>
         </div>
       </div>
       <div className="est-row">
         <div style={{ position:'relative' }}>
-          <input id="calc-w" type="text" inputMode="decimal" autoComplete="off" aria-label={t('calc_weight')} placeholder={t('calc_weight')} value={w} onChange={e => onW(e.target.value)} style={{ ...INP, paddingRight:'34px' }}/>
+          <input id="calc-w" type="text" inputMode="decimal" autoComplete="off" aria-label={t('calc_weight')} placeholder={t('est_w')} value={w} onChange={e => onW(e.target.value)} style={{ ...INP, paddingRight:'34px' }}/>
           <span style={{ position:'absolute', right:'12px', top:'50%', transform:'translateY(-50%)', fontFamily:MONO, fontSize:'13px', color:C.mute, pointerEvents:'none' }}>g</span>
         </div>
         <div className="karats" role="group" aria-label={t('calc_karat')}>
