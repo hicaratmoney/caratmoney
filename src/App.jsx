@@ -435,17 +435,17 @@ const STR = {
 
     hero_eyebrow:   'We buy gold at fair price',
     hero_h1:        ['Sell your gold at the ', 'live', ' market rate.'],
-    hero_sub:       "Tested and paid in 15 minutes",
+    hero_sub:       "Tested and paid in 15 minutes, at home or at our Kharghar centre",
     hero_guarantee: 'We guarantee — nobody can match our price',
     hero_cta_wa:    "Get my estimate on WhatsApp",
     hero_cta_calc:  'Value your gold',
     hero_stats:     "500+ customers · ₹10 crore+ purchased",
-    hero_pickup:    "Free home visits across Navi Mumbai, Mumbai & Thane",
+    hero_pickup:    "Kharghar centre open daily, 9 am to 9 pm",
     hero_turn:      ["Turning old gold into ", "."],
     hero_uses:      ["a wedding in the family", "your child's education", "a new home", "your own business", "medical care, today", "a debt-free start", "something useful"],
     hero_family:    "They saved it for your family's tomorrow. Today, it's here for you.",
     tiles: [
-      { t:"Free home visit", d:"We come to your home, discreetly. Your gold never has to travel." },
+      { t:"Free home visit, or walk in", d:"We come to you across Navi Mumbai, Mumbai and Thane, or you can visit our Kharghar centre." },
       { t:"Tested in front of you", d:"An XRF machine reads the exact purity. No scratching, no melting, and you see the reading." },
       { t:"Paid on the spot", d:"Money in your bank or UPI right away, plus a free valuation certificate." },
     ],
@@ -555,17 +555,17 @@ const STR = {
 
     hero_eyebrow:   'हम सही दाम पर सोना खरीदते हैं',
     hero_h1:        ['अपना सोना ', 'लाइव', ' मार्केट रेट पर बेचें।'],
-    hero_sub:       "15 मिनट में जाँच और पेमेंट",
+    hero_sub:       "15 मिनट में जाँच और पेमेंट, घर पर या हमारे खारघर सेंटर में",
     hero_guarantee: 'हमारी गारंटी — हमसे बेहतर दाम कोई नहीं देगा',
     hero_cta_wa:    "WhatsApp पर मेरा अनुमान पाएँ",
     hero_cta_calc:  'अपने सोने की कीमत जानें',
     hero_stats:     "500+ ग्राहक · ₹10 करोड़+ की खरीद",
-    hero_pickup:    "नवी मुंबई, मुंबई और ठाणे में मुफ़्त होम विज़िट",
+    hero_pickup:    "खारघर सेंटर हर दिन खुला, सुबह 9 से रात 9 बजे तक",
     hero_turn:      ["पुराना सोना, अब ", "।"],
     hero_uses:      ["घर की शादी के लिए", "बच्चों की पढ़ाई के लिए", "नए घर के लिए", "अपने बिज़नेस के लिए", "ज़रूरी इलाज के लिए", "कर्ज़ से मुक्ति के लिए", "किसी अच्छे काम के लिए"],
     hero_family:    "उन्होंने इसे आपके परिवार के कल के लिए सँजोया था। आज, यह आपके लिए है।",
     tiles: [
-      { t:"मुफ़्त होम विज़िट", d:"हम पूरी गोपनीयता से आपके घर आते हैं। आपके सोने को कहीं ले जाना नहीं पड़ता।" },
+      { t:"मुफ़्त होम विज़िट, या सेंटर आएँ", d:"हम नवी मुंबई, मुंबई और ठाणे में आपके घर आते हैं, या आप हमारे खारघर सेंटर आ सकते हैं।" },
       { t:"आपके सामने जाँच", d:"XRF मशीन सही शुद्धता बताती है। न खरोंच, न पिघलाना, और रीडिंग आप ख़ुद देखते हैं।" },
       { t:"वहीं पेमेंट", d:"पैसा तुरंत आपके बैंक या UPI में, साथ में मुफ़्त वैल्यूएशन सर्टिफ़िकेट।" },
     ],
@@ -675,17 +675,17 @@ const STR = {
 
     hero_eyebrow:   'आम्ही योग्य दरात सोने खरेदी करतो',
     hero_h1:        ['तुमचे सोने ', 'लाइव्ह', ' बाजारभावाने विका.'],
-    hero_sub:       "15 मिनिटांत चाचणी आणि पेमेंट",
+    hero_sub:       "15 मिनिटांत चाचणी आणि पेमेंट, घरी किंवा आमच्या खारघर सेंटरमध्ये",
     hero_guarantee: 'आमची हमी — आमच्यापेक्षा चांगला भाव कोणीही देणार नाही',
     hero_cta_wa:    "WhatsApp वर माझा अंदाज मिळवा",
     hero_cta_calc:  'तुमच्या सोन्याचे मूल्य जाणून घ्या',
     hero_stats:     "500+ ग्राहक · ₹10 कोटी+ ची खरेदी",
-    hero_pickup:    "नवी मुंबई, मुंबई आणि ठाणे येथे मोफत घरभेट",
+    hero_pickup:    "खारघर सेंटर दररोज खुले, सकाळी 9 ते रात्री 9",
     hero_turn:      ["जुने सोने, आता ", "."],
     hero_uses:      ["घरच्या लग्नासाठी", "मुलांच्या शिक्षणासाठी", "नव्या घरासाठी", "स्वतःच्या व्यवसायासाठी", "तातडीच्या उपचारासाठी", "कर्जमुक्तीसाठी", "एखाद्या चांगल्या कामासाठी"],
     hero_family:    "त्यांनी ते तुमच्या कुटुंबाच्या उद्यासाठी जपून ठेवले होते. आज, ते तुमच्यासाठी आहे.",
     tiles: [
-      { t:"मोफत घरभेट", d:"आम्ही पूर्ण गोपनीयतेने तुमच्या घरी येतो. तुमचे सोने कुठेही न्यावे लागत नाही." },
+      { t:"मोफत घरभेट, किंवा सेंटरला या", d:"आम्ही नवी मुंबई, मुंबई आणि ठाणे येथे तुमच्या घरी येतो, किंवा तुम्ही आमच्या खारघर सेंटरला येऊ शकता." },
       { t:"तुमच्यासमोर चाचणी", d:"XRF मशीन अचूक शुद्धता सांगते. ना ओरखडा, ना वितळवणे, आणि रीडिंग तुम्ही स्वतः पाहता." },
       { t:"जागेवरच पेमेंट", d:"पैसे लगेच तुमच्या बँक खात्यात किंवा UPI वर, सोबत मोफत मूल्यांकन प्रमाणपत्र." },
     ],
@@ -796,17 +796,17 @@ const STR = {
 
     hero_eyebrow:   'ನ್ಯಾಯಯುತ ಬೆಲೆಗೆ ನಾವು ಚಿನ್ನ ಖರೀದಿಸುತ್ತೇವೆ',
     hero_h1:        ['ನಿಮ್ಮ ಚಿನ್ನವನ್ನು ', 'ಲೈವ್', ' ಮಾರುಕಟ್ಟೆ ದರದಲ್ಲಿ ಮಾರಾಟ ಮಾಡಿ.'],
-    hero_sub:       "15 ನಿಮಿಷಗಳಲ್ಲಿ ಪರೀಕ್ಷೆ ಮತ್ತು ಪಾವತಿ",
+    hero_sub:       "15 ನಿಮಿಷಗಳಲ್ಲಿ ಪರೀಕ್ಷೆ ಮತ್ತು ಪಾವತಿ, ಮನೆಯಲ್ಲೇ ಅಥವಾ ನಮ್ಮ ಖಾರ್‌ಘರ್ ಕೇಂದ್ರದಲ್ಲಿ",
     hero_guarantee: 'ನಮ್ಮ ಗ್ಯಾರಂಟಿ — ನಮ್ಮ ಬೆಲೆಗೆ ಯಾರೂ ಸರಿಸಾಟಿಯಾಗಲಾರರು',
     hero_cta_wa:    "WhatsApp ನಲ್ಲಿ ನನ್ನ ಅಂದಾಜು ಪಡೆಯಿರಿ",
     hero_cta_calc:  'ನಿಮ್ಮ ಚಿನ್ನದ ಮೌಲ್ಯ ತಿಳಿಯಿರಿ',
     hero_stats:     "500+ ಗ್ರಾಹಕರು · ₹10 ಕೋಟಿ+ ಖರೀದಿ",
-    hero_pickup:    "ನವಿ ಮುಂಬೈ, ಮುಂಬೈ ಮತ್ತು ಥಾಣೆಯಲ್ಲಿ ಉಚಿತ ಮನೆ ಭೇಟಿ",
+    hero_pickup:    "ಖಾರ್‌ಘರ್ ಕೇಂದ್ರ ಪ್ರತಿದಿನ ತೆರೆದಿರುತ್ತದೆ, ಬೆಳಿಗ್ಗೆ 9 ರಿಂದ ರಾತ್ರಿ 9",
     hero_turn:      ["ಹಳೆಯ ಚಿನ್ನ, ಈಗ ", "."],
     hero_uses:      ["ಮನೆಯ ಮದುವೆಗೆ", "ಮಕ್ಕಳ ವಿದ್ಯಾಭ್ಯಾಸಕ್ಕೆ", "ಹೊಸ ಮನೆಗೆ", "ಸ್ವಂತ ವ್ಯಾಪಾರಕ್ಕೆ", "ತುರ್ತು ಚಿಕಿತ್ಸೆಗೆ", "ಸಾಲದಿಂದ ಮುಕ್ತಿಗೆ", "ಒಳ್ಳೆಯ ಕೆಲಸಕ್ಕೆ"],
     hero_family:    "ಅವರು ಇದನ್ನು ನಿಮ್ಮ ಕುಟುಂಬದ ನಾಳೆಗಾಗಿ ಕೂಡಿಟ್ಟಿದ್ದರು. ಇಂದು, ಇದು ನಿಮಗಾಗಿ.",
     tiles: [
-      { t:"ಉಚಿತ ಮನೆ ಭೇಟಿ", d:"ನಾವು ಸಂಪೂರ್ಣ ಗೌಪ್ಯತೆಯಿಂದ ನಿಮ್ಮ ಮನೆಗೆ ಬರುತ್ತೇವೆ. ನಿಮ್ಮ ಚಿನ್ನ ಎಲ್ಲಿಗೂ ಹೋಗಬೇಕಿಲ್ಲ." },
+      { t:"ಉಚಿತ ಮನೆ ಭೇಟಿ, ಅಥವಾ ಕೇಂದ್ರಕ್ಕೆ ಬನ್ನಿ", d:"ನವಿ ಮುಂಬೈ, ಮುಂಬೈ ಮತ್ತು ಥಾಣೆಯಲ್ಲಿ ನಾವು ನಿಮ್ಮ ಮನೆಗೆ ಬರುತ್ತೇವೆ, ಅಥವಾ ನೀವು ನಮ್ಮ ಖಾರ್‌ಘರ್ ಕೇಂದ್ರಕ್ಕೆ ಬರಬಹುದು." },
       { t:"ನಿಮ್ಮ ಮುಂದೆಯೇ ಪರೀಕ್ಷೆ", d:"XRF ಯಂತ್ರ ನಿಖರ ಶುದ್ಧತೆಯನ್ನು ತಿಳಿಸುತ್ತದೆ. ಗೀರು ಇಲ್ಲ, ಕರಗಿಸುವುದಿಲ್ಲ, ರೀಡಿಂಗ್ ನೀವೇ ನೋಡುತ್ತೀರಿ." },
       { t:"ಅಲ್ಲಿಯೇ ಪಾವತಿ", d:"ಹಣ ತಕ್ಷಣ ನಿಮ್ಮ ಬ್ಯಾಂಕ್ ಅಥವಾ UPI ಗೆ, ಜೊತೆಗೆ ಉಚಿತ ಮೌಲ್ಯಮಾಪನ ಪ್ರಮಾಣಪತ್ರ." },
     ],
@@ -1025,7 +1025,7 @@ const GLOBAL_CSS = `
   .tile { display:flex; flex-direction:column; align-items:center; text-align:center; gap:8px; padding:14px 6px; }
   .tile + .tile { border-left:1px solid rgba(26,20,38,.08); }
   .tile-t { font-size:12.5px; font-weight:600; line-height:1.3; color:${C.ink}; }
-  .tile-d { display:none; }
+  .tile-d, .tile-link { display:none; }
   .tile-ic { width:40px; height:40px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; background:${C.paper2}; color:${C.plum}; border:1px solid rgba(184,136,58,.25); }
   @media (min-width:768px) {
     .tiles { gap:20px; background:transparent; border:none; box-shadow:none; margin-top:48px; }
@@ -1033,6 +1033,7 @@ const GLOBAL_CSS = `
     .tile + .tile { border-left:1px solid rgba(26,20,38,.1); }
     .tile-t { font-family:var(--f-serif); font-weight:350; font-size:20px; letter-spacing:-0.01em; margin-bottom:6px; }
     .tile-d { display:block; font-size:14px; color:${C.mute}; line-height:1.55; }
+    .tile-link { display:inline-block; }
     .tile-ic { width:48px; height:48px; }
   }
   @media (min-width:1024px) { .tile { flex-direction:row; gap:16px; padding:24px; } }
@@ -1506,7 +1507,15 @@ function Hero({ navigate, spot }) {
           {tiles.map((x, i) => (
             <div className="tile rv lift" key={i} style={stagger(i + 3, 90)}>
               <div className="tile-ic">{icons[i]}</div>
-              <div><div className="tile-t">{x.t}</div><div className="tile-d">{x.d}</div></div>
+              <div>
+                <div className="tile-t">{x.t}</div><div className="tile-d">{x.d}</div>
+                {i === 0 && (
+                  <a href={DIRECTIONS_URL} target="_blank" rel="noreferrer" onClick={() => track('directions_click', { source:'hero_tile' })} className="tile-link"
+                    style={{ marginTop:'8px', fontFamily:SANS, fontSize:'13.5px', fontWeight:600, color:C.goldInk, textDecoration:'underline', textUnderlineOffset:'3px' }}>
+                    {t('visit_dir')} →
+                  </a>
+                )}
+              </div>
             </div>
           ))}
         </div>
