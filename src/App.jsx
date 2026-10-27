@@ -1050,10 +1050,13 @@ const GLOBAL_CSS = `
   .ru > span { grid-area:1 / 1; white-space:nowrap; font-style:italic; color:${C.plum}; opacity:0; transform:translateY(.4em); transition:opacity .55s ease, transform .6s cubic-bezier(.2,.7,.2,1); }
   .ru > span.on  { opacity:1; transform:none; }
   .ru > span.off { opacity:0; transform:translateY(-.4em); }
+  @media (prefers-reduced-motion: reduce) { .ru > span { transform:none!important; transition-property:opacity!important; transition-duration:.5s!important; } }
   .hero-family { font-family:var(--f-serif); font-style:italic; font-size:16px; font-weight:350; color:${C.ink2}; line-height:1.55; margin:0 auto 16px; max-width:440px; animation:fadeSlide .9s ease 1.1s both; }
   @media (min-width:1024px) { .hero-family { margin:0 0 18px; max-width:520px; padding-left:14px; border-left:2px solid rgba(224,183,101,.75); } }
   .hero-assure { display:flex; flex-wrap:wrap; justify-content:center; gap:6px 18px; font-family:var(--f-sans); font-size:14px; font-weight:600; color:${C.ink2}; line-height:1.45; }
-  .hero-assure > span { display:inline-flex; align-items:center; gap:7px; }
+  .hero-assure > span { display:inline-flex; align-items:flex-start; gap:7px; text-align:left; max-width:100%; }
+  .hero-assure > span > svg { margin-top:2px; }
+  @media (max-width:1023.98px) { .hero-assure { flex-direction:column; align-items:center; } }
   @media (min-width:1024px) { .hero-assure { justify-content:flex-start; } }
   :root:is([lang=hi],[lang=mr],[lang=kn]) .ru > span,
   :root:is([lang=hi],[lang=mr],[lang=kn]) .it-en { font-style:normal!important; }
@@ -1945,7 +1948,8 @@ function RotatingUse() {
   const paused = useRef(false);
   useEffect(() => {
     setTick(0);
-    if (prefersReduced()) return;
+    if (window.__CM_STILL__) return;      // test hook only
+    // keeps rotating even with "Reduce motion" on: that mode gets a plain fade, no movement (see CSS)
     const id = setInterval(() => { if (!paused.current && !document.hidden) setTick(n => n + 1); }, 2800);
     return () => clearInterval(id);
   }, [lang]);
