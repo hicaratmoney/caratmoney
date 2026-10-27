@@ -46,9 +46,10 @@ const EMAIL            = 'hicaratmoney@gmail.com';
 const ADDRESS          = '304, Zion, Sector 10, Kharghar, Navi Mumbai - 410210';
 const PARTNER_URL      = 'https://carat-money-partners.web.app/partner/';
 const MAP_EMBED        = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3771.6109258300326!2d73.07529277602526!3d19.036858782159722!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c3cf243723c3%3A0xa7274f01c46ec2d2!2sCarat%20Money!5e0!3m2!1sen!2sin!4v1793084207797!5m2!1sen!2sin';
-// Opens the exact Carat Money listing (same place as the map embed: 0x…a7274f01c46ec2d2 → cid below).
-// A text search here matched CaratLane instead, so never go back to an address-based link.
-const DIRECTIONS_URL   = 'https://www.google.com/maps?cid=12044682597434835666';
+// Opens Google Maps with directions straight to the Carat Money listing. The place is pinned by its
+// map ID (0x3be7c3cf243723c3:0xa7274f01c46ec2d2, the same one the map embed uses), so the name in the
+// path is only a label. Address text alone matched CaratLane, so never go back to a text-only link.
+const DIRECTIONS_URL   = 'https://www.google.com/maps/dir//Carat+Money,+Zion,+Sector+10,+Kharghar,+Navi+Mumbai,+Maharashtra+410210/data=!4m6!4m5!1m1!4e2!1m2!1m1!1s0x3be7c3cf243723c3:0xa7274f01c46ec2d2';
 
 // ─── Typography (Hindi / Kannada fonts switch in via GLOBAL_CSS) ──────────────
 const SERIF = 'var(--f-serif)';
