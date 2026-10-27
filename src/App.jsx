@@ -1,9 +1,18 @@
-import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useMemo, useRef, useEffect, useLayoutEffect, useCallback, useContext, createContext } from 'react';
 import {
   MessageCircle, TrendingDown, Shield, Sparkles, Info,
   Plus, Minus, Trash2, ChevronDown, ChevronUp, ArrowLeft, Zap,
   KeyRound, Search, ShieldCheck, X, Share2, Copy, AlertCircle, Check, Phone,
+  ChevronLeft, ChevronRight, Menu, Mail, MapPin, Clock, Star, Quote, TrendingUp,
+  Microscope, Scale, IndianRupee, Gem, Wallet, Percent, Store, Navigation, Smartphone,
 } from 'lucide-react';
+
+// ═════════════════════════════════════════════════════════════════════════════
+//  SWITCHES — the only lines you normally need to edit
+// ═════════════════════════════════════════════════════════════════════════════
+const SHOW_CERTIFICATIONS = false; // true once IBJA membership + ISO 27001 certificate are in hand
+const REVIEWS_ARE_SAMPLES = true;  // false once the sample reviews are replaced with real ones
+const LEADS_URL           = '';    // paste the Google Apps Script web-app URL (fills the "Website leads" tab)
 
 // ─── Brand Tokens ─────────────────────────────────────────────────────────────
 const C = {
@@ -29,11 +38,17 @@ const WASTAGE_RECOVERY = 0.95;
 const MAX_ORNAMENTS    = 10;
 const BUY_RATE_24K     = 15901;
 const BUY_RATE_DATE    = '27 Apr 2026';
+const KARATS           = [24, 22, 18, 14, 10];
+const EMAIL            = 'hicaratmoney@gmail.com';
+const ADDRESS          = '304, Zion, Sector 10, Kharghar, Navi Mumbai - 410210';
+const PARTNER_URL      = 'https://carat-money-partners.web.app/partner/';
+const MAP_EMBED        = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3771.6109258300326!2d73.07529277602526!3d19.036858782159722!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c3cf243723c3%3A0xa7274f01c46ec2d2!2sCarat%20Money!5e0!3m2!1sen!2sin!4v1793084207797!5m2!1sen!2sin';
+const DIRECTIONS_URL   = 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent('Carat Money, 304 Zion, Sector 10, Kharghar, Navi Mumbai 410210');
 
-// ─── Typography ───────────────────────────────────────────────────────────────
-const SERIF = "'Fraunces', Georgia, serif";
-const SANS  = "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
-const MONO  = "'JetBrains Mono', 'Courier New', monospace";
+// ─── Typography (Hindi / Kannada fonts switch in via GLOBAL_CSS) ──────────────
+const SERIF = 'var(--f-serif)';
+const SANS  = 'var(--f-sans)';
+const MONO  = 'var(--f-mono)';
 
 // Carat Money hallmark — spec 13.10.2026 (outer ring 2, hairline 1 @ 45%, "cm" scaled 0.961)
 const CM_OUTER     = 'M100 10 C 150 10 188 60 188 130 C 188 200 150 250 100 250 C 50 250 12 200 12 130 C 12 60 50 10 100 10 Z';
@@ -57,88 +72,90 @@ function CaratMark({ size = 64, color = '#e0b765', showInnerRing = true, showDot
   );
 }
 
-// ─── Gold Bar + Logo Animation ───────────────────────────────────────────────
-function HomeLogo() {
+// ─── Hero hallmark + gold bar → ₹ animation ──────────────────────────────────
+// Positions come from the hallmark's real place on screen, so the bar always
+// lands on it: centred on phones, right-hand column on desktop.
+function HeroMark() {
   const TOTAL_MS = 3000;
   const GAP_MS   = 2000;   // 2s after rupee disappears
   const CYCLE_MS = TOTAL_MS + GAP_MS;
   const START_MS = 800;
 
-  const [tick, setTick]     = useState(0);
-  const [phase, setPhase]   = useState('idle');
+  const wrapRef = useRef(null);
+  const [tick, setTick]         = useState(0);
+  const [phase, setPhase]       = useState('idle');
   const [scrolled, setScrolled] = useState(false);
+  const [geo, setGeo]           = useState(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
-    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive:true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   useEffect(() => {
-    let raf, startTime, cycleTimer, initialTimer;
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    let raf, cycleTimer;
     const run = () => {
+      const el = wrapRef.current;
+      if (!el || window.scrollY > 10) return;
+      const r = el.getBoundingClientRect();
+      if (!r.width) return;
+      setGeo({ cx: r.left + r.width / 2, cy: r.top + r.height / 2, w: r.width, vw: window.innerWidth });
       setPhase('running');
-      startTime = performance.now();
+      const start = performance.now();
       const animate = now => {
-        const elapsed = now - startTime;
+        const elapsed = now - start;
         setTick(Math.min(elapsed / TOTAL_MS, 1));
         if (elapsed < TOTAL_MS) raf = requestAnimationFrame(animate);
         else { setTick(1); setPhase('idle'); }
       };
       raf = requestAnimationFrame(animate);
     };
-    initialTimer = setTimeout(() => { run(); cycleTimer = setInterval(run, CYCLE_MS); }, START_MS);
+    const initialTimer = setTimeout(() => { run(); cycleTimer = setInterval(run, CYCLE_MS); }, START_MS);
     return () => { clearTimeout(initialTimer); clearInterval(cycleTimer); cancelAnimationFrame(raf); };
   }, []);
 
-  const t       = tick;
-  const screenW = typeof window !== 'undefined' ? window.innerWidth : 390;
-  const logoX   = screenW / 2;
+  const t      = tick;
+  const active = phase === 'running' && !scrolled && geo !== null;
+  let bar = null, rupee = null, cmGlow = false;
 
-  const ovalHalfPx   = (88 / 200) * 110;
-  const approachZone = 70;
+  if (active) {
+    const { cx, cy, w, vw } = geo;
+    const z        = Math.min(1.5, Math.max(1, w / 110));   // size factor vs the 110px phone logo
+    const ovalHalf = (88 / 200) * w;
+    const approach = 70 * z;
+    const BAR_W    = 76 * z;
+    const BAR_H    = 44 * z;
+    const barEndT  = 0.55;
+    const startX   = -BAR_W / 2;
+    const endX     = cx - ovalHalf - BAR_W / 2;
+    const barX     = startX + Math.min(t / barEndT, 1) * (endX - startX);
+    const barRight = barX + BAR_W / 2;
+    const dist     = (cx - ovalHalf) - barRight;
+    let k = 1;
+    if (dist < approach && dist >= 0) k = dist / approach;
+    if (dist < 0) k = 0;
+    if (t < barEndT && k > 0.02) bar = { x: barX, y: cy, w: BAR_W * k, h: BAR_H * k, d: 10 * z * k, k, z };
+    cmGlow = barRight > (cx - ovalHalf - approach) && t < 0.78 && t > 0;
 
-  const BAR_H = 44;
-  const BAR_W = 76;
-  const barY  = 111;
-
-  const barTravelEnd = logoX - ovalHalfPx - BAR_W / 2;
-  const barEndT      = 0.55;
-  const barStartX    = -BAR_W / 2;
-  const barCentreX   = barStartX + Math.min(t / barEndT, 1) * (barTravelEnd - barStartX);
-
-  const barRightEdge = barCentreX + BAR_W / 2;
-  const distToOval   = (logoX - ovalHalfPx) - barRightEdge;
-  let barScale       = 1;
-  if (distToOval < approachZone && distToOval >= 0) barScale = distToOval / approachZone;
-  if (distToOval < 0) barScale = 0;
-
-  const barVisible = phase === 'running' && !scrolled && t < barEndT && barScale > 0.02;
-
-  const shrinkStarted = barRightEdge > (logoX - ovalHalfPx - approachZone);
-  const rupeeMaxT     = 0.78;
-  const cmGlow        = phase === 'running' && shrinkStarted && t < rupeeMaxT && t > 0;
-
-  // Rupee — max size now 56px (double the previous 28px)
-  const rupeeStartT = 0.55;
-  const rupeeEndT   = 0.97;
-  let rupeeSize     = 0;
-  let rupeeX        = logoX + ovalHalfPx;
-  let rupeeOpacity  = 0;
-
-  if (phase === 'running' && t >= rupeeStartT && t <= rupeeEndT) {
-    const rp     = (t - rupeeStartT) / (rupeeEndT - rupeeStartT);
-    rupeeSize    = Math.min(56, 56 * (rp / 0.4));
-    rupeeX       = logoX + ovalHalfPx + rp * (screenW - logoX - ovalHalfPx - 24);
-    rupeeOpacity = rp < 0.72 ? 1 : 1 - (rp - 0.72) / 0.28;
+    if (t >= 0.55 && t <= 0.97) {
+      const rp   = (t - 0.55) / (0.97 - 0.55);
+      const size = Math.min(56 * z, 56 * z * (rp / 0.4));
+      rupee = {
+        x: cx + ovalHalf + rp * (vw - cx - ovalHalf - 24 * z),
+        y: cy + size * 0.38,
+        size,
+        opacity: rp < 0.72 ? 1 : 1 - (rp - 0.72) / 0.28,
+      };
+    }
   }
 
   const color = C.gold2;
-
   return (
-    <div style={{ position:'relative', display:'inline-block' }}>
-      <svg viewBox="0 0 200 260" width={110} height={143}
-        role="img" aria-label="Carat Money" xmlns="http://www.w3.org/2000/svg">
+    <div ref={wrapRef} className="hero-mark-svg" style={{ position:'relative', lineHeight:0 }}>
+      <svg viewBox="0 0 200 260" style={{ width:'100%', height:'auto', display:'block' }} role="img" aria-label="Carat Money" xmlns="http://www.w3.org/2000/svg">
         <path d={CM_OUTER} fill="none" stroke={color} strokeWidth="2"/>
         <path d={CM_INNER} fill="none" stroke={color} strokeWidth="1" opacity="0.45"/>
         <path transform={CM_TRANSFORM} d={CM_PATH} fill={color}
@@ -151,86 +168,53 @@ function HomeLogo() {
         <circle cx="100" cy="224" r="2" fill={color}/>
       </svg>
 
-      {phase === 'running' && !scrolled && (
-        <svg style={{
-          position:'fixed', top:0, left:0,
-          width:'100vw', height:'100vh',
-          pointerEvents:'none', zIndex:999, overflow:'visible',
-        }}>
+      {active && (
+        <svg aria-hidden="true" style={{ position:'fixed', top:0, left:0, width:'100vw', height:'100vh', pointerEvents:'none', zIndex:999, overflow:'visible' }}>
           <defs>
-            <linearGradient id="barTop" x1="0" y1="0" x2="0" y2="1">
+            <linearGradient id="cmBarTop" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%"   stopColor="#f7e08a"/>
               <stop offset="40%"  stopColor="#e0b765"/>
               <stop offset="100%" stopColor="#8a5e1a"/>
             </linearGradient>
-            <linearGradient id="barFace" x1="0" y1="0" x2="0" y2="1">
+            <linearGradient id="cmBarFace" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%"   stopColor="#f1d78d"/>
               <stop offset="50%"  stopColor="#c9922a"/>
               <stop offset="100%" stopColor="#7a4e12"/>
             </linearGradient>
-            <linearGradient id="barSide" x1="0" y1="0" x2="1" y2="0">
+            <linearGradient id="cmBarSide" x1="0" y1="0" x2="1" y2="0">
               <stop offset="0%"   stopColor="#b8883a"/>
               <stop offset="100%" stopColor="#6b3d0a"/>
             </linearGradient>
           </defs>
 
-          {barVisible && (() => {
-            const s  = barScale;
-            const w  = BAR_W * s;    // base width (full)
-            const h  = BAR_H * s;
-            const d  = 10 * s;       // 3D depth
-            const cx = barCentreX;
-            const cy = barY;
-
-            // Trapezoid: base is full width, top is narrower (classic gold bar shape)
-            const inset = w * 0.12;  // top edge inset on each side
-            const x  = cx - w / 2;
-            const y  = cy - h / 2;
-
-            // Front face — trapezoid (wider at bottom, narrower at top)
+          {bar && (() => {
+            const { w, h, d, k, z } = bar;
+            const inset = w * 0.12;              // top edge inset each side (classic bar shape)
+            const x = bar.x - w / 2;
+            const y = bar.y - h / 2;
+            const u = k * z;
             const frontPoints = `${x},${y+h} ${x+w},${y+h} ${x+w-inset},${y} ${x+inset},${y}`;
-
-            // Top face — parallelogram connecting top of front to top of back
-            const topPoints = `${x+inset},${y} ${x+w-inset},${y} ${x+w-inset+d},${y-d} ${x+inset+d},${y-d}`;
-
-            // Right side face — trapezoid side
-            const sidePoints = `${x+w},${y+h} ${x+w+d},${y+h-d} ${x+w-inset+d},${y-d} ${x+w-inset},${y}`;
-
+            const topPoints   = `${x+inset},${y} ${x+w-inset},${y} ${x+w-inset+d},${y-d} ${x+inset+d},${y-d}`;
+            const sidePoints  = `${x+w},${y+h} ${x+w+d},${y+h-d} ${x+w-inset+d},${y-d} ${x+w-inset},${y}`;
             return (
               <g>
-                <polygon points={frontPoints} fill="url(#barFace)"/>
-                <polygon points={topPoints}   fill="url(#barTop)"/>
-                <polygon points={sidePoints}  fill="url(#barSide)"/>
-                {/* Vertical ridge lines on front face */}
-                {s > 0.4 && [0.28, 0.72].map((pos, i) => {
-                  const rx = x + w * pos;
-                  const rtopX = x + inset + (w - 2*inset) * pos;
-                  return (
-                    <line key={i}
-                      x1={rtopX} y1={y + 3*s}
-                      x2={rx}    y2={y + h - 3*s}
-                      stroke="#8a5e1a" strokeWidth={1.2*s} opacity="0.55"/>
-                  );
+                <polygon points={frontPoints} fill="url(#cmBarFace)"/>
+                <polygon points={topPoints}   fill="url(#cmBarTop)"/>
+                <polygon points={sidePoints}  fill="url(#cmBarSide)"/>
+                {k > 0.4 && [0.28, 0.72].map((pos, i) => {
+                  const rx    = x + w * pos;
+                  const rtopX = x + inset + (w - 2 * inset) * pos;
+                  return <line key={i} x1={rtopX} y1={y + 3 * u} x2={rx} y2={y + h - 3 * u} stroke="#8a5e1a" strokeWidth={1.2 * u} opacity="0.55"/>;
                 })}
-                {/* Shine on front */}
-                {s > 0.5 && (
-                  <polygon
-                    points={`${x+inset+4*s},${y+4*s} ${x+inset+w*0.18},${y+4*s} ${x+w*0.16},${y+h-6*s} ${x+4*s},${y+h-6*s}`}
-                    fill="white" opacity={0.1*s}/>
+                {k > 0.5 && (
+                  <polygon points={`${x+inset+4*u},${y+4*u} ${x+inset+w*0.18},${y+4*u} ${x+w*0.16},${y+h-6*u} ${x+4*u},${y+h-6*u}`} fill="white" opacity={0.1 * k}/>
                 )}
               </g>
             );
           })()}
 
-          {rupeeOpacity > 0 && (
-            <text
-              x={rupeeX} y={barY + rupeeSize * 0.38}
-              textAnchor="middle"
-              fontFamily="Georgia, serif"
-              fontSize={rupeeSize}
-              fill="#e0b765"
-              opacity={rupeeOpacity}
-            >₹</text>
+          {rupee && rupee.opacity > 0 && (
+            <text x={rupee.x} y={rupee.y} textAnchor="middle" fontFamily="Georgia, serif" fontSize={rupee.size} fill="#e0b765" opacity={rupee.opacity}>₹</text>
           )}
         </svg>
       )}
@@ -248,6 +232,46 @@ const blankOrnament = () => ({ id: makeId(), gross:'', stone:'', wastage:'', pur
 const fmtRange = v => v >= 100000 ? `~₹${(v/100000).toFixed(2)} L` : `~₹${(v/1000).toFixed(2)} K`;
 const fmtTime       = d => d ? d.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' }) : null;
 const copyToClipboard = async t => { try { await navigator.clipboard.writeText(t); return true; } catch { return false; } };
+
+// ─── Contact, WhatsApp, analytics & lead capture ──────────────────────────────
+const WA_MSG  = "Hi. I'm interested in selling gold.";
+const waUrl   = text => `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
+const WA_LINK = waUrl(WA_MSG);
+const CALL_NUMBERS = [
+  { tel:'+918169874545', label:'816 987 4545' },
+  { tel:'+919653456868', label:'965 345 6868' },
+];
+
+// Google Analytics event (quietly does nothing if GA hasn't loaded)
+function track(name, params = {}) {
+  try { if (typeof window.gtag === 'function') window.gtag('event', name, params); } catch { /* ignore */ }
+}
+function openWA(text, source) {
+  track('whatsapp_click', { source });
+  window.open(waUrl(text), '_blank');
+}
+// Sends one lead row to the Google Sheet. Fire-and-forget: never blocks WhatsApp.
+function postLead(payload) {
+  if (!LEADS_URL) return;
+  try {
+    fetch(LEADS_URL, {
+      method:'POST', mode:'no-cors', keepalive:true,
+      headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+      body: JSON.stringify({ ...payload, ts: new Date().toISOString() }),
+    }).catch(() => {});
+  } catch { /* ignore */ }
+}
+// Scroll to a homepage section; from any other page, go home first.
+function goSection(id, navigate) {
+  if (window.location.pathname === '/') {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior:'smooth', block:'start' });
+  } else if (navigate) {
+    navigate(`/#${id}`);
+  } else {
+    window.location.href = `/#${id}`;
+  }
+}
 
 // ─── Routing ──────────────────────────────────────────────────────────────────
 function useRoute() {
@@ -320,10 +344,370 @@ function useSpotRate() {
   return spot;
 }
 
-// ─── Global CSS ───────────────────────────────────────────────────────────────
+// ─── Languages (homepage only — blog and other pages stay in English) ─────────
+// Hindi and Kannada are first drafts: have a native speaker review before launch.
+const LANGS = [
+  { code:'en', short:'EN',  name:'English' },
+  { code:'hi', short:'हिं', name:'हिन्दी' },
+  { code:'kn', short:'ಕ',   name:'ಕನ್ನಡ' },
+];
+const LANG_CODES = LANGS.map(l => l.code);
+
+const REVIEWERS = [
+  { n:'Priya D.',   l:'Kharghar' },
+  { n:'Imran S.',   l:'Panvel' },
+  { n:'Swati K.',   l:'CBD Belapur' },
+  { n:"Rohan D'M.", l:'Ulwe' },
+  { n:'Sachin J.',  l:'Kalamboli' },
+];
+
+const STR = {
+  // ═══ ENGLISH ═══════════════════════════════════════════════════════════════
+  en: {
+    nav_calc: 'Value Calculator', nav_why: 'Why Us', nav_process: 'Process', nav_reviews: 'Reviews', nav_faqs: 'FAQs', nav_blog: 'Blog',
+    whatsapp: 'WhatsApp', call: 'Call', call_short: 'Call', menu: 'Menu', partner_link: 'Partner Program', language: 'Language',
+
+    hero_eyebrow:   'We buy gold at fair price',
+    hero_h1:        ['Sell your gold at the ', 'live', ' market rate.'],
+    hero_sub:       'Paid instantly to your bank or UPI.',
+    hero_guarantee: 'We guarantee — nobody can match our price',
+    hero_cta_wa:    'Get a free quote on WhatsApp',
+    hero_cta_calc:  'Value your gold',
+    hero_stats:     '5,000+ customers · ₹100Cr+ purchased · 4.9★',
+    hero_pickup:    'Home pickup available in Bangalore & Mumbai',
+    tiles: [
+      { t:'Doorstep service',   d:'We come to you, so your gold never has to travel.' },
+      { t:'Accurate valuation', d:'XRF testing measures exact purity, and you see the reading yourself.' },
+      { t:'Instant transfer',   d:'Money in your bank or UPI right away, plus a free, detailed valuation certificate.' },
+    ],
+
+    rate_title: 'Our Buy Rate', rate_loading: 'Loading…', rate_updated: 'Live rate · Updated {time}', rate_fetching: 'Fetching live rate…',
+    rate_unavailable: 'Live rate temporarily unavailable', rate_refresh: 'Refreshes every minute · GST inclusive', rate_cta: 'Ask for a quote on WhatsApp',
+    gst_excl: '24K without GST:',
+    gst_note: "GST-inclusive rate shown above. If you're GST-registered, we pass the tax credit back to you.",
+
+    calc_title: "What's your gold worth now?", calc_weight: 'Weight (grams)', calc_weight_ph: 'e.g. 10', calc_karat: 'Select purity',
+    calc_est: 'Estimated value', calc_at: 'at ₹{rate}/g for {k}K', calc_cta: 'Get this price on WhatsApp',
+    calc_disclaimer: 'Estimate only. Final value is confirmed after XRF testing in front of you.',
+    calc_margin: 'Already have a quote from another buyer? Check their margin →',
+
+    git_title: 'Book a free appointment', git_sub: "Share your details and we'll confirm a slot on WhatsApp.",
+    git_name: 'Your name', git_name_ph: 'e.g. Priya S', git_mobile: 'Mobile number', git_mobile_ph: '10-digit number',
+    git_pref: 'I prefer', git_doorstep: 'Doorstep pickup', git_centre: 'Visit our centre',
+    git_book: 'Book free appointment', git_call: 'Call now',
+    git_consent: 'By submitting, you agree to be contacted about your gold sale.',
+    git_err: 'Enter your name and a valid 10-digit mobile number.',
+
+    why_title: 'Why people trust Carat Money',
+    why_intro: 'Selling old gold usually means guesswork, hidden cuts and no paperwork. We built every step to be measured, shown to you and documented.',
+    why_them: 'Typical gold buyers', why_tag: 'Price guarantee',
+    why_rows: [
+      { k:'Purity testing',     us:'XRF testing, non-destructive, with the reading shown to you on screen.', them:'Touchstone testing, or a reading you never get to see.' },
+      { k:'Weight',             us:'Weighed in front of you, precise to 0.001 g.', them:'Weight rounded down and stones only estimated.' },
+      { k:'Pricing',            us:'Live market-linked rate, published openly.', them:'Stale or unclear rates that change at the counter.' },
+      { k:'Deductions',         us:'No extra "wastage" cuts.', them:'Hidden deductions under different names: excess stone deductions, melting loss, service charges, etc.' },
+      { k:'Payment',            us:'Instant bank or UPI transfer + a free valuation certificate.', them:'Cash, no paperwork, no invoices.' },
+      { k:'Jewellery accepted', us:'All jewellery accepted, broken or old, BIS-hallmarked or not. Purity verified scientifically.', them:"Non-hallmarked or other brands' jewellery is rejected." },
+    ],
+
+    proc_title: 'Carat Money process in 4 easy steps', proc_sub: 'Transparent at every step, and done in about 15 minutes.',
+    proc_steps: [
+      { t:'Walk into a Carat Money centre or schedule a doorstep appointment', d:'Visit us in Kharghar, or we come to your home at a time that suits you.' },
+      { t:'Gold tested using advanced machines', d:'XRF purity testing and precision weighing, done in front of you.' },
+      { t:'Purity, weight and live pricing shown before sale', d:'You see every number before you decide to sell.' },
+      { t:'Instant payment without any delay', d:'Bank or UPI transfer the moment you accept the offer.' },
+    ],
+    proc_cta: 'Get a free estimate',
+
+    rev_title: 'Why thousands trust Carat Money', rev_sub: 'What sellers across Navi Mumbai say about us.', rev_sample: 'Sample reviews',
+    review_quotes: [
+      'They turned the XRF screen towards me and I saw the purity reading myself. No guesswork at all.',
+      'The rate matched the live price on their website, and the money reached my UPI before I left.',
+      'My old chain was broken and had no hallmark. They still tested it properly and paid me fairly.',
+      'They came home at the time we agreed and gave me a free valuation certificate for every piece.',
+      'Weighed to the last milligram in front of me. No hidden deductions anywhere.',
+    ],
+    prev: 'Previous reviews', next: 'Next reviews', stars: '5 out of 5 stars',
+
+    faq_title: 'Frequently asked questions', faq_sub: 'Everything to know before you sell your gold.',
+    faq_panel_title: 'Still have questions?', faq_panel_sub: 'Reach us on any of these, all days, 9 am to 9 pm.', email: 'Email',
+    faqs: [
+      { q:"How is my gold's price calculated?", a:'We weigh your gold, test its purity on an XRF machine and multiply the pure gold content by the live rate shown on this page. You see every number before you decide.' },
+      { q:'Do you melt or damage my jewellery during testing?', a:'No. XRF testing is non-destructive, so your jewellery stays exactly as it is while we test it.' },
+      { q:'Do you offer home pickup?', a:'Yes, in Bangalore and Mumbai. Our executive visits at a time that suits you, tests your gold in front of you and makes a firm offer on the spot.' },
+      { q:'Is the estimate free?', a:"Yes. Estimates are free with no obligation. You sell only if you're happy with the offer." },
+      { q:'Are there any deductions?', a:'Only the weight of stones, which we measure and show you. There are no extra "wastage" cuts and no hidden charges.' },
+      { q:'What if my jewellery is broken or not hallmarked?', a:"We accept all gold jewellery, including broken, old and non-hallmarked pieces. XRF testing finds the real purity, so you're paid for the actual gold content." },
+      { q:'How will I be paid?', a:'Instantly, by bank transfer or UPI, as soon as you accept the offer. We never pay in cash.' },
+      { q:'Will I get any paperwork?', a:'Yes. You receive an invoice for the sale and a free, detailed valuation certificate.' },
+      { q:'Can I walk away after testing?', a:"Yes, at no cost. You're under no obligation to sell until you accept the final offer." },
+      { q:'How long does it take?', a:'About 15 minutes. Testing, the offer and payment all happen in one sitting.' },
+      { q:'Which documents do I need?', a:'Your Aadhaar and PAN, for KYC.' },
+      { q:'Do you buy gold pledged with a bank or NBFC?', a:"Yes. We help release gold pledged with a bank or NBFC and buy it at today's rate. WhatsApp us for details." },
+    ],
+
+    visit_label: 'Visit our centre', visit_title: 'Carat Money, Kharghar', visit_hours: 'All days, 9 am to 9 pm', visit_dir: 'Get directions',
+
+    blog_title: 'Gold insights', blog_sub: 'Straight answers before you sell your gold.', blog_all: 'View all articles', blog_read: 'Read', blog_note: '',
+
+    app_h: 'Carat Money, soon in your pocket.',
+    app_body: 'Track the live gold rate, value your jewellery and book a doorstep pickup — all in one app. Launching soon on iOS and Android.',
+    app_soon: 'Coming soon', app_hint: 'Tap either button to get a launch alert on WhatsApp.',
+    app_chip1: 'XRF-tested purity', app_chip2: 'Instant UPI payout',
+
+    partner_text: 'Earn on every client you refer. We buy their gold. You get commissions.', partner_cta: 'Join our Partner Program →',
+
+    f_onpage: 'On this page', f_explore: 'Explore', f_contact: 'Contact',
+    f_live: 'Live rate', f_calc: 'Value calculator', f_why: 'Why us', f_reviews: 'Reviews', f_faqs: 'FAQs', f_visit: 'Visit us',
+    f_sell: 'Sell gold', f_buy: 'Buy gold coins', f_margin: 'Margin calculator', f_blog: 'Blog', f_partner: 'Partner Program',
+    f_rights: 'All rights reserved.',
+    f_legal: "Gold rates shown on this website are indicative and update with the market; the final price is confirmed after testing your gold in front of you. Use of this website is subject to Carat Money's Terms of Service and Privacy Policy. By submitting your details, you consent to Carat Money contacting you about your enquiry and processing your information for that purpose.",
+    wa_float: 'Chat on WhatsApp',
+  },
+
+  // ═══ HINDI ═════════════════════════════════════════════════════════════════
+  hi: {
+    nav_calc: 'वैल्यू कैलकुलेटर', nav_why: 'हम क्यों', nav_process: 'प्रक्रिया', nav_reviews: 'रिव्यू', nav_faqs: 'सवाल-जवाब', nav_blog: 'ब्लॉग',
+    whatsapp: 'WhatsApp', call: 'कॉल करें', call_short: 'कॉल', menu: 'मेन्यू', partner_link: 'पार्टनर प्रोग्राम', language: 'भाषा',
+
+    hero_eyebrow:   'हम सही दाम पर सोना खरीदते हैं',
+    hero_h1:        ['अपना सोना ', 'लाइव', ' मार्केट रेट पर बेचें।'],
+    hero_sub:       'पेमेंट तुरंत आपके बैंक या UPI में।',
+    hero_guarantee: 'हमारी गारंटी — हमसे बेहतर दाम कोई नहीं देगा',
+    hero_cta_wa:    'WhatsApp पर मुफ़्त कोटेशन पाएँ',
+    hero_cta_calc:  'अपने सोने की कीमत जानें',
+    hero_stats:     '5,000+ ग्राहक · ₹100 करोड़+ की खरीद · 4.9★',
+    hero_pickup:    'बेंगलुरु और मुंबई में होम पिकअप उपलब्ध',
+    tiles: [
+      { t:'घर पर सेवा',     d:'हम आपके पास आते हैं, ताकि आपके सोने को कहीं ले जाना न पड़े।' },
+      { t:'सटीक मूल्यांकन', d:'XRF टेस्टिंग से सही शुद्धता मापी जाती है, और रीडिंग आप ख़ुद देखते हैं।' },
+      { t:'तुरंत ट्रांसफ़र',  d:'पैसा तुरंत आपके बैंक या UPI में, साथ में मुफ़्त और विस्तृत वैल्यूएशन सर्टिफ़िकेट।' },
+    ],
+
+    rate_title: 'हमारा खरीद रेट', rate_loading: 'लोड हो रहा है…', rate_updated: 'लाइव रेट · {time} पर अपडेट', rate_fetching: 'लाइव रेट लाया जा रहा है…',
+    rate_unavailable: 'लाइव रेट अभी उपलब्ध नहीं है', rate_refresh: 'हर मिनट अपडेट होता है · GST सहित', rate_cta: 'WhatsApp पर कोटेशन माँगें',
+    gst_excl: 'GST के बिना 24K:',
+    gst_note: 'ऊपर दिखाया गया रेट GST सहित है। अगर आप GST-रजिस्टर्ड हैं, तो हम टैक्स क्रेडिट आपको वापस देते हैं।',
+
+    calc_title: 'आपके सोने की अभी कितनी कीमत है?', calc_weight: 'वज़न (ग्राम)', calc_weight_ph: 'जैसे 10', calc_karat: 'शुद्धता चुनें',
+    calc_est: 'अनुमानित कीमत', calc_at: '{k}K के लिए ₹{rate}/ग्राम पर', calc_cta: 'यह कीमत WhatsApp पर पाएँ',
+    calc_disclaimer: 'यह सिर्फ़ अनुमान है। अंतिम कीमत आपके सामने XRF टेस्टिंग के बाद तय होती है।',
+    calc_margin: 'किसी और खरीदार से कोटेशन मिला है? उनका मार्जिन जाँचें →',
+
+    git_title: 'मुफ़्त अपॉइंटमेंट बुक करें', git_sub: 'अपनी जानकारी दें, हम WhatsApp पर समय तय करेंगे।',
+    git_name: 'आपका नाम', git_name_ph: 'जैसे प्रिया एस', git_mobile: 'मोबाइल नंबर', git_mobile_ph: '10 अंकों का नंबर',
+    git_pref: 'मुझे पसंद है', git_doorstep: 'घर से पिकअप', git_centre: 'सेंटर पर आना',
+    git_book: 'मुफ़्त अपॉइंटमेंट बुक करें', git_call: 'अभी कॉल करें',
+    git_consent: 'सबमिट करके, आप अपने सोने की बिक्री के बारे में संपर्क किए जाने के लिए सहमत हैं।',
+    git_err: 'अपना नाम और सही 10 अंकों का मोबाइल नंबर डालें।',
+
+    why_title: 'लोग Carat Money पर भरोसा क्यों करते हैं',
+    why_intro: 'पुराना सोना बेचने में अक्सर अंदाज़ा, छिपी कटौतियाँ और कोई कागज़ात नहीं होते। हमने हर कदम को मापा हुआ, आपको दिखाया हुआ और दस्तावेज़ों के साथ बनाया है।',
+    why_them: 'आम सोना खरीदार', why_tag: 'प्राइस गारंटी',
+    why_rows: [
+      { k:'शुद्धता जाँच',      us:'XRF टेस्टिंग, बिना नुकसान के, रीडिंग स्क्रीन पर आपको दिखाई जाती है।', them:'कसौटी पत्थर से जाँच, या ऐसी रीडिंग जो आपको दिखाई ही नहीं जाती।' },
+      { k:'वज़न',             us:'आपके सामने तौला जाता है, 0.001 ग्राम तक सटीक।', them:'वज़न नीचे राउंड किया जाता है और पत्थरों का सिर्फ़ अंदाज़ा लगाया जाता है।' },
+      { k:'कीमत',            us:'लाइव मार्केट से जुड़ा रेट, खुले तौर पर प्रकाशित।', them:'पुराने या अस्पष्ट रेट, जो काउंटर पर बदल जाते हैं।' },
+      { k:'कटौतियाँ',          us:'कोई अतिरिक्त "वेस्टेज" कटौती नहीं।', them:'अलग-अलग नामों से छिपी कटौतियाँ: पत्थरों की ज़्यादा कटौती, पिघलाने में नुकसान, सर्विस चार्ज आदि।' },
+      { k:'पेमेंट',            us:'तुरंत बैंक या UPI ट्रांसफ़र + मुफ़्त वैल्यूएशन सर्टिफ़िकेट।', them:'नकद, कोई कागज़ात नहीं, कोई इनवॉइस नहीं।' },
+      { k:'स्वीकार्य ज्वेलरी',    us:'हर तरह की ज्वेलरी स्वीकार, टूटी या पुरानी, BIS हॉलमार्क हो या न हो। शुद्धता की वैज्ञानिक जाँच।', them:'बिना हॉलमार्क या दूसरे ब्रांड की ज्वेलरी लेने से मना।' },
+    ],
+
+    proc_title: 'Carat Money की प्रक्रिया, 4 आसान कदमों में', proc_sub: 'हर कदम पारदर्शी, और लगभग 15 मिनट में पूरा।',
+    proc_steps: [
+      { t:'Carat Money सेंटर आएँ या घर पर अपॉइंटमेंट बुक करें', d:'खारघर में हमारे सेंटर आएँ, या हम आपकी सुविधा के समय आपके घर आएँगे।' },
+      { t:'आधुनिक मशीनों से सोने की जाँच', d:'आपके सामने XRF शुद्धता जाँच और सटीक तौल।' },
+      { t:'बिक्री से पहले शुद्धता, वज़न और लाइव कीमत दिखाई जाती है', d:'बेचने का फ़ैसला लेने से पहले आप हर आँकड़ा देखते हैं।' },
+      { t:'बिना किसी देरी के तुरंत पेमेंट', d:'ऑफ़र मानते ही बैंक या UPI ट्रांसफ़र।' },
+    ],
+    proc_cta: 'मुफ़्त अनुमान पाएँ',
+
+    rev_title: 'हज़ारों लोग Carat Money पर भरोसा क्यों करते हैं', rev_sub: 'नवी मुंबई के विक्रेता हमारे बारे में क्या कहते हैं।', rev_sample: 'नमूना रिव्यू',
+    review_quotes: [
+      'उन्होंने XRF स्क्रीन मेरी तरफ़ घुमाई और मैंने शुद्धता की रीडिंग ख़ुद देखी। कोई अंदाज़ा नहीं।',
+      'रेट उनकी वेबसाइट के लाइव भाव से मेल खाया, और मेरे निकलने से पहले पैसा UPI में आ गया।',
+      'मेरी पुरानी चेन टूटी हुई थी और उस पर हॉलमार्क नहीं था। फिर भी उन्होंने ठीक से जाँच की और सही दाम दिया।',
+      'वे तय समय पर घर आए और हर गहने का मुफ़्त वैल्यूएशन सर्टिफ़िकेट दिया।',
+      'मेरे सामने आख़िरी मिलीग्राम तक तौला। कहीं कोई छिपी कटौती नहीं।',
+    ],
+    prev: 'पिछले रिव्यू', next: 'अगले रिव्यू', stars: '5 में से 5 स्टार',
+
+    faq_title: 'अक्सर पूछे जाने वाले सवाल', faq_sub: 'सोना बेचने से पहले जानने लायक हर बात।',
+    faq_panel_title: 'अब भी कोई सवाल है?', faq_panel_sub: 'इनमें से किसी पर भी संपर्क करें, हर दिन सुबह 9 से रात 9 बजे तक।', email: 'ईमेल',
+    faqs: [
+      { q:'मेरे सोने की कीमत कैसे तय होती है?', a:'हम आपका सोना तौलते हैं, XRF मशीन पर उसकी शुद्धता जाँचते हैं, और शुद्ध सोने की मात्रा को इस पेज पर दिखाए गए लाइव रेट से गुणा करते हैं। फ़ैसला लेने से पहले आप हर आँकड़ा देखते हैं।' },
+      { q:'क्या जाँच के दौरान मेरी ज्वेलरी पिघलाई या ख़राब की जाती है?', a:'नहीं। XRF टेस्टिंग से कोई नुकसान नहीं होता, जाँच के दौरान आपकी ज्वेलरी जैसी है वैसी ही रहती है।' },
+      { q:'क्या आप घर से पिकअप करते हैं?', a:'हाँ, बेंगलुरु और मुंबई में। हमारा एग्ज़ीक्यूटिव आपकी सुविधा के समय पर आता है, आपके सामने सोने की जाँच करता है और वहीं पक्का ऑफ़र देता है।' },
+      { q:'क्या अनुमान मुफ़्त है?', a:'हाँ। अनुमान मुफ़्त है और कोई बाध्यता नहीं। ऑफ़र पसंद आए तभी बेचें।' },
+      { q:'क्या कोई कटौती होती है?', a:'सिर्फ़ पत्थरों के वज़न की, जिसे हम मापकर आपको दिखाते हैं। कोई अतिरिक्त "वेस्टेज" कटौती या छिपा चार्ज नहीं।' },
+      { q:'अगर मेरी ज्वेलरी टूटी हुई है या उस पर हॉलमार्क नहीं है तो?', a:'हम हर तरह की सोने की ज्वेलरी लेते हैं, टूटी, पुरानी और बिना हॉलमार्क वाली भी। XRF टेस्टिंग असली शुद्धता बताती है, इसलिए आपको सोने की असली मात्रा का पैसा मिलता है।' },
+      { q:'मुझे पेमेंट कैसे मिलेगा?', a:'ऑफ़र मानते ही तुरंत, बैंक ट्रांसफ़र या UPI से। हम कभी नकद भुगतान नहीं करते।' },
+      { q:'क्या मुझे कोई कागज़ात मिलेंगे?', a:'हाँ। आपको बिक्री का इनवॉइस और एक मुफ़्त, विस्तृत वैल्यूएशन सर्टिफ़िकेट मिलता है।' },
+      { q:'क्या जाँच के बाद मैं बिना बेचे जा सकता/सकती हूँ?', a:'हाँ, बिना किसी शुल्क के। अंतिम ऑफ़र मानने तक आप बेचने के लिए बाध्य नहीं हैं।' },
+      { q:'इसमें कितना समय लगता है?', a:'लगभग 15 मिनट। जाँच, ऑफ़र और पेमेंट सब एक ही बार में हो जाते हैं।' },
+      { q:'कौन से दस्तावेज़ चाहिए?', a:'KYC के लिए आपका आधार और PAN।' },
+      { q:'क्या आप बैंक या NBFC में गिरवी रखा सोना खरीदते हैं?', a:'हाँ। हम बैंक या NBFC में गिरवी रखा सोना छुड़ाने में मदद करते हैं और उसे आज के रेट पर खरीदते हैं। जानकारी के लिए हमें WhatsApp करें।' },
+    ],
+
+    visit_label: 'हमारे सेंटर आएँ', visit_title: 'Carat Money, खारघर', visit_hours: 'हर दिन, सुबह 9 से रात 9 बजे तक', visit_dir: 'रास्ता देखें',
+
+    blog_title: 'गोल्ड इनसाइट्स', blog_sub: 'सोना बेचने से पहले सीधे जवाब।', blog_all: 'सभी लेख देखें', blog_read: 'पढ़ें', blog_note: 'लेख अंग्रेज़ी में हैं।',
+
+    app_h: 'Carat Money, जल्द ही आपकी जेब में।',
+    app_body: 'लाइव गोल्ड रेट देखें, अपनी ज्वेलरी की कीमत जानें और घर से पिकअप बुक करें — सब एक ही ऐप में। जल्द ही iOS और Android पर।',
+    app_soon: 'जल्द आ रहा है', app_hint: 'लॉन्च की सूचना WhatsApp पर पाने के लिए किसी भी बटन पर टैप करें।',
+    app_chip1: 'XRF से जाँची शुद्धता', app_chip2: 'तुरंत UPI पेमेंट',
+
+    partner_text: 'हर रेफ़र किए गए ग्राहक पर कमाएँ। हम उनका सोना खरीदते हैं, आपको कमीशन मिलता है।', partner_cta: 'हमारे पार्टनर प्रोग्राम से जुड़ें →',
+
+    f_onpage: 'इस पेज पर', f_explore: 'और देखें', f_contact: 'संपर्क',
+    f_live: 'लाइव रेट', f_calc: 'वैल्यू कैलकुलेटर', f_why: 'हम क्यों', f_reviews: 'रिव्यू', f_faqs: 'सवाल-जवाब', f_visit: 'हमारा सेंटर',
+    f_sell: 'सोना बेचें', f_buy: 'सोने के सिक्के खरीदें', f_margin: 'मार्जिन कैलकुलेटर', f_blog: 'ब्लॉग', f_partner: 'पार्टनर प्रोग्राम',
+    f_rights: 'सर्वाधिकार सुरक्षित।',
+    f_legal: 'इस वेबसाइट पर दिखाए गए सोने के रेट सांकेतिक हैं और बाज़ार के साथ बदलते रहते हैं; अंतिम कीमत आपके सामने सोने की जाँच के बाद तय होती है। इस वेबसाइट का उपयोग Carat Money की सेवा की शर्तों और गोपनीयता नीति के अधीन है। अपनी जानकारी सबमिट करके, आप Carat Money द्वारा आपकी पूछताछ के बारे में संपर्क किए जाने और इसी उद्देश्य से आपकी जानकारी के उपयोग के लिए सहमति देते हैं।',
+    wa_float: 'WhatsApp पर चैट करें',
+  },
+
+  // ═══ KANNADA ═══════════════════════════════════════════════════════════════
+  kn: {
+    nav_calc: 'ಮೌಲ್ಯ ಕ್ಯಾಲ್ಕುಲೇಟರ್', nav_why: 'ನಾವೇ ಏಕೆ', nav_process: 'ಪ್ರಕ್ರಿಯೆ', nav_reviews: 'ವಿಮರ್ಶೆಗಳು', nav_faqs: 'ಪ್ರಶ್ನೋತ್ತರ', nav_blog: 'ಬ್ಲಾಗ್',
+    whatsapp: 'WhatsApp', call: 'ಕರೆ ಮಾಡಿ', call_short: 'ಕರೆ', menu: 'ಮೆನು', partner_link: 'ಪಾರ್ಟ್ನರ್ ಪ್ರೋಗ್ರಾಂ', language: 'ಭಾಷೆ',
+
+    hero_eyebrow:   'ನ್ಯಾಯಯುತ ಬೆಲೆಗೆ ನಾವು ಚಿನ್ನ ಖರೀದಿಸುತ್ತೇವೆ',
+    hero_h1:        ['ನಿಮ್ಮ ಚಿನ್ನವನ್ನು ', 'ಲೈವ್', ' ಮಾರುಕಟ್ಟೆ ದರದಲ್ಲಿ ಮಾರಾಟ ಮಾಡಿ.'],
+    hero_sub:       'ಹಣ ತಕ್ಷಣ ನಿಮ್ಮ ಬ್ಯಾಂಕ್ ಅಥವಾ UPI ಗೆ.',
+    hero_guarantee: 'ನಮ್ಮ ಗ್ಯಾರಂಟಿ — ನಮ್ಮ ಬೆಲೆಗೆ ಯಾರೂ ಸರಿಸಾಟಿಯಾಗಲಾರರು',
+    hero_cta_wa:    'WhatsApp ನಲ್ಲಿ ಉಚಿತ ಕೊಟೇಶನ್ ಪಡೆಯಿರಿ',
+    hero_cta_calc:  'ನಿಮ್ಮ ಚಿನ್ನದ ಮೌಲ್ಯ ತಿಳಿಯಿರಿ',
+    hero_stats:     '5,000+ ಗ್ರಾಹಕರು · ₹100 ಕೋಟಿ+ ಖರೀದಿ · 4.9★',
+    hero_pickup:    'ಬೆಂಗಳೂರು ಮತ್ತು ಮುಂಬೈನಲ್ಲಿ ಮನೆಯಿಂದ ಪಿಕಪ್ ಲಭ್ಯ',
+    tiles: [
+      { t:'ಮನೆ ಬಾಗಿಲಿಗೆ ಸೇವೆ', d:'ನಾವೇ ನಿಮ್ಮಲ್ಲಿಗೆ ಬರುತ್ತೇವೆ, ನಿಮ್ಮ ಚಿನ್ನವನ್ನು ಎಲ್ಲಿಗೂ ಕೊಂಡೊಯ್ಯಬೇಕಾಗಿಲ್ಲ.' },
+      { t:'ನಿಖರ ಮೌಲ್ಯಮಾಪನ',  d:'XRF ಪರೀಕ್ಷೆ ನಿಖರ ಶುದ್ಧತೆಯನ್ನು ಅಳೆಯುತ್ತದೆ, ರೀಡಿಂಗ್ ಅನ್ನು ನೀವೇ ನೋಡುತ್ತೀರಿ.' },
+      { t:'ತಕ್ಷಣ ವರ್ಗಾವಣೆ',   d:'ಹಣ ತಕ್ಷಣ ನಿಮ್ಮ ಬ್ಯಾಂಕ್ ಅಥವಾ UPI ಗೆ, ಜೊತೆಗೆ ಉಚಿತ ಮತ್ತು ವಿವರವಾದ ಮೌಲ್ಯಮಾಪನ ಪ್ರಮಾಣಪತ್ರ.' },
+    ],
+
+    rate_title: 'ನಮ್ಮ ಖರೀದಿ ದರ', rate_loading: 'ಲೋಡ್ ಆಗುತ್ತಿದೆ…', rate_updated: 'ಲೈವ್ ದರ · {time} ಕ್ಕೆ ಅಪ್‌ಡೇಟ್', rate_fetching: 'ಲೈವ್ ದರ ಪಡೆಯಲಾಗುತ್ತಿದೆ…',
+    rate_unavailable: 'ಲೈವ್ ದರ ತಾತ್ಕಾಲಿಕವಾಗಿ ಲಭ್ಯವಿಲ್ಲ', rate_refresh: 'ಪ್ರತಿ ನಿಮಿಷ ಅಪ್‌ಡೇಟ್ ಆಗುತ್ತದೆ · GST ಸಹಿತ', rate_cta: 'WhatsApp ನಲ್ಲಿ ಕೊಟೇಶನ್ ಕೇಳಿ',
+    gst_excl: 'GST ಇಲ್ಲದೆ 24K:',
+    gst_note: 'ಮೇಲೆ ತೋರಿಸಿರುವ ದರ GST ಸಹಿತ. ನೀವು GST ನೋಂದಾಯಿತರಾಗಿದ್ದರೆ, ತೆರಿಗೆ ಕ್ರೆಡಿಟ್ ಅನ್ನು ನಿಮಗೆ ಹಿಂತಿರುಗಿಸುತ್ತೇವೆ.',
+
+    calc_title: 'ನಿಮ್ಮ ಚಿನ್ನದ ಈಗಿನ ಮೌಲ್ಯ ಎಷ್ಟು?', calc_weight: 'ತೂಕ (ಗ್ರಾಂ)', calc_weight_ph: 'ಉದಾ. 10', calc_karat: 'ಶುದ್ಧತೆ ಆಯ್ಕೆಮಾಡಿ',
+    calc_est: 'ಅಂದಾಜು ಮೌಲ್ಯ', calc_at: '{k}K ಗೆ ₹{rate}/ಗ್ರಾಂ ದರದಲ್ಲಿ', calc_cta: 'ಈ ಬೆಲೆಯನ್ನು WhatsApp ನಲ್ಲಿ ಪಡೆಯಿರಿ',
+    calc_disclaimer: 'ಇದು ಕೇವಲ ಅಂದಾಜು. ಅಂತಿಮ ಮೌಲ್ಯವನ್ನು ನಿಮ್ಮ ಮುಂದೆಯೇ XRF ಪರೀಕ್ಷೆಯ ನಂತರ ದೃಢಪಡಿಸಲಾಗುತ್ತದೆ.',
+    calc_margin: 'ಬೇರೆ ಖರೀದಿದಾರರಿಂದ ಕೊಟೇಶನ್ ಬಂದಿದೆಯೇ? ಅವರ ಮಾರ್ಜಿನ್ ಪರಿಶೀಲಿಸಿ →',
+
+    git_title: 'ಉಚಿತ ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್ ಬುಕ್ ಮಾಡಿ', git_sub: 'ನಿಮ್ಮ ವಿವರಗಳನ್ನು ನೀಡಿ, ನಾವು WhatsApp ನಲ್ಲಿ ಸಮಯವನ್ನು ದೃಢಪಡಿಸುತ್ತೇವೆ.',
+    git_name: 'ನಿಮ್ಮ ಹೆಸರು', git_name_ph: 'ಉದಾ. ಪ್ರಿಯಾ ಎಸ್', git_mobile: 'ಮೊಬೈಲ್ ಸಂಖ್ಯೆ', git_mobile_ph: '10 ಅಂಕಿಯ ಸಂಖ್ಯೆ',
+    git_pref: 'ನನ್ನ ಆಯ್ಕೆ', git_doorstep: 'ಮನೆಯಿಂದ ಪಿಕಪ್', git_centre: 'ಕೇಂದ್ರಕ್ಕೆ ಭೇಟಿ',
+    git_book: 'ಉಚಿತ ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್ ಬುಕ್ ಮಾಡಿ', git_call: 'ಈಗ ಕರೆ ಮಾಡಿ',
+    git_consent: 'ಸಲ್ಲಿಸುವ ಮೂಲಕ, ನಿಮ್ಮ ಚಿನ್ನ ಮಾರಾಟದ ಕುರಿತು ನಿಮ್ಮನ್ನು ಸಂಪರ್ಕಿಸಲು ನೀವು ಒಪ್ಪುತ್ತೀರಿ.',
+    git_err: 'ನಿಮ್ಮ ಹೆಸರು ಮತ್ತು ಸರಿಯಾದ 10 ಅಂಕಿಯ ಮೊಬೈಲ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ.',
+
+    why_title: 'ಜನರು Carat Money ಅನ್ನು ಏಕೆ ನಂಬುತ್ತಾರೆ',
+    why_intro: 'ಹಳೆಯ ಚಿನ್ನ ಮಾರುವಾಗ ಸಾಮಾನ್ಯವಾಗಿ ಊಹೆ, ಮರೆಮಾಚಿದ ಕಡಿತಗಳು ಮತ್ತು ದಾಖಲೆಗಳ ಕೊರತೆ ಇರುತ್ತದೆ. ನಾವು ಪ್ರತಿಯೊಂದು ಹಂತವನ್ನೂ ಅಳೆದು, ನಿಮಗೆ ತೋರಿಸಿ, ದಾಖಲಿಸುವಂತೆ ರೂಪಿಸಿದ್ದೇವೆ.',
+    why_them: 'ಸಾಮಾನ್ಯ ಚಿನ್ನ ಖರೀದಿದಾರರು', why_tag: 'ಬೆಲೆ ಗ್ಯಾರಂಟಿ',
+    why_rows: [
+      { k:'ಶುದ್ಧತೆ ಪರೀಕ್ಷೆ',     us:'XRF ಪರೀಕ್ಷೆ, ಯಾವುದೇ ಹಾನಿಯಿಲ್ಲದೆ, ರೀಡಿಂಗ್ ಅನ್ನು ಪರದೆಯ ಮೇಲೆ ನಿಮಗೆ ತೋರಿಸಲಾಗುತ್ತದೆ.', them:'ಒರೆಗಲ್ಲಿನ ಪರೀಕ್ಷೆ, ಅಥವಾ ನಿಮಗೆ ತೋರಿಸದ ರೀಡಿಂಗ್.' },
+      { k:'ತೂಕ',              us:'ನಿಮ್ಮ ಮುಂದೆಯೇ ತೂಕ, 0.001 ಗ್ರಾಂವರೆಗೆ ನಿಖರ.', them:'ತೂಕವನ್ನು ಕಡಿಮೆಗೆ ರೌಂಡ್ ಮಾಡಲಾಗುತ್ತದೆ, ಕಲ್ಲುಗಳ ತೂಕವನ್ನು ಕೇವಲ ಅಂದಾಜಿಸಲಾಗುತ್ತದೆ.' },
+      { k:'ಬೆಲೆ ನಿಗದಿ',         us:'ಲೈವ್ ಮಾರುಕಟ್ಟೆಗೆ ಜೋಡಿಸಿದ ದರ, ಬಹಿರಂಗವಾಗಿ ಪ್ರಕಟಿತ.', them:'ಹಳೆಯ ಅಥವಾ ಅಸ್ಪಷ್ಟ ದರಗಳು, ಕೌಂಟರ್‌ನಲ್ಲಿ ಬದಲಾಗುತ್ತವೆ.' },
+      { k:'ಕಡಿತಗಳು',           us:'ಯಾವುದೇ ಹೆಚ್ಚುವರಿ "ವೇಸ್ಟೇಜ್" ಕಡಿತವಿಲ್ಲ.', them:'ಬೇರೆ ಬೇರೆ ಹೆಸರಿನಲ್ಲಿ ಮರೆಮಾಚಿದ ಕಡಿತಗಳು: ಕಲ್ಲುಗಳ ಅತಿಯಾದ ಕಡಿತ, ಕರಗಿಸುವಾಗಿನ ನಷ್ಟ, ಸೇವಾ ಶುಲ್ಕ ಇತ್ಯಾದಿ.' },
+      { k:'ಪಾವತಿ',             us:'ತಕ್ಷಣ ಬ್ಯಾಂಕ್ ಅಥವಾ UPI ವರ್ಗಾವಣೆ + ಉಚಿತ ಮೌಲ್ಯಮಾಪನ ಪ್ರಮಾಣಪತ್ರ.', them:'ನಗದು, ಯಾವುದೇ ದಾಖಲೆಗಳಿಲ್ಲ, ಇನ್‌ವಾಯ್ಸ್ ಇಲ್ಲ.' },
+      { k:'ಸ್ವೀಕರಿಸುವ ಆಭರಣಗಳು',  us:'ಎಲ್ಲಾ ಆಭರಣಗಳೂ ಸ್ವೀಕಾರ, ಮುರಿದ ಅಥವಾ ಹಳೆಯ, BIS ಹಾಲ್‌ಮಾರ್ಕ್ ಇರಲಿ ಇಲ್ಲದಿರಲಿ. ಶುದ್ಧತೆಯ ವೈಜ್ಞಾನಿಕ ಪರಿಶೀಲನೆ.', them:'ಹಾಲ್‌ಮಾರ್ಕ್ ಇಲ್ಲದ ಅಥವಾ ಬೇರೆ ಬ್ರ್ಯಾಂಡ್‌ನ ಆಭರಣಗಳನ್ನು ತಿರಸ್ಕರಿಸುತ್ತಾರೆ.' },
+    ],
+
+    proc_title: 'Carat Money ಪ್ರಕ್ರಿಯೆ, 4 ಸುಲಭ ಹಂತಗಳಲ್ಲಿ', proc_sub: 'ಪ್ರತಿ ಹಂತವೂ ಪಾರದರ್ಶಕ, ಸುಮಾರು 15 ನಿಮಿಷಗಳಲ್ಲಿ ಪೂರ್ಣ.',
+    proc_steps: [
+      { t:'Carat Money ಕೇಂದ್ರಕ್ಕೆ ಬನ್ನಿ ಅಥವಾ ಮನೆ ಬಾಗಿಲಿಗೆ ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್ ಬುಕ್ ಮಾಡಿ', d:'ಖಾರ್‌ಘರ್‌ನಲ್ಲಿರುವ ನಮ್ಮ ಕೇಂದ್ರಕ್ಕೆ ಬನ್ನಿ, ಅಥವಾ ನಿಮಗೆ ಅನುಕೂಲವಾದ ಸಮಯಕ್ಕೆ ನಾವೇ ನಿಮ್ಮ ಮನೆಗೆ ಬರುತ್ತೇವೆ.' },
+      { t:'ಸುಧಾರಿತ ಯಂತ್ರಗಳಿಂದ ಚಿನ್ನದ ಪರೀಕ್ಷೆ', d:'ನಿಮ್ಮ ಮುಂದೆಯೇ XRF ಶುದ್ಧತೆ ಪರೀಕ್ಷೆ ಮತ್ತು ನಿಖರ ತೂಕ.' },
+      { t:'ಮಾರಾಟಕ್ಕೆ ಮುನ್ನ ಶುದ್ಧತೆ, ತೂಕ ಮತ್ತು ಲೈವ್ ಬೆಲೆ ತೋರಿಸಲಾಗುತ್ತದೆ', d:'ಮಾರಾಟದ ನಿರ್ಧಾರಕ್ಕೆ ಮುನ್ನ ಪ್ರತಿಯೊಂದು ಅಂಕಿಯನ್ನೂ ನೀವು ನೋಡುತ್ತೀರಿ.' },
+      { t:'ಯಾವುದೇ ವಿಳಂಬವಿಲ್ಲದೆ ತಕ್ಷಣ ಪಾವತಿ', d:'ಆಫರ್ ಒಪ್ಪಿದ ಕ್ಷಣವೇ ಬ್ಯಾಂಕ್ ಅಥವಾ UPI ವರ್ಗಾವಣೆ.' },
+    ],
+    proc_cta: 'ಉಚಿತ ಅಂದಾಜು ಪಡೆಯಿರಿ',
+
+    rev_title: 'ಸಾವಿರಾರು ಜನರು Carat Money ಅನ್ನು ಏಕೆ ನಂಬುತ್ತಾರೆ', rev_sub: 'ನವಿ ಮುಂಬೈನ ಮಾರಾಟಗಾರರು ನಮ್ಮ ಬಗ್ಗೆ ಏನು ಹೇಳುತ್ತಾರೆ.', rev_sample: 'ಮಾದರಿ ವಿಮರ್ಶೆಗಳು',
+    review_quotes: [
+      'ಅವರು XRF ಪರದೆಯನ್ನು ನನ್ನತ್ತ ತಿರುಗಿಸಿದರು, ಶುದ್ಧತೆಯ ರೀಡಿಂಗ್ ಅನ್ನು ನಾನೇ ನೋಡಿದೆ. ಯಾವುದೇ ಊಹೆ ಇಲ್ಲ.',
+      'ದರ ಅವರ ವೆಬ್‌ಸೈಟ್‌ನ ಲೈವ್ ಬೆಲೆಗೆ ಹೊಂದಿಕೆಯಾಯಿತು, ನಾನು ಹೊರಡುವ ಮೊದಲೇ ಹಣ UPI ಗೆ ಬಂತು.',
+      'ನನ್ನ ಹಳೆಯ ಸರ ಮುರಿದಿತ್ತು, ಹಾಲ್‌ಮಾರ್ಕ್ ಕೂಡ ಇರಲಿಲ್ಲ. ಆದರೂ ಸರಿಯಾಗಿ ಪರೀಕ್ಷಿಸಿ ನ್ಯಾಯಯುತ ಬೆಲೆ ನೀಡಿದರು.',
+      'ಒಪ್ಪಿದ ಸಮಯಕ್ಕೇ ಮನೆಗೆ ಬಂದರು, ಪ್ರತಿ ಆಭರಣಕ್ಕೂ ಉಚಿತ ಮೌಲ್ಯಮಾಪನ ಪ್ರಮಾಣಪತ್ರ ಕೊಟ್ಟರು.',
+      'ನನ್ನ ಮುಂದೆಯೇ ಕೊನೆಯ ಮಿಲಿಗ್ರಾಂವರೆಗೆ ತೂಕ ಮಾಡಿದರು. ಎಲ್ಲಿಯೂ ಮರೆಮಾಚಿದ ಕಡಿತವಿಲ್ಲ.',
+    ],
+    prev: 'ಹಿಂದಿನ ವಿಮರ್ಶೆಗಳು', next: 'ಮುಂದಿನ ವಿಮರ್ಶೆಗಳು', stars: '5 ರಲ್ಲಿ 5 ನಕ್ಷತ್ರಗಳು',
+
+    faq_title: 'ಪದೇ ಪದೇ ಕೇಳುವ ಪ್ರಶ್ನೆಗಳು', faq_sub: 'ಚಿನ್ನ ಮಾರುವ ಮೊದಲು ತಿಳಿಯಬೇಕಾದ ಎಲ್ಲವೂ.',
+    faq_panel_title: 'ಇನ್ನೂ ಪ್ರಶ್ನೆಗಳಿವೆಯೇ?', faq_panel_sub: 'ಇವುಗಳಲ್ಲಿ ಯಾವುದರ ಮೂಲಕವಾದರೂ ಸಂಪರ್ಕಿಸಿ, ಪ್ರತಿದಿನ ಬೆಳಿಗ್ಗೆ 9 ರಿಂದ ರಾತ್ರಿ 9 ರವರೆಗೆ.', email: 'ಇಮೇಲ್',
+    faqs: [
+      { q:'ನನ್ನ ಚಿನ್ನದ ಬೆಲೆಯನ್ನು ಹೇಗೆ ಲೆಕ್ಕ ಹಾಕಲಾಗುತ್ತದೆ?', a:'ನಾವು ನಿಮ್ಮ ಚಿನ್ನವನ್ನು ತೂಕ ಮಾಡಿ, XRF ಯಂತ್ರದಲ್ಲಿ ಶುದ್ಧತೆಯನ್ನು ಪರೀಕ್ಷಿಸಿ, ಶುದ್ಧ ಚಿನ್ನದ ಪ್ರಮಾಣವನ್ನು ಈ ಪುಟದಲ್ಲಿ ತೋರಿಸಿರುವ ಲೈವ್ ದರದಿಂದ ಗುಣಿಸುತ್ತೇವೆ. ನಿರ್ಧರಿಸುವ ಮೊದಲು ಪ್ರತಿಯೊಂದು ಅಂಕಿಯನ್ನೂ ನೀವು ನೋಡುತ್ತೀರಿ.' },
+      { q:'ಪರೀಕ್ಷೆಯ ವೇಳೆ ನನ್ನ ಆಭರಣವನ್ನು ಕರಗಿಸುತ್ತೀರಾ ಅಥವಾ ಹಾನಿ ಮಾಡುತ್ತೀರಾ?', a:'ಇಲ್ಲ. XRF ಪರೀಕ್ಷೆಯಿಂದ ಯಾವುದೇ ಹಾನಿಯಾಗುವುದಿಲ್ಲ, ಪರೀಕ್ಷೆಯ ವೇಳೆ ನಿಮ್ಮ ಆಭರಣ ಇದ್ದ ಹಾಗೆಯೇ ಇರುತ್ತದೆ.' },
+      { q:'ನೀವು ಮನೆಯಿಂದ ಪಿಕಪ್ ಮಾಡುತ್ತೀರಾ?', a:'ಹೌದು, ಬೆಂಗಳೂರು ಮತ್ತು ಮುಂಬೈನಲ್ಲಿ. ನಮ್ಮ ಸಿಬ್ಬಂದಿ ನಿಮಗೆ ಅನುಕೂಲವಾದ ಸಮಯಕ್ಕೆ ಬಂದು, ನಿಮ್ಮ ಮುಂದೆಯೇ ಚಿನ್ನವನ್ನು ಪರೀಕ್ಷಿಸಿ, ಅಲ್ಲೇ ಖಚಿತ ಆಫರ್ ನೀಡುತ್ತಾರೆ.' },
+      { q:'ಅಂದಾಜು ಉಚಿತವೇ?', a:'ಹೌದು. ಅಂದಾಜು ಉಚಿತ, ಯಾವುದೇ ಬದ್ಧತೆ ಇಲ್ಲ. ಆಫರ್ ಇಷ್ಟವಾದರೆ ಮಾತ್ರ ಮಾರಾಟ ಮಾಡಿ.' },
+      { q:'ಯಾವುದಾದರೂ ಕಡಿತ ಇದೆಯೇ?', a:'ಕಲ್ಲುಗಳ ತೂಕ ಮಾತ್ರ, ಅದನ್ನು ನಾವು ಅಳೆದು ನಿಮಗೆ ತೋರಿಸುತ್ತೇವೆ. ಯಾವುದೇ ಹೆಚ್ಚುವರಿ "ವೇಸ್ಟೇಜ್" ಕಡಿತ ಅಥವಾ ಮರೆಮಾಚಿದ ಶುಲ್ಕವಿಲ್ಲ.' },
+      { q:'ನನ್ನ ಆಭರಣ ಮುರಿದಿದ್ದರೆ ಅಥವಾ ಹಾಲ್‌ಮಾರ್ಕ್ ಇಲ್ಲದಿದ್ದರೆ?', a:'ಮುರಿದ, ಹಳೆಯ ಮತ್ತು ಹಾಲ್‌ಮಾರ್ಕ್ ಇಲ್ಲದ ಆಭರಣಗಳನ್ನೂ ಸೇರಿ ಎಲ್ಲಾ ಚಿನ್ನಾಭರಣಗಳನ್ನು ನಾವು ಸ್ವೀಕರಿಸುತ್ತೇವೆ. XRF ಪರೀಕ್ಷೆ ನಿಜವಾದ ಶುದ್ಧತೆಯನ್ನು ತಿಳಿಸುತ್ತದೆ, ಹಾಗಾಗಿ ನಿಜವಾದ ಚಿನ್ನದ ಪ್ರಮಾಣಕ್ಕೆ ನಿಮಗೆ ಹಣ ಸಿಗುತ್ತದೆ.' },
+      { q:'ನನಗೆ ಪಾವತಿ ಹೇಗೆ ಸಿಗುತ್ತದೆ?', a:'ಆಫರ್ ಒಪ್ಪಿದ ತಕ್ಷಣ, ಬ್ಯಾಂಕ್ ವರ್ಗಾವಣೆ ಅಥವಾ UPI ಮೂಲಕ. ನಾವು ಎಂದಿಗೂ ನಗದು ಪಾವತಿಸುವುದಿಲ್ಲ.' },
+      { q:'ನನಗೆ ಯಾವುದಾದರೂ ದಾಖಲೆಗಳು ಸಿಗುತ್ತವೆಯೇ?', a:'ಹೌದು. ಮಾರಾಟದ ಇನ್‌ವಾಯ್ಸ್ ಮತ್ತು ಉಚಿತ, ವಿವರವಾದ ಮೌಲ್ಯಮಾಪನ ಪ್ರಮಾಣಪತ್ರ ನಿಮಗೆ ಸಿಗುತ್ತದೆ.' },
+      { q:'ಪರೀಕ್ಷೆಯ ನಂತರ ಮಾರಾಟ ಮಾಡದೇ ಹೋಗಬಹುದೇ?', a:'ಹೌದು, ಯಾವುದೇ ಶುಲ್ಕವಿಲ್ಲದೆ. ಅಂತಿಮ ಆಫರ್ ಒಪ್ಪುವವರೆಗೆ ಮಾರಾಟ ಮಾಡಲು ನೀವು ಬದ್ಧರಲ್ಲ.' },
+      { q:'ಇದಕ್ಕೆ ಎಷ್ಟು ಸಮಯ ಬೇಕು?', a:'ಸುಮಾರು 15 ನಿಮಿಷಗಳು. ಪರೀಕ್ಷೆ, ಆಫರ್ ಮತ್ತು ಪಾವತಿ ಎಲ್ಲವೂ ಒಂದೇ ಭೇಟಿಯಲ್ಲಿ ಮುಗಿಯುತ್ತದೆ.' },
+      { q:'ಯಾವ ದಾಖಲೆಗಳು ಬೇಕು?', a:'KYC ಗಾಗಿ ನಿಮ್ಮ ಆಧಾರ್ ಮತ್ತು PAN.' },
+      { q:'ಬ್ಯಾಂಕ್ ಅಥವಾ NBFC ಯಲ್ಲಿ ಅಡವಿಟ್ಟ ಚಿನ್ನವನ್ನು ಖರೀದಿಸುತ್ತೀರಾ?', a:'ಹೌದು. ಬ್ಯಾಂಕ್ ಅಥವಾ NBFC ಯಲ್ಲಿ ಅಡವಿಟ್ಟ ಚಿನ್ನವನ್ನು ಬಿಡಿಸಲು ನಾವು ಸಹಾಯ ಮಾಡುತ್ತೇವೆ ಮತ್ತು ಅದನ್ನು ಇಂದಿನ ದರದಲ್ಲಿ ಖರೀದಿಸುತ್ತೇವೆ. ವಿವರಗಳಿಗೆ ನಮಗೆ WhatsApp ಮಾಡಿ.' },
+    ],
+
+    visit_label: 'ನಮ್ಮ ಕೇಂದ್ರಕ್ಕೆ ಭೇಟಿ ನೀಡಿ', visit_title: 'Carat Money, ಖಾರ್‌ಘರ್', visit_hours: 'ಪ್ರತಿದಿನ, ಬೆಳಿಗ್ಗೆ 9 ರಿಂದ ರಾತ್ರಿ 9 ರವರೆಗೆ', visit_dir: 'ದಾರಿ ತೋರಿಸಿ',
+
+    blog_title: 'ಚಿನ್ನದ ಒಳನೋಟಗಳು', blog_sub: 'ಚಿನ್ನ ಮಾರುವ ಮೊದಲು ನೇರ ಉತ್ತರಗಳು.', blog_all: 'ಎಲ್ಲಾ ಲೇಖನಗಳನ್ನು ನೋಡಿ', blog_read: 'ಓದಿ', blog_note: 'ಲೇಖನಗಳು ಇಂಗ್ಲಿಷ್‌ನಲ್ಲಿವೆ.',
+
+    app_h: 'Carat Money, ಶೀಘ್ರದಲ್ಲೇ ನಿಮ್ಮ ಜೇಬಿನಲ್ಲಿ.',
+    app_body: 'ಲೈವ್ ಚಿನ್ನದ ದರ ನೋಡಿ, ನಿಮ್ಮ ಆಭರಣದ ಮೌಲ್ಯ ತಿಳಿಯಿರಿ ಮತ್ತು ಮನೆಯಿಂದ ಪಿಕಪ್ ಬುಕ್ ಮಾಡಿ — ಎಲ್ಲವೂ ಒಂದೇ ಆ್ಯಪ್‌ನಲ್ಲಿ. ಶೀಘ್ರದಲ್ಲೇ iOS ಮತ್ತು Android ನಲ್ಲಿ.',
+    app_soon: 'ಶೀಘ್ರದಲ್ಲೇ ಬರಲಿದೆ', app_hint: 'ಬಿಡುಗಡೆಯ ಸೂಚನೆಯನ್ನು WhatsApp ನಲ್ಲಿ ಪಡೆಯಲು ಯಾವುದೇ ಬಟನ್ ಒತ್ತಿ.',
+    app_chip1: 'XRF ಪರೀಕ್ಷಿತ ಶುದ್ಧತೆ', app_chip2: 'ತಕ್ಷಣ UPI ಪಾವತಿ',
+
+    partner_text: 'ನೀವು ಶಿಫಾರಸು ಮಾಡುವ ಪ್ರತಿ ಗ್ರಾಹಕರಿಂದಲೂ ಗಳಿಸಿ. ನಾವು ಅವರ ಚಿನ್ನ ಖರೀದಿಸುತ್ತೇವೆ, ನಿಮಗೆ ಕಮಿಷನ್ ಸಿಗುತ್ತದೆ.', partner_cta: 'ನಮ್ಮ ಪಾರ್ಟ್ನರ್ ಪ್ರೋಗ್ರಾಂಗೆ ಸೇರಿ →',
+
+    f_onpage: 'ಈ ಪುಟದಲ್ಲಿ', f_explore: 'ಇನ್ನಷ್ಟು', f_contact: 'ಸಂಪರ್ಕ',
+    f_live: 'ಲೈವ್ ದರ', f_calc: 'ಮೌಲ್ಯ ಕ್ಯಾಲ್ಕುಲೇಟರ್', f_why: 'ನಾವೇ ಏಕೆ', f_reviews: 'ವಿಮರ್ಶೆಗಳು', f_faqs: 'ಪ್ರಶ್ನೋತ್ತರ', f_visit: 'ನಮ್ಮ ಕೇಂದ್ರ',
+    f_sell: 'ಚಿನ್ನ ಮಾರಿ', f_buy: 'ಚಿನ್ನದ ನಾಣ್ಯಗಳನ್ನು ಖರೀದಿಸಿ', f_margin: 'ಮಾರ್ಜಿನ್ ಕ್ಯಾಲ್ಕುಲೇಟರ್', f_blog: 'ಬ್ಲಾಗ್', f_partner: 'ಪಾರ್ಟ್ನರ್ ಪ್ರೋಗ್ರಾಂ',
+    f_rights: 'ಎಲ್ಲ ಹಕ್ಕುಗಳನ್ನು ಕಾಯ್ದಿರಿಸಲಾಗಿದೆ.',
+    f_legal: 'ಈ ವೆಬ್‌ಸೈಟ್‌ನಲ್ಲಿ ತೋರಿಸಿರುವ ಚಿನ್ನದ ದರಗಳು ಸೂಚಕ ಮಾತ್ರ ಮತ್ತು ಮಾರುಕಟ್ಟೆಯೊಂದಿಗೆ ಬದಲಾಗುತ್ತವೆ; ಅಂತಿಮ ಬೆಲೆಯನ್ನು ನಿಮ್ಮ ಮುಂದೆಯೇ ಚಿನ್ನವನ್ನು ಪರೀಕ್ಷಿಸಿದ ನಂತರ ದೃಢಪಡಿಸಲಾಗುತ್ತದೆ. ಈ ವೆಬ್‌ಸೈಟ್‌ನ ಬಳಕೆ Carat Money ಯ ಸೇವಾ ನಿಯಮಗಳು ಮತ್ತು ಗೌಪ್ಯತಾ ನೀತಿಗೆ ಒಳಪಟ್ಟಿರುತ್ತದೆ. ನಿಮ್ಮ ವಿವರಗಳನ್ನು ಸಲ್ಲಿಸುವ ಮೂಲಕ, ನಿಮ್ಮ ವಿಚಾರಣೆಯ ಕುರಿತು Carat Money ನಿಮ್ಮನ್ನು ಸಂಪರ್ಕಿಸಲು ಮತ್ತು ಅದೇ ಉದ್ದೇಶಕ್ಕಾಗಿ ನಿಮ್ಮ ಮಾಹಿತಿಯನ್ನು ಬಳಸಲು ನೀವು ಸಮ್ಮತಿಸುತ್ತೀರಿ.',
+    wa_float: 'WhatsApp ನಲ್ಲಿ ಚಾಟ್ ಮಾಡಿ',
+  },
+};
+
+const LangCtx = createContext({ lang:'en', setLang:() => {}, t:k => (STR.en[k] !== undefined ? STR.en[k] : k) });
+const useT  = () => useContext(LangCtx);
+const makeT = lang => key => {
+  const table = STR[lang] || STR.en;
+  if (table[key] !== undefined) return table[key];
+  if (STR.en[key] !== undefined) return STR.en[key];
+  return key;
+};
+const fill = (s, vars) => String(s).replace(/\{(\w+)\}/g, (_, k) => (vars[k] !== undefined ? vars[k] : ''));
+
+function useLangState() {
+  const [lang, setLangRaw] = useState(() => {
+    try { const v = localStorage.getItem('cm_lang'); return LANG_CODES.includes(v) ? v : 'en'; } catch { return 'en'; }
+  });
+  const setLang = useCallback(v => {
+    if (!LANG_CODES.includes(v)) return;
+    setLangRaw(v);
+    try { localStorage.setItem('cm_lang', v); } catch { /* private mode */ }
+    track('language_change', { language:v });
+  }, []);
+  return [lang, setLang];
+}
+
+// ─── Global CSS (responsive layout lives here; colours stay inline) ───────────
 const GLOBAL_CSS = `
+  :root { --f-serif:'Fraunces', Georgia, serif; --f-sans:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; --f-mono:'JetBrains Mono', 'Courier New', monospace; }
+  :root[lang="hi"] { --f-serif:'Fraunces', 'Noto Sans Devanagari', Georgia, serif; --f-sans:'Inter', 'Noto Sans Devanagari', -apple-system, BlinkMacSystemFont, sans-serif; --f-mono:'JetBrains Mono', 'Noto Sans Devanagari', monospace; }
+  :root[lang="kn"] { --f-serif:'Fraunces', 'Noto Sans Kannada', Georgia, serif; --f-sans:'Inter', 'Noto Sans Kannada', -apple-system, BlinkMacSystemFont, sans-serif; --f-mono:'JetBrains Mono', 'Noto Sans Kannada', monospace; }
+  :root[lang="hi"] body *, :root[lang="kn"] body * { letter-spacing:0!important; }
+  :root[lang="hi"] h1, :root[lang="hi"] h2, :root[lang="hi"] h3, :root[lang="kn"] h1, :root[lang="kn"] h2, :root[lang="kn"] h3 { line-height:1.35!important; }
+
   * { -webkit-tap-highlight-color:transparent; box-sizing:border-box; }
+  html { scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
   body { margin:0; background:${C.paper}; }
+  img { max-width:100%; }
+  [id] { scroll-margin-top:72px; }
   @keyframes pulse      { 0%,100%{opacity:1} 50%{opacity:.5} }
   @keyframes fadeSlide  { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
   @keyframes stickyDrop { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }
@@ -331,13 +715,142 @@ const GLOBAL_CSS = `
   @keyframes slideUp    { from{transform:translateY(100%)} to{transform:translateY(0)} }
   @keyframes fadeIn     { from{opacity:0} to{opacity:1} }
   @keyframes glowPulse  { 0%{box-shadow:0 0 0 0 rgba(224,183,101,.7)} 50%{box-shadow:0 0 0 14px rgba(224,183,101,0)} 100%{box-shadow:0 0 0 0 rgba(224,183,101,0)} }
-  input:focus,textarea:focus { outline:none; border-color:${C.gold}!important; box-shadow:0 0 0 3px rgba(184,136,58,.14)!important; }
+  @keyframes floatY     { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+  input:focus,textarea:focus,select:focus { outline:none; border-color:${C.gold}!important; box-shadow:0 0 0 3px rgba(184,136,58,.14)!important; }
+  a:focus-visible, button:focus-visible { outline:2px solid ${C.gold2}; outline-offset:2px; }
+  button { font-family:inherit; }
   button:active:not(:disabled) { transform:translateY(1px); }
   input[type=number]::-webkit-inner-spin-button,
   input[type=number]::-webkit-outer-spin-button { -webkit-appearance:none; margin:0; }
   input[type=number] { -moz-appearance:textfield; }
-  @media (max-width:420px) { .tb-name { display:none; } }
-  @media (max-width:380px) { .tb-live { display:none; } }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior:auto; }
+    *, *::before, *::after { animation-duration:.01ms!important; animation-iteration-count:1!important; transition-duration:.01ms!important; }
+  }
+
+  /* show / hide by screen size */
+  @media (max-width:767.98px)  { .hide-m { display:none!important; } }
+  @media (min-width:768px)     { .hide-d { display:none!important; } }
+  @media (max-width:1023.98px) { .hide-lt-lg { display:none!important; } }
+  @media (min-width:1024px)    { .hide-lg { display:none!important; } }
+
+  /* top bar */
+  @media (max-width:599.98px)  { .tb-name { display:none; } }
+  @media (max-width:380px)     { .tb-live { display:none; } }
+  @media (max-width:1279.98px) { .tb-links { display:none!important; } }
+  @media (min-width:1280px)    { .tb-menu-btn { display:none!important; } }
+  .tb-navlink { background:none; border:none; color:rgba(241,215,141,.82)!important; font-family:var(--f-sans); font-size:13.5px; font-weight:500; padding:8px 9px; border-radius:4px; cursor:pointer; white-space:nowrap; text-decoration:none; }
+  .tb-navlink:hover { color:${C.gold3}!important; background:rgba(224,183,101,.08); }
+
+  /* layout */
+  .cm-wrap { width:100%; max-width:1264px; margin:0 auto; padding:0 16px; }
+  @media (min-width:768px) { .cm-wrap { padding:0 32px; } }
+  .cm-sec { padding:52px 0; }
+  @media (min-width:1024px) { .cm-sec { padding:80px 0; } }
+  .cm-h2 { font-family:var(--f-serif); font-weight:350; font-size:clamp(28px, 4vw, 42px); line-height:1.12; letter-spacing:-0.02em; margin:0; }
+
+  /* hero */
+  .hero { padding:calc(56px + 28px) 0 40px; background:radial-gradient(1200px 520px at 78% 0%, rgba(224,183,101,.13), transparent 60%), ${C.paper}; }
+  @media (min-width:1024px) { .hero { padding:calc(56px + 56px) 0 64px; } }
+  .hero-grid { display:grid; grid-template-columns:1fr; gap:20px; align-items:center; }
+  @media (min-width:1024px) { .hero-grid { grid-template-columns:1.25fr .75fr; gap:56px; } }
+  .hero-visual { order:-1; display:flex; flex-direction:column; align-items:center; }
+  @media (min-width:1024px) { .hero-visual { order:0; } }
+  .hero-mark-svg { width:104px; }
+  @media (min-width:768px)  { .hero-mark-svg { width:140px; } }
+  @media (min-width:1024px) { .hero-mark-svg { width:220px; } }
+  .hero-text { text-align:center; }
+  .hero-eyebrow { justify-content:center; }
+  .hero-h1 { font-family:var(--f-serif); font-weight:350; font-size:clamp(34px, 5.4vw, 62px); line-height:1.04; letter-spacing:-0.025em; color:${C.ink}; margin:0 0 14px; }
+  .hero-ctas { display:flex; flex-direction:column; gap:10px; margin:24px 0 18px; }
+  @media (min-width:600px)  { .hero-ctas { flex-direction:row; justify-content:center; } }
+  @media (min-width:1024px) { .hero-text { text-align:left; } .hero-ctas { justify-content:flex-start; } .hero-eyebrow { justify-content:flex-start; } .hero-eyebrow .ln-r { display:none; } }
+
+  /* hero tiles: compact strip on phones, cards from tablet up */
+  .tiles { display:grid; grid-template-columns:repeat(3,1fr); margin-top:28px; background:${C.white}; border:1px solid rgba(26,20,38,.1); border-radius:8px; box-shadow:0 2px 12px rgba(22,18,31,.06); }
+  .tile { display:flex; flex-direction:column; align-items:center; text-align:center; gap:8px; padding:14px 6px; }
+  .tile + .tile { border-left:1px solid rgba(26,20,38,.08); }
+  .tile-t { font-size:12.5px; font-weight:600; line-height:1.3; color:${C.ink}; }
+  .tile-d { display:none; }
+  .tile-ic { width:40px; height:40px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; background:${C.paper2}; color:${C.plum}; border:1px solid rgba(184,136,58,.25); }
+  @media (min-width:768px) {
+    .tiles { gap:20px; background:transparent; border:none; box-shadow:none; margin-top:48px; }
+    .tile { align-items:flex-start; text-align:left; gap:14px; padding:22px; background:${C.white}; border:1px solid rgba(26,20,38,.1); border-radius:8px; box-shadow:0 2px 12px rgba(22,18,31,.06); }
+    .tile + .tile { border-left:1px solid rgba(26,20,38,.1); }
+    .tile-t { font-family:var(--f-serif); font-weight:350; font-size:20px; letter-spacing:-0.01em; margin-bottom:6px; }
+    .tile-d { display:block; font-size:14px; color:${C.mute}; line-height:1.55; }
+    .tile-ic { width:48px; height:48px; }
+  }
+  @media (min-width:1024px) { .tile { flex-direction:row; gap:16px; padding:24px; } }
+
+  /* rate + calculator + get in touch */
+  .rc-grid { display:grid; gap:16px; }
+  @media (min-width:1024px) { .rc-grid { grid-template-columns:5fr 7fr; gap:24px; } }
+  .karats { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; }
+  .git { display:grid; background:${C.plum}; border:1px solid rgba(224,183,101,.2); border-radius:8px; overflow:hidden; margin-top:16px; box-shadow:0 8px 32px rgba(43,20,80,.18); }
+  @media (min-width:1024px) { .git { grid-template-columns:300px 1fr; margin-top:24px; } }
+  .git-img { position:relative; min-height:100%; }
+  .git-body { padding:24px 20px; }
+  @media (min-width:768px) { .git-body { padding:32px; } }
+  .git-fields { display:grid; gap:14px; grid-template-columns:1fr; }
+  @media (min-width:768px)  { .git-fields { grid-template-columns:1fr 1fr; } .git-fields .git-pref { grid-column:1 / -1; } }
+  @media (min-width:1024px) { .git-fields { grid-template-columns:1fr 1fr 1.15fr; } .git-fields .git-pref { grid-column:auto; } }
+  .git-actions { display:grid; gap:10px; grid-template-columns:1fr; margin-top:18px; }
+  @media (min-width:768px) { .git-actions { grid-template-columns:auto auto 1fr; align-items:center; gap:12px; } }
+  .seg { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+
+  /* process: vertical timeline on phones, a row with a gold line on desktop */
+  .proc { display:grid; }
+  .proc-step { display:grid; grid-template-columns:44px 1fr; gap:16px; position:relative; padding-bottom:28px; }
+  .proc-step:last-child { padding-bottom:0; }
+  .proc-step:not(:last-child)::after { content:''; position:absolute; left:21.5px; top:50px; bottom:4px; width:1px; background:rgba(184,136,58,.45); }
+  .proc-num { width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:${C.plum}; color:${C.gold3}; font-family:var(--f-serif); font-size:20px; border:1px solid rgba(224,183,101,.35); position:relative; z-index:1; }
+  @media (min-width:1024px) {
+    .proc { grid-template-columns:repeat(4,1fr); gap:28px; }
+    .proc-step { grid-template-columns:1fr; justify-items:center; align-content:start; text-align:center; padding-bottom:0; }
+    .proc-step:not(:last-child)::after { left:calc(50% + 30px); right:calc(-50% + 2px); top:22px; bottom:auto; width:auto; height:1px; }
+  }
+
+  /* reviews carousel */
+  .rv-track { display:flex; gap:16px; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; -webkit-overflow-scrolling:touch; padding:4px 2px 14px; }
+  .rv-track::-webkit-scrollbar { display:none; }
+  .rv-card { flex:0 0 86%; scroll-snap-align:start; }
+  @media (min-width:768px)  { .rv-card { flex-basis:calc((100% - 16px) / 2); } }
+  @media (min-width:1024px) { .rv-card { flex-basis:calc((100% - 32px) / 3); } }
+
+  /* FAQ */
+  .faq-grid { display:grid; gap:28px; }
+  .faq-panel { order:2; }
+  @media (min-width:1024px) { .faq-grid { grid-template-columns:5fr 7fr; gap:48px; align-items:start; } .faq-panel { order:0; position:sticky; top:84px; } }
+
+  /* visit us */
+  .visit { display:grid; background:${C.white}; border:1px solid rgba(184,136,58,.35); border-radius:8px; overflow:hidden; box-shadow:0 2px 12px rgba(22,18,31,.06); }
+  .visit-map iframe { display:block; width:100%; height:220px; border:0; }
+  @media (min-width:1024px) { .visit { grid-template-columns:3fr 2fr; } .visit-map iframe { height:100%; min-height:380px; } }
+
+  /* blog cards */
+  .blog-grid { display:grid; gap:16px; grid-template-columns:1fr; }
+  @media (min-width:768px)  { .blog-grid { grid-template-columns:repeat(2,1fr); gap:20px; } .blog-grid.teaser { grid-template-columns:repeat(3,1fr); } }
+  @media (min-width:1024px) { .blog-grid { grid-template-columns:repeat(3,1fr); gap:24px; } }
+  .blog-card { transition:transform .2s, box-shadow .2s; }
+  .blog-card:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(22,18,31,.12)!important; }
+
+  /* app */
+  .app-grid { display:grid; gap:40px; align-items:center; }
+  .app-text { text-align:center; }
+  .app-btns { display:grid; grid-template-columns:1fr 1fr; gap:12px; max-width:420px; margin:24px auto 0; }
+  @media (min-width:1024px) { .app-grid { grid-template-columns:1fr 1fr; gap:56px; } .app-text { text-align:left; } .app-btns { margin-left:0; } .app-body { margin-left:0!important; } }
+  .app-phone { width:236px; }
+  @media (min-width:1024px) { .app-phone { width:268px; } }
+
+  /* footer */
+  .ft-grid { display:grid; gap:32px 24px; grid-template-columns:1fr 1fr; }
+  .ft-span { grid-column:1 / -1; }
+  @media (min-width:1024px) { .ft-grid { grid-template-columns:1.5fr 1fr 1fr 1.4fr; gap:40px; } .ft-span { grid-column:auto; } }
+  .ft-link { display:block; color:rgba(241,215,141,.75)!important; text-decoration:none; font-size:14px; line-height:1.4; background:none; border:none; padding:5px 0; cursor:pointer; text-align:left; font-family:var(--f-sans); }
+  .ft-link:hover { color:${C.gold3}!important; }
+  .ft-pad { padding-bottom:96px; }
+  @media (min-width:768px) { .ft-pad { padding-bottom:28px; } }
 `;
 
 // ─── Shared input style ───────────────────────────────────────────────────────
@@ -349,24 +862,6 @@ const INP = {
   WebkitAppearance:'none', fontFamily:SANS, boxSizing:'border-box',
 };
 const LBL = { fontSize:'14px', fontWeight:600, color:C.ink2, display:'block', marginBottom:'7px', fontFamily:SANS };
-
-// ─── Rate Strip ───────────────────────────────────────────────────────────────
-function RateStrip({ spot }) {
-  const r24 = spot.display ?? SPOT_FALLBACK;
-  const r22 = Math.round(r24 * 22 / 24);
-  return (
-    <div style={{ background:C.plum, padding:'10px 18px', display:'flex', alignItems:'center', flexWrap:'wrap', gap:'6px 16px', fontFamily:MONO, fontSize:'11px' }}>
-      <span style={{ display:'inline-flex', alignItems:'center', gap:'5px', fontWeight:500, color:C.gold2, letterSpacing:'0.12em' }}>
-        <Zap size={10} strokeWidth={2.5}/> LIVE RATE
-      </span>
-      {[{k:'24K',r:r24},{k:'22K',r:r22}].map(({k,r}) => (
-        <span key={k} style={{ color:C.gold3, fontWeight:400, letterSpacing:'0.04em' }}>
-          <span style={{ color:C.gold2, marginRight:'4px', fontSize:'9px', letterSpacing:'0.1em' }}>{k}</span>₹{fmt(r,0)}/g
-        </span>
-      ))}
-    </div>
-  );
-}
 
 // ─── Back Button ──────────────────────────────────────────────────────────────
 function BackBtn({ navigate }) {
@@ -392,8 +887,8 @@ const BtnWhatsApp = ({ onClick, disabled, children }) => (
 );
 
 // ─── Card wrapper ─────────────────────────────────────────────────────────────
-const Card = React.forwardRef(({ children, dark, style={} }, ref) => (
-  <div ref={ref} style={{ background: dark ? C.plum : C.white, borderRadius:'8px', border: dark ? `1px solid rgba(224,183,101,.2)` : `1px solid rgba(26,20,38,.1)`, padding:'24px', boxShadow: dark ? '0 8px 32px rgba(43,20,80,.18)' : '0 2px 12px rgba(22,18,31,.06)', ...style }}>{children}</div>
+const Card = React.forwardRef(({ children, dark, style={}, ...rest }, ref) => (
+  <div ref={ref} {...rest} style={{ background: dark ? C.plum : C.white, borderRadius:'8px', border: dark ? `1px solid rgba(224,183,101,.2)` : `1px solid rgba(26,20,38,.1)`, padding:'24px', boxShadow: dark ? '0 8px 32px rgba(43,20,80,.18)' : '0 2px 12px rgba(22,18,31,.06)', ...style }}>{children}</div>
 ));
 
 // ─── Page Header ─────────────────────────────────────────────────────────────
@@ -401,7 +896,7 @@ function PageHeader() {
   return (
     <div style={{ textAlign:'center', padding:'24px 0 16px' }}>
       <div style={{ display:'flex', justifyContent:'center', marginBottom:'10px' }}>
-        <LogoMark size={64} color={C.gold2}/>
+        <CaratMark size={64} color={C.gold2}/>
       </div>
       <div style={{ fontFamily:SERIF, fontSize:'28px', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1.05 }}>
         Carat <span style={{ fontStyle:'italic', color:C.plum }}>Money</span>
@@ -409,6 +904,1057 @@ function PageHeader() {
     </div>
   );
 }
+
+// ─── Crawlable internal link (real <a href>, in-app navigation on click) ─────
+function Link({ to, navigate, children, style, ...rest }) {
+  const onClick = e => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; // allow new-tab clicks
+    e.preventDefault();
+    e.stopPropagation();
+    navigate(to);
+  };
+  return (
+    <a href={to} onClick={onClick} style={{ color:'inherit', textDecoration:'none', display:'block', ...style }} {...rest}>
+      {children}
+    </a>
+  );
+}
+
+const WhatsAppGlyph = ({ size = 16, color = 'currentColor' }) => (
+  <svg viewBox="0 0 24 24" width={size} height={size} fill={color} aria-hidden="true">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+);
+
+const HomeIcon = ({ size = 20, color = 'currentColor' }) => (
+  <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke={color} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M3 10.5 12 3l9 7.5"/><path d="M5 9v12h14V9"/><path d="M10 21v-6h4v6"/>
+  </svg>
+);
+
+const SOCIALS = [
+            {
+              href: 'https://www.instagram.com/carat_money',
+              label: 'Instagram',
+              path: 'M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z',
+            },
+            {
+              href: 'https://x.com/carat_money',
+              label: 'X',
+              path: 'M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.911-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z',
+            },
+            {
+              href: 'https://www.youtube.com/@carat_money',
+              label: 'YouTube',
+              path: 'M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z',
+            },
+];
+
+// ─── Call button → picker with both numbers ──────────────────────────────────
+// variant: 'outline' (on plum), 'gold' (filled). full = stretch to container.
+function CallPicker({ variant = 'outline', label, full = false, align = 'right', source = 'topbar' }) {
+  const { t } = useT();
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+  useEffect(() => {
+    if (!open) return;
+    const close = e => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    const esc   = e => { if (e.key === 'Escape') setOpen(false); };
+    document.addEventListener('pointerdown', close);
+    document.addEventListener('keydown', esc);
+    return () => { document.removeEventListener('pointerdown', close); document.removeEventListener('keydown', esc); };
+  }, [open]);
+  const big  = variant !== 'outline' || full;
+  const look = variant === 'gold'
+    ? { background:C.gold2, color:C.plum, border:`1px solid ${C.gold2}` }
+    : { background:'transparent', color:C.white, border:'1px solid rgba(255,255,255,.3)' };
+  return (
+    <div ref={ref} style={{ position:'relative', width: full ? '100%' : 'auto' }}>
+      <button type="button" onClick={() => setOpen(v => !v)} aria-expanded={open} aria-haspopup="menu"
+        style={{ display:'inline-flex', alignItems:'center', justifyContent:'center', gap:'7px', width: full ? '100%' : 'auto', padding: big ? '14px 20px' : '7px 12px', borderRadius: big ? '4px' : '999px', fontFamily:SANS, fontSize: big ? '15px' : '13px', fontWeight:600, whiteSpace:'nowrap', cursor:'pointer', ...look }}>
+        <Phone size={big ? 16 : 14}/> {label || t('call')}
+      </button>
+      {open && (
+        <div role="menu" style={{ position:'absolute', top:'calc(100% + 8px)', [align]:0, minWidth:'210px', width: full ? '100%' : 'auto', zIndex:120, background:C.white, borderRadius:'8px', border:'1px solid rgba(26,20,38,.1)', boxShadow:'0 8px 24px rgba(22,18,31,.18)', overflow:'hidden', animation:'fadeSlide .2s ease' }}>
+          {CALL_NUMBERS.map((n, i) => (
+            <a key={n.tel} href={`tel:${n.tel}`} role="menuitem" onClick={() => { track('call_click', { number:n.tel, source }); setOpen(false); }}
+              style={{ display:'flex', alignItems:'center', gap:'10px', padding:'13px 16px', color:C.ink, textDecoration:'none', fontFamily:SANS, fontSize:'14px', fontWeight:600, borderTop: i === 0 ? 'none' : '1px solid rgba(26,20,38,.08)' }}>
+              <Phone size={14} color={C.gold}/> {n.label}
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── EN | हिं | ಕ switch ──────────────────────────────────────────────────────
+// Each label uses its own script's font, so "हिं" and "ಕ" render properly on every page.
+const LANG_FONT = { en: MONO, hi: "'Noto Sans Devanagari', sans-serif", kn: "'Noto Sans Kannada', sans-serif" };
+function LangSwitch({ size = 'sm' }) {
+  const { lang, setLang } = useT();
+  return (
+    <div role="group" aria-label="Language" style={{ display:'inline-flex', padding:'3px', borderRadius:'999px', border:'1px solid rgba(224,183,101,.35)', background:'rgba(0,0,0,.18)' }}>
+      {LANGS.map(l => {
+        const on = l.code === lang;
+        return (
+          <button key={l.code} type="button" lang={l.code} onClick={() => setLang(l.code)} aria-pressed={on} aria-label={l.name}
+            style={{ minWidth:'34px', padding: size === 'lg' ? '8px 16px' : '5px 10px', borderRadius:'999px', border:'none', cursor:'pointer', background: on ? C.gold2 : 'transparent', color: on ? C.plum : 'rgba(241,215,141,.8)', fontFamily: LANG_FONT[l.code], fontSize: l.code === 'en' ? '12px' : '13px', fontWeight:600, lineHeight:1.25 }}>
+            {l.short}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+// ─── Top Bar (always visible) ────────────────────────────────────────────────
+function TopBar({ spot, navigate, showLang = false }) {
+  const { t } = useT();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const r24   = spot.display ?? SPOT_FALLBACK;
+  const close = () => setMenuOpen(false);
+  const go    = id => { close(); goSection(id, navigate); };
+  const home  = e => {
+    e.preventDefault(); close();
+    if (window.location.pathname === '/') window.scrollTo({ top:0, behavior:'smooth' });
+    else if (navigate) navigate('/');
+    else window.location.href = '/';
+  };
+  const links = [
+    ['calculator', t('nav_calc')],
+    ['why',        t('nav_why')],
+    ['process',    t('nav_process')],
+    ['reviews',    t('nav_reviews')],
+    ['faqs',       t('nav_faqs')],
+  ];
+  useEffect(() => {
+    if (!menuOpen) return;
+    const esc = e => { if (e.key === 'Escape') setMenuOpen(false); };
+    document.addEventListener('keydown', esc);
+    return () => document.removeEventListener('keydown', esc);
+  }, [menuOpen]);
+  const menuRow = { display:'block', width:'100%', textAlign:'left', padding:'14px 0', background:'none', border:'none', borderBottom:'1px solid rgba(224,183,101,.12)', color:C.gold3, fontFamily:SANS, fontSize:'16px', fontWeight:500, cursor:'pointer', textDecoration:'none' };
+
+  return (
+    <header style={{ position:'fixed', top:0, left:0, right:0, zIndex:100, height:'56px', background:C.plum, borderBottom:'1px solid rgba(224,183,101,.25)', boxShadow:'0 2px 16px rgba(43,20,80,.25)' }}>
+      <div className="cm-wrap" style={{ height:'100%', display:'flex', alignItems:'center', gap:'8px' }}>
+        <a href="/" onClick={home} aria-label="Carat Money home" style={{ display:'flex', alignItems:'center', gap:'6px', flexShrink:0, textDecoration:'none' }}>
+          <CaratMark size={28} color={C.gold2}/>
+          <span className="tb-name" style={{ fontFamily:SERIF, fontSize:'16px', fontWeight:350, color:C.gold2, whiteSpace:'nowrap' }}>
+            Carat <span style={{ fontStyle:'italic' }}>Money</span>
+          </span>
+        </a>
+        <button type="button" onClick={() => go('rate')} aria-label={`24K live rate ₹${fmt(r24,0)} per gram`}
+          style={{ display:'flex', alignItems:'center', gap:'5px', padding:'5px 10px', borderRadius:'999px', background:'rgba(0,0,0,.22)', border:'1px solid rgba(224,183,101,.2)', fontFamily:MONO, fontSize:'11px', whiteSpace:'nowrap', flexShrink:0, cursor:'pointer' }}>
+          <span style={{ width:'6px', height:'6px', borderRadius:'50%', background:C.green }}/>
+          <span style={{ color:'rgba(241,215,141,.7)' }}>24K</span>
+          <span className="tb-live" style={{ color:C.gold2 }}>live</span>
+          <span style={{ color:C.gold3 }}>₹{fmt(r24,0)}/g</span>
+        </button>
+        <nav className="tb-links" aria-label="Sections" style={{ display:'flex', alignItems:'center', gap:'2px', marginLeft:'6px' }}>
+          {links.map(([id, label]) => <button key={id} type="button" className="tb-navlink" onClick={() => go(id)}>{label}</button>)}
+          <Link to="/blog" navigate={navigate} className="tb-navlink" style={{ display:'inline-block' }}>{t('nav_blog')}</Link>
+        </nav>
+        <div style={{ marginLeft:'auto', display:'flex', alignItems:'center', gap:'8px', flexShrink:0 }}>
+          {showLang && <div className="hide-m"><LangSwitch/></div>}
+          <a className="hide-m" href={WA_LINK} target="_blank" rel="noreferrer" onClick={() => track('whatsapp_click', { source:'topbar' })}
+            style={{ display:'inline-flex', alignItems:'center', gap:'6px', background:C.green, color:C.ink, padding:'7px 12px', borderRadius:'999px', fontFamily:SANS, fontSize:'13px', fontWeight:600, textDecoration:'none', whiteSpace:'nowrap' }}>
+            <WhatsAppGlyph size={15} color={C.ink}/> WhatsApp
+          </a>
+          <CallPicker source="topbar" label={t('call_short')}/>
+          <button type="button" className="tb-menu-btn" onClick={() => setMenuOpen(v => !v)} aria-label={t('menu')} aria-expanded={menuOpen}
+            style={{ width:'36px', height:'36px', display:'inline-flex', alignItems:'center', justifyContent:'center', background:'transparent', border:'1px solid rgba(255,255,255,.25)', borderRadius:'8px', color:C.gold3, cursor:'pointer', flexShrink:0 }}>
+            {menuOpen ? <X size={18}/> : <Menu size={18}/>}
+          </button>
+        </div>
+      </div>
+
+      {menuOpen && (
+        <>
+          <div onClick={close} style={{ position:'fixed', top:'56px', left:0, right:0, bottom:0, background:'rgba(22,18,31,.45)', animation:'fadeIn .2s ease' }}/>
+          <div style={{ position:'absolute', top:'56px', left:0, right:0, background:C.plum, borderBottom:'1px solid rgba(224,183,101,.25)', boxShadow:'0 16px 32px rgba(22,18,31,.35)', maxHeight:'calc(100dvh - 56px)', overflowY:'auto', animation:'stickyDrop .2s ease' }}>
+            <div className="cm-wrap" style={{ paddingTop:'6px', paddingBottom:'20px' }}>
+              {links.map(([id, label]) => <button key={id} type="button" onClick={() => go(id)} style={menuRow}>{label}</button>)}
+              <Link to="/blog" navigate={navigate} style={menuRow}>{t('nav_blog')}</Link>
+              {showLang && (
+                <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:'12px', padding:'16px 0' }}>
+                  <span style={{ fontFamily:SANS, fontSize:'14px', color:'rgba(241,215,141,.7)' }}>{t('language')}</span>
+                  <LangSwitch size="lg"/>
+                </div>
+              )}
+              <a href={WA_LINK} target="_blank" rel="noreferrer" onClick={() => { track('whatsapp_click', { source:'menu' }); close(); }}
+                style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:'8px', marginTop:'8px', padding:'14px', borderRadius:'999px', background:C.green, color:C.ink, fontFamily:SANS, fontWeight:600, fontSize:'15px', textDecoration:'none' }}>
+                <WhatsAppGlyph size={18} color={C.ink}/> {t('whatsapp')}
+              </a>
+              <a href={PARTNER_URL} target="_blank" rel="noreferrer" onClick={close}
+                style={{ display:'block', textAlign:'center', marginTop:'16px', fontFamily:SANS, fontSize:'14px', fontWeight:600, color:C.gold2, textDecoration:'none' }}>
+                {t('partner_link')} →
+              </a>
+            </div>
+          </div>
+        </>
+      )}
+    </header>
+  );
+}
+
+// ─── Section heading ─────────────────────────────────────────────────────────
+function SectionHead({ title, lead, align = 'center', children }) {
+  const centre = align === 'center';
+  return (
+    <div style={{ textAlign:align, maxWidth: centre ? '720px' : 'none', margin: centre ? '0 auto 32px' : '0 0 24px' }}>
+      <h2 className="cm-h2" style={{ color:C.ink }}>{title}</h2>
+      {lead && <p style={{ fontFamily:SANS, fontSize:'15px', color:C.mute, lineHeight:1.6, margin:'12px 0 0' }}>{lead}</p>}
+      {children}
+    </div>
+  );
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+//  HOMEPAGE SECTIONS
+// ═════════════════════════════════════════════════════════════════════════════
+
+// ─── 1. Hero ─────────────────────────────────────────────────────────────────
+function Hero({ navigate }) {
+  const { t, lang } = useT();
+  const en    = lang === 'en';
+  const h     = t('hero_h1');
+  const tiles = t('tiles');
+  const icons = [<HomeIcon size={20}/>, <Microscope size={20} strokeWidth={1.75}/>, <IndianRupee size={20} strokeWidth={1.75}/>];
+  const line  = { height:'1px', width:'32px', background:C.gold, opacity:.5, flexShrink:0 };
+  return (
+    <section id="top" className="hero">
+      <div className="cm-wrap">
+        <div className="hero-grid">
+          <div className="hero-text">
+            <div className="hero-eyebrow" style={{ display:'flex', alignItems:'center', gap:'10px', marginBottom:'18px' }}>
+              <span style={line}/>
+              <span style={{ fontFamily: en ? MONO : SANS, fontSize: en ? '10px' : '13px', letterSpacing: en ? '0.2em' : 0, textTransform: en ? 'uppercase' : 'none', color:C.gold, fontWeight: en ? 500 : 600 }}>
+                {t('hero_eyebrow')}
+              </span>
+              <span className="ln-r" style={line}/>
+            </div>
+            <h1 className="hero-h1">{h[0]}<span style={{ fontStyle:'italic', color:C.plum }}>{h[1]}</span>{h[2]}</h1>
+            <p style={{ fontFamily:SERIF, fontSize:'clamp(20px, 2.4vw, 26px)', fontWeight:350, color:C.gold, margin:'0 0 16px', lineHeight:1.3 }}>{t('hero_sub')}</p>
+            <div style={{ display:'inline-flex', alignItems:'center', gap:'8px', fontFamily:SANS, fontSize:'14px', fontWeight:600, color:C.ink2, lineHeight:1.45, textAlign:'left' }}>
+              <ShieldCheck size={17} color={C.gold} style={{ flexShrink:0 }}/>{t('hero_guarantee')}
+            </div>
+            <div className="hero-ctas">
+              <BtnPrimary onClick={() => openWA(WA_MSG, 'hero')} style={{ width:'auto', padding:'15px 24px' }}>
+                <WhatsAppGlyph size={17}/> {t('hero_cta_wa')}
+              </BtnPrimary>
+              <button type="button" onClick={() => goSection('calculator', navigate)}
+                style={{ display:'inline-flex', alignItems:'center', justifyContent:'center', gap:'8px', padding:'14px 22px', background:'transparent', color:C.plum, border:`1.5px solid ${C.plum}`, borderRadius:'4px', fontFamily:SANS, fontSize:'15px', fontWeight:600, cursor:'pointer' }}>
+                <Sparkles size={16}/> {t('hero_cta_calc')}
+              </button>
+            </div>
+            <div style={{ fontFamily: en ? MONO : SANS, fontSize:'12px', color:C.mute, letterSpacing: en ? '0.04em' : 0, lineHeight:1.8 }}>
+              {t('hero_stats')}<br/>{t('hero_pickup')}
+            </div>
+          </div>
+
+          <div className="hero-visual">
+            <div style={{ position:'relative', display:'flex', flexDirection:'column', alignItems:'center' }}>
+              <div aria-hidden="true" style={{ position:'absolute', left:'50%', top:'42%', width:'340px', height:'340px', transform:'translate(-50%,-50%)', borderRadius:'50%', background:'radial-gradient(circle, rgba(224,183,101,.22) 0%, rgba(224,183,101,0) 65%)', pointerEvents:'none' }}/>
+              <HeroMark/>
+              <div style={{ position:'relative', fontFamily:SERIF, fontSize:'clamp(30px, 3.2vw, 42px)', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1.05, marginTop:'14px' }}>
+                Carat <span style={{ fontStyle:'italic', color:C.plum }}>Money</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="tiles">
+          {tiles.map((x, i) => (
+            <div className="tile" key={i}>
+              <div className="tile-ic">{icons[i]}</div>
+              <div><div className="tile-t">{x.t}</div><div className="tile-d">{x.d}</div></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── 2a. Live rate card (formulas unchanged) ──────────────────────────────────
+function RateCard({ spot }) {
+  const { t } = useT();
+  const [showGstTip, setShowGstTip]       = useState(false);
+  const [selectedKarat, setSelectedKarat] = useState('22');
+  const r24     = spot.display ?? SPOT_FALLBACK;
+  const r22     = Math.round(r24 * 22 / 24);
+  const r18     = Math.round(r24 * 18 / 24);
+  const selRate = selectedKarat === '22' ? r22 : r18;
+  const preGST  = Math.round(r24 / 1.03);
+  const time    = fmtTime(spot.updatedAt);
+  return (
+    <Card dark style={{ display:'flex', flexDirection:'column', height:'100%' }}>
+      <h2 style={{ fontFamily:SERIF, fontSize:'26px', fontWeight:350, color:C.gold2, letterSpacing:'-0.02em', lineHeight:1.1, margin:'0 0 12px' }}>{t('rate_title')}</h2>
+      {spot.loading && !spot.display
+        ? <span style={{ fontFamily:SERIF, fontSize:'40px', color:'rgba(241,215,141,.4)', letterSpacing:'-0.02em' }}>{t('rate_loading')}</span>
+        : (
+          <>
+            <div style={{ display:'flex', alignItems:'baseline', gap:'6px', marginBottom:'12px', flexWrap:'wrap' }}>
+              <span style={{ fontFamily:SERIF, fontSize:'clamp(32px, 9vw, 56px)', fontWeight:350, lineHeight:1, letterSpacing:'-0.03em', color:C.gold3, whiteSpace:'nowrap' }}>₹{fmt(r24,0)}</span>
+              <span style={{ fontFamily:SANS, fontSize:'13px', color:'rgba(241,215,141,.6)', whiteSpace:'nowrap' }}>/g · 24K</span>
+            </div>
+            <div style={{ display:'flex', alignItems:'center', gap:'12px', padding:'12px 0', borderTop:'1px solid rgba(224,183,101,.15)', borderBottom:'1px solid rgba(224,183,101,.15)' }}>
+              <select aria-label="Karat" value={selectedKarat} onChange={e => setSelectedKarat(e.target.value)}
+                style={{ background:'rgba(224,183,101,.12)', border:'1px solid rgba(224,183,101,.3)', borderRadius:'4px', color:C.gold2, fontFamily:MONO, fontSize:'12px', fontWeight:500, padding:'6px 10px', cursor:'pointer', outline:'none', letterSpacing:'0.08em' }}>
+                <option value="22" style={{ background:C.plum }}>22K</option>
+                <option value="18" style={{ background:C.plum }}>18K</option>
+              </select>
+              <div style={{ display:'flex', alignItems:'baseline', gap:'4px' }}>
+                <span style={{ fontFamily:SERIF, fontSize:'clamp(18px, 5vw, 24px)', fontWeight:350, color:C.gold2, letterSpacing:'-0.02em', whiteSpace:'nowrap' }}>₹{fmt(selRate,0)}</span>
+                <span style={{ fontFamily:SANS, fontSize:'12px', color:'rgba(241,215,141,.5)', whiteSpace:'nowrap' }}>/g · {selectedKarat}K</span>
+              </div>
+            </div>
+            <div style={{ display:'flex', alignItems:'center', gap:'8px', marginTop:'10px' }}>
+              <div style={{ fontFamily:SERIF, fontSize:'12px', color:'rgba(241,215,141,.45)', fontStyle:'italic', flex:1 }}>
+                {spot.error && !spot.updatedAt ? t('rate_unavailable') : time ? fill(t('rate_updated'), { time }) : t('rate_fetching')}
+              </div>
+              <button type="button" onClick={() => setShowGstTip(v => !v)} aria-expanded={showGstTip} aria-label="GST details"
+                style={{ background:'none', border:'none', fontSize:'15px', color:C.gold, cursor:'pointer', padding:'2px 4px', lineHeight:1 }}>ⓘ</button>
+            </div>
+            {showGstTip && (
+              <div style={{ marginTop:'10px', padding:'10px 14px', background:'rgba(224,183,101,.1)', borderRadius:'4px', fontFamily:SANS, fontSize:'13px', color:C.gold3, lineHeight:1.55, animation:'fadeSlide .25s ease' }}>
+                {t('gst_excl')} <b>₹{fmt(preGST,0)}/g</b><br/>{t('gst_note')}
+              </div>
+            )}
+          </>
+        )}
+      <div style={{ marginTop:'auto', paddingTop:'18px' }}>
+        <div className="hide-lt-lg" style={{ marginBottom:'16px' }}>
+          <BtnPrimary onClick={() => openWA("Hi Carat Money — I'd like a quote for my gold at today's rate.", 'rate_card')} style={{ padding:'14px 20px' }}>
+            <WhatsAppGlyph size={16}/> {t('rate_cta')}
+          </BtnPrimary>
+        </div>
+        <div style={{ display:'flex', alignItems:'center', gap:'6px', fontFamily:SANS, fontSize:'12px', color:'rgba(241,215,141,.45)' }}>
+          <Zap size={12} strokeWidth={2.5}/> {t('rate_refresh')}
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+// ─── 2b. Value calculator — weight × the karat rate shown on the rate card ───
+function ValueCalculator({ spot, navigate }) {
+  const { t } = useT();
+  const [w, setW] = useState('');
+  const [k, setK] = useState(22);
+  const r24   = spot.display ?? SPOT_FALLBACK;
+  const rate  = k === 24 ? r24 : Math.round(r24 * k / 24);
+  const wN    = parseNum(w);
+  const value = wN !== null && wN > 0 ? wN * rate : null;
+  const onW = v => {
+    const s = v.replace(',', '.');
+    if (s === '' || /^\d{0,5}(\.\d{0,3})?$/.test(s)) setW(s);
+  };
+  const onCTA = () => {
+    if (value === null) return;
+    const lines = [
+      "Hi Carat Money — I'd like to sell my gold.", '',
+      `Weight: ${w} g · ${k}K`,
+      `Website estimate: ₹${fmt(value,0)} (at ₹${fmt(rate,0)}/g)`, '',
+      'Please share your best offer.',
+    ];
+    openWA(lines.join('\n'), 'calculator');
+  };
+  return (
+    <Card id="calculator" style={{ display:'flex', flexDirection:'column' }}>
+      <h2 style={{ fontFamily:SERIF, fontSize:'clamp(24px, 3vw, 30px)', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1.15, margin:'0 0 20px' }}>{t('calc_title')}</h2>
+      <label htmlFor="calc-w" style={LBL}>{t('calc_weight')}</label>
+      <div style={{ position:'relative', marginBottom:'18px' }}>
+        <input id="calc-w" type="text" inputMode="decimal" autoComplete="off" placeholder={t('calc_weight_ph')} value={w} onChange={e => onW(e.target.value)} style={{ ...INP, paddingRight:'40px' }}/>
+        <span style={{ position:'absolute', right:'14px', top:'50%', transform:'translateY(-50%)', fontFamily:MONO, fontSize:'13px', color:C.mute, pointerEvents:'none' }}>g</span>
+      </div>
+      <div style={LBL}>{t('calc_karat')}</div>
+      <div className="karats" role="group" aria-label={t('calc_karat')}>
+        {KARATS.map(kk => {
+          const on = kk === k;
+          return (
+            <button key={kk} type="button" aria-pressed={on} onClick={() => setK(kk)}
+              style={{ padding:'12px 0', borderRadius:'4px', border: on ? `1.5px solid ${C.plum}` : '1.5px solid rgba(26,20,38,.15)', background: on ? C.plum : C.white, color: on ? C.gold3 : C.ink, fontFamily:MONO, fontSize:'14px', fontWeight:500, cursor:'pointer' }}>
+              {kk}K
+            </button>
+          );
+        })}
+      </div>
+      <div style={{ marginTop:'20px', padding:'18px 20px', background:C.paper, border:'1px solid rgba(184,136,58,.3)', borderRadius:'6px', display:'flex', alignItems:'center', justifyContent:'space-between', gap:'12px' }}>
+        <div style={{ minWidth:0 }}>
+          <div style={{ fontFamily:SANS, fontSize:'13px', fontWeight:600, color:C.mute, marginBottom:'4px' }}>{t('calc_est')}</div>
+          <div data-testid="calc-value" style={{ fontFamily:SERIF, fontSize:'clamp(30px, 5vw, 42px)', fontWeight:350, color: value ? C.plum : 'rgba(43,20,80,.3)', letterSpacing:'-0.03em', lineHeight:1.05, whiteSpace:'nowrap' }}>
+            ₹{value ? fmt(value,0) : '0'}
+          </div>
+          <div style={{ fontFamily:SANS, fontSize:'12px', color:C.mute, marginTop:'6px' }}>{fill(t('calc_at'), { rate: fmt(rate,0), k })}</div>
+        </div>
+        <CaratMark size={34} color={C.gold} showDots={false} style={{ flexShrink:0, opacity:.8 }}/>
+      </div>
+      <div style={{ marginTop:'16px' }}>
+        <BtnWhatsApp onClick={onCTA} disabled={value === null}><WhatsAppGlyph size={18} color={C.white}/> {t('calc_cta')}</BtnWhatsApp>
+      </div>
+      <div style={{ fontFamily:SANS, fontSize:'12px', color:C.mute, marginTop:'12px', lineHeight:1.5, textAlign:'center' }}>{t('calc_disclaimer')}</div>
+      <div style={{ textAlign:'center', marginTop:'10px' }}>
+        <Link to="/margin" navigate={navigate} style={{ display:'inline', fontFamily:SANS, fontSize:'13px', color:C.gold, fontWeight:600 }}>{t('calc_margin')}</Link>
+      </div>
+    </Card>
+  );
+}
+
+// ─── 2c. Get in touch → Google Sheet lead + WhatsApp ─────────────────────────
+function GetInTouch() {
+  const { t, lang } = useT();
+  const [name, setName]     = useState('');
+  const [mobile, setMobile] = useState('');
+  const [pref, setPref]     = useState('');
+  const [hp, setHp]         = useState('');   // spam trap — real visitors never see it
+  const [tried, setTried]   = useState(false);
+  const valid  = name.trim().length >= 2 && /^[6-9]\d{9}$/.test(mobile);
+  const prefEn = pref === 'doorstep' ? 'Doorstep pickup' : pref === 'centre' ? 'Visit centre' : 'Not specified';
+  const LBLD   = { ...LBL, color:'rgba(241,215,141,.85)' };
+
+  const onBook = () => {
+    if (!valid) { setTried(true); return; }
+    if (hp) return;
+    postLead({ name:name.trim(), mobile, preference:prefEn, source:'Homepage · Book free appointment', lang, page:window.location.href });
+    track('generate_lead', { preference:prefEn });
+    const lines = ["Hi Carat Money — I'd like to book a free appointment.", '', `Name: ${name.trim()}`, `Phone: +91${mobile}`, `Preference: ${prefEn}`];
+    openWA(lines.join('\n'), 'book_appointment');
+  };
+
+  const chip = (key, label) => {
+    const on = pref === key;
+    return (
+      <button type="button" aria-pressed={on} onClick={() => setPref(on ? '' : key)}
+        style={{ padding:'13px 8px', borderRadius:'4px', cursor:'pointer', fontFamily:SANS, fontSize:'14px', fontWeight:600, border: on ? `1.5px solid ${C.gold2}` : '1.5px solid rgba(224,183,101,.3)', background: on ? C.gold2 : 'transparent', color: on ? C.plum : C.gold3 }}>
+        {label}
+      </button>
+    );
+  };
+
+  return (
+    <div id="book" className="git">
+      <div className="git-img hide-lt-lg">
+        <img src="/img-sell.jpg" alt="" width="1310" height="701" loading="lazy" decoding="async" style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover' }}/>
+        <div style={{ position:'absolute', inset:0, background:`linear-gradient(90deg, rgba(43,20,80,0) 50%, ${C.plum})` }}/>
+      </div>
+      <div className="git-body">
+        <h2 style={{ fontFamily:SERIF, fontSize:'clamp(24px, 3vw, 30px)', fontWeight:350, color:C.gold3, margin:'0 0 6px', letterSpacing:'-0.02em', lineHeight:1.15 }}>{t('git_title')}</h2>
+        <p style={{ fontFamily:SANS, fontSize:'14px', color:'rgba(241,215,141,.65)', margin:'0 0 20px', lineHeight:1.55 }}>{t('git_sub')}</p>
+        <div className="git-fields">
+          <div>
+            <label htmlFor="git-name" style={LBLD}>{t('git_name')}</label>
+            <input id="git-name" type="text" autoComplete="name" placeholder={t('git_name_ph')} value={name} onChange={e => setName(e.target.value)} style={INP}/>
+          </div>
+          <div>
+            <label htmlFor="git-mobile" style={LBLD}>{t('git_mobile')}</label>
+            <div style={{ display:'flex', alignItems:'center', background:C.white, borderRadius:'4px', border:'1.5px solid rgba(26,20,38,.18)', overflow:'hidden' }}>
+              <span style={{ padding:'13px 12px 13px 14px', fontSize:'16px', color:C.mute, fontWeight:500, borderRight:'1px solid rgba(26,20,38,.12)', flexShrink:0, fontFamily:SANS }}>+91</span>
+              <input id="git-mobile" type="tel" inputMode="numeric" autoComplete="tel-national" placeholder={t('git_mobile_ph')} value={mobile} onChange={e => setMobile(e.target.value.replace(/\D/g,'').slice(0,10))} style={{ ...INP, border:'none', borderRadius:0, flex:1, minWidth:0 }}/>
+            </div>
+          </div>
+          <div className="git-pref">
+            <div style={LBLD}>{t('git_pref')}</div>
+            <div className="seg">{chip('doorstep', t('git_doorstep'))}{chip('centre', t('git_centre'))}</div>
+          </div>
+        </div>
+        <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" value={hp} onChange={e => setHp(e.target.value)}
+          style={{ position:'absolute', left:'-9999px', width:'1px', height:'1px', opacity:0 }}/>
+        <div className="git-actions">
+          <BtnWhatsApp onClick={onBook}><WhatsAppGlyph size={18} color={C.white}/> {t('git_book')}</BtnWhatsApp>
+          <CallPicker variant="outline" full label={t('git_call')} source="get_in_touch" align="left"/>
+          <div style={{ fontFamily:SANS, fontSize:'12px', color:'rgba(241,215,141,.45)', lineHeight:1.5 }}>{t('git_consent')}</div>
+        </div>
+        {tried && !valid && <div role="alert" style={{ marginTop:'10px', fontFamily:SANS, fontSize:'13px', color:'#FCA5A5', fontWeight:500 }}>{t('git_err')}</div>}
+      </div>
+    </div>
+  );
+}
+
+// ─── 3. Why people trust Carat Money (table on desktop, accordion on phones) ─
+const TRUST_ICONS = [Microscope, Scale, TrendingUp, Percent, Wallet, Gem];
+
+function TrustIcon({ I, size = 44 }) {
+  return (
+    <div style={{ width:size, height:size, borderRadius:'50%', flexShrink:0, display:'flex', alignItems:'center', justifyContent:'center', color:C.gold2, background:`radial-gradient(circle at 30% 30%, ${C.purple}, ${C.plum})`, border:'1px solid rgba(224,183,101,.45)', boxShadow:'0 4px 14px rgba(0,0,0,.25)' }}>
+      <I size={Math.round(size * 0.45)} strokeWidth={1.75}/>
+    </div>
+  );
+}
+
+function TrustCompare() {
+  const { t } = useT();
+  const rows = t('why_rows');
+  const [open, setOpen] = useState(0);
+  const tag = (
+    <span style={{ display:'inline-block', marginTop:'8px', padding:'4px 10px', borderRadius:'999px', background:C.gold2, color:C.plum, fontFamily:SANS, fontSize:'11px', fontWeight:700, letterSpacing:'0.02em' }}>
+      {t('why_tag')}
+    </span>
+  );
+  const usBox   = { background:'rgba(224,183,101,.08)', border:'1px solid rgba(224,183,101,.25)', borderRadius:'8px', padding:'18px 20px', display:'flex', gap:'12px', alignItems:'flex-start', color:C.gold3, fontFamily:SANS, fontSize:'15px', lineHeight:1.55 };
+  const themBox = { background:'rgba(0,0,0,.18)', border:'1px solid rgba(255,255,255,.06)', borderRadius:'8px', padding:'18px 20px', display:'flex', gap:'12px', alignItems:'flex-start', color:'rgba(255,255,255,.62)', fontFamily:SANS, fontSize:'15px', lineHeight:1.55 };
+
+  return (
+    <section id="why" className="cm-sec">
+      <div className="cm-wrap">
+        <SectionHead title={t('why_title')} lead={t('why_intro')}/>
+        <div style={{ background:C.plum, borderRadius:'10px', border:'1px solid rgba(224,183,101,.2)', boxShadow:'0 12px 40px rgba(43,20,80,.22)', padding:'clamp(16px, 3vw, 36px)' }}>
+
+          {/* desktop table */}
+          <div className="hide-lt-lg">
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 200px 1fr', gap:'0 20px', alignItems:'end', paddingBottom:'20px', marginBottom:'8px', borderBottom:'1px solid rgba(224,183,101,.15)' }}>
+              <div style={{ textAlign:'center' }}>
+                <CaratMark size={44} color={C.gold2}/>
+                <div style={{ fontFamily:SERIF, fontSize:'22px', fontWeight:350, color:C.gold3, marginTop:'6px' }}>Carat <span style={{ fontStyle:'italic' }}>Money</span></div>
+                {tag}
+              </div>
+              <div/>
+              <div style={{ textAlign:'center' }}>
+                <div style={{ display:'inline-flex', width:'56px', height:'56px', borderRadius:'50%', alignItems:'center', justifyContent:'center', background:'rgba(255,255,255,.06)', color:'rgba(255,255,255,.55)' }}><Store size={26} strokeWidth={1.5}/></div>
+                <div style={{ fontFamily:SANS, fontSize:'16px', fontWeight:600, color:'rgba(255,255,255,.75)', marginTop:'10px' }}>{t('why_them')}</div>
+              </div>
+            </div>
+            {rows.map((r, i) => {
+              const I = TRUST_ICONS[i];
+              return (
+                <div key={i} style={{ display:'grid', gridTemplateColumns:'1fr 200px 1fr', gap:'0 20px', alignItems:'stretch', padding:'8px 0' }}>
+                  <div style={usBox}><Check size={18} color={C.green} style={{ flexShrink:0, marginTop:'3px' }}/><span>{r.us}</span></div>
+                  <div style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:'8px', textAlign:'center' }}>
+                    <TrustIcon I={I}/>
+                    <div style={{ fontFamily:SANS, fontSize:'14px', fontWeight:600, color:C.white }}>{r.k}</div>
+                  </div>
+                  <div style={themBox}><X size={18} color="#F87171" style={{ flexShrink:0, marginTop:'3px' }}/><span>{r.them}</span></div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* phone / tablet accordion */}
+          <div className="hide-lg">
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', textAlign:'center', paddingBottom:'16px', marginBottom:'14px', borderBottom:'1px solid rgba(224,183,101,.15)' }}>
+              <div style={{ padding:'0 8px' }}>
+                <CaratMark size={30} color={C.gold2}/>
+                <div style={{ fontFamily:SERIF, fontSize:'17px', fontWeight:350, color:C.gold3, marginTop:'4px' }}>Carat <span style={{ fontStyle:'italic' }}>Money</span></div>
+                {tag}
+              </div>
+              <div style={{ padding:'0 8px', borderLeft:'1px solid rgba(224,183,101,.15)' }}>
+                <div style={{ display:'inline-flex', width:'40px', height:'40px', borderRadius:'50%', alignItems:'center', justifyContent:'center', background:'rgba(255,255,255,.06)', color:'rgba(255,255,255,.55)' }}><Store size={20} strokeWidth={1.5}/></div>
+                <div style={{ fontFamily:SANS, fontSize:'14px', fontWeight:600, color:'rgba(255,255,255,.75)', marginTop:'8px', lineHeight:1.35 }}>{t('why_them')}</div>
+              </div>
+            </div>
+            <div style={{ border:'1px solid rgba(224,183,101,.18)', borderRadius:'8px', overflow:'hidden' }}>
+              {rows.map((r, i) => {
+                const I = TRUST_ICONS[i];
+                const isOpen = open === i;
+                return (
+                  <div key={i} style={{ borderTop: i ? '1px solid rgba(224,183,101,.14)' : 'none' }}>
+                    <button type="button" onClick={() => setOpen(isOpen ? -1 : i)} aria-expanded={isOpen}
+                      style={{ width:'100%', display:'flex', alignItems:'center', gap:'12px', padding:'14px', background:'none', border:'none', cursor:'pointer', color:C.white, fontFamily:SANS, fontSize:'15px', fontWeight:600, textAlign:'left' }}>
+                      <TrustIcon I={I} size={38}/>
+                      <span style={{ flex:1 }}>{r.k}</span>
+                      <ChevronDown size={18} color={C.gold2} style={{ flexShrink:0, transform: isOpen ? 'rotate(180deg)' : 'none', transition:'transform .2s' }}/>
+                    </button>
+                    {isOpen && (
+                      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', borderTop:'1px solid rgba(224,183,101,.14)', animation:'fadeSlide .25s ease' }}>
+                        <div style={{ padding:'14px', fontFamily:SANS, fontSize:'13.5px', lineHeight:1.55, color:C.gold3, background:'rgba(224,183,101,.06)' }}>
+                          <Check size={15} color={C.green} style={{ display:'block', marginBottom:'6px' }}/>{r.us}
+                        </div>
+                        <div style={{ padding:'14px', fontFamily:SANS, fontSize:'13.5px', lineHeight:1.55, color:'rgba(255,255,255,.6)', borderLeft:'1px solid rgba(224,183,101,.14)' }}>
+                          <X size={15} color="#F87171" style={{ display:'block', marginBottom:'6px' }}/>{r.them}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── 4. Carat Money process in 4 easy steps ──────────────────────────────────
+function Process() {
+  const { t } = useT();
+  const steps = t('proc_steps');
+  return (
+    <section id="process" className="cm-sec" style={{ background:C.white, borderTop:'1px solid rgba(26,20,38,.06)', borderBottom:'1px solid rgba(26,20,38,.06)' }}>
+      <div className="cm-wrap">
+        <SectionHead title={t('proc_title')} lead={t('proc_sub')}/>
+        <div className="proc">
+          {steps.map((s, i) => (
+            <div className="proc-step" key={i}>
+              <div className="proc-num">{i + 1}</div>
+              <div>
+                <h3 style={{ fontFamily:SANS, fontSize:'16px', fontWeight:600, color:C.ink, lineHeight:1.4, margin:'2px 0 6px' }}>{s.t}</h3>
+                <p style={{ fontFamily:SANS, fontSize:'14px', color:C.mute, lineHeight:1.55, margin:0 }}>{s.d}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div style={{ textAlign:'center', marginTop:'36px' }}>
+          <BtnPrimary onClick={() => openWA(WA_MSG, 'process')} style={{ width:'auto', display:'inline-flex', padding:'14px 24px' }}>
+            <WhatsAppGlyph size={16}/> {t('proc_cta')}
+          </BtnPrimary>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── 5. Why thousands trust Carat Money (reviews carousel) ───────────────────
+const initials = n => n.replace(/[^A-Za-z ]/g, '').split(' ').filter(Boolean).map(s => s[0]).join('').slice(0, 2).toUpperCase();
+
+function Reviews() {
+  const { t } = useT();
+  const quotes   = t('review_quotes');
+  const trackRef = useRef(null);
+  const [idx, setIdx]     = useState(0);
+  const [pages, setPages] = useState(REVIEWERS.length);
+
+  const measure = useCallback(() => {
+    const el = trackRef.current;
+    if (!el || !el.children.length) return;
+    const step    = el.children[0].offsetWidth + 16;
+    if (!step || step <= 16) return;
+    const visible = Math.max(1, Math.round(el.clientWidth / step));
+    setPages(Math.max(1, REVIEWERS.length - visible + 1));
+    setIdx(Math.min(Math.round(el.scrollLeft / step), REVIEWERS.length - 1));
+  }, []);
+  useEffect(() => {
+    measure();
+    const el = trackRef.current;
+    el?.addEventListener('scroll', measure, { passive:true });
+    window.addEventListener('resize', measure);
+    return () => { el?.removeEventListener('scroll', measure); window.removeEventListener('resize', measure); };
+  }, [measure]);
+  const scrollToPage = i => {
+    const el = trackRef.current;
+    if (!el || !el.children.length) return;
+    el.scrollTo({ left: i * (el.children[0].offsetWidth + 16), behavior:'smooth' });
+  };
+  const arrow = { width:'40px', height:'40px', borderRadius:'50%', border:`1.5px solid ${C.plum}`, background:'transparent', color:C.plum, display:'inline-flex', alignItems:'center', justifyContent:'center', cursor:'pointer' };
+  const page  = Math.min(idx, pages - 1);
+
+  return (
+    <section id="reviews" className="cm-sec">
+      <div className="cm-wrap">
+        <SectionHead title={t('rev_title')} lead={t('rev_sub')}>
+          {REVIEWS_ARE_SAMPLES && (
+            <span style={{ display:'inline-block', marginTop:'12px', padding:'4px 12px', borderRadius:'999px', border:'1px dashed rgba(184,136,58,.6)', color:C.gold, fontFamily:SANS, fontSize:'12px', fontWeight:600 }}>
+              {t('rev_sample')}
+            </span>
+          )}
+        </SectionHead>
+        <div ref={trackRef} className="rv-track">
+          {REVIEWERS.map((r, i) => (
+            <figure key={r.n} className="rv-card" style={{ margin:0, background:C.white, border:'1px solid rgba(26,20,38,.1)', borderRadius:'8px', overflow:'hidden', boxShadow:'0 2px 12px rgba(22,18,31,.06)', display:'flex', flexDirection:'column' }}>
+              <blockquote style={{ margin:0, padding:'26px 22px 20px', position:'relative', flex:1 }}>
+                <Quote size={44} color={C.gold2} aria-hidden="true" style={{ position:'absolute', top:'14px', left:'14px', opacity:.2 }}/>
+                <p style={{ position:'relative', fontFamily:SANS, fontSize:'15px', lineHeight:1.65, color:C.ink2, margin:0 }}>“{quotes[i]}”</p>
+              </blockquote>
+              <figcaption style={{ background:C.paper, padding:'14px 22px', display:'flex', alignItems:'center', gap:'12px', borderTop:'1px solid rgba(26,20,38,.06)' }}>
+                <div aria-hidden="true" style={{ width:'42px', height:'42px', borderRadius:'50%', background:C.plum, color:C.gold3, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:SERIF, fontSize:'16px', flexShrink:0, border:'1px solid rgba(224,183,101,.4)' }}>{initials(r.n)}</div>
+                <div style={{ minWidth:0 }}>
+                  <div style={{ fontFamily:SANS, fontWeight:600, fontSize:'15px', color:C.ink }}>{r.n}</div>
+                  <div style={{ fontFamily:SANS, fontSize:'13px', color:C.mute }}>{r.l}</div>
+                </div>
+                <div role="img" aria-label={t('stars')} style={{ marginLeft:'auto', display:'flex', gap:'2px', flexShrink:0 }}>
+                  {[0,1,2,3,4].map(s => <Star key={s} size={14} fill={C.gold2} color={C.gold2}/>)}
+                </div>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+        <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:'18px', marginTop:'14px' }}>
+          <button type="button" aria-label={t('prev')} onClick={() => scrollToPage(Math.max(0, page - 1))} disabled={page === 0} style={{ ...arrow, opacity: page === 0 ? .35 : 1 }}><ChevronLeft size={18}/></button>
+          <div style={{ display:'flex', gap:'8px' }}>
+            {Array.from({ length:pages }).map((_, i) => (
+              <button key={i} type="button" aria-label={`${i + 1} / ${pages}`} aria-current={i === page} onClick={() => scrollToPage(i)}
+                style={{ width: i === page ? '22px' : '8px', height:'8px', borderRadius:'999px', border:'none', padding:0, cursor:'pointer', background: i === page ? C.plum : 'rgba(43,20,80,.2)', transition:'width .2s, background .2s' }}/>
+            ))}
+          </div>
+          <button type="button" aria-label={t('next')} onClick={() => scrollToPage(Math.min(pages - 1, page + 1))} disabled={page >= pages - 1} style={{ ...arrow, opacity: page >= pages - 1 ? .35 : 1 }}><ChevronRight size={18}/></button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── 6. FAQs + "Still have questions?" panel ─────────────────────────────────
+function FAQSection() {
+  const { t } = useT();
+  const faqs = t('faqs');
+  const [open, setOpen] = useState(0);
+  const panelBtn = { display:'flex', alignItems:'center', justifyContent:'center', gap:'8px', width:'100%', padding:'14px 20px', borderRadius:'4px', fontFamily:SANS, fontSize:'15px', fontWeight:600, textDecoration:'none', cursor:'pointer' };
+  return (
+    <section id="faqs" className="cm-sec" style={{ background:C.white, borderTop:'1px solid rgba(26,20,38,.06)', borderBottom:'1px solid rgba(26,20,38,.06)' }}>
+      <div className="cm-wrap">
+        <div className="faq-grid">
+          <aside className="faq-panel" style={{ background:C.plum, borderRadius:'10px', padding:'28px 24px', border:'1px solid rgba(224,183,101,.2)', boxShadow:'0 12px 40px rgba(43,20,80,.2)' }}>
+            <div aria-hidden="true" style={{ width:'48px', height:'48px', borderRadius:'50%', border:'1.5px solid rgba(224,183,101,.6)', color:C.gold2, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:SERIF, fontSize:'26px', marginBottom:'16px' }}>?</div>
+            <h3 style={{ fontFamily:SERIF, fontSize:'26px', fontWeight:350, color:C.gold3, margin:'0 0 8px', letterSpacing:'-0.02em', lineHeight:1.15 }}>{t('faq_panel_title')}</h3>
+            <p style={{ fontFamily:SANS, fontSize:'14px', color:'rgba(241,215,141,.65)', lineHeight:1.6, margin:'0 0 20px' }}>{t('faq_panel_sub')}</p>
+            <div style={{ display:'grid', gap:'10px' }}>
+              <a href={WA_LINK} target="_blank" rel="noreferrer" onClick={() => track('whatsapp_click', { source:'faq_panel' })} style={{ ...panelBtn, background:C.green, color:C.white, borderRadius:'999px', boxShadow:'0 6px 20px rgba(37,211,102,.3)' }}>
+                <WhatsAppGlyph size={18} color={C.white}/> {t('whatsapp')}
+              </a>
+              <CallPicker variant="outline" full source="faq_panel" align="left"/>
+              <a href={`mailto:${EMAIL}`} onClick={() => track('email_click', { source:'faq_panel' })} style={{ ...panelBtn, background:'transparent', color:C.gold2, border:'1px solid rgba(224,183,101,.4)' }}>
+                <Mail size={16}/> {t('email')}
+              </a>
+            </div>
+          </aside>
+          <div>
+            <h2 className="cm-h2" style={{ color:C.ink }}>{t('faq_title')}</h2>
+            <p style={{ fontFamily:SANS, fontSize:'15px', color:C.mute, lineHeight:1.6, margin:'10px 0 22px' }}>{t('faq_sub')}</p>
+            {faqs.map((f, i) => {
+              const isOpen = open === i;
+              return (
+                <div key={i} style={{ borderTop:'1px solid rgba(26,20,38,.12)', borderBottom: i === faqs.length - 1 ? '1px solid rgba(26,20,38,.12)' : 'none' }}>
+                  <button type="button" onClick={() => setOpen(isOpen ? null : i)} aria-expanded={isOpen}
+                    style={{ width:'100%', background:'none', border:'none', padding:'16px 0', display:'flex', alignItems:'center', justifyContent:'space-between', gap:'12px', cursor:'pointer', textAlign:'left', fontFamily:SANS, fontSize:'15px', fontWeight:600, color: isOpen ? C.plum : C.ink }}>
+                    {f.q}
+                    <ChevronDown size={16} color={C.gold} style={{ flexShrink:0, transform: isOpen ? 'rotate(180deg)' : 'none', transition:'transform .2s' }}/>
+                  </button>
+                  {isOpen && <div style={{ fontFamily:SANS, fontSize:'14px', color:C.mute, lineHeight:1.65, paddingBottom:'16px', animation:'fadeSlide .25s ease' }}>{f.a}</div>}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── 7. Visit us (map + details) ─────────────────────────────────────────────
+function VisitUs() {
+  const { t, lang } = useT();
+  const row = { display:'flex', alignItems:'flex-start', gap:'10px', fontFamily:SANS, fontSize:'15px', color:C.ink2, lineHeight:1.5 };
+  return (
+    <section id="visit" className="cm-sec">
+      <div className="cm-wrap">
+        <div className="visit">
+          <div className="visit-map">
+            <iframe title="Carat Money on Google Maps" src={MAP_EMBED} loading="lazy" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen/>
+          </div>
+          <div style={{ padding:'24px 22px', display:'flex', flexDirection:'column', gap:'14px' }}>
+            <div style={{ fontFamily: lang === 'en' ? MONO : SANS, fontSize: lang === 'en' ? '10px' : '13px', letterSpacing: lang === 'en' ? '0.18em' : 0, textTransform: lang === 'en' ? 'uppercase' : 'none', color:C.gold, fontWeight:500 }}>{t('visit_label')}</div>
+            <h2 style={{ fontFamily:SERIF, fontSize:'clamp(26px, 3vw, 32px)', fontWeight:350, color:C.ink, margin:0, letterSpacing:'-0.02em', lineHeight:1.15 }}>{t('visit_title')}</h2>
+            <div style={row}><MapPin size={18} color={C.gold} style={{ flexShrink:0, marginTop:'2px' }}/><address style={{ fontStyle:'normal' }}>{ADDRESS}</address></div>
+            <div style={row}><Clock size={18} color={C.gold} style={{ flexShrink:0, marginTop:'2px' }}/>{t('visit_hours')}</div>
+            <div style={row}><Mail size={18} color={C.gold} style={{ flexShrink:0, marginTop:'2px' }}/><a href={`mailto:${EMAIL}`} style={{ color:C.ink2, textDecoration:'none', wordBreak:'break-all' }}>{EMAIL}</a></div>
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'10px', marginTop:'auto', paddingTop:'8px' }}>
+              <a href={DIRECTIONS_URL} target="_blank" rel="noreferrer" onClick={() => track('directions_click')}
+                style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:'7px', padding:'14px 12px', borderRadius:'4px', background:C.plum, color:C.gold3, fontFamily:SANS, fontSize:'15px', fontWeight:600, textDecoration:'none', whiteSpace:'nowrap' }}>
+                <Navigation size={16}/> {t('visit_dir')}
+              </a>
+              <CallPicker variant="gold" full source="visit"/>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── 8. Blog cards (homepage teaser + /blog grid) ────────────────────────────
+function BlogCard({ a, navigate, readLabel = 'Read', clamp = 2 }) {
+  return (
+    <Link to={`/blog/${a.slug}`} navigate={navigate} className="blog-card"
+      style={{ background:C.white, borderRadius:'8px', border:'1px solid rgba(26,20,38,.1)', boxShadow:'0 2px 12px rgba(22,18,31,.06)', overflow:'hidden', display:'flex', flexDirection:'column', height:'100%' }}>
+      {a.cover
+        ? <img src={a.cover} alt="" loading="lazy" style={{ width:'100%', aspectRatio:'16 / 9', objectFit:'cover', display:'block' }}/>
+        : <div style={{ height:'3px', background:`linear-gradient(90deg, ${C.gold}, ${C.gold3})` }}/>}
+      <div style={{ padding:'22px', display:'flex', flexDirection:'column', flex:1 }}>
+        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', gap:'8px', marginBottom:'12px' }}>
+          <div style={{ fontFamily:MONO, fontSize:'9px', fontWeight:500, letterSpacing:'0.16em', color:C.gold, textTransform:'uppercase' }}>{a.category}</div>
+          <div style={{ fontFamily:MONO, fontSize:'9px', color:C.mute, letterSpacing:'0.08em', whiteSpace:'nowrap' }}>{a.readTime}</div>
+        </div>
+        <h3 style={{ fontFamily:SERIF, fontSize:'21px', fontWeight:350, lineHeight:1.25, letterSpacing:'-0.015em', margin:'0 0 10px', color:C.ink }}>{a.title}</h3>
+        <p style={{ fontFamily:SANS, fontSize:'14px', color:C.mute, lineHeight:1.6, margin:'0 0 16px', display:'-webkit-box', WebkitLineClamp:clamp, WebkitBoxOrient:'vertical', overflow:'hidden' }}>{a.excerpt}</p>
+        <div style={{ marginTop:'auto', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+          <div style={{ fontFamily:MONO, fontSize:'10px', color:C.mute, letterSpacing:'0.06em' }}>{a.date}</div>
+          <div style={{ fontFamily:MONO, fontSize:'11px', color:C.gold, fontWeight:500, letterSpacing:'0.08em', textTransform:'uppercase' }}>{readLabel} →</div>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+function BlogTeaser({ navigate }) {
+  const { t, lang } = useT();
+  return (
+    <section id="blog" className="cm-sec" style={{ background:C.white, borderTop:'1px solid rgba(26,20,38,.06)', borderBottom:'1px solid rgba(26,20,38,.06)' }}>
+      <div className="cm-wrap">
+        <div style={{ display:'flex', alignItems:'flex-end', justifyContent:'space-between', gap:'12px 24px', flexWrap:'wrap', marginBottom:'28px' }}>
+          <div>
+            <h2 className="cm-h2" style={{ color:C.ink }}>{t('blog_title')}</h2>
+            <p style={{ fontFamily:SANS, fontSize:'15px', color:C.mute, lineHeight:1.6, margin:'10px 0 0' }}>
+              {t('blog_sub')}{lang !== 'en' && t('blog_note') ? ` ${t('blog_note')}` : ''}
+            </p>
+          </div>
+          <Link to="/blog" navigate={navigate} style={{ display:'inline-flex', alignItems:'center', gap:'6px', fontFamily:SANS, fontSize:'14px', fontWeight:600, color:C.gold, whiteSpace:'nowrap' }}>
+            {t('blog_all')} →
+          </Link>
+        </div>
+        <div className="blog-grid teaser">
+          {ARTICLES_SORTED.slice(0, 3).map(a => <BlogCard key={a.slug} a={a} navigate={navigate} readLabel={t('blog_read')}/>)}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── 9. App — coming soon ────────────────────────────────────────────────────
+function PhoneMock({ spot }) {
+  const r24 = spot.display ?? SPOT_FALLBACK;
+  const r22 = Math.round(r24 * 22 / 24);
+  const wt  = 12.48;
+  const val = Math.round(wt * r22);
+  const tileS = { background:C.white, borderRadius:'12px', padding:'10px', border:'1px solid rgba(26,20,38,.08)', display:'flex', flexDirection:'column', gap:'6px', fontFamily:SANS, fontSize:'10.5px', fontWeight:600, color:C.ink };
+  return (
+    <div className="app-phone" aria-hidden="true" style={{ position:'relative', zIndex:1, aspectRatio:'9 / 18.5', background:C.ink, borderRadius:'38px', padding:'9px', boxShadow:'0 30px 60px rgba(22,18,31,.35), inset 0 0 0 1px rgba(255,255,255,.08)' }}>
+      <div style={{ position:'relative', height:'100%', borderRadius:'30px', overflow:'hidden', background:C.paper, display:'flex', flexDirection:'column' }}>
+        <div style={{ position:'absolute', top:'8px', left:'50%', transform:'translateX(-50%)', width:'80px', height:'22px', borderRadius:'12px', background:C.ink, zIndex:2 }}/>
+        <div style={{ display:'flex', justifyContent:'space-between', padding:'12px 22px 0', fontFamily:SANS, fontSize:'10px', fontWeight:600, color:C.ink }}>
+          <span>9:41</span><span style={{ width:'18px', height:'9px', border:`1.5px solid ${C.ink}`, borderRadius:'3px', display:'inline-block', marginTop:'2px' }}/>
+        </div>
+        <div style={{ display:'flex', alignItems:'center', gap:'6px', padding:'16px 14px 10px' }}>
+          <CaratMark size={18} color={C.gold}/>
+          <span style={{ fontFamily:SERIF, fontSize:'15px', color:C.ink }}>Carat <span style={{ fontStyle:'italic', color:C.plum }}>Money</span></span>
+          <span style={{ marginLeft:'auto', width:'24px', height:'24px', borderRadius:'50%', background:C.paper2, border:'1px solid rgba(184,136,58,.3)' }}/>
+        </div>
+        <div style={{ margin:'0 12px', padding:'14px', borderRadius:'14px', background:C.plum }}>
+          <div style={{ display:'flex', alignItems:'center', gap:'5px', fontFamily:MONO, fontSize:'8.5px', letterSpacing:'0.12em', color:C.gold2 }}>
+            <span style={{ width:'5px', height:'5px', borderRadius:'50%', background:C.green }}/> LIVE 24K
+          </div>
+          <div style={{ fontFamily:SERIF, fontSize:'26px', color:C.gold3, lineHeight:1.1, marginTop:'4px' }}>₹{fmt(r24,0)}<span style={{ fontSize:'11px', color:'rgba(241,215,141,.6)' }}>/g</span></div>
+          <div style={{ fontFamily:SANS, fontSize:'10px', color:'rgba(241,215,141,.6)', marginTop:'2px' }}>22K ₹{fmt(r22,0)}/g</div>
+        </div>
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'8px', margin:'10px 12px 0' }}>
+          <div style={tileS}><Sparkles size={16} color={C.gold}/>Value my gold</div>
+          <div style={tileS}><HomeIcon size={16} color={C.gold}/>Book pickup</div>
+        </div>
+        <div style={{ margin:'10px 12px 0', padding:'12px', borderRadius:'14px', background:C.white, border:'1px solid rgba(26,20,38,.08)' }}>
+          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', fontFamily:SANS, fontSize:'10.5px', fontWeight:600, color:C.ink }}>
+            Valuation certificate
+            <span style={{ display:'inline-flex', alignItems:'center', gap:'3px', fontSize:'9px', color:'#15803D', background:'#DCFCE7', padding:'2px 6px', borderRadius:'999px' }}><Check size={9}/> Verified</span>
+          </div>
+          <div style={{ fontFamily:MONO, fontSize:'9px', color:C.mute, marginTop:'6px' }}>22K · 12.480 g · 91.67%</div>
+          <div style={{ fontFamily:SERIF, fontSize:'18px', color:C.plum, marginTop:'4px' }}>₹{fmt(val,0)}</div>
+        </div>
+        <div style={{ margin:'10px 12px 0', padding:'10px 12px', borderRadius:'14px', background:C.white, border:'1px solid rgba(26,20,38,.08)', display:'flex', alignItems:'center', gap:'8px' }}>
+          <span style={{ width:'28px', height:'28px', borderRadius:'50%', background:C.paper2, display:'inline-flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}><Clock size={14} color={C.gold}/></span>
+          <span style={{ fontFamily:SANS, fontSize:'10.5px', lineHeight:1.35, color:C.ink }}><b style={{ fontWeight:600 }}>Pickup booked</b><br/><span style={{ color:C.mute }}>Today · 4:30 pm · Kharghar</span></span>
+        </div>
+        <div style={{ margin:'auto 12px 16px', padding:'11px', borderRadius:'10px', background:C.green, color:C.ink, textAlign:'center', fontFamily:SANS, fontSize:'11px', fontWeight:600 }}>
+          Book doorstep pickup
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AppSoon({ spot }) {
+  const { t } = useT();
+  const notify = platform => {
+    track('app_notify', { platform });
+    openWA(`Hi Carat Money — please notify me when the Carat Money app launches on ${platform}.`, `app_${platform.toLowerCase()}`);
+  };
+  const chip = { display:'inline-flex', alignItems:'center', gap:'8px', padding:'10px 14px', borderRadius:'8px', background:C.plum, color:C.gold3, fontFamily:SANS, fontSize:'13px', fontWeight:600, boxShadow:'0 10px 24px rgba(43,20,80,.3)', border:'1px solid rgba(224,183,101,.25)', whiteSpace:'nowrap' };
+  return (
+    <section id="app" className="cm-sec" style={{ overflow:'hidden' }}>
+      <div className="cm-wrap">
+        <div className="app-grid">
+          <div className="app-text">
+            <h2 className="cm-h2" style={{ color:C.ink }}>{t('app_h')}</h2>
+            <p style={{ fontFamily:SANS, fontSize:'16px', color:C.mute, lineHeight:1.65, margin:'14px 0 0', maxWidth:'520px', marginLeft:'auto', marginRight:'auto' }} className="app-body">{t('app_body')}</p>
+            <div className="app-btns">
+              {['iOS', 'Android'].map(p => (
+                <button key={p} type="button" onClick={() => notify(p)}
+                  style={{ display:'flex', alignItems:'center', gap:'10px', padding:'12px 16px', background:C.plum, color:C.gold3, border:'1px solid rgba(224,183,101,.3)', borderRadius:'8px', cursor:'pointer', textAlign:'left' }}>
+                  <Smartphone size={22} color={C.gold2} style={{ flexShrink:0 }}/>
+                  <span>
+                    <span style={{ display:'block', fontFamily:SANS, fontSize:'11px', color:'rgba(241,215,141,.6)' }}>{t('app_soon')}</span>
+                    <span style={{ display:'block', fontFamily:SANS, fontSize:'16px', fontWeight:600 }}>{p}</span>
+                  </span>
+                </button>
+              ))}
+            </div>
+            <div style={{ fontFamily:SANS, fontSize:'12px', color:C.mute, marginTop:'12px' }}>{t('app_hint')}</div>
+          </div>
+          <div style={{ position:'relative', display:'flex', justifyContent:'center', padding:'24px 0' }}>
+            <div aria-hidden="true" style={{ position:'absolute', left:'50%', top:'50%', width:'min(460px, 92vw)', aspectRatio:'1', transform:'translate(-50%,-50%)', borderRadius:'50%', background:'radial-gradient(circle, rgba(224,183,101,.32) 0%, rgba(224,183,101,0) 62%)' }}/>
+            <div aria-hidden="true" style={{ position:'absolute', left:'50%', top:'50%', width:'min(420px, 84vw)', aspectRatio:'1', transform:'translate(-50%,-50%)', borderRadius:'50%', border:'2px dotted rgba(184,136,58,.35)' }}/>
+            <div aria-hidden="true" style={{ position:'absolute', left:'calc(50% - min(210px, 42vw))', top:'38%', width:'14px', height:'14px', borderRadius:'50%', background:C.gold2 }}/>
+            <div aria-hidden="true" style={{ position:'absolute', right:'calc(50% - min(200px, 40vw))', top:'22%', width:'10px', height:'10px', borderRadius:'50%', background:C.plum }}/>
+            <PhoneMock spot={spot}/>
+            <div className="hide-lt-lg" style={{ position:'absolute', left:'2%', top:'30%', zIndex:2, animation:'floatY 4s ease-in-out infinite' }}>
+              <span style={chip}><Check size={15} color={C.green}/> {t('app_chip1')}</span>
+            </div>
+            <div className="hide-lt-lg" style={{ position:'absolute', right:'2%', bottom:'26%', zIndex:2, animation:'floatY 4s ease-in-out 1.5s infinite' }}>
+              <span style={chip}><Check size={15} color={C.green}/> {t('app_chip2')}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── 10. Partner strip ───────────────────────────────────────────────────────
+function PartnerStrip() {
+  const { t } = useT();
+  return (
+    <div className="cm-wrap" style={{ paddingBottom:'48px' }}>
+      <div style={{ border:'1px solid rgba(184,136,58,.45)', borderRadius:'8px', padding:'18px 22px', display:'flex', alignItems:'center', justifyContent:'space-between', gap:'10px 24px', flexWrap:'wrap', background:'rgba(224,183,101,.06)' }}>
+        <div style={{ fontFamily:SANS, fontSize:'14px', color:C.ink2, lineHeight:1.55 }}>{t('partner_text')}</div>
+        <a href={PARTNER_URL} target="_blank" rel="noreferrer" onClick={() => track('partner_click')}
+          style={{ fontFamily:SANS, fontSize:'14px', fontWeight:600, color:C.gold, textDecoration:'none', whiteSpace:'nowrap' }}>
+          {t('partner_cta')}
+        </a>
+      </div>
+    </div>
+  );
+}
+
+// ─── 11. Footer ──────────────────────────────────────────────────────────────
+function SiteFooter({ navigate }) {
+  const { t, lang } = useT();
+  const en = lang === 'en';
+  const onPage = [['rate', t('f_live')], ['calculator', t('f_calc')], ['why', t('f_why')], ['reviews', t('f_reviews')], ['faqs', t('f_faqs')], ['visit', t('f_visit')]];
+  const explore = [['/sell', t('f_sell')], ['/buy', t('f_buy')], ['/margin', t('f_margin')], ['/blog', t('f_blog')]];
+  const H = ({ children }) => (
+    <div style={{ fontFamily: en ? MONO : SANS, fontSize: en ? '11px' : '13px', letterSpacing: en ? '0.16em' : 0, textTransform: en ? 'uppercase' : 'none', color:C.gold2, marginBottom:'12px', fontWeight:500 }}>{children}</div>
+  );
+  const line = { display:'flex', alignItems:'flex-start', gap:'8px', fontFamily:SANS, fontSize:'14px', color:'rgba(241,215,141,.75)', lineHeight:1.5, marginBottom:'10px', textDecoration:'none' };
+  return (
+    <footer style={{ background:C.plum, borderTop:'1px solid rgba(224,183,101,.2)' }}>
+      <div className="cm-wrap" style={{ paddingTop:'48px' }}>
+        <div className="ft-grid">
+          <div className="ft-span">
+            <div style={{ display:'flex', alignItems:'center', gap:'10px' }}>
+              <CaratMark size={40} color={C.gold2}/>
+              <span style={{ fontFamily:SERIF, fontSize:'24px', fontWeight:350, color:C.gold3 }}>Carat <span style={{ fontStyle:'italic' }}>Money</span></span>
+            </div>
+            <div style={{ fontFamily:SANS, fontSize:'14px', color:'rgba(241,215,141,.6)', marginTop:'12px', lineHeight:1.5 }}>{t('hero_eyebrow')}</div>
+            {SHOW_CERTIFICATIONS && (
+              <div style={{ display:'flex', alignItems:'center', gap:'16px', marginTop:'18px', flexWrap:'wrap' }}>
+                <img src="/badge-ibja.png" alt="IBJA" height="36" loading="lazy" style={{ height:'36px', width:'auto' }}/>
+                <img src="/badge-iso-27001.png" alt="ISO 27001 certified" height="60" loading="lazy" style={{ height:'60px', width:'auto' }}/>
+              </div>
+            )}
+            <div style={{ display:'flex', gap:'12px', marginTop:'20px' }}>
+              {SOCIALS.map(({ href, label, path }) => (
+                <a key={label} href={href} target="_blank" rel="noreferrer" aria-label={label}
+                  style={{ width:'40px', height:'40px', borderRadius:'50%', background:'rgba(224,183,101,.1)', border:'1px solid rgba(224,183,101,.25)', display:'inline-flex', alignItems:'center', justifyContent:'center' }}>
+                  <svg viewBox="0 0 24 24" width="17" height="17" fill={C.gold2} style={{ display:'block' }} aria-hidden="true"><path d={path}/></svg>
+                </a>
+              ))}
+            </div>
+          </div>
+          <nav aria-label={t('f_onpage')}>
+            <H>{t('f_onpage')}</H>
+            {onPage.map(([id, label]) => <button key={id} type="button" className="ft-link" onClick={() => goSection(id, navigate)}>{label}</button>)}
+          </nav>
+          <nav aria-label={t('f_explore')}>
+            <H>{t('f_explore')}</H>
+            {explore.map(([to, label]) => <Link key={to} to={to} navigate={navigate} className="ft-link">{label}</Link>)}
+            <a href={PARTNER_URL} target="_blank" rel="noreferrer" className="ft-link">{t('f_partner')}</a>
+          </nav>
+          <div className="ft-span">
+            <H>{t('f_contact')}</H>
+            <div style={line}><MapPin size={16} color={C.gold2} style={{ flexShrink:0, marginTop:'2px' }}/><address style={{ fontStyle:'normal' }}>{ADDRESS}</address></div>
+            <div style={line}><Clock size={16} color={C.gold2} style={{ flexShrink:0, marginTop:'2px' }}/>{t('visit_hours')}</div>
+            {CALL_NUMBERS.map(n => (
+              <a key={n.tel} href={`tel:${n.tel}`} onClick={() => track('call_click', { number:n.tel, source:'footer' })} style={line}><Phone size={16} color={C.gold2} style={{ flexShrink:0, marginTop:'2px' }}/>+91 {n.label}</a>
+            ))}
+            <a href={`mailto:${EMAIL}`} style={line}><Mail size={16} color={C.gold2} style={{ flexShrink:0, marginTop:'2px' }}/>{EMAIL}</a>
+            <a href={WA_LINK} target="_blank" rel="noreferrer" onClick={() => track('whatsapp_click', { source:'footer' })} style={line}><WhatsAppGlyph size={16} color={C.gold2}/>{t('whatsapp')}</a>
+          </div>
+        </div>
+        <div className="ft-pad" style={{ borderTop:'1px solid rgba(224,183,101,.15)', marginTop:'40px', paddingTop:'20px' }}>
+          <div style={{ fontFamily:SANS, fontSize:'13px', color:'rgba(241,215,141,.8)', marginBottom:'10px' }}>© {new Date().getFullYear()} Carat Money. {t('f_rights')}</div>
+          <p style={{ fontFamily:SANS, fontSize:'12px', lineHeight:1.65, color:'rgba(241,215,141,.5)', margin:0, maxWidth:'900px' }}>{t('f_legal')}</p>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+// ─── Floating WhatsApp button (phones only) ──────────────────────────────────
+function FloatingWA() {
+  const { t } = useT();
+  return (
+    <a href={WA_LINK} target="_blank" rel="noreferrer" onClick={() => track('whatsapp_click', { source:'floating' })} aria-label={t('wa_float')} className="hide-d"
+      style={{ position:'fixed', right:'16px', bottom:'calc(16px + env(safe-area-inset-bottom, 0px))', zIndex:90, width:'56px', height:'56px', borderRadius:'50%', background:C.green, display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 6px 20px rgba(37,211,102,.4)' }}>
+      <WhatsAppGlyph size={28} color={C.white}/>
+    </a>
+  );
+}
+
+// ─── Home Page ────────────────────────────────────────────────────────────────
+function HomePage({ navigate, spot }) {
+  // FAQ structured data (English) so the questions can show in Google results
+  useEffect(() => {
+    document.getElementById('cm-faq-schema')?.remove();
+    const el = document.createElement('script');
+    el.type = 'application/ld+json';
+    el.id   = 'cm-faq-schema';
+    el.text = JSON.stringify({
+      '@context':'https://schema.org',
+      '@type':'FAQPage',
+      mainEntity: STR.en.faqs.map(f => ({ '@type':'Question', name:f.q, acceptedAnswer:{ '@type':'Answer', text:f.a } })),
+    });
+    document.head.appendChild(el);
+    return () => el.remove();
+  }, []);
+  // Arriving at /#section (from another page or a shared link) → scroll there
+  useEffect(() => {
+    const id = window.location.hash.slice(1);
+    if (!id) return;
+    const tm = setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior:'smooth', block:'start' }), 80);
+    return () => clearTimeout(tm);
+  }, []);
+
+  return (
+    <div style={{ minHeight:'100dvh', background:C.paper, fontFamily:SANS, color:C.ink }}>
+      <TopBar spot={spot} navigate={navigate} showLang/>
+      <main>
+        <Hero navigate={navigate}/>
+        <section id="rate" className="cm-sec" style={{ paddingTop:'8px' }}>
+          <div className="cm-wrap">
+            <div className="rc-grid">
+              <RateCard spot={spot}/>
+              <ValueCalculator spot={spot} navigate={navigate}/>
+            </div>
+            <GetInTouch/>
+          </div>
+        </section>
+        <TrustCompare/>
+        <Process/>
+        <Reviews/>
+        <FAQSection/>
+        <VisitUs/>
+        <BlogTeaser navigate={navigate}/>
+        <AppSoon spot={spot}/>
+        <PartnerStrip/>
+      </main>
+      <SiteFooter navigate={navigate}/>
+      <FloatingWA/>
+    </div>
+  );
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+//  OTHER PAGES (logic unchanged — only bug fixes)
+// ═════════════════════════════════════════════════════════════════════════════
 
 // ─── Articles Data ────────────────────────────────────────────────────────────
 // Swap body + meta for CMS API response later — structure stays identical.
@@ -513,10 +2059,6 @@ const ARTICLES = [
       { type:'p',  text:"The only way to catch it is to know what a fair number looks like before you walk in. Our margin calculator does that in 30 seconds — and factors in a few extra details for a precise figure. Then message us and we'll give you an offer you can compare against." },
     ],
   },
-  // ============================================================
-// 1. NEW ARTICLE — paste as a new object inside ARTICLES
-//    (position doesn't matter once the sort below is in place)
-// ============================================================
 
   {
     slug:            'why-gold-buyers-pay-less-than-spot',
@@ -570,11 +2112,6 @@ const ARTICLES = [
   },
 ];
 
-// ============================================================
-// 2. NEWEST-FIRST ORDERING
-//    Paste directly BELOW the closing `];` of the ARTICLES array
-// ============================================================
-
 const MONTHS = { Jan:0, Feb:1, Mar:2, Apr:3, May:4, Jun:5, Jul:6, Aug:7, Sep:8, Oct:9, Nov:10, Dec:11 };
 
 const articleDate = (d) => {
@@ -583,18 +2120,6 @@ const articleDate = (d) => {
 };
 
 const ARTICLES_SORTED = [...ARTICLES].sort((a, b) => articleDate(b.date) - articleDate(a.date));
-
-// ============================================================
-// 3. THE ONE-LINE CHANGE
-//    Find where articles are rendered (blog list page AND the
-//    homepage blog strip) and swap the source array:
-//
-//      ARTICLES.map(...)          ->  ARTICLES_SORTED.map(...)
-//      ARTICLES.slice(0, 3)       ->  ARTICLES_SORTED.slice(0, 3)
-//
-//    Leave ARTICLES.find(a => a.slug === ...) alone — slug
-//    lookups don't care about order.
-// ============================================================
 
 // ─── Blog Back Button ─────────────────────────────────────────────────────────
 function BlogBackBtn({ navigate }) {
@@ -605,40 +2130,27 @@ function BlogBackBtn({ navigate }) {
   );
 }
 
-// ─── Blog Index Page ──────────────────────────────────────────────────────────
-function BlogIndexPage({ navigate }) {
+// ─── Blog Index Page (3-column grid, newest first) ────────────────────────────
+function BlogIndexPage({ navigate, spot }) {
   return (
     <div style={{ minHeight:'100dvh', background:C.paper, fontFamily:SANS, color:C.ink }}>
-      <div style={{ maxWidth:'520px', margin:'0 auto', padding:'0 18px 48px' }}>
+      <TopBar spot={spot} navigate={navigate}/>
+      <div style={{ height:'56px' }}/>
+      <div className="cm-wrap" style={{ paddingBottom:'64px' }}>
         <BackBtn navigate={navigate}/>
-        <PageHeader/>
-        <div style={{ textAlign:'center', marginBottom:'32px' }}>
+        <div style={{ textAlign:'center', margin:'12px auto 36px', maxWidth:'720px' }}>
           <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:'10px', marginBottom:'14px' }}>
-            <div style={{ height:'1px', flex:1, background:C.gold, opacity:0.25 }}/>
+            <div style={{ height:'1px', width:'48px', background:C.gold, opacity:0.35 }}/>
             <div style={{ fontFamily:MONO, fontSize:'9px', letterSpacing:'0.2em', color:C.gold, textTransform:'uppercase' }}>· GOLD INSIGHTS ·</div>
-            <div style={{ height:'1px', flex:1, background:C.gold, opacity:0.25 }}/>
+            <div style={{ height:'1px', width:'48px', background:C.gold, opacity:0.35 }}/>
           </div>
-          <h1 style={{ fontFamily:SERIF, fontSize:'32px', fontWeight:350, lineHeight:1.1, letterSpacing:'-0.02em', margin:'0 0 8px', color:C.ink }}>
+          <h1 style={{ fontFamily:SERIF, fontSize:'clamp(30px, 4.5vw, 44px)', fontWeight:350, lineHeight:1.1, letterSpacing:'-0.02em', margin:0, color:C.ink }}>
             Everything you need to know<br/>before you sell your <span style={{ fontStyle:'italic', color:C.plum }}>gold</span>
           </h1>
         </div>
-        {ARTICLES.map(a => (
-          <Link key={a.slug} to={`/blog/${a.slug}`} navigate={navigate} style={{ background:C.white, borderRadius:'8px', padding:'24px', border:`1px solid rgba(26,20,38,.1)`, marginBottom:'12px', boxShadow:'0 2px 12px rgba(22,18,31,.06)', transition:'transform .2s,box-shadow .2s' }}
-            onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-2px)';e.currentTarget.style.boxShadow='0 8px 24px rgba(22,18,31,.12)';}}
-            onMouseLeave={e=>{e.currentTarget.style.transform='translateY(0)';e.currentTarget.style.boxShadow='0 2px 12px rgba(22,18,31,.06)';}}
-          >
-            <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'12px' }}>
-              <div style={{ fontFamily:MONO, fontSize:'9px', fontWeight:500, letterSpacing:'0.16em', color:C.gold, textTransform:'uppercase' }}>{a.category}</div>
-              <div style={{ fontFamily:MONO, fontSize:'9px', color:C.mute, letterSpacing:'0.08em' }}>{a.readTime}</div>
-            </div>
-            <h2 style={{ fontFamily:SERIF, fontSize:'22px', fontWeight:350, lineHeight:1.2, letterSpacing:'-0.02em', margin:'0 0 10px', color:C.ink }}>{a.title}</h2>
-            <p style={{ fontSize:'14px', color:C.mute, lineHeight:1.6, margin:'0 0 16px' }}>{a.excerpt}</p>
-            <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-              <div style={{ fontFamily:MONO, fontSize:'10px', color:C.mute, letterSpacing:'0.06em' }}>Carat Money · {a.date}</div>
-              <div style={{ fontFamily:MONO, fontSize:'11px', color:C.gold, fontWeight:500, letterSpacing:'0.08em' }}>READ →</div>
-            </div>
-          </Link>
-        ))}
+        <div className="blog-grid">
+          {ARTICLES_SORTED.map(a => <BlogCard key={a.slug} a={a} navigate={navigate} clamp={3}/>)}
+        </div>
       </div>
     </div>
   );
@@ -648,19 +2160,8 @@ function BlogIndexPage({ navigate }) {
 function BlogArticlePage({ navigate, slug }) {
   const article = ARTICLES.find(a => a.slug === slug);
 
-  if (!article) {
-    return (
-      <div style={{ minHeight:'100dvh', background:C.paper, fontFamily:SANS, color:C.ink, display:'flex', alignItems:'center', justifyContent:'center' }}>
-        <div style={{ textAlign:'center', padding:'40px 18px' }}>
-          <div style={{ fontFamily:SERIF, fontSize:'48px', fontWeight:350, color:C.gold2, marginBottom:'16px' }}>404</div>
-          <div style={{ fontFamily:SERIF, fontSize:'22px', color:C.ink, marginBottom:'24px' }}>Article not found</div>
-          <button onClick={() => navigate('/blog')} style={{ fontFamily:MONO, fontSize:'12px', color:C.gold, background:'none', border:`1px solid ${C.gold}`, borderRadius:'4px', padding:'10px 18px', cursor:'pointer', letterSpacing:'0.1em' }}>← BACK TO BLOG</button>
-        </div>
-      </div>
-    );
-  }
-
   useEffect(() => {
+    if (!article) return;
     document.title = `${article.title} | Carat Money`;
     setCanonical(`https://carat.money/blog/${article.slug}`);
     const em = (sel, attr, val, content) => {
@@ -674,6 +2175,18 @@ function BlogArticlePage({ navigate, slug }) {
     em('meta[property="og:url"]',         'property', 'og:url',         `https://carat.money/blog/${article.slug}`);
     em('meta[property="og:type"]',        'property', 'og:type',        'article');
   }, [article]);
+
+  if (!article) {
+    return (
+      <div style={{ minHeight:'100dvh', background:C.paper, fontFamily:SANS, color:C.ink, display:'flex', alignItems:'center', justifyContent:'center' }}>
+        <div style={{ textAlign:'center', padding:'40px 18px' }}>
+          <div style={{ fontFamily:SERIF, fontSize:'48px', fontWeight:350, color:C.gold2, marginBottom:'16px' }}>404</div>
+          <div style={{ fontFamily:SERIF, fontSize:'22px', color:C.ink, marginBottom:'24px' }}>Article not found</div>
+          <button onClick={() => navigate('/blog')} style={{ fontFamily:MONO, fontSize:'12px', color:C.gold, background:'none', border:`1px solid ${C.gold}`, borderRadius:'4px', padding:'10px 18px', cursor:'pointer', letterSpacing:'0.1em' }}>← BACK TO BLOG</button>
+        </div>
+      </div>
+    );
+  }
 
   const MidNudge = () => (
     <div onClick={() => navigate('/margin')} style={{ margin:'28px 0', padding:'18px 20px', background:`rgba(184,136,58,.08)`, border:`1px solid rgba(184,136,58,.2)`, borderRadius:'6px', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'space-between', gap:'12px' }}>
@@ -767,383 +2280,6 @@ function BlogArticlePage({ navigate, slug }) {
   );
 }
 
-// ─── Home Page ────────────────────────────────────────────────────────────────
-// ─── Scroll progress (0 → 1 over `distance` px) ──────────────────────────────
-function useScrollProgress(distance) {
-  const [p, setP] = useState(0);
-  useEffect(() => {
-    const on = () => setP(Math.min(1, Math.max(0, window.scrollY / distance)));
-    on();
-    window.addEventListener('scroll', on, { passive:true });
-    return () => window.removeEventListener('scroll', on);
-  }, [distance]);
-  return p;
-}
-
-// ─── WhatsApp glyph + contact constants ──────────────────────────────────────
-const WA_MSG      = "Hi. I'm interested in selling gold.";
-const WA_LINK     = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WA_MSG)}`;
-const CALL_NUMBERS = [
-  { tel:'+918169874545', label:'816 987 4545' },
-  { tel:'+919653456868', label:'965 345 6868' },
-];
-
-// Call button that opens a small picker with both numbers
-function CallPicker() {
-  const [open, setOpen] = useState(false);
-  const ref = useRef(null);
-  useEffect(() => {
-    if (!open) return;
-    const close = e => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
-    document.addEventListener('pointerdown', close);
-    return () => document.removeEventListener('pointerdown', close);
-  }, [open]);
-  return (
-    <div ref={ref} style={{ position:'relative' }}>
-      <button onClick={() => setOpen(v => !v)} aria-expanded={open} aria-haspopup="menu" style={{ display:'inline-flex', alignItems:'center', gap:'6px', background:'transparent', color:C.white, padding:'7px 12px', borderRadius:'999px', border:'1px solid rgba(255,255,255,.3)', fontFamily:SANS, fontSize:'13px', fontWeight:600, whiteSpace:'nowrap', cursor:'pointer' }}>
-        <Phone size={14}/> Call
-      </button>
-      {open && (
-        <div role="menu" style={{ position:'absolute', top:'calc(100% + 8px)', right:0, minWidth:'200px', background:C.white, borderRadius:'8px', border:'1px solid rgba(26,20,38,.1)', boxShadow:'0 8px 24px rgba(22,18,31,.18)', overflow:'hidden', animation:'fadeSlide .2s ease' }}>
-          {CALL_NUMBERS.map((n, i) => (
-            <a key={n.tel} href={`tel:${n.tel}`} role="menuitem" onClick={() => setOpen(false)} style={{ display:'flex', alignItems:'center', gap:'10px', padding:'13px 16px', color:C.ink, textDecoration:'none', fontFamily:SANS, fontSize:'14px', fontWeight:600, borderTop: i === 0 ? 'none' : '1px solid rgba(26,20,38,.08)' }}>
-              <Phone size={14} color={C.gold}/> {n.label}
-            </a>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-const WhatsAppGlyph = ({ size = 16, color = 'currentColor' }) => (
-  <svg viewBox="0 0 24 24" width={size} height={size} fill={color} aria-hidden="true">
-    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-  </svg>
-);
-
-// ─── Top Bar (logo · 24K rate · WhatsApp · Call) ─────────────────────────────
-// progress 0 → hidden/light, 1 → solid plum. Home passes scroll progress; other pages pass 1.
-function TopBar({ spot, progress = 1 }) {
-  const p     = progress;
-  const r24   = spot.display ?? SPOT_FALLBACK;
-  const solid = p >= 1;
-  const a     = 0.12 + 0.88 * p;
-  const fade  = 0.35 + 0.65 * p;
-  return (
-    <div style={{
-      position:'fixed', top:0, left:0, right:0, zIndex:100, height:'56px',
-      opacity: Math.min(1, p * 4), pointerEvents: p > 0.05 ? 'auto' : 'none',
-      background: solid ? C.plum : `linear-gradient(90deg, rgba(58,29,110,${a}), rgba(43,20,80,${a}))`,
-      borderBottom: `1px solid rgba(224,183,101,${0.25 * p})`,
-      boxShadow: solid ? '0 2px 16px rgba(43,20,80,.25)' : 'none',
-    }}>
-      <div style={{ maxWidth:'520px', margin:'0 auto', height:'100%', padding:'0 12px', display:'flex', alignItems:'center', gap:'8px' }}>
-        {/* Logo + name */}
-        <div style={{ display:'flex', alignItems:'center', gap:'6px', opacity:p, flexShrink:0 }}>
-          <CaratMark size={28} color={C.gold2}/>
-          <span className="tb-name" style={{ fontFamily:SERIF, fontSize:'16px', fontWeight:350, color:C.gold2, whiteSpace:'nowrap' }}>
-            Carat <span style={{ fontStyle:'italic' }}>Money</span>
-          </span>
-        </div>
-        {/* Rate pill */}
-        <div style={{ display:'flex', alignItems:'center', gap:'5px', padding:'5px 10px', borderRadius:'999px', background:'rgba(0,0,0,.22)', border:'1px solid rgba(224,183,101,.2)', fontFamily:MONO, fontSize:'11px', whiteSpace:'nowrap', flexShrink:0, opacity:fade }}>
-          <span style={{ width:'6px', height:'6px', borderRadius:'50%', background:C.green }}/>
-          <span style={{ color:'rgba(241,215,141,.7)' }}>24K</span>
-          <span className="tb-live" style={{ color:C.gold2 }}>live</span>
-          <span style={{ color:C.gold3 }}>₹{fmt(r24,0)}/g</span>
-        </div>
-        {/* WhatsApp + Call */}
-        <div style={{ marginLeft:'auto', display:'flex', gap:'6px', flexShrink:0, opacity:fade }}>
-          <a href={WA_LINK} target="_blank" rel="noreferrer" style={{ display:'inline-flex', alignItems:'center', gap:'6px', background:C.green, color:C.ink, padding:'7px 12px', borderRadius:'999px', fontFamily:SANS, fontSize:'13px', fontWeight:600, textDecoration:'none', whiteSpace:'nowrap' }}>
-            <WhatsAppGlyph size={15} color={C.ink}/> WhatsApp
-          </a>
-          <CallPicker/>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ─── How it works ────────────────────────────────────────────────────────────
-function HowItWorks() {
-  const steps = [
-    'Share your jewellery details and book a pickup slot',
-    'We pick it up from your home',
-    'Get paid instantly',
-  ];
-  return (
-    <div style={{ background:C.white, borderRadius:'8px', border:'1px solid rgba(26,20,38,.1)', boxShadow:'0 2px 12px rgba(22,18,31,.06)', padding:'24px', marginBottom:'20px' }}>
-      <div style={{ fontFamily:SERIF, fontSize:'26px', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1.15, marginBottom:'18px' }}>
-        How it works
-      </div>
-      {steps.map((s, i) => (
-        <div key={i} style={{ display:'flex', alignItems:'center', gap:'14px', padding:'12px 0', borderTop: i === 0 ? 'none' : '1px solid rgba(26,20,38,.08)' }}>
-          <div style={{ width:'32px', height:'32px', borderRadius:'50%', background:C.paper2, border:'1px solid rgba(184,136,58,.25)', color:C.plum, fontFamily:SERIF, fontSize:'16px', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>{i + 1}</div>
-          <div style={{ fontSize:'15px', color:C.ink2, lineHeight:1.5 }}>{s}</div>
-        </div>
-      ))}
-      <BtnPrimary onClick={() => window.open(WA_LINK, '_blank')} style={{ width:'auto', padding:'10px 20px', marginTop:'16px' }}>
-        <WhatsAppGlyph size={15}/> Get a free estimate
-      </BtnPrimary>
-    </div>
-  );
-}
-
-// ─── FAQs ────────────────────────────────────────────────────────────────────
-const FAQS = [
-  { q:'How is the estimated price calculated?', a:'We weigh your gold, test purity on an XRF machine, and multiply the pure gold content by the live 24K rate shown above. You see every number live on your phone screen.' },
-  { q:'Will someone visit my home for pickup?', a:'Yes. An authorised Carat Money agent will book a time with you, test your gold in front of you, and make a firm offer on the spot.' },
-  { q:'Is there any charge for an estimate?', a:"No. Estimates are free with no obligation. You sell only if you're happy with the offer." },
-  { q:'How will I receive the payment?', a:'Instantly, by bank transfer or UPI, as soon as you accept the offer.' },
-];
-function FAQSection() {
-  const [open, setOpen] = useState(null);
-  return (
-    <div style={{ marginBottom:'20px' }}>
-      <div style={{ fontFamily:SERIF, fontSize:'26px', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1.15, marginBottom:'12px' }}>
-        Frequently asked questions
-      </div>
-      {FAQS.map((f, i) => {
-        const isOpen = open === i;
-        return (
-          <div key={i} style={{ borderTop:'1px solid rgba(26,20,38,.12)', borderBottom: i === FAQS.length - 1 ? '1px solid rgba(26,20,38,.12)' : 'none' }}>
-            <button onClick={() => setOpen(isOpen ? null : i)} aria-expanded={isOpen} style={{ width:'100%', background:'none', border:'none', padding:'14px 0', display:'flex', alignItems:'center', justifyContent:'space-between', gap:'12px', cursor:'pointer', textAlign:'left', fontFamily:SANS, fontSize:'15px', fontWeight:600, color:C.ink }}>
-              {f.q}
-              <ChevronDown size={16} color={C.gold} style={{ flexShrink:0, transform: isOpen ? 'rotate(180deg)' : 'none', transition:'transform .2s' }}/>
-            </button>
-            {isOpen && (
-              <div style={{ fontSize:'14px', color:C.mute, lineHeight:1.6, paddingBottom:'14px', animation:'fadeSlide .25s ease' }}>{f.a}</div>
-            )}
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-// ─── Crawlable internal link (real <a href>, in-app navigation on click) ─────
-function Link({ to, navigate, children, style, ...rest }) {
-  const onClick = e => {
-    if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; // allow new-tab clicks
-    e.preventDefault();
-    e.stopPropagation();
-    navigate(to);
-  };
-  return (
-    <a href={to} onClick={onClick} style={{ color:'inherit', textDecoration:'none', display:'block', ...style }} {...rest}>
-      {children}
-    </a>
-  );
-}
-
-function HomePage({ navigate, spot }) {
-  const heroP = useScrollProgress(180);
-  const [showGstTip,    setShowGstTip]   = useState(false);
-  const [selectedKarat, setSelectedKarat] = useState('22');
-  const [nudgeActive,  setNudgeActive]  = useState(false);
-  const [marginTapped, setMarginTapped] = useState(false);
-  const marginCardRef  = useRef(null);
-  const nudgeFiredRef  = useRef(false);
-
-  const r24  = spot.display ?? SPOT_FALLBACK;
-  const r22  = Math.round(r24 * 22 / 24);
-  const time = fmtTime(spot.updatedAt);
-
-  return (
-    <div style={{ minHeight:'100dvh', background:C.paper, fontFamily:SANS, color:C.ink }}>
-      <div style={{ maxWidth:'520px', margin:'0 auto', padding:'0 18px 48px' }}>
-
-        <TopBar spot={spot} progress={heroP}/>
-        <div style={{ textAlign:'center', padding:'40px 12px 32px' }}>
-          <div style={{ display:'flex', justifyContent:'center', marginBottom:'16px', opacity: 1 - heroP }}>
-            <HomeLogo/>
-          </div>
-          <div style={{ fontFamily:SERIF, fontSize:'42px', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1.05, marginBottom:'6px' }}>
-            Carat <span style={{ fontStyle:'italic', color:C.plum }}>Money</span>
-          </div>
-          <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:'10px', margin:'10px 0 20px' }}>
-            <div style={{ height:'1px', width:'40px', background:C.gold, opacity:0.5 }}/>
-            <div style={{ fontFamily:MONO, fontSize:'9px', letterSpacing:'0.2em', color:C.gold, textTransform:'uppercase' }}>· We Buy Gold at Fair Price ·</div>
-            <div style={{ height:'1px', width:'40px', background:C.gold, opacity:0.5 }}/>
-          </div>
-          <div style={{ fontFamily:SANS, fontSize:'14px', fontWeight:600, color:C.gold, letterSpacing:'0.01em', lineHeight:1.5, marginBottom:'4px' }}>
-            We guarantee — nobody can match our price
-          </div>
-          <div style={{ fontFamily:MONO, fontSize:'11px', color:C.mute, letterSpacing:'0.06em' }}>
-            5,000+ customers · ₹100Cr+ purchased · 4.9★
-          </div>
-          <div style={{ fontFamily:MONO, fontSize:'11px', color:C.mute, letterSpacing:'0.06em', marginTop:'4px' }}>
-            Home pickup available in Bangalore & Mumbai
-          </div>
-        </div>
-
-        {/* ── Rate Card ── */}
-        <Card dark style={{ marginBottom:'14px' }}>
-          <div style={{ fontFamily:SERIF, fontSize:'26px', fontWeight:350, color:C.gold2, letterSpacing:'-0.02em', lineHeight:1.1, marginBottom:'12px' }}>
-            Our Buy Rate
-          </div>
-          {spot.loading && !spot.display
-            ? <span style={{ fontFamily:SERIF, fontSize:'40px', color:`rgba(241,215,141,.4)`, letterSpacing:'-0.02em' }}>Loading…</span>
-            : (() => {
-                const r18     = Math.round(r24 * 18 / 24);
-                const selRate = selectedKarat === '22' ? r22 : r18;
-                const preGST  = Math.round(r24 / 1.03);
-                return (
-                  <>
-                    {/* 24K — always shown */}
-                    <div style={{ display:'flex', alignItems:'baseline', gap:'6px', marginBottom:'12px' }}>
-                      <span style={{ fontFamily:SERIF, fontSize:'clamp(32px, 9vw, 56px)', fontWeight:350, lineHeight:1, letterSpacing:'-0.03em', color:C.gold3, whiteSpace:'nowrap' }}>₹{fmt(r24,0)}</span>
-                      <span style={{ fontFamily:SANS, fontSize:'13px', color:`rgba(241,215,141,.6)`, whiteSpace:'nowrap' }}>/g · 24K</span>
-                    </div>
-
-                    {/* Karat dropdown + calculated rate */}
-                    <div style={{ display:'flex', alignItems:'center', gap:'12px', paddingTop:'12px', paddingBottom:'12px', borderTop:`1px solid rgba(224,183,101,.15)`, borderBottom:`1px solid rgba(224,183,101,.15)` }}>
-                      <select
-                        value={selectedKarat}
-                        onChange={e => setSelectedKarat(e.target.value)}
-                        style={{ background:'rgba(224,183,101,.12)', border:`1px solid rgba(224,183,101,.3)`, borderRadius:'4px', color:C.gold2, fontFamily:MONO, fontSize:'12px', fontWeight:500, padding:'6px 10px', cursor:'pointer', outline:'none', letterSpacing:'0.08em' }}
-                      >
-                        <option value="22" style={{ background:C.plum }}>22K</option>
-                        <option value="18" style={{ background:C.plum }}>18K</option>
-                      </select>
-                      <div style={{ display:'flex', alignItems:'baseline', gap:'4px' }}>
-                        <span style={{ fontFamily:SERIF, fontSize:'clamp(18px, 5vw, 24px)', fontWeight:350, color:C.gold2, letterSpacing:'-0.02em', whiteSpace:'nowrap' }}>₹{fmt(selRate,0)}</span>
-                        <span style={{ fontFamily:SANS, fontSize:'12px', color:`rgba(241,215,141,.5)`, whiteSpace:'nowrap' }}>/g · {selectedKarat}K</span>
-                      </div>
-                    </div>
-
-                    {/* Timestamp + GST toggle */}
-                    <div style={{ display:'flex', alignItems:'center', gap:'8px', marginTop:'10px' }}>
-                      <div style={{ fontFamily:SERIF, fontSize:'12px', color:`rgba(241,215,141,.4)`, fontStyle:'italic', flex:1 }}>
-                        {spot.error && !spot.updatedAt ? 'Live rate temporarily unavailable' : time ? `Live rate · Updated ${time}` : 'Fetching live rate…'}
-                      </div>
-                      <span onClick={() => setShowGstTip(v=>!v)} style={{ fontSize:'13px', color:C.gold, cursor:'pointer', userSelect:'none', flexShrink:0 }}>ⓘ</span>
-                    </div>
-                    {showGstTip && (
-                      <div style={{ marginTop:'10px', padding:'10px 14px', background:`rgba(224,183,101,.1)`, borderRadius:'4px', fontSize:'13px', color:C.gold3, lineHeight:1.55 }}>
-                        24K without GST: <b>₹{fmt(preGST,0)}/g</b><br/>
-                        GST-inclusive rate shown above. If you're GST-registered, we pass the tax credit back to you.
-                      </div>
-                    )}
-                  </>
-                );
-              })()
-          }
-        </Card>
-
-        {/* ── Sell Card ── */}
-        <div onClick={() => navigate('/sell')} style={{ background:C.white, borderRadius:'8px', cursor:'pointer', marginBottom:'12px', overflow:'hidden', border:`1px solid rgba(26,20,38,.1)`, boxShadow:'0 2px 12px rgba(22,18,31,.06)', transition:'transform .2s,box-shadow .2s' }}>
-          {/* Image strip */}
-          <div style={{ position:'relative', height:'200px', overflow:'hidden', borderRadius:'8px 8px 0 0' }}>
-            <img src="/img-sell.jpg" alt="Sell gold to Carat Money" width="1310" height="701" fetchpriority="high" decoding="async" style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'center', display:'block' }}/>
-            <div style={{ position:'absolute', bottom:0, left:0, right:0, height:'80px', background:'linear-gradient(to bottom, transparent 60%, #ffffff)' }}/>
-          </div>
-          {/* Text section */}
-          <div style={{ padding:'20px 24px 24px' }}>
-            <div style={{ fontFamily:SERIF, fontSize:'26px', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1.15, marginBottom:'8px' }}><Link to="/sell" navigate={navigate} style={{ display:'inline' }}><Link to="/sell" navigate={navigate} style={{ display:'inline' }}>Sell to Carat <span style={{ fontStyle:'italic' }}>Money</span></Link></Link></div>
-            <div style={{ fontSize:'15px', color:C.mute, lineHeight:1.55, marginBottom:'20px' }}>Get an instant WhatsApp quote.</div>
-            <BtnPrimary style={{ width:'auto', padding:'10px 20px' }}>
-              <MessageCircle size={15}/> Get a quote
-            </BtnPrimary>
-          </div>
-        </div>
-
-        {/* ── Margin Card ── */}
-        <div
-          ref={marginCardRef}
-          onClick={() => { setMarginTapped(true); navigate('/margin'); }}
-          style={{
-            background:C.white, borderRadius:'8px', cursor:'pointer',
-            marginBottom:'20px', overflow:'hidden',
-            transition:'transform .2s, box-shadow .2s, border-color .2s',
-            border: nudgeActive ? `1.5px solid ${C.gold}` : `1px solid rgba(26,20,38,.1)`,
-            boxShadow: nudgeActive
-              ? `0 0 0 4px rgba(184,136,58,.18), 0 2px 12px rgba(22,18,31,.06)`
-              : '0 2px 12px rgba(22,18,31,.06)',
-          }}>
-          {/* Image strip */}
-          <div style={{ position:'relative', height:'200px', overflow:'hidden', borderRadius:'8px 8px 0 0' }}>
-            <img src="/img-margin.jpeg" alt="Informed gold seller" width="1310" height="701" decoding="async" style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'center', display:'block' }}/>
-            <div style={{ position:'absolute', bottom:0, left:0, right:0, height:'80px', background:'linear-gradient(to bottom, transparent 60%, #ffffff)' }}/>
-          </div>
-          {/* Text section */}
-          <div style={{ padding:'20px 24px 24px' }}>
-            <div style={{ fontFamily:SERIF, fontSize:'26px', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1.15, marginBottom:'8px' }}>
-              <Link to="/margin" navigate={navigate} style={{ display:'inline' }}>Is your gold buyer cheating you?</Link>
-            </div>
-            <div style={{ fontSize:'15px', color:C.mute, lineHeight:1.55, marginBottom:'20px' }}>Check your buyer's margin.</div>
-            <BtnPrimary style={{
-              width:'auto', padding:'10px 20px',
-              animation: nudgeActive ? 'glowPulse 0.8s ease-out 3' : 'none',
-            }}>
-              <TrendingDown size={15}/> Calculate margin
-            </BtnPrimary>
-          </div>
-        </div>
-
-        <HowItWorks/>
-        <FAQSection/>
-
-        <div style={{ padding:'14px 0', marginBottom:'16px' }}>
-          <div style={{ textAlign:'center', marginBottom:'14px' }}>
-            <Link to="/blog" navigate={navigate} style={{ display:'inline', fontFamily:MONO, fontSize:'11px', fontWeight:500, color:C.mute, letterSpacing:'0.1em', textTransform:'uppercase', borderBottom:`1px solid rgba(122,111,98,.3)`, paddingBottom:'2px' }}>
-              · GOLD INSIGHTS BLOG ·
-            </Link>
-          </div>
-          {ARTICLES.map(a => (
-            <Link key={a.slug} to={`/blog/${a.slug}`} navigate={navigate} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'10px 0', borderTop:`1px solid rgba(26,20,38,.06)`, gap:'12px' }}>
-              <span style={{ fontSize:'13px', color:C.ink2, fontFamily:SANS, lineHeight:1.4 }}>{a.title}</span>
-              <span style={{ fontFamily:MONO, fontSize:'11px', color:C.gold, flexShrink:0 }}>→</span>
-            </Link>
-          ))}
-        </div>
-        <div style={{ padding:'16px 0', marginBottom:'4px', borderTop:`1px solid rgba(26,20,38,.12)`, borderBottom:`1px solid rgba(26,20,38,.12)` }}>
-          <div style={{ fontSize:'13px', color:C.mute, fontFamily:SANS, lineHeight:1.55, marginBottom:'6px' }}>
-            Earn on every client you refer. We buy their gold. You get commissions.
-          </div>
-          <span onClick={() => window.open('https://carat-money-partners.web.app/partner/', '_blank')} style={{ fontSize:'14px', fontWeight:600, color:C.gold, fontFamily:SANS, cursor:'pointer', display:'inline-flex', alignItems:'center', gap:'4px' }}>
-            Join our Partner Program →
-          </span>
-        </div>
-        <div style={{ display:'flex', justifyContent:'center', gap:'20px', padding:'8px 0' }}>
-          {[
-            {
-              href: 'https://www.instagram.com/carat_money',
-              label: 'Instagram',
-              path: 'M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z',
-            },
-            {
-              href: 'https://x.com/carat_money',
-              label: 'X',
-              path: 'M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.911-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z',
-            },
-            {
-              href: 'https://www.youtube.com/@carat_money',
-              label: 'YouTube',
-              path: 'M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z',
-            },
-          ].map(({ href, label, path }) => (
-            <a key={label} href={href} target="_blank" rel="noreferrer"
-              aria-label={label}
-              style={{ width:'44px', height:'44px', borderRadius:'50%', background:C.paper2, border:`1px solid rgba(184,136,58,.2)`, display:'inline-flex', alignItems:'center', justifyContent:'center', transition:'background .2s, border-color .2s' }}
-              onMouseEnter={e => { e.currentTarget.style.background = C.plum; e.currentTarget.style.borderColor = C.plum; e.currentTarget.querySelector('svg').style.fill = C.gold3; }}
-              onMouseLeave={e => { e.currentTarget.style.background = C.paper2; e.currentTarget.style.borderColor = 'rgba(184,136,58,.2)'; e.currentTarget.querySelector('svg').style.fill = C.gold; }}
-            >
-              <svg viewBox="0 0 24 24" width="18" height="18" fill={C.gold} style={{ display:'block' }}>
-                <path d={path}/>
-              </svg>
-            </a>
-          ))}
-        </div>
-
-        <address style={{ fontStyle:'normal', textAlign:'center', fontSize:'13px', color:C.mute, fontFamily:SANS, lineHeight:1.55, marginTop:'16px' }}>
-          304, Zion, Sector 10, Kharghar, Navi Mumbai - 410210
-        </address>
-      </div>
-    </div>
-  );
-}
-
 // ─── Sell Page ────────────────────────────────────────────────────────────────
 function SellPage({ navigate, spot }) {
   const [name, setName]     = useState('');
@@ -1162,7 +2298,7 @@ function SellPage({ navigate, spot }) {
   };
   return (
     <div style={{ minHeight:'100dvh', background:C.paper, fontFamily:SANS, color:C.ink }}>
-      <TopBar spot={spot} progress={1}/>
+      <TopBar spot={spot} navigate={navigate}/>
       <div style={{ height:'56px' }}/>
       <div style={{ maxWidth:'520px', margin:'0 auto', padding:'0 18px 48px' }}>
         <BackBtn navigate={navigate}/>
@@ -1609,7 +2745,7 @@ function MarginPage({ navigate, spot }) {
 
   return (
     <div style={{ minHeight:'100dvh', background:C.paper, fontFamily:SANS, color:C.ink, paddingTop:'56px' }}>
-      <TopBar spot={spot} progress={1}/>
+      <TopBar spot={spot} navigate={navigate}/>
 
       <div style={{ maxWidth:'520px', margin:'0 auto', padding:'0 18px 48px' }}>
         <BackBtn navigate={navigate}/>
@@ -1841,7 +2977,7 @@ function PartnerRedirect() {
   return (
     <div style={{ minHeight:'100dvh', background:C.paper, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:SANS }}>
       <div style={{ textAlign:'center', padding:'40px 18px' }}>
-        <LogoMark size={64} color={C.gold2}/>
+        <CaratMark size={64} color={C.gold2}/>
         <div style={{ fontFamily:SERIF, fontSize:'22px', fontWeight:350, color:C.ink, marginTop:'16px' }}>
           Redirecting to Partner Portal…
         </div>
@@ -1854,15 +2990,21 @@ function PartnerRedirect() {
 export default function App() {
   const { route, navigate, blogSlug } = useRoute();
   const spot = useSpotRate();
+  const [lang, setLang] = useLangState();
   useSEO(blogSlug ? null : route);
-  let page;
-  if      (route==='/sell')   page = <SellPage        navigate={navigate} spot={spot}/>;
-  else if (route==='/buy')    page = <BuyPage          navigate={navigate} spot={spot}/>;
-  else if (route==='/margin') page = <MarginPage       navigate={navigate} spot={spot}/>;
-  else if (route==='/blog')   page = <BlogIndexPage    navigate={navigate}/>;
-  else if (route==='/partner') page = <PartnerRedirect/>;
-  else if (blogSlug)          page = <BlogArticlePage  navigate={navigate} slug={blogSlug}/>;
-  else                        page = <HomePage         navigate={navigate} spot={spot}/>;
-  return <><style>{GLOBAL_CSS}</style>{page}</>;
-}
 
+  // Language switch applies to the homepage only; other pages stay English.
+  const effLang = route === '/' ? lang : 'en';
+  useLayoutEffect(() => { document.documentElement.lang = effLang; }, [effLang]);
+  const ctx = useMemo(() => ({ lang:effLang, setLang, t:makeT(effLang) }), [effLang, setLang]);
+
+  let page;
+  if      (route==='/sell')    page = <SellPage        navigate={navigate} spot={spot}/>;
+  else if (route==='/buy')     page = <BuyPage         navigate={navigate} spot={spot}/>;
+  else if (route==='/margin')  page = <MarginPage      navigate={navigate} spot={spot}/>;
+  else if (route==='/blog')    page = <BlogIndexPage   navigate={navigate} spot={spot}/>;
+  else if (route==='/partner') page = <PartnerRedirect/>;
+  else if (blogSlug)           page = <BlogArticlePage navigate={navigate} slug={blogSlug}/>;
+  else                         page = <HomePage        navigate={navigate} spot={spot}/>;
+  return <LangCtx.Provider value={ctx}><style>{GLOBAL_CSS}</style>{page}</LangCtx.Provider>;
+}
