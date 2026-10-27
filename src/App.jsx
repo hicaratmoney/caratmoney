@@ -447,7 +447,7 @@ const STR = {
     whatsapp: 'WhatsApp', call: 'Call', call_short: 'Call', menu: 'Menu', partner_link: 'Partner Program', language: 'Language',
 
     hero_eyebrow:   'We buy gold at fair price',
-    hero_h1:        ['Sell your gold at the ', 'live', ' market rate.'],
+    hero_h1:        ['Sell your gold at ', 'live', ' market rate.'],
     hero_sub:       "Tested and paid in 15 minutes, at home or at our Kharghar centre",
     hero_guarantee: 'We guarantee — nobody can match our price',
     hero_cta_wa:    "Get my estimate on WhatsApp",
