@@ -11,8 +11,8 @@ import {
 //  SWITCHES — the only lines you normally need to edit
 // ═════════════════════════════════════════════════════════════════════════════
 const SHOW_CERTIFICATIONS = false; // true once IBJA membership + ISO 27001 certificate are in hand
-const REVIEWS_ARE_SAMPLES = true;  // false once the sample reviews are replaced with real ones
-const LEADS_URL           = 'https://script.google.com/macros/s/AKfycbxu4TMd91-s_LLdCwas_mbThurBMjg5zdKrN5E4hxruGwFRiO038W8vLyLkEJDNPkZW/exec';    // paste the Google Apps Script web-app URL (fills the "Website leads" tab)
+const SHOW_REVIEWER_NAMES = false; // true only once reviews carry real customer names (with their permission)
+const LEADS_URL           = 'https://script.google.com/macros/s/AKfycbxu4TMd91-s_LLdCwas_mbThurBMjg5zdKrN5E4hxruGwFRiO038W8vLyLkEJDNPkZW/exec'; // Google Apps Script → "Website leads" tab
 
 // ─── Brand Tokens ─────────────────────────────────────────────────────────────
 const C = {
@@ -349,6 +349,7 @@ function useSpotRate() {
 const LANGS = [
   { code:'en', short:'EN',  name:'English' },
   { code:'hi', short:'हिं', name:'हिन्दी' },
+  { code:'mr', short:'मरा', name:'मराठी' },
   { code:'kn', short:'ಕ',   name:'ಕನ್ನಡ' },
 ];
 const LANG_CODES = LANGS.map(l => l.code);
@@ -419,7 +420,7 @@ const STR = {
     ],
     proc_cta: 'Get a free estimate',
 
-    rev_title: 'Why thousands trust Carat Money', rev_sub: 'What sellers across Navi Mumbai say about us.', rev_sample: 'Sample reviews',
+    rev_title: 'Why thousands trust Carat Money', rev_sub: 'What sellers across Navi Mumbai say about us.', rev_note: 'Quotes paraphrased from handwritten notes our customers have given us.', rev_who: 'Carat Money customer',
     review_quotes: [
       'They turned the XRF screen towards me and I saw the purity reading myself. No guesswork at all.',
       'The rate matched the live price on their website, and the money reached my UPI before I left.',
@@ -434,7 +435,7 @@ const STR = {
     faqs: [
       { q:"How is my gold's price calculated?", a:'We weigh your gold, test its purity on an XRF machine and multiply the pure gold content by the live rate shown on this page. You see every number before you decide.' },
       { q:'Do you melt or damage my jewellery during testing?', a:'No. XRF testing is non-destructive, so your jewellery stays exactly as it is while we test it.' },
-      { q:'Do you offer home pickup?', a:'Yes, in Bangalore and Mumbai. Our executive visits at a time that suits you, tests your gold in front of you and makes a firm offer on the spot.' },
+      { q:'Do you offer a free home pickup?', a:'Yes, in Bangalore and Mumbai. Our executive visits at a time that suits you, tests your gold in front of you and makes a firm offer on the spot.' },
       { q:'Is the estimate free?', a:"Yes. Estimates are free with no obligation. You sell only if you're happy with the offer." },
       { q:'Are there any deductions?', a:'Only the weight of stones, which we measure and show you. There are no extra "wastage" cuts and no hidden charges.' },
       { q:'What if my jewellery is broken or not hallmarked?', a:"We accept all gold jewellery, including broken, old and non-hallmarked pieces. XRF testing finds the real purity, so you're paid for the actual gold content." },
@@ -522,7 +523,7 @@ const STR = {
     ],
     proc_cta: 'मुफ़्त अनुमान पाएँ',
 
-    rev_title: 'हज़ारों लोग Carat Money पर भरोसा क्यों करते हैं', rev_sub: 'नवी मुंबई के विक्रेता हमारे बारे में क्या कहते हैं।', rev_sample: 'नमूना रिव्यू',
+    rev_title: 'हज़ारों लोग Carat Money पर भरोसा क्यों करते हैं', rev_sub: 'नवी मुंबई के विक्रेता हमारे बारे में क्या कहते हैं।', rev_note: 'ग्राहकों के हाथ से लिखे नोट्स से, हमारे शब्दों में।', rev_who: 'Carat Money ग्राहक',
     review_quotes: [
       'उन्होंने XRF स्क्रीन मेरी तरफ़ घुमाई और मैंने शुद्धता की रीडिंग ख़ुद देखी। कोई अंदाज़ा नहीं।',
       'रेट उनकी वेबसाइट के लाइव भाव से मेल खाया, और मेरे निकलने से पहले पैसा UPI में आ गया।',
@@ -537,7 +538,7 @@ const STR = {
     faqs: [
       { q:'मेरे सोने की कीमत कैसे तय होती है?', a:'हम आपका सोना तौलते हैं, XRF मशीन पर उसकी शुद्धता जाँचते हैं, और शुद्ध सोने की मात्रा को इस पेज पर दिखाए गए लाइव रेट से गुणा करते हैं। फ़ैसला लेने से पहले आप हर आँकड़ा देखते हैं।' },
       { q:'क्या जाँच के दौरान मेरी ज्वेलरी पिघलाई या ख़राब की जाती है?', a:'नहीं। XRF टेस्टिंग से कोई नुकसान नहीं होता, जाँच के दौरान आपकी ज्वेलरी जैसी है वैसी ही रहती है।' },
-      { q:'क्या आप घर से पिकअप करते हैं?', a:'हाँ, बेंगलुरु और मुंबई में। हमारा एग्ज़ीक्यूटिव आपकी सुविधा के समय पर आता है, आपके सामने सोने की जाँच करता है और वहीं पक्का ऑफ़र देता है।' },
+      { q:'क्या आप मुफ़्त होम पिकअप देते हैं?', a:'हाँ, बेंगलुरु और मुंबई में। हमारा एग्ज़ीक्यूटिव आपकी सुविधा के समय पर आता है, आपके सामने सोने की जाँच करता है और वहीं पक्का ऑफ़र देता है।' },
       { q:'क्या अनुमान मुफ़्त है?', a:'हाँ। अनुमान मुफ़्त है और कोई बाध्यता नहीं। ऑफ़र पसंद आए तभी बेचें।' },
       { q:'क्या कोई कटौती होती है?', a:'सिर्फ़ पत्थरों के वज़न की, जिसे हम मापकर आपको दिखाते हैं। कोई अतिरिक्त "वेस्टेज" कटौती या छिपा चार्ज नहीं।' },
       { q:'अगर मेरी ज्वेलरी टूटी हुई है या उस पर हॉलमार्क नहीं है तो?', a:'हम हर तरह की सोने की ज्वेलरी लेते हैं, टूटी, पुरानी और बिना हॉलमार्क वाली भी। XRF टेस्टिंग असली शुद्धता बताती है, इसलिए आपको सोने की असली मात्रा का पैसा मिलता है।' },
@@ -566,6 +567,110 @@ const STR = {
     f_rights: 'सर्वाधिकार सुरक्षित।',
     f_legal: 'इस वेबसाइट पर दिखाए गए सोने के रेट सांकेतिक हैं और बाज़ार के साथ बदलते रहते हैं; अंतिम कीमत आपके सामने सोने की जाँच के बाद तय होती है। इस वेबसाइट का उपयोग Carat Money की सेवा की शर्तों और गोपनीयता नीति के अधीन है। अपनी जानकारी सबमिट करके, आप Carat Money द्वारा आपकी पूछताछ के बारे में संपर्क किए जाने और इसी उद्देश्य से आपकी जानकारी के उपयोग के लिए सहमति देते हैं।',
     wa_float: 'WhatsApp पर चैट करें',
+  },
+
+  // ═══ MARATHI ═══════════════════════════════════════════════════════════════
+  mr: {
+    nav_calc: 'मूल्य कॅल्क्युलेटर', nav_why: 'आम्हीच का', nav_process: 'प्रक्रिया', nav_reviews: 'अभिप्राय', nav_faqs: 'प्रश्नोत्तरे', nav_blog: 'ब्लॉग',
+    whatsapp: 'WhatsApp', call: 'कॉल करा', call_short: 'कॉल', menu: 'मेनू', partner_link: 'पार्टनर प्रोग्राम', language: 'भाषा',
+
+    hero_eyebrow:   'आम्ही योग्य दरात सोने खरेदी करतो',
+    hero_h1:        ['तुमचे सोने ', 'लाइव्ह', ' बाजारभावाने विका.'],
+    hero_sub:       'पैसे लगेच तुमच्या बँक खात्यात किंवा UPI वर.',
+    hero_guarantee: 'आमची हमी — आमच्यापेक्षा चांगला भाव कोणीही देणार नाही',
+    hero_cta_wa:    'WhatsApp वर मोफत कोटेशन मिळवा',
+    hero_cta_calc:  'तुमच्या सोन्याचे मूल्य जाणून घ्या',
+    hero_stats:     '5,000+ ग्राहक · ₹100 कोटी+ खरेदी · 4.9★',
+    hero_pickup:    'बंगळुरू आणि मुंबईत घरून पिकअपची सोय',
+    tiles: [
+      { t:'घरपोच सेवा',      d:'आम्ही तुमच्याकडे येतो, त्यामुळे तुमचे सोने कुठेही न्यावे लागत नाही.' },
+      { t:'अचूक मूल्यांकन',   d:'XRF चाचणीने अचूक शुद्धता मोजली जाते, आणि रीडिंग तुम्ही स्वतः पाहता.' },
+      { t:'त्वरित ट्रान्सफर',   d:'पैसे लगेच तुमच्या बँक खात्यात किंवा UPI वर, सोबत मोफत आणि सविस्तर मूल्यांकन प्रमाणपत्र.' },
+    ],
+
+    rate_title: 'आमचा खरेदी दर', rate_loading: 'लोड होत आहे…', rate_updated: 'लाइव्ह दर · {time} ला अपडेट', rate_fetching: 'लाइव्ह दर आणत आहोत…',
+    rate_unavailable: 'लाइव्ह दर सध्या उपलब्ध नाही', rate_refresh: 'दर मिनिटाला अपडेट होतो · GST सह', rate_cta: 'WhatsApp वर कोटेशन मागा',
+    gst_excl: 'GST शिवाय 24K:',
+    gst_note: 'वर दाखवलेला दर GST सह आहे. तुम्ही GST-नोंदणीकृत असाल, तर आम्ही कर क्रेडिट तुम्हाला परत देतो.',
+
+    calc_title: 'तुमच्या सोन्याची आत्ताची किंमत किती?', calc_weight: 'वजन (ग्रॅम)', calc_weight_ph: 'उदा. 10', calc_karat: 'शुद्धता निवडा',
+    calc_est: 'अंदाजे मूल्य', calc_at: '{k}K साठी ₹{rate}/ग्रॅम दराने', calc_cta: 'ही किंमत WhatsApp वर मिळवा',
+    calc_disclaimer: 'हा फक्त अंदाज आहे. अंतिम मूल्य तुमच्यासमोर XRF चाचणीनंतर निश्चित होते.',
+    calc_margin: 'दुसऱ्या खरेदीदाराकडून कोटेशन मिळाले आहे? त्यांचे मार्जिन तपासा →',
+
+    git_title: 'मोफत अपॉइंटमेंट बुक करा', git_sub: 'तुमची माहिती द्या, आम्ही WhatsApp वर वेळ निश्चित करू.',
+    git_name: 'तुमचे नाव', git_name_ph: 'उदा. प्रिया एस', git_mobile: 'मोबाइल नंबर', git_mobile_ph: '10 अंकी नंबर',
+    git_pref: 'माझी पसंती', git_doorstep: 'घरून पिकअप', git_centre: 'सेंटरला भेट',
+    git_book: 'मोफत अपॉइंटमेंट बुक करा', git_call: 'आत्ता कॉल करा',
+    git_consent: 'सबमिट करून, तुमच्या सोने विक्रीबद्दल संपर्क करण्यास तुम्ही संमती देता.',
+    git_err: 'तुमचे नाव आणि योग्य 10 अंकी मोबाइल नंबर टाका.',
+
+    why_title: 'लोक Carat Money वर विश्वास का ठेवतात',
+    why_intro: 'जुने सोने विकताना बहुतेक वेळा अंदाज, छुपी कपात आणि कागदपत्रांचा अभाव असतो. आम्ही प्रत्येक टप्पा मोजलेला, तुम्हाला दाखवलेला आणि नोंदवलेला ठेवला आहे.',
+    why_them: 'सामान्य सोने खरेदीदार', why_tag: 'भावाची हमी',
+    why_rows: [
+      { k:'शुद्धता चाचणी',        us:'XRF चाचणी, कोणतेही नुकसान न करता, रीडिंग स्क्रीनवर तुम्हाला दाखवले जाते.', them:'कसोटीच्या दगडावर चाचणी, किंवा तुम्हाला न दाखवलेले रीडिंग.' },
+      { k:'वजन',                us:'तुमच्यासमोर वजन, 0.001 ग्रॅमपर्यंत अचूक.', them:'वजन कमी करून राउंड केले जाते आणि खड्यांचा फक्त अंदाज घेतला जातो.' },
+      { k:'किंमत',               us:'लाइव्ह बाजाराशी जोडलेला दर, उघडपणे जाहीर.', them:'जुने किंवा अस्पष्ट दर, जे काउंटरवर बदलतात.' },
+      { k:'कपात',               us:'कोणतीही अतिरिक्त "वेस्टेज" कपात नाही.', them:'वेगवेगळ्या नावांनी छुपी कपात: खड्यांची जास्त कपात, वितळवताना होणारी घट, सर्व्हिस चार्ज इ.' },
+      { k:'पेमेंट',               us:'त्वरित बँक किंवा UPI ट्रान्सफर + मोफत मूल्यांकन प्रमाणपत्र.', them:'रोख, कागदपत्रे नाहीत, इनव्हॉइस नाही.' },
+      { k:'स्वीकारले जाणारे दागिने', us:'सर्व दागिने स्वीकारले जातात, तुटलेले किंवा जुने, BIS हॉलमार्क असो वा नसो. शुद्धतेची वैज्ञानिक तपासणी.', them:'हॉलमार्क नसलेले किंवा इतर ब्रँडचे दागिने नाकारले जातात.' },
+    ],
+
+    proc_title: 'Carat Money ची प्रक्रिया, 4 सोप्या टप्प्यांत', proc_sub: 'प्रत्येक टप्पा पारदर्शक, आणि सुमारे 15 मिनिटांत पूर्ण.',
+    proc_steps: [
+      { t:'Carat Money सेंटरला या किंवा घरपोच अपॉइंटमेंट बुक करा', d:'खारघरमधील आमच्या सेंटरला या, किंवा तुमच्या सोयीच्या वेळी आम्ही तुमच्या घरी येऊ.' },
+      { t:'आधुनिक मशीनद्वारे सोन्याची चाचणी', d:'तुमच्यासमोर XRF शुद्धता चाचणी आणि अचूक वजन.' },
+      { t:'विक्रीपूर्वी शुद्धता, वजन आणि लाइव्ह किंमत दाखवली जाते', d:'विकण्याचा निर्णय घेण्यापूर्वी तुम्ही प्रत्येक आकडा पाहता.' },
+      { t:'कोणताही विलंब न करता त्वरित पेमेंट', d:'ऑफर स्वीकारताच बँक किंवा UPI ट्रान्सफर.' },
+    ],
+    proc_cta: 'मोफत अंदाज मिळवा',
+
+    rev_title: 'हजारो लोक Carat Money वर विश्वास का ठेवतात', rev_sub: 'नवी मुंबईतील विक्रेते आमच्याबद्दल काय म्हणतात.',
+    rev_note: 'ग्राहकांनी हाताने लिहून दिलेल्या नोंदींवरून, आमच्या शब्दांत.', rev_who: 'Carat Money ग्राहक',
+    review_quotes: [
+      'त्यांनी XRF स्क्रीन माझ्याकडे वळवली आणि शुद्धतेचे रीडिंग मी स्वतः पाहिले. कोणताही अंदाज नाही.',
+      'दर त्यांच्या वेबसाइटवरील लाइव्ह भावाशी जुळला, आणि मी निघण्यापूर्वीच पैसे UPI वर आले.',
+      'माझी जुनी चेन तुटलेली होती आणि तिला हॉलमार्क नव्हता. तरीही त्यांनी नीट चाचणी केली आणि योग्य भाव दिला.',
+      'ठरलेल्या वेळी ते घरी आले आणि प्रत्येक दागिन्याचे मोफत मूल्यांकन प्रमाणपत्र दिले.',
+      'माझ्यासमोर शेवटच्या मिलिग्रॅमपर्यंत वजन केले. कुठेही छुपी कपात नाही.',
+    ],
+    prev: 'मागील अभिप्राय', next: 'पुढील अभिप्राय', stars: '5 पैकी 5 तारे',
+
+    faq_title: 'नेहमी विचारले जाणारे प्रश्न', faq_sub: 'सोने विकण्यापूर्वी जाणून घ्यायचे सर्व काही.',
+    faq_panel_title: 'अजून काही प्रश्न आहेत?', faq_panel_sub: 'यापैकी कशावरही संपर्क करा, दररोज सकाळी 9 ते रात्री 9.', email: 'ईमेल',
+    faqs: [
+      { q:'माझ्या सोन्याची किंमत कशी ठरते?', a:'आम्ही तुमच्या सोन्याचे वजन करतो, XRF मशीनवर शुद्धता तपासतो आणि शुद्ध सोन्याच्या प्रमाणाला या पानावर दाखवलेल्या लाइव्ह दराने गुणतो. निर्णय घेण्यापूर्वी तुम्ही प्रत्येक आकडा पाहता.' },
+      { q:'चाचणीदरम्यान माझे दागिने वितळवता किंवा खराब करता का?', a:'नाही. XRF चाचणीने कोणतेही नुकसान होत नाही, चाचणीदरम्यान तुमचे दागिने जसे आहेत तसेच राहतात.' },
+      { q:'तुम्ही मोफत घरून पिकअप देता का?', a:'हो, बंगळुरू आणि मुंबईत. आमचे प्रतिनिधी तुमच्या सोयीच्या वेळी येतात, तुमच्यासमोर सोन्याची चाचणी करतात आणि तिथेच पक्की ऑफर देतात.' },
+      { q:'अंदाज मोफत आहे का?', a:'हो. अंदाज मोफत आहे, कोणतेही बंधन नाही. ऑफर आवडली तरच विका.' },
+      { q:'काही कपात होते का?', a:'फक्त खड्यांच्या वजनाची, जे आम्ही मोजून तुम्हाला दाखवतो. कोणतीही अतिरिक्त "वेस्टेज" कपात किंवा छुपे शुल्क नाही.' },
+      { q:'माझे दागिने तुटलेले असतील किंवा हॉलमार्क नसेल तर?', a:'तुटलेले, जुने आणि हॉलमार्क नसलेले दागिनेही धरून आम्ही सर्व सोन्याचे दागिने स्वीकारतो. XRF चाचणी खरी शुद्धता सांगते, त्यामुळे तुम्हाला प्रत्यक्ष सोन्याच्या प्रमाणाचे पैसे मिळतात.' },
+      { q:'मला पेमेंट कसे मिळेल?', a:'ऑफर स्वीकारताच लगेच, बँक ट्रान्सफर किंवा UPI ने. आम्ही कधीही रोख पैसे देत नाही.' },
+      { q:'मला काही कागदपत्रे मिळतील का?', a:'हो. तुम्हाला विक्रीचे इनव्हॉइस आणि मोफत, सविस्तर मूल्यांकन प्रमाणपत्र मिळते.' },
+      { q:'चाचणीनंतर न विकता जाऊ शकतो का?', a:'हो, कोणतेही शुल्क न देता. अंतिम ऑफर स्वीकारेपर्यंत विकण्याचे कोणतेही बंधन नाही.' },
+      { q:'याला किती वेळ लागतो?', a:'सुमारे 15 मिनिटे. चाचणी, ऑफर आणि पेमेंट सर्व एकाच भेटीत होते.' },
+      { q:'कोणती कागदपत्रे लागतात?', a:'KYC साठी तुमचे आधार आणि PAN.' },
+      { q:'बँक किंवा NBFC कडे गहाण ठेवलेले सोने तुम्ही खरेदी करता का?', a:'हो. बँक किंवा NBFC कडे गहाण ठेवलेले सोने सोडवण्यासाठी आम्ही मदत करतो आणि ते आजच्या दराने खरेदी करतो. माहितीसाठी आम्हाला WhatsApp करा.' },
+    ],
+
+    visit_label: 'आमच्या सेंटरला भेट द्या', visit_title: 'Carat Money, खारघर', visit_hours: 'दररोज, सकाळी 9 ते रात्री 9', visit_dir: 'मार्ग पहा',
+
+    blog_title: 'गोल्ड इनसाइट्स', blog_sub: 'सोने विकण्यापूर्वी थेट उत्तरे.', blog_all: 'सर्व लेख पहा', blog_read: 'वाचा', blog_note: 'लेख इंग्रजीत आहेत.',
+
+    app_h: 'Carat Money, लवकरच तुमच्या खिशात.',
+    app_body: 'लाइव्ह सोन्याचा दर पहा, तुमच्या दागिन्यांचे मूल्य जाणून घ्या आणि घरून पिकअप बुक करा — सर्व एकाच ॲपमध्ये. लवकरच iOS आणि Android वर.',
+    app_soon: 'लवकरच येत आहे', app_hint: 'लॉन्चची सूचना WhatsApp वर मिळवण्यासाठी कोणत्याही बटणावर टॅप करा.',
+    app_chip1: 'XRF ने तपासलेली शुद्धता', app_chip2: 'त्वरित UPI पेमेंट',
+
+    partner_text: 'तुम्ही रेफर केलेल्या प्रत्येक ग्राहकामागे कमवा. आम्ही त्यांचे सोने खरेदी करतो, तुम्हाला कमिशन मिळते.', partner_cta: 'आमच्या पार्टनर प्रोग्राममध्ये सामील व्हा →',
+
+    f_onpage: 'या पानावर', f_explore: 'अधिक पहा', f_contact: 'संपर्क',
+    f_live: 'लाइव्ह दर', f_calc: 'मूल्य कॅल्क्युलेटर', f_why: 'आम्हीच का', f_reviews: 'अभिप्राय', f_faqs: 'प्रश्नोत्तरे', f_visit: 'आमचे सेंटर',
+    f_sell: 'सोने विका', f_buy: 'सोन्याची नाणी खरेदी करा', f_margin: 'मार्जिन कॅल्क्युलेटर', f_blog: 'ब्लॉग', f_partner: 'पार्टनर प्रोग्राम',
+    f_rights: 'सर्व हक्क राखीव.',
+    f_legal: 'या वेबसाइटवर दाखवलेले सोन्याचे दर सूचक आहेत आणि बाजारानुसार बदलतात; अंतिम किंमत तुमच्यासमोर सोन्याची चाचणी केल्यानंतर निश्चित होते. या वेबसाइटचा वापर Carat Money च्या सेवा अटी आणि गोपनीयता धोरणाच्या अधीन आहे. तुमची माहिती सबमिट करून, तुमच्या चौकशीबद्दल Carat Money ने तुमच्याशी संपर्क साधण्यास आणि त्याच उद्देशासाठी तुमची माहिती वापरण्यास तुम्ही संमती देता.',
+    wa_float: 'WhatsApp वर चॅट करा',
   },
 
   // ═══ KANNADA ═══════════════════════════════════════════════════════════════
@@ -625,7 +730,7 @@ const STR = {
     ],
     proc_cta: 'ಉಚಿತ ಅಂದಾಜು ಪಡೆಯಿರಿ',
 
-    rev_title: 'ಸಾವಿರಾರು ಜನರು Carat Money ಅನ್ನು ಏಕೆ ನಂಬುತ್ತಾರೆ', rev_sub: 'ನವಿ ಮುಂಬೈನ ಮಾರಾಟಗಾರರು ನಮ್ಮ ಬಗ್ಗೆ ಏನು ಹೇಳುತ್ತಾರೆ.', rev_sample: 'ಮಾದರಿ ವಿಮರ್ಶೆಗಳು',
+    rev_title: 'ಸಾವಿರಾರು ಜನರು Carat Money ಅನ್ನು ಏಕೆ ನಂಬುತ್ತಾರೆ', rev_sub: 'ನವಿ ಮುಂಬೈನ ಮಾರಾಟಗಾರರು ನಮ್ಮ ಬಗ್ಗೆ ಏನು ಹೇಳುತ್ತಾರೆ.', rev_note: 'ಗ್ರಾಹಕರು ಕೈಯಾರೆ ಬರೆದು ನೀಡಿದ ಟಿಪ್ಪಣಿಗಳಿಂದ, ನಮ್ಮ ಮಾತುಗಳಲ್ಲಿ.', rev_who: 'Carat Money ಗ್ರಾಹಕರು',
     review_quotes: [
       'ಅವರು XRF ಪರದೆಯನ್ನು ನನ್ನತ್ತ ತಿರುಗಿಸಿದರು, ಶುದ್ಧತೆಯ ರೀಡಿಂಗ್ ಅನ್ನು ನಾನೇ ನೋಡಿದೆ. ಯಾವುದೇ ಊಹೆ ಇಲ್ಲ.',
       'ದರ ಅವರ ವೆಬ್‌ಸೈಟ್‌ನ ಲೈವ್ ಬೆಲೆಗೆ ಹೊಂದಿಕೆಯಾಯಿತು, ನಾನು ಹೊರಡುವ ಮೊದಲೇ ಹಣ UPI ಗೆ ಬಂತು.',
@@ -640,7 +745,7 @@ const STR = {
     faqs: [
       { q:'ನನ್ನ ಚಿನ್ನದ ಬೆಲೆಯನ್ನು ಹೇಗೆ ಲೆಕ್ಕ ಹಾಕಲಾಗುತ್ತದೆ?', a:'ನಾವು ನಿಮ್ಮ ಚಿನ್ನವನ್ನು ತೂಕ ಮಾಡಿ, XRF ಯಂತ್ರದಲ್ಲಿ ಶುದ್ಧತೆಯನ್ನು ಪರೀಕ್ಷಿಸಿ, ಶುದ್ಧ ಚಿನ್ನದ ಪ್ರಮಾಣವನ್ನು ಈ ಪುಟದಲ್ಲಿ ತೋರಿಸಿರುವ ಲೈವ್ ದರದಿಂದ ಗುಣಿಸುತ್ತೇವೆ. ನಿರ್ಧರಿಸುವ ಮೊದಲು ಪ್ರತಿಯೊಂದು ಅಂಕಿಯನ್ನೂ ನೀವು ನೋಡುತ್ತೀರಿ.' },
       { q:'ಪರೀಕ್ಷೆಯ ವೇಳೆ ನನ್ನ ಆಭರಣವನ್ನು ಕರಗಿಸುತ್ತೀರಾ ಅಥವಾ ಹಾನಿ ಮಾಡುತ್ತೀರಾ?', a:'ಇಲ್ಲ. XRF ಪರೀಕ್ಷೆಯಿಂದ ಯಾವುದೇ ಹಾನಿಯಾಗುವುದಿಲ್ಲ, ಪರೀಕ್ಷೆಯ ವೇಳೆ ನಿಮ್ಮ ಆಭರಣ ಇದ್ದ ಹಾಗೆಯೇ ಇರುತ್ತದೆ.' },
-      { q:'ನೀವು ಮನೆಯಿಂದ ಪಿಕಪ್ ಮಾಡುತ್ತೀರಾ?', a:'ಹೌದು, ಬೆಂಗಳೂರು ಮತ್ತು ಮುಂಬೈನಲ್ಲಿ. ನಮ್ಮ ಸಿಬ್ಬಂದಿ ನಿಮಗೆ ಅನುಕೂಲವಾದ ಸಮಯಕ್ಕೆ ಬಂದು, ನಿಮ್ಮ ಮುಂದೆಯೇ ಚಿನ್ನವನ್ನು ಪರೀಕ್ಷಿಸಿ, ಅಲ್ಲೇ ಖಚಿತ ಆಫರ್ ನೀಡುತ್ತಾರೆ.' },
+      { q:'ನೀವು ಉಚಿತವಾಗಿ ಮನೆಯಿಂದ ಪಿಕಪ್ ಮಾಡುತ್ತೀರಾ?', a:'ಹೌದು, ಬೆಂಗಳೂರು ಮತ್ತು ಮುಂಬೈನಲ್ಲಿ. ನಮ್ಮ ಸಿಬ್ಬಂದಿ ನಿಮಗೆ ಅನುಕೂಲವಾದ ಸಮಯಕ್ಕೆ ಬಂದು, ನಿಮ್ಮ ಮುಂದೆಯೇ ಚಿನ್ನವನ್ನು ಪರೀಕ್ಷಿಸಿ, ಅಲ್ಲೇ ಖಚಿತ ಆಫರ್ ನೀಡುತ್ತಾರೆ.' },
       { q:'ಅಂದಾಜು ಉಚಿತವೇ?', a:'ಹೌದು. ಅಂದಾಜು ಉಚಿತ, ಯಾವುದೇ ಬದ್ಧತೆ ಇಲ್ಲ. ಆಫರ್ ಇಷ್ಟವಾದರೆ ಮಾತ್ರ ಮಾರಾಟ ಮಾಡಿ.' },
       { q:'ಯಾವುದಾದರೂ ಕಡಿತ ಇದೆಯೇ?', a:'ಕಲ್ಲುಗಳ ತೂಕ ಮಾತ್ರ, ಅದನ್ನು ನಾವು ಅಳೆದು ನಿಮಗೆ ತೋರಿಸುತ್ತೇವೆ. ಯಾವುದೇ ಹೆಚ್ಚುವರಿ "ವೇಸ್ಟೇಜ್" ಕಡಿತ ಅಥವಾ ಮರೆಮಾಚಿದ ಶುಲ್ಕವಿಲ್ಲ.' },
       { q:'ನನ್ನ ಆಭರಣ ಮುರಿದಿದ್ದರೆ ಅಥವಾ ಹಾಲ್‌ಮಾರ್ಕ್ ಇಲ್ಲದಿದ್ದರೆ?', a:'ಮುರಿದ, ಹಳೆಯ ಮತ್ತು ಹಾಲ್‌ಮಾರ್ಕ್ ಇಲ್ಲದ ಆಭರಣಗಳನ್ನೂ ಸೇರಿ ಎಲ್ಲಾ ಚಿನ್ನಾಭರಣಗಳನ್ನು ನಾವು ಸ್ವೀಕರಿಸುತ್ತೇವೆ. XRF ಪರೀಕ್ಷೆ ನಿಜವಾದ ಶುದ್ಧತೆಯನ್ನು ತಿಳಿಸುತ್ತದೆ, ಹಾಗಾಗಿ ನಿಜವಾದ ಚಿನ್ನದ ಪ್ರಮಾಣಕ್ಕೆ ನಿಮಗೆ ಹಣ ಸಿಗುತ್ತದೆ.' },
@@ -699,9 +804,10 @@ function useLangState() {
 const GLOBAL_CSS = `
   :root { --f-serif:'Fraunces', Georgia, serif; --f-sans:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; --f-mono:'JetBrains Mono', 'Courier New', monospace; }
   :root[lang="hi"] { --f-serif:'Fraunces', 'Noto Sans Devanagari', Georgia, serif; --f-sans:'Inter', 'Noto Sans Devanagari', -apple-system, BlinkMacSystemFont, sans-serif; --f-mono:'JetBrains Mono', 'Noto Sans Devanagari', monospace; }
+  :root[lang="mr"] { --f-serif:'Fraunces', 'Noto Sans Devanagari', Georgia, serif; --f-sans:'Inter', 'Noto Sans Devanagari', -apple-system, BlinkMacSystemFont, sans-serif; --f-mono:'JetBrains Mono', 'Noto Sans Devanagari', monospace; }
   :root[lang="kn"] { --f-serif:'Fraunces', 'Noto Sans Kannada', Georgia, serif; --f-sans:'Inter', 'Noto Sans Kannada', -apple-system, BlinkMacSystemFont, sans-serif; --f-mono:'JetBrains Mono', 'Noto Sans Kannada', monospace; }
-  :root[lang="hi"] body *, :root[lang="kn"] body * { letter-spacing:0!important; }
-  :root[lang="hi"] h1, :root[lang="hi"] h2, :root[lang="hi"] h3, :root[lang="kn"] h1, :root[lang="kn"] h2, :root[lang="kn"] h3 { line-height:1.35!important; }
+  :root[lang="hi"] body *, :root[lang="mr"] body *, :root[lang="kn"] body * { letter-spacing:0!important; }
+  :root[lang="hi"] h1, :root[lang="hi"] h2, :root[lang="hi"] h3, :root[lang="mr"] h1, :root[lang="mr"] h2, :root[lang="mr"] h3, :root[lang="kn"] h1, :root[lang="kn"] h2, :root[lang="kn"] h3 { line-height:1.35!important; }
 
   * { -webkit-tap-highlight-color:transparent; box-sizing:border-box; }
   html { scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
@@ -760,11 +866,10 @@ const GLOBAL_CSS = `
   @media (min-width:768px)  { .hero-mark-svg { width:140px; } }
   @media (min-width:1024px) { .hero-mark-svg { width:220px; } }
   .hero-text { text-align:center; }
-  .hero-eyebrow { justify-content:center; }
   .hero-h1 { font-family:var(--f-serif); font-weight:350; font-size:clamp(34px, 5.4vw, 62px); line-height:1.04; letter-spacing:-0.025em; color:${C.ink}; margin:0 0 14px; }
   .hero-ctas { display:flex; flex-direction:column; gap:10px; margin:24px 0 18px; }
   @media (min-width:600px)  { .hero-ctas { flex-direction:row; justify-content:center; } }
-  @media (min-width:1024px) { .hero-text { text-align:left; } .hero-ctas { justify-content:flex-start; } .hero-eyebrow { justify-content:flex-start; } .hero-eyebrow .ln-r { display:none; } }
+  @media (min-width:1024px) { .hero-text { text-align:left; } .hero-ctas { justify-content:flex-start; } }
 
   /* hero tiles: compact strip on phones, cards from tablet up */
   .tiles { display:grid; grid-template-columns:repeat(3,1fr); margin-top:28px; background:${C.white}; border:1px solid rgba(26,20,38,.1); border-radius:8px; box-shadow:0 2px 12px rgba(22,18,31,.06); }
@@ -787,16 +892,15 @@ const GLOBAL_CSS = `
   .rc-grid { display:grid; gap:16px; }
   @media (min-width:1024px) { .rc-grid { grid-template-columns:5fr 7fr; gap:24px; } }
   .karats { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; }
-  .git { display:grid; background:${C.plum}; border:1px solid rgba(224,183,101,.2); border-radius:8px; overflow:hidden; margin-top:16px; box-shadow:0 8px 32px rgba(43,20,80,.18); }
-  @media (min-width:1024px) { .git { grid-template-columns:300px 1fr; margin-top:24px; } }
-  .git-img { position:relative; min-height:100%; }
+  .git { display:grid; background:${C.plum}; border:1px solid rgba(224,183,101,.2); border-radius:8px; margin-top:16px; box-shadow:0 8px 32px rgba(43,20,80,.18); }
+  @media (min-width:1024px) { .git { grid-template-columns:40% 1fr; margin-top:24px; } }
+  .git-img { position:relative; min-height:100%; overflow:hidden; border-radius:7px 0 0 7px; }
   .git-body { padding:24px 20px; }
   @media (min-width:768px) { .git-body { padding:32px; } }
   .git-fields { display:grid; gap:14px; grid-template-columns:1fr; }
   @media (min-width:768px)  { .git-fields { grid-template-columns:1fr 1fr; } .git-fields .git-pref { grid-column:1 / -1; } }
-  @media (min-width:1024px) { .git-fields { grid-template-columns:1fr 1fr 1.15fr; } .git-fields .git-pref { grid-column:auto; } }
-  .git-actions { display:grid; gap:10px; grid-template-columns:1fr; margin-top:18px; }
-  @media (min-width:768px) { .git-actions { grid-template-columns:auto auto 1fr; align-items:center; gap:12px; } }
+    .git-actions { display:grid; gap:10px; grid-template-columns:1fr; margin-top:18px; }
+  @media (min-width:768px) { .git-actions { grid-template-columns:auto auto; justify-content:start; align-items:center; gap:12px; } .git-actions .git-consent { grid-column:1 / -1; } }
   .seg { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
 
   /* process: vertical timeline on phones, a row with a gold line on desktop */
@@ -990,7 +1094,7 @@ function CallPicker({ variant = 'outline', label, full = false, align = 'right',
 
 // ─── EN | हिं | ಕ switch ──────────────────────────────────────────────────────
 // Each label uses its own script's font, so "हिं" and "ಕ" render properly on every page.
-const LANG_FONT = { en: MONO, hi: "'Noto Sans Devanagari', sans-serif", kn: "'Noto Sans Kannada', sans-serif" };
+const LANG_FONT = { en: MONO, hi: "'Noto Sans Devanagari', sans-serif", mr: "'Noto Sans Devanagari', sans-serif", kn: "'Noto Sans Kannada', sans-serif" };
 function LangSwitch({ size = 'sm' }) {
   const { lang, setLang } = useT();
   return (
@@ -1099,12 +1203,19 @@ function TopBar({ spot, navigate, showLang = false }) {
   );
 }
 
+// ─── "Carat Money" with Money in italics (brand rule) ──────────────────────
+function Brand({ text, color = C.plum }) {
+  const i = String(text).indexOf('Carat Money');
+  if (i < 0) return text;
+  return <>{text.slice(0, i)}Carat <span style={{ fontStyle:'italic', color }}>Money</span>{text.slice(i + 11)}</>;
+}
+
 // ─── Section heading ─────────────────────────────────────────────────────────
 function SectionHead({ title, lead, align = 'center', children }) {
   const centre = align === 'center';
   return (
     <div style={{ textAlign:align, maxWidth: centre ? '720px' : 'none', margin: centre ? '0 auto 32px' : '0 0 24px' }}>
-      <h2 className="cm-h2" style={{ color:C.ink }}>{title}</h2>
+      <h2 className="cm-h2" style={{ color:C.ink }}><Brand text={title}/></h2>
       {lead && <p style={{ fontFamily:SANS, fontSize:'15px', color:C.mute, lineHeight:1.6, margin:'12px 0 0' }}>{lead}</p>}
       {children}
     </div>
@@ -1128,13 +1239,6 @@ function Hero({ navigate }) {
       <div className="cm-wrap">
         <div className="hero-grid">
           <div className="hero-text">
-            <div className="hero-eyebrow" style={{ display:'flex', alignItems:'center', gap:'10px', marginBottom:'18px' }}>
-              <span style={line}/>
-              <span style={{ fontFamily: en ? MONO : SANS, fontSize: en ? '10px' : '13px', letterSpacing: en ? '0.2em' : 0, textTransform: en ? 'uppercase' : 'none', color:C.gold, fontWeight: en ? 500 : 600 }}>
-                {t('hero_eyebrow')}
-              </span>
-              <span className="ln-r" style={line}/>
-            </div>
             <h1 className="hero-h1">{h[0]}<span style={{ fontStyle:'italic', color:C.plum }}>{h[1]}</span>{h[2]}</h1>
             <p style={{ fontFamily:SERIF, fontSize:'clamp(20px, 2.4vw, 26px)', fontWeight:350, color:C.gold, margin:'0 0 16px', lineHeight:1.3 }}>{t('hero_sub')}</p>
             <div style={{ display:'inline-flex', alignItems:'center', gap:'8px', fontFamily:SANS, fontSize:'14px', fontWeight:600, color:C.ink2, lineHeight:1.45, textAlign:'left' }}>
@@ -1160,6 +1264,13 @@ function Hero({ navigate }) {
               <HeroMark/>
               <div style={{ position:'relative', fontFamily:SERIF, fontSize:'clamp(30px, 3.2vw, 42px)', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1.05, marginTop:'14px' }}>
                 Carat <span style={{ fontStyle:'italic', color:C.plum }}>Money</span>
+              </div>
+              <div style={{ position:'relative', display:'flex', alignItems:'center', justifyContent:'center', gap:'10px', marginTop:'12px' }}>
+                <span style={line}/>
+                <span style={{ fontFamily: en ? MONO : SANS, fontSize: en ? '10px' : '13px', letterSpacing: en ? '0.2em' : 0, textTransform: en ? 'uppercase' : 'none', color:C.gold, fontWeight: en ? 500 : 600, whiteSpace:'nowrap' }}>
+                  {t('hero_eyebrow')}
+                </span>
+                <span style={line}/>
               </div>
             </div>
           </div>
@@ -1337,8 +1448,8 @@ function GetInTouch() {
   return (
     <div id="book" className="git">
       <div className="git-img hide-lt-lg">
-        <img src="/img-sell.jpg" alt="" width="1310" height="701" loading="lazy" decoding="async" style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover' }}/>
-        <div style={{ position:'absolute', inset:0, background:`linear-gradient(90deg, rgba(43,20,80,0) 50%, ${C.plum})` }}/>
+        <img src="/img-sell.jpg" alt="" width="1310" height="701" loading="lazy" decoding="async" style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'30% 25%' }}/>
+        <div style={{ position:'absolute', inset:0, background:`linear-gradient(90deg, rgba(43,20,80,0) 75%, ${C.plum})` }}/>
       </div>
       <div className="git-body">
         <h2 style={{ fontFamily:SERIF, fontSize:'clamp(24px, 3vw, 30px)', fontWeight:350, color:C.gold3, margin:'0 0 6px', letterSpacing:'-0.02em', lineHeight:1.15 }}>{t('git_title')}</h2>
@@ -1365,7 +1476,7 @@ function GetInTouch() {
         <div className="git-actions">
           <BtnWhatsApp onClick={onBook}><WhatsAppGlyph size={18} color={C.white}/> {t('git_book')}</BtnWhatsApp>
           <CallPicker variant="outline" full label={t('git_call')} source="get_in_touch" align="left"/>
-          <div style={{ fontFamily:SANS, fontSize:'12px', color:'rgba(241,215,141,.45)', lineHeight:1.5 }}>{t('git_consent')}</div>
+          <div className="git-consent" style={{ fontFamily:SANS, fontSize:'12px', color:'rgba(241,215,141,.45)', lineHeight:1.5 }}>{t('git_consent')}</div>
         </div>
         {tried && !valid && <div role="alert" style={{ marginTop:'10px', fontFamily:SANS, fontSize:'13px', color:'#FCA5A5', fontWeight:500 }}>{t('git_err')}</div>}
       </div>
@@ -1544,11 +1655,7 @@ function Reviews() {
     <section id="reviews" className="cm-sec">
       <div className="cm-wrap">
         <SectionHead title={t('rev_title')} lead={t('rev_sub')}>
-          {REVIEWS_ARE_SAMPLES && (
-            <span style={{ display:'inline-block', marginTop:'12px', padding:'4px 12px', borderRadius:'999px', border:'1px dashed rgba(184,136,58,.6)', color:C.gold, fontFamily:SANS, fontSize:'12px', fontWeight:600 }}>
-              {t('rev_sample')}
-            </span>
-          )}
+          {!SHOW_REVIEWER_NAMES && <p style={{ fontFamily:SANS, fontSize:'12px', color:C.mute, margin:'8px 0 0', fontStyle:'italic' }}>{t('rev_note')}</p>}
         </SectionHead>
         <div ref={trackRef} className="rv-track">
           {REVIEWERS.map((r, i) => (
@@ -1558,14 +1665,23 @@ function Reviews() {
                 <p style={{ position:'relative', fontFamily:SANS, fontSize:'15px', lineHeight:1.65, color:C.ink2, margin:0 }}>“{quotes[i]}”</p>
               </blockquote>
               <figcaption style={{ background:C.paper, padding:'14px 22px', display:'flex', alignItems:'center', gap:'12px', borderTop:'1px solid rgba(26,20,38,.06)' }}>
-                <div aria-hidden="true" style={{ width:'42px', height:'42px', borderRadius:'50%', background:C.plum, color:C.gold3, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:SERIF, fontSize:'16px', flexShrink:0, border:'1px solid rgba(224,183,101,.4)' }}>{initials(r.n)}</div>
-                <div style={{ minWidth:0 }}>
-                  <div style={{ fontFamily:SANS, fontWeight:600, fontSize:'15px', color:C.ink }}>{r.n}</div>
-                  <div style={{ fontFamily:SANS, fontSize:'13px', color:C.mute }}>{r.l}</div>
-                </div>
-                <div role="img" aria-label={t('stars')} style={{ marginLeft:'auto', display:'flex', gap:'2px', flexShrink:0 }}>
-                  {[0,1,2,3,4].map(s => <Star key={s} size={14} fill={C.gold2} color={C.gold2}/>)}
-                </div>
+                {SHOW_REVIEWER_NAMES ? (
+                  <>
+                    <div aria-hidden="true" style={{ width:'42px', height:'42px', borderRadius:'50%', background:C.plum, color:C.gold3, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:SERIF, fontSize:'16px', flexShrink:0, border:'1px solid rgba(224,183,101,.4)' }}>{initials(r.n)}</div>
+                    <div style={{ minWidth:0 }}>
+                      <div style={{ fontFamily:SANS, fontWeight:600, fontSize:'15px', color:C.ink }}>{r.n}</div>
+                      <div style={{ fontFamily:SANS, fontSize:'13px', color:C.mute }}>{r.l}</div>
+                    </div>
+                    <div role="img" aria-label={t('stars')} style={{ marginLeft:'auto', display:'flex', gap:'2px', flexShrink:0 }}>
+                      {[0,1,2,3,4].map(s => <Star key={s} size={14} fill={C.gold2} color={C.gold2}/>)}
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <CaratMark size={22} color={C.gold} showDots={false}/>
+                    <div style={{ fontFamily:SANS, fontWeight:600, fontSize:'14px', color:C.ink2 }}><Brand text={t('rev_who')}/></div>
+                  </>
+                )}
               </figcaption>
             </figure>
           ))}
@@ -1645,7 +1761,7 @@ function VisitUs() {
           </div>
           <div style={{ padding:'24px 22px', display:'flex', flexDirection:'column', gap:'14px' }}>
             <div style={{ fontFamily: lang === 'en' ? MONO : SANS, fontSize: lang === 'en' ? '10px' : '13px', letterSpacing: lang === 'en' ? '0.18em' : 0, textTransform: lang === 'en' ? 'uppercase' : 'none', color:C.gold, fontWeight:500 }}>{t('visit_label')}</div>
-            <h2 style={{ fontFamily:SERIF, fontSize:'clamp(26px, 3vw, 32px)', fontWeight:350, color:C.ink, margin:0, letterSpacing:'-0.02em', lineHeight:1.15 }}>{t('visit_title')}</h2>
+            <h2 style={{ fontFamily:SERIF, fontSize:'clamp(26px, 3vw, 32px)', fontWeight:350, color:C.ink, margin:0, letterSpacing:'-0.02em', lineHeight:1.15 }}><Brand text={t('visit_title')}/></h2>
             <div style={row}><MapPin size={18} color={C.gold} style={{ flexShrink:0, marginTop:'2px' }}/><address style={{ fontStyle:'normal' }}>{ADDRESS}</address></div>
             <div style={row}><Clock size={18} color={C.gold} style={{ flexShrink:0, marginTop:'2px' }}/>{t('visit_hours')}</div>
             <div style={row}><Mail size={18} color={C.gold} style={{ flexShrink:0, marginTop:'2px' }}/><a href={`mailto:${EMAIL}`} style={{ color:C.ink2, textDecoration:'none', wordBreak:'break-all' }}>{EMAIL}</a></div>
@@ -1773,7 +1889,7 @@ function AppSoon({ spot }) {
       <div className="cm-wrap">
         <div className="app-grid">
           <div className="app-text">
-            <h2 className="cm-h2" style={{ color:C.ink }}>{t('app_h')}</h2>
+            <h2 className="cm-h2" style={{ color:C.ink }}><Brand text={t('app_h')}/></h2>
             <p style={{ fontFamily:SANS, fontSize:'16px', color:C.mute, lineHeight:1.65, margin:'14px 0 0', maxWidth:'520px', marginLeft:'auto', marginRight:'auto' }} className="app-body">{t('app_body')}</p>
             <div className="app-btns">
               {['iOS', 'Android'].map(p => (
