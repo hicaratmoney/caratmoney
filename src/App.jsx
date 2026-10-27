@@ -100,29 +100,39 @@ function HeroMark() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  // Phones: loops every 5 s like the original (the hallmark sits above the headline, clear of the calculator).
+  // Desktop: plays once per visit, because the bar crosses the calculator. If the visitor isn't at the top
+  // when it's due, it waits and plays the first time they're back at the top.
+  // Plays whatever the phone's "Reduce Motion" setting, as the original did.
   useEffect(() => {
-    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    let raf, cycleTimer;
+    if (window.__CM_STILL__) return;   // test hook only
+    let raf, cycleTimer, initialTimer, running = false, played = false;
+    const desk    = () => window.innerWidth >= 1024;
+    const measure = el => { const r = el.getBoundingClientRect(); return { cx: r.left + r.width / 2, cy: r.top + r.height / 2, w: r.width, vw: window.innerWidth }; };
     const run = () => {
       const el = wrapRef.current;
-      if (!el || window.scrollY > 10) return;
-      const r = el.getBoundingClientRect();
-      if (!r.width) return;
-      setGeo({ cx: r.left + r.width / 2, cy: r.top + r.height / 2, w: r.width, vw: window.innerWidth });
+      if (!el || running || window.scrollY > 10 || document.hidden) return;
+      if (!el.getBoundingClientRect().width) return;
+      running = true; played = true;
+      setGeo(measure(el));
       setPhase('running');
       const start = performance.now();
       const animate = now => {
         const elapsed = now - start;
-        const rr = el.getBoundingClientRect();
-        const tx = document.querySelector('.hero-text'); setGeo({ cx: rr.left + rr.width / 2, cy: rr.top + rr.height / 2, w: rr.width, vw: window.innerWidth, tr: tx ? tx.getBoundingClientRect().right : 0 });
+        setGeo(measure(el));                     // re-measured every frame so the bar stays on the hallmark
         setTick(Math.min(elapsed / TOTAL_MS, 1));
         if (elapsed < TOTAL_MS) raf = requestAnimationFrame(animate);
-        else { setTick(1); setPhase('idle'); }
+        else { setTick(1); setPhase('idle'); running = false; }
       };
       raf = requestAnimationFrame(animate);
     };
-    const initialTimer = setTimeout(run, START_MS);   // plays once per visit; a shimmer takes over after
-    return () => { clearTimeout(initialTimer); clearInterval(cycleTimer); cancelAnimationFrame(raf); };
+    const onTop = () => { if (!played && desk() && window.scrollY <= 10) run(); };
+    initialTimer = setTimeout(() => {
+      run();
+      if (desk()) window.addEventListener('scroll', onTop, { passive:true });
+      else cycleTimer = setInterval(run, CYCLE_MS);
+    }, START_MS);
+    return () => { clearTimeout(initialTimer); clearInterval(cycleTimer); cancelAnimationFrame(raf); window.removeEventListener('scroll', onTop); };
   }, []);
 
   const t      = tick;
@@ -130,7 +140,7 @@ function HeroMark() {
   let bar = null, rupee = null, cmGlow = false;
 
   if (active) {
-    const { cx, cy, w, vw, tr = 0 } = geo;
+    const { cx, cy, w, vw } = geo;
     const z        = Math.min(1.5, Math.max(1, w / 110));   // size factor vs the 110px phone logo
     const ovalHalf = (88 / 200) * w;
     const approach = 70 * z;
