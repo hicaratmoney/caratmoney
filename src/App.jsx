@@ -25,6 +25,7 @@ const C = {
   gold:    '#b8883a',
   gold2:   '#e0b765',
   gold3:   '#f1d78d',
+  goldInk: '#8a6420',   // darker gold for small text on light backgrounds (4.8:1 contrast)
   mute:    '#7a6f62',
   white:   '#ffffff',
   green:   '#25D366',
@@ -113,7 +114,7 @@ function HeroMark() {
       };
       raf = requestAnimationFrame(animate);
     };
-    const initialTimer = setTimeout(() => { run(); cycleTimer = setInterval(run, CYCLE_MS); }, START_MS);
+    const initialTimer = setTimeout(run, START_MS);   // plays once per visit; a shimmer takes over after
     return () => { clearTimeout(initialTimer); clearInterval(cycleTimer); cancelAnimationFrame(raf); };
   }, []);
 
@@ -129,7 +130,8 @@ function HeroMark() {
     const BAR_W    = 76 * z;
     const BAR_H    = 44 * z;
     const barEndT  = 0.55;
-    const startX   = -BAR_W / 2;
+    const desk     = vw >= 1024;                          // desktop: start in the gap, never over the headline
+    const startX   = desk ? cx - ovalHalf - BAR_W / 2 - 300 : -BAR_W / 2;
     const endX     = cx - ovalHalf - BAR_W / 2;
     const barX     = startX + Math.min(t / barEndT, 1) * (endX - startX);
     const barRight = barX + BAR_W / 2;
@@ -137,7 +139,8 @@ function HeroMark() {
     let k = 1;
     if (dist < approach && dist >= 0) k = dist / approach;
     if (dist < 0) k = 0;
-    if (t < barEndT && k > 0.02) bar = { x: barX, y: cy, w: BAR_W * k, h: BAR_H * k, d: 10 * z * k, k, z };
+    const fadeIn   = desk ? Math.min(1, t / 0.12) : 1;
+    if (t < barEndT && k > 0.02) bar = { x: barX, y: cy, w: BAR_W * k, h: BAR_H * k, d: 10 * z * k, k, z, o: fadeIn };
     cmGlow = barRight > (cx - ovalHalf - approach) && t < 0.78 && t > 0;
 
     if (t >= 0.55 && t <= 0.97) {
@@ -167,6 +170,7 @@ function HeroMark() {
         <circle cx="100" cy="36"  r="2" fill={color}/>
         <circle cx="100" cy="224" r="2" fill={color}/>
       </svg>
+      <span className="cm-shimmer" aria-hidden="true"/>
 
       {active && (
         <svg aria-hidden="true" style={{ position:'fixed', top:0, left:0, width:'100vw', height:'100vh', pointerEvents:'none', zIndex:999, overflow:'visible' }}>
@@ -197,7 +201,7 @@ function HeroMark() {
             const topPoints   = `${x+inset},${y} ${x+w-inset},${y} ${x+w-inset+d},${y-d} ${x+inset+d},${y-d}`;
             const sidePoints  = `${x+w},${y+h} ${x+w+d},${y+h-d} ${x+w-inset+d},${y-d} ${x+w-inset},${y}`;
             return (
-              <g>
+              <g opacity={bar.o}>
                 <polygon points={frontPoints} fill="url(#cmBarFace)"/>
                 <polygon points={topPoints}   fill="url(#cmBarTop)"/>
                 <polygon points={sidePoints}  fill="url(#cmBarSide)"/>
@@ -232,6 +236,62 @@ const blankOrnament = () => ({ id: makeId(), gross:'', stone:'', wastage:'', pur
 const fmtRange = v => v >= 100000 ? `~₹${(v/100000).toFixed(2)} L` : `~₹${(v/1000).toFixed(2)} K`;
 const fmtTime       = d => d ? d.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' }) : null;
 const copyToClipboard = async t => { try { await navigator.clipboard.writeText(t); return true; } catch { return false; } };
+
+// ─── Motion helpers ──────────────────────────────────────────────────────────
+const prefersReduced = () => typeof window !== 'undefined' && !!window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// Elements with class "rv" fade + rise into place the first time they scroll into view.
+function useRevealOnScroll(deps = []) {
+  useEffect(() => {
+    document.documentElement.classList.add('cm-motion');
+    const els = [...document.querySelectorAll('.rv:not([data-in])')];
+    if (prefersReduced() || !('IntersectionObserver' in window)) { els.forEach(el => el.setAttribute('data-in', '')); return; }
+    const io = new IntersectionObserver(entries => entries.forEach(e => {
+      if (e.isIntersecting) { e.target.setAttribute('data-in', ''); io.unobserve(e.target); }
+    }), { threshold:0.12, rootMargin:'0px 0px -6% 0px' });
+    els.forEach(el => io.observe(el));
+    return () => io.disconnect();
+  }, deps);
+}
+const stagger = (i, step = 70) => ({ '--d': `${i * step}ms` });
+
+// Smoothly rolls a number to its new value (easeOutCubic).
+function useTween(target, ms = 450) {
+  const [val, setVal] = useState(target);
+  const from = useRef(target);
+  useEffect(() => {
+    if (target === null || target === undefined) { from.current = 0; setVal(target); return; }
+    if (prefersReduced()) { from.current = target; setVal(target); return; }
+    const start = performance.now(), a = from.current ?? 0;
+    let raf;
+    const step = now => {
+      const p = Math.min(1, (now - start) / ms), e = 1 - Math.pow(1 - p, 3);
+      const v = a + (target - a) * e;
+      setVal(v); from.current = v;
+      if (p < 1) raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [target, ms]);
+  return val;
+}
+
+// Counts every number inside a sentence up from zero, once, e.g. "5,000+ customers · ₹100Cr+".
+function CountUp({ text, ms = 1400, delay = 300 }) {
+  const [p, setP] = useState(prefersReduced() ? 1 : 0);
+  useEffect(() => {
+    if (prefersReduced()) return;
+    let raf; const t0 = performance.now() + delay;
+    const step = now => { const q = Math.max(0, Math.min(1, (now - t0) / ms)); setP(1 - Math.pow(1 - q, 3)); if (q < 1) raf = requestAnimationFrame(step); };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [text]);
+  if (p >= 1) return text;
+  return String(text).replace(/\d[\d,]*(\.\d+)?/g, m => {
+    const dec = (m.split('.')[1] || '').length, n = parseFloat(m.replace(/,/g, '')) * p;
+    return n.toLocaleString('en-IN', { minimumFractionDigits:dec, maximumFractionDigits:dec });
+  });
+}
 
 // ─── Contact, WhatsApp, analytics & lead capture ──────────────────────────────
 const WA_MSG  = "Hi. I'm interested in selling gold.";
@@ -397,7 +457,7 @@ const STR = {
     git_pref: 'I prefer', git_doorstep: 'Doorstep pickup', git_centre: 'Visit our centre',
     git_book: 'Book free appointment', git_call: 'Call now',
     git_consent: 'By submitting, you agree to be contacted about your gold sale.',
-    git_err: 'Enter your name and a valid 10-digit mobile number.',
+    git_err: 'Enter your name and a valid 10-digit mobile number.', git_done_t: 'Request received', git_done_d: "We've opened WhatsApp with your details. Tap send there and we'll confirm your slot shortly.", git_again: 'Book another appointment',
 
     why_title: 'Why people trust Carat Money',
     why_intro: 'Selling old gold usually means guesswork, hidden cuts and no paperwork. We built every step to be measured, shown to you and documented.',
@@ -500,7 +560,7 @@ const STR = {
     git_pref: 'मुझे पसंद है', git_doorstep: 'घर से पिकअप', git_centre: 'सेंटर पर आना',
     git_book: 'मुफ़्त अपॉइंटमेंट बुक करें', git_call: 'अभी कॉल करें',
     git_consent: 'सबमिट करके, आप अपने सोने की बिक्री के बारे में संपर्क किए जाने के लिए सहमत हैं।',
-    git_err: 'अपना नाम और सही 10 अंकों का मोबाइल नंबर डालें।',
+    git_err: 'अपना नाम और सही 10 अंकों का मोबाइल नंबर डालें।', git_done_t: 'अनुरोध मिल गया', git_done_d: 'हमने आपकी जानकारी के साथ WhatsApp खोला है। वहाँ भेजें दबाएँ, हम जल्द ही आपका समय पक्का करेंगे।', git_again: 'एक और अपॉइंटमेंट बुक करें',
 
     why_title: 'लोग Carat Money पर भरोसा क्यों करते हैं',
     why_intro: 'पुराना सोना बेचने में अक्सर अंदाज़ा, छिपी कटौतियाँ और कोई कागज़ात नहीं होते। हमने हर कदम को मापा हुआ, आपको दिखाया हुआ और दस्तावेज़ों के साथ बनाया है।',
@@ -603,7 +663,7 @@ const STR = {
     git_pref: 'माझी पसंती', git_doorstep: 'घरून पिकअप', git_centre: 'सेंटरला भेट',
     git_book: 'मोफत अपॉइंटमेंट बुक करा', git_call: 'आत्ता कॉल करा',
     git_consent: 'सबमिट करून, तुमच्या सोने विक्रीबद्दल संपर्क करण्यास तुम्ही संमती देता.',
-    git_err: 'तुमचे नाव आणि योग्य 10 अंकी मोबाइल नंबर टाका.',
+    git_err: 'तुमचे नाव आणि योग्य 10 अंकी मोबाइल नंबर टाका.', git_done_t: 'विनंती मिळाली', git_done_d: 'तुमच्या माहितीसह आम्ही WhatsApp उघडले आहे. तिथे पाठवा दाबा, आम्ही लवकरच तुमची वेळ निश्चित करू.', git_again: 'आणखी एक अपॉइंटमेंट बुक करा',
 
     why_title: 'लोक Carat Money वर विश्वास का ठेवतात',
     why_intro: 'जुने सोने विकताना बहुतेक वेळा अंदाज, छुपी कपात आणि कागदपत्रांचा अभाव असतो. आम्ही प्रत्येक टप्पा मोजलेला, तुम्हाला दाखवलेला आणि नोंदवलेला ठेवला आहे.',
@@ -707,7 +767,7 @@ const STR = {
     git_pref: 'ನನ್ನ ಆಯ್ಕೆ', git_doorstep: 'ಮನೆಯಿಂದ ಪಿಕಪ್', git_centre: 'ಕೇಂದ್ರಕ್ಕೆ ಭೇಟಿ',
     git_book: 'ಉಚಿತ ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್ ಬುಕ್ ಮಾಡಿ', git_call: 'ಈಗ ಕರೆ ಮಾಡಿ',
     git_consent: 'ಸಲ್ಲಿಸುವ ಮೂಲಕ, ನಿಮ್ಮ ಚಿನ್ನ ಮಾರಾಟದ ಕುರಿತು ನಿಮ್ಮನ್ನು ಸಂಪರ್ಕಿಸಲು ನೀವು ಒಪ್ಪುತ್ತೀರಿ.',
-    git_err: 'ನಿಮ್ಮ ಹೆಸರು ಮತ್ತು ಸರಿಯಾದ 10 ಅಂಕಿಯ ಮೊಬೈಲ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ.',
+    git_err: 'ನಿಮ್ಮ ಹೆಸರು ಮತ್ತು ಸರಿಯಾದ 10 ಅಂಕಿಯ ಮೊಬೈಲ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ.', git_done_t: 'ವಿನಂತಿ ಸ್ವೀಕರಿಸಲಾಗಿದೆ', git_done_d: 'ನಿಮ್ಮ ವಿವರಗಳೊಂದಿಗೆ WhatsApp ತೆರೆಯಲಾಗಿದೆ. ಅಲ್ಲಿ ಕಳುಹಿಸಿ ಒತ್ತಿ, ನಾವು ಶೀಘ್ರದಲ್ಲೇ ನಿಮ್ಮ ಸಮಯವನ್ನು ದೃಢಪಡಿಸುತ್ತೇವೆ.', git_again: 'ಇನ್ನೊಂದು ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್ ಬುಕ್ ಮಾಡಿ',
 
     why_title: 'ಜನರು Carat Money ಅನ್ನು ಏಕೆ ನಂಬುತ್ತಾರೆ',
     why_intro: 'ಹಳೆಯ ಚಿನ್ನ ಮಾರುವಾಗ ಸಾಮಾನ್ಯವಾಗಿ ಊಹೆ, ಮರೆಮಾಚಿದ ಕಡಿತಗಳು ಮತ್ತು ದಾಖಲೆಗಳ ಕೊರತೆ ಇರುತ್ತದೆ. ನಾವು ಪ್ರತಿಯೊಂದು ಹಂತವನ್ನೂ ಅಳೆದು, ನಿಮಗೆ ತೋರಿಸಿ, ದಾಖಲಿಸುವಂತೆ ರೂಪಿಸಿದ್ದೇವೆ.',
@@ -834,6 +894,22 @@ const GLOBAL_CSS = `
     *, *::before, *::after { animation-duration:.01ms!important; animation-iteration-count:1!important; transition-duration:.01ms!important; }
   }
 
+  /* motion: reveal on scroll (only once JS is running, so content is never hidden without it) */
+  .cm-motion .rv { opacity:0; transform:translateY(20px); transition:opacity .5s cubic-bezier(.2,.7,.2,1), transform .5s cubic-bezier(.2,.7,.2,1); transition-delay:var(--d, 0ms); will-change:opacity, transform; }
+  .cm-motion .rv[data-in] { opacity:1; transform:none; }
+  @keyframes shimmer { 0%, 72% { transform:translateX(-130%) skewX(-18deg); } 100% { transform:translateX(230%) skewX(-18deg); } }
+  .hero-mark-svg { overflow:hidden; border-radius:50%; }
+  .cm-shimmer { position:absolute; top:0; left:0; width:45%; height:100%; pointer-events:none; background:linear-gradient(90deg, rgba(255,255,255,0), rgba(255,246,214,.55), rgba(255,255,255,0)); animation:shimmer 7s ease-in-out 4.2s infinite; transform:translateX(-130%) skewX(-18deg); mix-blend-mode:soft-light; }
+  @keyframes popIn  { 0% { transform:scale(.6); opacity:0; } 70% { transform:scale(1.08); opacity:1; } 100% { transform:scale(1); } }
+  @keyframes glowGreen { 0% { box-shadow:0 0 0 0 rgba(37,211,102,.55); } 100% { box-shadow:0 0 0 16px rgba(37,211,102,0); } }
+  @keyframes dotPing { 0% { box-shadow:0 0 0 0 rgba(37,211,102,.7); } 100% { box-shadow:0 0 0 8px rgba(37,211,102,0); } }
+  .lift { transition:transform .25s cubic-bezier(.2,.7,.2,1), box-shadow .25s; }
+  @media (hover:hover) { .lift:hover { transform:translateY(-3px); box-shadow:0 12px 28px rgba(22,18,31,.12)!important; } }
+  @media (hover:hover) { button:not(:disabled):hover, a.btn-like:hover { filter:brightness(1.05); } }
+  button, a { transition:filter .2s, background-color .2s, color .2s, box-shadow .2s; }
+  .tb-navlink.on { color:${C.gold3}!important; box-shadow:inset 0 -2px 0 ${C.gold2}; border-radius:4px 4px 0 0; }
+  .tb-progress { position:absolute; left:0; bottom:-1px; height:2px; width:100%; background:linear-gradient(90deg, ${C.gold}, ${C.gold3}); transform-origin:left; transform:scaleX(0); }
+
   /* show / hide by screen size */
   @media (max-width:767.98px)  { .hide-m { display:none!important; } }
   @media (min-width:768px)     { .hide-d { display:none!important; } }
@@ -907,12 +983,16 @@ const GLOBAL_CSS = `
   .proc { display:grid; }
   .proc-step { display:grid; grid-template-columns:44px 1fr; gap:16px; position:relative; padding-bottom:28px; }
   .proc-step:last-child { padding-bottom:0; }
-  .proc-step:not(:last-child)::after { content:''; position:absolute; left:21.5px; top:50px; bottom:4px; width:1px; background:rgba(184,136,58,.45); }
+  .proc-step:not(:last-child)::after { content:''; position:absolute; left:21.5px; top:50px; bottom:4px; width:1px; background:rgba(184,136,58,.55); transform-origin:top; transition:transform .7s cubic-bezier(.2,.7,.2,1); transition-delay:calc(var(--d, 0ms) + 250ms); }
+  .cm-motion .proc-step.rv:not([data-in])::after { transform:scaleY(0); }
+  .proc-num { transition:box-shadow .5s, background .5s; transition-delay:calc(var(--d, 0ms) + 150ms); }
+  .cm-motion .proc-step.rv[data-in] .proc-num { box-shadow:0 0 0 6px rgba(224,183,101,.18); }
   .proc-num { width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:${C.plum}; color:${C.gold3}; font-family:var(--f-serif); font-size:20px; border:1px solid rgba(224,183,101,.35); position:relative; z-index:1; }
   @media (min-width:1024px) {
     .proc { grid-template-columns:repeat(4,1fr); gap:28px; }
     .proc-step { grid-template-columns:1fr; justify-items:center; align-content:start; text-align:center; padding-bottom:0; }
-    .proc-step:not(:last-child)::after { left:calc(50% + 30px); right:calc(-50% + 2px); top:22px; bottom:auto; width:auto; height:1px; }
+    .proc-step:not(:last-child)::after { left:calc(50% + 30px); right:calc(-50% + 2px); top:22px; bottom:auto; width:auto; height:1px; transform-origin:left; }
+    .cm-motion .proc-step.rv:not([data-in])::after { transform:scaleX(0); }
   }
 
   /* reviews carousel */
@@ -1116,6 +1196,28 @@ function LangSwitch({ size = 'sm' }) {
 function TopBar({ spot, navigate, showLang = false }) {
   const { t } = useT();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [active, setActive]     = useState('');
+  const barRef = useRef(null);
+  // thin gold progress line + highlight the section you're in (homepage only)
+  useEffect(() => {
+    if (!showLang) return;
+    let raf = 0;
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        const h = document.documentElement.scrollHeight - window.innerHeight;
+        if (barRef.current) barRef.current.style.transform = `scaleX(${h > 0 ? Math.min(1, window.scrollY / h) : 0})`;
+        const ids = ['calculator', 'why', 'process', 'reviews', 'faqs'];
+        let cur = '';
+        for (const id of ids) { const el = document.getElementById(id); if (el && el.getBoundingClientRect().top < window.innerHeight * 0.4) cur = id; }
+        setActive(cur);
+      });
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive:true });
+    return () => { window.removeEventListener('scroll', onScroll); cancelAnimationFrame(raf); };
+  }, [showLang]);
   const r24   = spot.display ?? SPOT_FALLBACK;
   const close = () => setMenuOpen(false);
   const go    = id => { close(); goSection(id, navigate); };
@@ -1151,13 +1253,13 @@ function TopBar({ spot, navigate, showLang = false }) {
         </a>
         <button type="button" onClick={() => go('rate')} aria-label={`24K live rate ₹${fmt(r24,0)} per gram`}
           style={{ display:'flex', alignItems:'center', gap:'5px', padding:'5px 10px', borderRadius:'999px', background:'rgba(0,0,0,.22)', border:'1px solid rgba(224,183,101,.2)', fontFamily:MONO, fontSize:'11px', whiteSpace:'nowrap', flexShrink:0, cursor:'pointer' }}>
-          <span style={{ width:'6px', height:'6px', borderRadius:'50%', background:C.green }}/>
+          <span key={r24} style={{ width:'6px', height:'6px', borderRadius:'50%', background:C.green, animation:'dotPing 1.2s ease-out 1' }}/>
           <span style={{ color:'rgba(241,215,141,.7)' }}>24K</span>
           <span className="tb-live" style={{ color:C.gold2 }}>live</span>
           <span style={{ color:C.gold3 }}>₹{fmt(r24,0)}/g</span>
         </button>
         <nav className="tb-links" aria-label="Sections" style={{ display:'flex', alignItems:'center', gap:'2px', marginLeft:'6px' }}>
-          {links.map(([id, label]) => <button key={id} type="button" className="tb-navlink" onClick={() => go(id)}>{label}</button>)}
+          {links.map(([id, label]) => <button key={id} type="button" className={`tb-navlink${active === id ? ' on' : ''}`} aria-current={active === id ? 'true' : undefined} onClick={() => go(id)}>{label}</button>)}
           <Link to="/blog" navigate={navigate} className="tb-navlink" style={{ display:'inline-block' }}>{t('nav_blog')}</Link>
         </nav>
         <div style={{ marginLeft:'auto', display:'flex', alignItems:'center', gap:'8px', flexShrink:0 }}>
@@ -1174,6 +1276,7 @@ function TopBar({ spot, navigate, showLang = false }) {
         </div>
       </div>
 
+      {showLang && <div ref={barRef} className="tb-progress" aria-hidden="true"/>}
       {menuOpen && (
         <>
           <div onClick={close} style={{ position:'fixed', top:'56px', left:0, right:0, bottom:0, background:'rgba(22,18,31,.45)', animation:'fadeIn .2s ease' }}/>
@@ -1214,7 +1317,7 @@ function Brand({ text, color = C.plum }) {
 function SectionHead({ title, lead, align = 'center', children }) {
   const centre = align === 'center';
   return (
-    <div style={{ textAlign:align, maxWidth: centre ? '720px' : 'none', margin: centre ? '0 auto 32px' : '0 0 24px' }}>
+    <div className="rv" style={{ textAlign:align, maxWidth: centre ? '720px' : 'none', margin: centre ? '0 auto 32px' : '0 0 24px' }}>
       <h2 className="cm-h2" style={{ color:C.ink }}><Brand text={title}/></h2>
       {lead && <p style={{ fontFamily:SANS, fontSize:'15px', color:C.mute, lineHeight:1.6, margin:'12px 0 0' }}>{lead}</p>}
       {children}
@@ -1238,7 +1341,7 @@ function Hero({ navigate }) {
     <section id="top" className="hero">
       <div className="cm-wrap">
         <div className="hero-grid">
-          <div className="hero-text">
+          <div className="hero-text rv" style={stagger(1)}>
             <h1 className="hero-h1">{h[0]}<span style={{ fontStyle:'italic', color:C.plum }}>{h[1]}</span>{h[2]}</h1>
             <p style={{ fontFamily:SERIF, fontSize:'clamp(20px, 2.4vw, 26px)', fontWeight:350, color:C.gold, margin:'0 0 16px', lineHeight:1.3 }}>{t('hero_sub')}</p>
             <div style={{ display:'inline-flex', alignItems:'center', gap:'8px', fontFamily:SANS, fontSize:'14px', fontWeight:600, color:C.ink2, lineHeight:1.45, textAlign:'left' }}>
@@ -1254,11 +1357,11 @@ function Hero({ navigate }) {
               </button>
             </div>
             <div style={{ fontFamily: en ? MONO : SANS, fontSize:'12px', color:C.mute, letterSpacing: en ? '0.04em' : 0, lineHeight:1.8 }}>
-              {t('hero_stats')}<br/>{t('hero_pickup')}
+              <CountUp text={t('hero_stats')}/><br/>{t('hero_pickup')}
             </div>
           </div>
 
-          <div className="hero-visual">
+          <div className="hero-visual rv">
             <div style={{ position:'relative', display:'flex', flexDirection:'column', alignItems:'center' }}>
               <div aria-hidden="true" style={{ position:'absolute', left:'50%', top:'42%', width:'340px', height:'340px', transform:'translate(-50%,-50%)', borderRadius:'50%', background:'radial-gradient(circle, rgba(224,183,101,.22) 0%, rgba(224,183,101,0) 65%)', pointerEvents:'none' }}/>
               <HeroMark/>
@@ -1278,7 +1381,7 @@ function Hero({ navigate }) {
 
         <div className="tiles">
           {tiles.map((x, i) => (
-            <div className="tile" key={i}>
+            <div className="tile rv lift" key={i} style={stagger(i + 3, 90)}>
               <div className="tile-ic">{icons[i]}</div>
               <div><div className="tile-t">{x.t}</div><div className="tile-d">{x.d}</div></div>
             </div>
@@ -1300,15 +1403,17 @@ function RateCard({ spot }) {
   const selRate = selectedKarat === '22' ? r22 : r18;
   const preGST  = Math.round(r24 / 1.03);
   const time    = fmtTime(spot.updatedAt);
+  const r24A    = useTween(r24, 700);
+  const selA    = useTween(selRate, 450);
   return (
-    <Card dark style={{ display:'flex', flexDirection:'column', height:'100%' }}>
+    <Card dark className="rv" style={{ display:'flex', flexDirection:'column', height:'100%' }}>
       <h2 style={{ fontFamily:SERIF, fontSize:'26px', fontWeight:350, color:C.gold2, letterSpacing:'-0.02em', lineHeight:1.1, margin:'0 0 12px' }}>{t('rate_title')}</h2>
       {spot.loading && !spot.display
         ? <span style={{ fontFamily:SERIF, fontSize:'40px', color:'rgba(241,215,141,.4)', letterSpacing:'-0.02em' }}>{t('rate_loading')}</span>
         : (
           <>
             <div style={{ display:'flex', alignItems:'baseline', gap:'6px', marginBottom:'12px', flexWrap:'wrap' }}>
-              <span style={{ fontFamily:SERIF, fontSize:'clamp(32px, 9vw, 56px)', fontWeight:350, lineHeight:1, letterSpacing:'-0.03em', color:C.gold3, whiteSpace:'nowrap' }}>₹{fmt(r24,0)}</span>
+              <span style={{ fontFamily:SERIF, fontSize:'clamp(32px, 9vw, 56px)', fontWeight:350, lineHeight:1, letterSpacing:'-0.03em', color:C.gold3, whiteSpace:'nowrap' }}>₹{fmt(Math.round(r24A),0)}</span>
               <span style={{ fontFamily:SANS, fontSize:'13px', color:'rgba(241,215,141,.6)', whiteSpace:'nowrap' }}>/g · 24K</span>
             </div>
             <div style={{ display:'flex', alignItems:'center', gap:'12px', padding:'12px 0', borderTop:'1px solid rgba(224,183,101,.15)', borderBottom:'1px solid rgba(224,183,101,.15)' }}>
@@ -1318,12 +1423,12 @@ function RateCard({ spot }) {
                 <option value="18" style={{ background:C.plum }}>18K</option>
               </select>
               <div style={{ display:'flex', alignItems:'baseline', gap:'4px' }}>
-                <span style={{ fontFamily:SERIF, fontSize:'clamp(18px, 5vw, 24px)', fontWeight:350, color:C.gold2, letterSpacing:'-0.02em', whiteSpace:'nowrap' }}>₹{fmt(selRate,0)}</span>
+                <span style={{ fontFamily:SERIF, fontSize:'clamp(18px, 5vw, 24px)', fontWeight:350, color:C.gold2, letterSpacing:'-0.02em', whiteSpace:'nowrap' }}>₹{fmt(Math.round(selA),0)}</span>
                 <span style={{ fontFamily:SANS, fontSize:'12px', color:'rgba(241,215,141,.5)', whiteSpace:'nowrap' }}>/g · {selectedKarat}K</span>
               </div>
             </div>
             <div style={{ display:'flex', alignItems:'center', gap:'8px', marginTop:'10px' }}>
-              <div style={{ fontFamily:SERIF, fontSize:'12px', color:'rgba(241,215,141,.45)', fontStyle:'italic', flex:1 }}>
+              <div style={{ fontFamily:SERIF, fontSize:'12px', color:'rgba(241,215,141,.7)', fontStyle:'italic', flex:1 }}>
                 {spot.error && !spot.updatedAt ? t('rate_unavailable') : time ? fill(t('rate_updated'), { time }) : t('rate_fetching')}
               </div>
               <button type="button" onClick={() => setShowGstTip(v => !v)} aria-expanded={showGstTip} aria-label="GST details"
@@ -1342,7 +1447,7 @@ function RateCard({ spot }) {
             <WhatsAppGlyph size={16}/> {t('rate_cta')}
           </BtnPrimary>
         </div>
-        <div style={{ display:'flex', alignItems:'center', gap:'6px', fontFamily:SANS, fontSize:'12px', color:'rgba(241,215,141,.45)' }}>
+        <div style={{ display:'flex', alignItems:'center', gap:'6px', fontFamily:SANS, fontSize:'12px', color:'rgba(241,215,141,.7)' }}>
           <Zap size={12} strokeWidth={2.5}/> {t('rate_refresh')}
         </div>
       </div>
@@ -1359,6 +1464,7 @@ function ValueCalculator({ spot, navigate }) {
   const rate  = k === 24 ? r24 : Math.round(r24 * k / 24);
   const wN    = parseNum(w);
   const value = wN !== null && wN > 0 ? wN * rate : null;
+  const shown = useTween(value ?? 0, 450);
   const onW = v => {
     const s = v.replace(',', '.');
     if (s === '' || /^\d{0,5}(\.\d{0,3})?$/.test(s)) setW(s);
@@ -1374,7 +1480,7 @@ function ValueCalculator({ spot, navigate }) {
     openWA(lines.join('\n'), 'calculator');
   };
   return (
-    <Card id="calculator" style={{ display:'flex', flexDirection:'column' }}>
+    <Card id="calculator" className="rv" style={{ display:'flex', flexDirection:'column', ...stagger(1) }}>
       <h2 style={{ fontFamily:SERIF, fontSize:'clamp(24px, 3vw, 30px)', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1.15, margin:'0 0 20px' }}>{t('calc_title')}</h2>
       <label htmlFor="calc-w" style={LBL}>{t('calc_weight')}</label>
       <div style={{ position:'relative', marginBottom:'18px' }}>
@@ -1397,18 +1503,18 @@ function ValueCalculator({ spot, navigate }) {
         <div style={{ minWidth:0 }}>
           <div style={{ fontFamily:SANS, fontSize:'13px', fontWeight:600, color:C.mute, marginBottom:'4px' }}>{t('calc_est')}</div>
           <div data-testid="calc-value" style={{ fontFamily:SERIF, fontSize:'clamp(30px, 5vw, 42px)', fontWeight:350, color: value ? C.plum : 'rgba(43,20,80,.3)', letterSpacing:'-0.03em', lineHeight:1.05, whiteSpace:'nowrap' }}>
-            ₹{value ? fmt(value,0) : '0'}
+            ₹{value ? fmt(Math.round(shown),0) : '0'}
           </div>
           <div style={{ fontFamily:SANS, fontSize:'12px', color:C.mute, marginTop:'6px' }}>{fill(t('calc_at'), { rate: fmt(rate,0), k })}</div>
         </div>
         <CaratMark size={34} color={C.gold} showDots={false} style={{ flexShrink:0, opacity:.8 }}/>
       </div>
-      <div style={{ marginTop:'16px' }}>
+      <div style={{ marginTop:'16px', borderRadius:'999px', animation: value !== null ? 'glowGreen .9s ease-out 1' : 'none' }}>
         <BtnWhatsApp onClick={onCTA} disabled={value === null}><WhatsAppGlyph size={18} color={C.white}/> {t('calc_cta')}</BtnWhatsApp>
       </div>
       <div style={{ fontFamily:SANS, fontSize:'12px', color:C.mute, marginTop:'12px', lineHeight:1.5, textAlign:'center' }}>{t('calc_disclaimer')}</div>
       <div style={{ textAlign:'center', marginTop:'10px' }}>
-        <Link to="/margin" navigate={navigate} style={{ display:'inline', fontFamily:SANS, fontSize:'13px', color:C.gold, fontWeight:600 }}>{t('calc_margin')}</Link>
+        <Link to="/margin" navigate={navigate} style={{ display:'inline', fontFamily:SANS, fontSize:'13px', color:C.goldInk, fontWeight:600 }}>{t('calc_margin')}</Link>
       </div>
     </Card>
   );
@@ -1422,6 +1528,7 @@ function GetInTouch() {
   const [pref, setPref]     = useState('');
   const [hp, setHp]         = useState('');   // spam trap — real visitors never see it
   const [tried, setTried]   = useState(false);
+  const [sent, setSent]     = useState(false);
   const valid  = name.trim().length >= 2 && /^[6-9]\d{9}$/.test(mobile);
   const prefEn = pref === 'doorstep' ? 'Doorstep pickup' : pref === 'centre' ? 'Visit centre' : 'Not specified';
   const LBLD   = { ...LBL, color:'rgba(241,215,141,.85)' };
@@ -1433,6 +1540,7 @@ function GetInTouch() {
     track('generate_lead', { preference:prefEn });
     const lines = ["Hi Carat Money — I'd like to book a free appointment.", '', `Name: ${name.trim()}`, `Phone: +91${mobile}`, `Preference: ${prefEn}`];
     openWA(lines.join('\n'), 'book_appointment');
+    setSent(true);
   };
 
   const chip = (key, label) => {
@@ -1446,11 +1554,20 @@ function GetInTouch() {
   };
 
   return (
-    <div id="book" className="git">
+    <div id="book" className="git rv">
       <div className="git-img hide-lt-lg">
         <img src="/img-sell.jpg" alt="" width="1310" height="701" loading="lazy" decoding="async" style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'30% 25%' }}/>
         <div style={{ position:'absolute', inset:0, background:`linear-gradient(90deg, rgba(43,20,80,0) 75%, ${C.plum})` }}/>
       </div>
+      {sent ? (
+      <div className="git-body" role="status" style={{ display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'flex-start', gap:'12px', minHeight:'260px', animation:'fadeSlide .45s ease' }}>
+        <div style={{ width:'56px', height:'56px', borderRadius:'50%', background:C.green, display:'flex', alignItems:'center', justifyContent:'center', animation:'popIn .5s cubic-bezier(.2,.7,.2,1) both' }}><Check size={30} color={C.white} strokeWidth={3}/></div>
+        <h2 style={{ fontFamily:SERIF, fontSize:'clamp(24px, 3vw, 30px)', fontWeight:350, color:C.gold3, margin:0, letterSpacing:'-0.02em', lineHeight:1.15 }}>{t('git_done_t')}</h2>
+        <p style={{ fontFamily:SANS, fontSize:'15px', color:'rgba(241,215,141,.8)', margin:0, lineHeight:1.6, maxWidth:'520px' }}>{t('git_done_d')}</p>
+        <button type="button" onClick={() => { setSent(false); setName(''); setMobile(''); setPref(''); setTried(false); }}
+          style={{ marginTop:'6px', background:'none', border:'none', padding:0, color:C.gold2, fontFamily:SANS, fontSize:'14px', fontWeight:600, cursor:'pointer', textDecoration:'underline', textUnderlineOffset:'3px' }}>{t('git_again')}</button>
+      </div>
+      ) : (
       <div className="git-body">
         <h2 style={{ fontFamily:SERIF, fontSize:'clamp(24px, 3vw, 30px)', fontWeight:350, color:C.gold3, margin:'0 0 6px', letterSpacing:'-0.02em', lineHeight:1.15 }}>{t('git_title')}</h2>
         <p style={{ fontFamily:SANS, fontSize:'14px', color:'rgba(241,215,141,.65)', margin:'0 0 20px', lineHeight:1.55 }}>{t('git_sub')}</p>
@@ -1476,10 +1593,11 @@ function GetInTouch() {
         <div className="git-actions">
           <BtnWhatsApp onClick={onBook}><WhatsAppGlyph size={18} color={C.white}/> {t('git_book')}</BtnWhatsApp>
           <CallPicker variant="outline" full label={t('git_call')} source="get_in_touch" align="left"/>
-          <div className="git-consent" style={{ fontFamily:SANS, fontSize:'12px', color:'rgba(241,215,141,.45)', lineHeight:1.5 }}>{t('git_consent')}</div>
+          <div className="git-consent" style={{ fontFamily:SANS, fontSize:'12px', color:'rgba(241,215,141,.7)', lineHeight:1.5 }}>{t('git_consent')}</div>
         </div>
         {tried && !valid && <div role="alert" style={{ marginTop:'10px', fontFamily:SANS, fontSize:'13px', color:'#FCA5A5', fontWeight:500 }}>{t('git_err')}</div>}
       </div>
+      )}
     </div>
   );
 }
@@ -1511,7 +1629,7 @@ function TrustCompare() {
     <section id="why" className="cm-sec">
       <div className="cm-wrap">
         <SectionHead title={t('why_title')} lead={t('why_intro')}/>
-        <div style={{ background:C.plum, borderRadius:'10px', border:'1px solid rgba(224,183,101,.2)', boxShadow:'0 12px 40px rgba(43,20,80,.22)', padding:'clamp(16px, 3vw, 36px)' }}>
+        <div className="rv" style={{ background:C.plum, borderRadius:'10px', border:'1px solid rgba(224,183,101,.2)', boxShadow:'0 12px 40px rgba(43,20,80,.22)', padding:'clamp(16px, 3vw, 36px)' }}>
 
           {/* desktop table */}
           <div className="hide-lt-lg">
@@ -1530,7 +1648,7 @@ function TrustCompare() {
             {rows.map((r, i) => {
               const I = TRUST_ICONS[i];
               return (
-                <div key={i} style={{ display:'grid', gridTemplateColumns:'1fr 200px 1fr', gap:'0 20px', alignItems:'stretch', padding:'8px 0' }}>
+                <div key={i} className="rv" style={{ display:'grid', gridTemplateColumns:'1fr 200px 1fr', gap:'0 20px', alignItems:'stretch', padding:'8px 0', ...stagger(i, 90) }}>
                   <div style={usBox}><Check size={18} color={C.green} style={{ flexShrink:0, marginTop:'3px' }}/><span>{r.us}</span></div>
                   <div style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:'8px', textAlign:'center' }}>
                     <TrustIcon I={I}/>
@@ -1560,7 +1678,7 @@ function TrustCompare() {
                 const I = TRUST_ICONS[i];
                 const isOpen = open === i;
                 return (
-                  <div key={i} style={{ borderTop: i ? '1px solid rgba(224,183,101,.14)' : 'none' }}>
+                  <div key={i} className="rv" style={{ borderTop: i ? '1px solid rgba(224,183,101,.14)' : 'none', ...stagger(i, 70) }}>
                     <button type="button" onClick={() => setOpen(isOpen ? -1 : i)} aria-expanded={isOpen}
                       style={{ width:'100%', display:'flex', alignItems:'center', gap:'12px', padding:'14px', background:'none', border:'none', cursor:'pointer', color:C.white, fontFamily:SANS, fontSize:'15px', fontWeight:600, textAlign:'left' }}>
                       <TrustIcon I={I} size={38}/>
@@ -1598,7 +1716,7 @@ function Process() {
         <SectionHead title={t('proc_title')} lead={t('proc_sub')}/>
         <div className="proc">
           {steps.map((s, i) => (
-            <div className="proc-step" key={i}>
+            <div className="proc-step rv" key={i} style={stagger(i, 160)}>
               <div className="proc-num">{i + 1}</div>
               <div>
                 <h3 style={{ fontFamily:SANS, fontSize:'16px', fontWeight:600, color:C.ink, lineHeight:1.4, margin:'2px 0 6px' }}>{s.t}</h3>
@@ -1657,9 +1775,9 @@ function Reviews() {
         <SectionHead title={t('rev_title')} lead={t('rev_sub')}>
           {!SHOW_REVIEWER_NAMES && <p style={{ fontFamily:SANS, fontSize:'12px', color:C.mute, margin:'8px 0 0', fontStyle:'italic' }}>{t('rev_note')}</p>}
         </SectionHead>
-        <div ref={trackRef} className="rv-track">
+        <div ref={trackRef} className="rv-track rv">
           {REVIEWERS.map((r, i) => (
-            <figure key={r.n} className="rv-card" style={{ margin:0, background:C.white, border:'1px solid rgba(26,20,38,.1)', borderRadius:'8px', overflow:'hidden', boxShadow:'0 2px 12px rgba(22,18,31,.06)', display:'flex', flexDirection:'column' }}>
+            <figure key={r.n} className="rv-card lift" style={{ margin:0, background:C.white, border:'1px solid rgba(26,20,38,.1)', borderRadius:'8px', overflow:'hidden', boxShadow:'0 2px 12px rgba(22,18,31,.06)', display:'flex', flexDirection:'column' }}>
               <blockquote style={{ margin:0, padding:'26px 22px 20px', position:'relative', flex:1 }}>
                 <Quote size={44} color={C.gold2} aria-hidden="true" style={{ position:'absolute', top:'14px', left:'14px', opacity:.2 }}/>
                 <p style={{ position:'relative', fontFamily:SANS, fontSize:'15px', lineHeight:1.65, color:C.ink2, margin:0 }}>“{quotes[i]}”</p>
@@ -1711,7 +1829,7 @@ function FAQSection() {
     <section id="faqs" className="cm-sec" style={{ background:C.white, borderTop:'1px solid rgba(26,20,38,.06)', borderBottom:'1px solid rgba(26,20,38,.06)' }}>
       <div className="cm-wrap">
         <div className="faq-grid">
-          <aside className="faq-panel" style={{ background:C.plum, borderRadius:'10px', padding:'28px 24px', border:'1px solid rgba(224,183,101,.2)', boxShadow:'0 12px 40px rgba(43,20,80,.2)' }}>
+          <aside className="faq-panel rv" style={{ background:C.plum, borderRadius:'10px', padding:'28px 24px', border:'1px solid rgba(224,183,101,.2)', boxShadow:'0 12px 40px rgba(43,20,80,.2)' }}>
             <div aria-hidden="true" style={{ width:'48px', height:'48px', borderRadius:'50%', border:'1.5px solid rgba(224,183,101,.6)', color:C.gold2, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:SERIF, fontSize:'26px', marginBottom:'16px' }}>?</div>
             <h3 style={{ fontFamily:SERIF, fontSize:'26px', fontWeight:350, color:C.gold3, margin:'0 0 8px', letterSpacing:'-0.02em', lineHeight:1.15 }}>{t('faq_panel_title')}</h3>
             <p style={{ fontFamily:SANS, fontSize:'14px', color:'rgba(241,215,141,.65)', lineHeight:1.6, margin:'0 0 20px' }}>{t('faq_panel_sub')}</p>
@@ -1725,7 +1843,7 @@ function FAQSection() {
               </a>
             </div>
           </aside>
-          <div>
+          <div className="rv" style={stagger(1)}>
             <h2 className="cm-h2" style={{ color:C.ink }}>{t('faq_title')}</h2>
             <p style={{ fontFamily:SANS, fontSize:'15px', color:C.mute, lineHeight:1.6, margin:'10px 0 22px' }}>{t('faq_sub')}</p>
             {faqs.map((f, i) => {
@@ -1755,12 +1873,12 @@ function VisitUs() {
   return (
     <section id="visit" className="cm-sec">
       <div className="cm-wrap">
-        <div className="visit">
+        <div className="visit rv">
           <div className="visit-map">
             <iframe title="Carat Money on Google Maps" src={MAP_EMBED} loading="lazy" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen/>
           </div>
           <div style={{ padding:'24px 22px', display:'flex', flexDirection:'column', gap:'14px' }}>
-            <div style={{ fontFamily: lang === 'en' ? MONO : SANS, fontSize: lang === 'en' ? '10px' : '13px', letterSpacing: lang === 'en' ? '0.18em' : 0, textTransform: lang === 'en' ? 'uppercase' : 'none', color:C.gold, fontWeight:500 }}>{t('visit_label')}</div>
+            <div style={{ fontFamily: lang === 'en' ? MONO : SANS, fontSize: lang === 'en' ? '10px' : '13px', letterSpacing: lang === 'en' ? '0.18em' : 0, textTransform: lang === 'en' ? 'uppercase' : 'none', color:C.goldInk, fontWeight:500 }}>{t('visit_label')}</div>
             <h2 style={{ fontFamily:SERIF, fontSize:'clamp(26px, 3vw, 32px)', fontWeight:350, color:C.ink, margin:0, letterSpacing:'-0.02em', lineHeight:1.15 }}><Brand text={t('visit_title')}/></h2>
             <div style={row}><MapPin size={18} color={C.gold} style={{ flexShrink:0, marginTop:'2px' }}/><address style={{ fontStyle:'normal' }}>{ADDRESS}</address></div>
             <div style={row}><Clock size={18} color={C.gold} style={{ flexShrink:0, marginTop:'2px' }}/>{t('visit_hours')}</div>
@@ -1780,23 +1898,23 @@ function VisitUs() {
 }
 
 // ─── 8. Blog cards (homepage teaser + /blog grid) ────────────────────────────
-function BlogCard({ a, navigate, readLabel = 'Read', clamp = 2 }) {
+function BlogCard({ a, navigate, readLabel = 'Read', clamp = 2, i = 0 }) {
   return (
-    <Link to={`/blog/${a.slug}`} navigate={navigate} className="blog-card"
-      style={{ background:C.white, borderRadius:'8px', border:'1px solid rgba(26,20,38,.1)', boxShadow:'0 2px 12px rgba(22,18,31,.06)', overflow:'hidden', display:'flex', flexDirection:'column', height:'100%' }}>
+    <Link to={`/blog/${a.slug}`} navigate={navigate} className="blog-card rv"
+      style={{ background:C.white, borderRadius:'8px', border:'1px solid rgba(26,20,38,.1)', boxShadow:'0 2px 12px rgba(22,18,31,.06)', overflow:'hidden', display:'flex', flexDirection:'column', height:'100%', ...stagger(i, 90) }}>
       {a.cover
         ? <img src={a.cover} alt="" loading="lazy" style={{ width:'100%', aspectRatio:'16 / 9', objectFit:'cover', display:'block' }}/>
         : <div style={{ height:'3px', background:`linear-gradient(90deg, ${C.gold}, ${C.gold3})` }}/>}
       <div style={{ padding:'22px', display:'flex', flexDirection:'column', flex:1 }}>
         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', gap:'8px', marginBottom:'12px' }}>
-          <div style={{ fontFamily:MONO, fontSize:'9px', fontWeight:500, letterSpacing:'0.16em', color:C.gold, textTransform:'uppercase' }}>{a.category}</div>
+          <div style={{ fontFamily:MONO, fontSize:'9px', fontWeight:500, letterSpacing:'0.16em', color:C.goldInk, textTransform:'uppercase' }}>{a.category}</div>
           <div style={{ fontFamily:MONO, fontSize:'9px', color:C.mute, letterSpacing:'0.08em', whiteSpace:'nowrap' }}>{a.readTime}</div>
         </div>
         <h3 style={{ fontFamily:SERIF, fontSize:'21px', fontWeight:350, lineHeight:1.25, letterSpacing:'-0.015em', margin:'0 0 10px', color:C.ink }}>{a.title}</h3>
         <p style={{ fontFamily:SANS, fontSize:'14px', color:C.mute, lineHeight:1.6, margin:'0 0 16px', display:'-webkit-box', WebkitLineClamp:clamp, WebkitBoxOrient:'vertical', overflow:'hidden' }}>{a.excerpt}</p>
         <div style={{ marginTop:'auto', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
           <div style={{ fontFamily:MONO, fontSize:'10px', color:C.mute, letterSpacing:'0.06em' }}>{a.date}</div>
-          <div style={{ fontFamily:MONO, fontSize:'11px', color:C.gold, fontWeight:500, letterSpacing:'0.08em', textTransform:'uppercase' }}>{readLabel} →</div>
+          <div style={{ fontFamily:MONO, fontSize:'11px', color:C.goldInk, fontWeight:500, letterSpacing:'0.08em', textTransform:'uppercase' }}>{readLabel} →</div>
         </div>
       </div>
     </Link>
@@ -1815,12 +1933,12 @@ function BlogTeaser({ navigate }) {
               {t('blog_sub')}{lang !== 'en' && t('blog_note') ? ` ${t('blog_note')}` : ''}
             </p>
           </div>
-          <Link to="/blog" navigate={navigate} style={{ display:'inline-flex', alignItems:'center', gap:'6px', fontFamily:SANS, fontSize:'14px', fontWeight:600, color:C.gold, whiteSpace:'nowrap' }}>
+          <Link to="/blog" navigate={navigate} style={{ display:'inline-flex', alignItems:'center', gap:'6px', fontFamily:SANS, fontSize:'14px', fontWeight:600, color:C.goldInk, whiteSpace:'nowrap' }}>
             {t('blog_all')} →
           </Link>
         </div>
         <div className="blog-grid teaser">
-          {ARTICLES_SORTED.slice(0, 3).map(a => <BlogCard key={a.slug} a={a} navigate={navigate} readLabel={t('blog_read')}/>)}
+          {ARTICLES_SORTED.slice(0, 3).map((a, i) => <BlogCard key={a.slug} a={a} i={i} navigate={navigate} readLabel={t('blog_read')}/>)}
         </div>
       </div>
     </section>
@@ -1888,7 +2006,7 @@ function AppSoon({ spot }) {
     <section id="app" className="cm-sec" style={{ overflow:'hidden' }}>
       <div className="cm-wrap">
         <div className="app-grid">
-          <div className="app-text">
+          <div className="app-text rv">
             <h2 className="cm-h2" style={{ color:C.ink }}><Brand text={t('app_h')}/></h2>
             <p style={{ fontFamily:SANS, fontSize:'16px', color:C.mute, lineHeight:1.65, margin:'14px 0 0', maxWidth:'520px', marginLeft:'auto', marginRight:'auto' }} className="app-body">{t('app_body')}</p>
             <div className="app-btns">
@@ -1905,7 +2023,7 @@ function AppSoon({ spot }) {
             </div>
             <div style={{ fontFamily:SANS, fontSize:'12px', color:C.mute, marginTop:'12px' }}>{t('app_hint')}</div>
           </div>
-          <div style={{ position:'relative', display:'flex', justifyContent:'center', padding:'24px 0' }}>
+          <div className="rv" style={{ position:'relative', display:'flex', justifyContent:'center', padding:'24px 0', ...stagger(2) }}>
             <div aria-hidden="true" style={{ position:'absolute', left:'50%', top:'50%', width:'min(460px, 92vw)', aspectRatio:'1', transform:'translate(-50%,-50%)', borderRadius:'50%', background:'radial-gradient(circle, rgba(224,183,101,.32) 0%, rgba(224,183,101,0) 62%)' }}/>
             <div aria-hidden="true" style={{ position:'absolute', left:'50%', top:'50%', width:'min(420px, 84vw)', aspectRatio:'1', transform:'translate(-50%,-50%)', borderRadius:'50%', border:'2px dotted rgba(184,136,58,.35)' }}/>
             <div aria-hidden="true" style={{ position:'absolute', left:'calc(50% - min(210px, 42vw))', top:'38%', width:'14px', height:'14px', borderRadius:'50%', background:C.gold2 }}/>
@@ -1929,10 +2047,10 @@ function PartnerStrip() {
   const { t } = useT();
   return (
     <div className="cm-wrap" style={{ paddingBottom:'48px' }}>
-      <div style={{ border:'1px solid rgba(184,136,58,.45)', borderRadius:'8px', padding:'18px 22px', display:'flex', alignItems:'center', justifyContent:'space-between', gap:'10px 24px', flexWrap:'wrap', background:'rgba(224,183,101,.06)' }}>
+      <div className="rv" style={{ border:'1px solid rgba(184,136,58,.45)', borderRadius:'8px', padding:'18px 22px', display:'flex', alignItems:'center', justifyContent:'space-between', gap:'10px 24px', flexWrap:'wrap', background:'rgba(224,183,101,.06)' }}>
         <div style={{ fontFamily:SANS, fontSize:'14px', color:C.ink2, lineHeight:1.55 }}>{t('partner_text')}</div>
         <a href={PARTNER_URL} target="_blank" rel="noreferrer" onClick={() => track('partner_click')}
-          style={{ fontFamily:SANS, fontSize:'14px', fontWeight:600, color:C.gold, textDecoration:'none', whiteSpace:'nowrap' }}>
+          style={{ fontFamily:SANS, fontSize:'14px', fontWeight:600, color:C.goldInk, textDecoration:'none', whiteSpace:'nowrap' }}>
           {t('partner_cta')}
         </a>
       </div>
@@ -1953,7 +2071,7 @@ function SiteFooter({ navigate }) {
   return (
     <footer style={{ background:C.plum, borderTop:'1px solid rgba(224,183,101,.2)' }}>
       <div className="cm-wrap" style={{ paddingTop:'48px' }}>
-        <div className="ft-grid">
+        <div className="ft-grid rv">
           <div className="ft-span">
             <div style={{ display:'flex', alignItems:'center', gap:'10px' }}>
               <CaratMark size={40} color={C.gold2}/>
@@ -2017,6 +2135,8 @@ function FloatingWA() {
 
 // ─── Home Page ────────────────────────────────────────────────────────────────
 function HomePage({ navigate, spot }) {
+  const { lang } = useT();
+  useRevealOnScroll([lang]);
   // FAQ structured data (English) so the questions can show in Google results
   useEffect(() => {
     document.getElementById('cm-faq-schema')?.remove();
@@ -2248,6 +2368,7 @@ function BlogBackBtn({ navigate }) {
 
 // ─── Blog Index Page (3-column grid, newest first) ────────────────────────────
 function BlogIndexPage({ navigate, spot }) {
+  useRevealOnScroll();
   return (
     <div style={{ minHeight:'100dvh', background:C.paper, fontFamily:SANS, color:C.ink }}>
       <TopBar spot={spot} navigate={navigate}/>
@@ -2265,7 +2386,7 @@ function BlogIndexPage({ navigate, spot }) {
           </h1>
         </div>
         <div className="blog-grid">
-          {ARTICLES_SORTED.map(a => <BlogCard key={a.slug} a={a} navigate={navigate} clamp={3}/>)}
+          {ARTICLES_SORTED.map((a, i) => <BlogCard key={a.slug} a={a} i={i % 3} navigate={navigate} clamp={3}/>)}
         </div>
       </div>
     </div>
