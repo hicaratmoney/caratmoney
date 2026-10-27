@@ -190,7 +190,7 @@ function HeroMark() {
       <span className="cm-shimmer" aria-hidden="true"/>
 
       {active && typeof document !== 'undefined' && createPortal(
-        <svg aria-hidden="true" style={{ position:'fixed', top:0, left:0, width:'100vw', height:'100vh', pointerEvents:'none', zIndex:999, overflow:'visible' }}>
+        <svg className="hero-fly" aria-hidden="true" style={{ position:'fixed', top:0, left:0, width:'100vw', height:'100vh', pointerEvents:'none', zIndex:999, overflow:'visible' }}>
           <defs>
             <linearGradient id="cmBarTop" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%"   stopColor="#f7e08a"/>
@@ -985,6 +985,7 @@ const GLOBAL_CSS = `
   .cm-motion .rv[data-in] { opacity:1; transform:none; }
   @keyframes shimmer { 0%, 72% { transform:translateX(-130%) skewX(-18deg); } 100% { transform:translateX(230%) skewX(-18deg); } }
   .hero-mark-svg { overflow:hidden; border-radius:50%; }
+  .cm-menu-open .hero-fly { display:none; }
   .cm-shimmer { position:absolute; top:0; left:0; width:45%; height:100%; pointer-events:none; background:linear-gradient(90deg, rgba(255,255,255,0), rgba(255,246,214,.55), rgba(255,255,255,0)); animation:shimmer 7s ease-in-out 4.2s infinite; transform:translateX(-130%) skewX(-18deg); mix-blend-mode:soft-light; }
   @keyframes popIn  { 0% { transform:scale(.6); opacity:0; } 70% { transform:scale(1.08); opacity:1; } 100% { transform:scale(1); } }
   @keyframes glowGreen { 0% { box-shadow:0 0 0 0 rgba(37,211,102,.55); } 100% { box-shadow:0 0 0 16px rgba(37,211,102,0); } }
@@ -1344,6 +1345,11 @@ function TopBar({ spot, navigate, showLang = false }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [active, setActive]     = useState('');
   const barRef = useRef(null);
+  // while the phone menu is open, the hero's gold-bar animation is hidden (it keeps looping underneath)
+  useEffect(() => {
+    document.documentElement.classList.toggle('cm-menu-open', menuOpen);
+    return () => document.documentElement.classList.remove('cm-menu-open');
+  }, [menuOpen]);
   // thin gold progress line + highlight the section you're in (homepage only)
   useEffect(() => {
     if (!showLang) return;
