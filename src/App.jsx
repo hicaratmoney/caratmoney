@@ -435,69 +435,69 @@ const STR = {
 
     hero_eyebrow:   'We buy gold at fair price',
     hero_h1:        ['Sell your gold at the ', 'live', ' market rate.'],
-    hero_sub:       'Paid instantly to your bank or UPI.',
+    hero_sub:       "Tested and paid in 15 minutes",
     hero_guarantee: 'We guarantee — nobody can match our price',
-    hero_cta_wa:    'Get a free quote on WhatsApp',
+    hero_cta_wa:    "Get my estimate on WhatsApp",
     hero_cta_calc:  'Value your gold',
-    hero_stats:     '5,000+ customers · ₹100Cr+ purchased · 4.9★',
-    hero_pickup:    'Home pickup available in Bangalore & Mumbai',
+    hero_stats:     "500+ customers · ₹10 crore+ purchased",
+    hero_pickup:    "Free home visits across Navi Mumbai, Mumbai & Thane",
     hero_turn:      ["Turning old gold into ", "."],
     hero_uses:      ["a wedding in the family", "your child's education", "a new home", "your own business", "medical care, today", "a debt-free start", "something useful"],
     hero_family:    "They saved it for your family's tomorrow. Today, it's here for you.",
     tiles: [
-      { t:'Doorstep service',   d:"We come to you, discreetly, so your gold never has to travel." },
-      { t:'Accurate valuation', d:'XRF testing measures exact purity, and you see the reading yourself.' },
-      { t:'Instant transfer',   d:'Money in your bank or UPI right away, plus a free, detailed valuation certificate.' },
+      { t:"Free home visit", d:"We come to your home, discreetly. Your gold never has to travel." },
+      { t:"Tested in front of you", d:"An XRF machine reads the exact purity. No scratching, no melting, and you see the reading." },
+      { t:"Paid on the spot", d:"Money in your bank or UPI right away, plus a free valuation certificate." },
     ],
 
-    rate_title: 'Our Buy Rate', rate_loading: 'Loading…', rate_updated: 'Live rate · Updated {time}', rate_fetching: 'Fetching live rate…',
-    rate_unavailable: 'Live rate temporarily unavailable', rate_refresh: 'Refreshes every minute · GST inclusive', rate_cta: 'Ask for a quote on WhatsApp', est_live: 'Live 24K', est_w: 'Weight', why_photo: 'Every test happens on screen in front of you: here, 91.6% gold, read as 22K.',
+    rate_title: "Our live rate", rate_loading: 'Loading…', rate_updated: "Updated {time}", rate_fetching: 'Fetching live rate…',
+    rate_unavailable: 'Live rate temporarily unavailable', rate_refresh: 'Refreshes every minute · GST inclusive', est_live: 'Live 24K', est_w: 'Weight', why_photo: 'Every test happens on screen in front of you: here, 91.6% gold, read as 22K.',
     gst_excl: '24K without GST:',
     gst_note: "GST-inclusive rate shown above. If you're GST-registered, we pass the tax credit back to you.",
 
     calc_title: "What's your gold worth now?", calc_weight: 'Weight (grams)', calc_weight_ph: 'e.g. 10', calc_karat: 'Select purity',
-    calc_est: 'Estimated value', calc_at: 'at ₹{rate}/g for {k}K', calc_cta: 'Get this price on WhatsApp',
-    calc_disclaimer: 'Estimate only. Final value is confirmed after XRF testing in front of you.',
-    calc_margin: 'Already have a quote from another buyer? Check their margin →',
-    est_chips: ["No obligation", "Walk away free", "Weighed to 0.001 g in front of you"],
+    calc_est: "Your estimate", calc_at: 'at ₹{rate}/g for {k}K', calc_cta: "Get my estimate on WhatsApp",
+    calc_disclaimer: "This is an estimate. Your final offer comes after the XRF test, in front of you.",
+    calc_margin: "Already have an offer from another buyer? Check their margin →",
+    est_chips: ["No obligation", "Weighed to 0.001 g in front of you", "Stones returned to you"],
     soft_t: "Not ready yet? That's okay.", soft_d: "Get the live rate on WhatsApp every morning, so you know when the time is right.",
     soft_cta: "Send me the daily rate", soft_cta_save: "Save my estimate & get the daily rate", rate_daily: "Get this rate daily on WhatsApp",
     xrf_photo: "Photographed", xrf_gold: "Gold (Au)",
 
-    git_title: 'Book a free appointment', git_sub: "Share your details and we'll confirm a slot on WhatsApp. Discreet visits and women executives, on request.",
+    git_title: "Book a free visit", git_sub: "Share your details and we'll confirm a time on WhatsApp. Discreet visits and women executives on request.",
     git_name: 'Your name', git_name_ph: 'e.g. Priya S', git_mobile: 'Mobile number', git_mobile_ph: '10-digit number',
-    git_pref: 'I prefer', git_doorstep: 'Doorstep pickup', git_centre: 'Visit our centre',
-    git_book: 'Book free appointment', git_call: 'Call now',
+    git_pref: 'I prefer', git_doorstep: "Home visit", git_centre: "Our Kharghar centre",
+    git_book: "Book a free visit", git_call: 'Call now',
     git_consent: 'By submitting, you agree to be contacted about your gold sale.',
-    git_err: 'Enter your name and a valid 10-digit mobile number.', git_done_t: 'Request received', git_done_d: "We've opened WhatsApp with your details. Tap send there and we'll confirm your slot shortly.", git_again: 'Book another appointment',
+    git_err: 'Enter your name and a valid 10-digit mobile number.', git_done_t: 'Request received', git_done_d: "We've opened WhatsApp with your details. Tap send and we'll confirm your time shortly. On the day, testing and payment take about 15 minutes.", git_again: "Book another visit",
     git_prefs: "Visit preferences (optional)", git_p_discreet: "Discreet visit", git_p_discreet_d: "Plain clothes, no logo on the bag or vehicle.",
     git_p_woman: "Woman executive", git_p_urgent: "Urgent, same day", git_urgent_note: "Book before 4 pm and we'll visit you today. We'll call you within 30 minutes.",
     git_done_thanks: "Thank you for trusting us with something that matters.", git_done_urgent: "Marked urgent: we'll call you within 30 minutes.",
 
     why_title: 'Why people trust Carat Money',
-    why_intro: 'Selling old gold usually means guesswork, hidden cuts and no paperwork. We built every step to be measured, shown to you and documented.',
-    why_them: 'Typical gold buyers', why_tag: 'Price guarantee',
+    why_intro: "Selling old gold usually means guesswork, hidden cuts and no paperwork. With us, every step is measured, shown to you and written down.",
+    why_them: "Most local buyers", why_tag: 'Price guarantee',
     why_rows: [
-      { k:'Purity testing',     us:'XRF testing, non-destructive, with the reading shown to you on screen.', them:'Touchstone testing, or a reading you never get to see.' },
-      { k:'Weight',             us:'Weighed in front of you, precise to 0.001 g.', them:'Weight rounded down and stones only estimated.' },
-      { k:'Pricing',            us:'Live market-linked rate, published openly.', them:'Stale or unclear rates that change at the counter.' },
-      { k:'Deductions',         us:'No extra "wastage" cuts.', them:'Hidden deductions under different names: excess stone deductions, melting loss, service charges, etc.' },
+      { k:"Purity testing", us:"XRF machine test: no scratching, no melting, and the reading is shown to you.", them:"Rubbed on a stone, or a reading you never get to see." },
+      { k:"Weight", us:"Weighed in front of you, precise to 0.001 g.", them:"Weight rounded down and stones only guessed." },
+      { k:"Pricing", us:"Our live rate, shown on this page.", them:"Unclear rates that change at the counter." },
+      { k:"Deductions", us:"No \"wastage\" cuts.", them:"Hidden cuts under different names: extra stone weight, melting loss, service charges." },
       { k:"Stones", us:"Stones and non-gold parts removed with care and returned to you.", them:"Stones often kept by the buyer." },
-      { k:'Payment',            us:'Instant bank or UPI transfer + a free valuation certificate.', them:'Cash, no paperwork, no invoices.' },
-      { k:'Jewellery accepted', us:'All jewellery accepted, broken or old, BIS-hallmarked or not. Purity verified scientifically.', them:"Non-hallmarked or other brands' jewellery is rejected." },
+      { k:"Payment", us:"Instant bank or UPI transfer, plus a free valuation certificate.", them:"Cash, with no paperwork or invoice." },
+      { k:"Jewellery accepted", us:"All gold jewellery: broken, old, hallmarked or not. Purity checked by machine.", them:"Non-hallmarked or other brands' jewellery turned away." },
       { k:"Privacy", us:"Discreet, unbranded visits on request, and a private consultation room at our centre.", them:"A busy shop counter, in full view." },
     ],
 
-    proc_title: 'Carat Money process in 4 easy steps', proc_sub: 'Transparent at every step, and done in about 15 minutes.',
+    proc_title: "How it works: done in 15 minutes", proc_sub: "Four simple steps, with everything shown to you.",
     proc_steps: [
-      { t:'Walk into a Carat Money centre or schedule a doorstep appointment', d:'Visit us in Kharghar, or we come to your home at a time that suits you.' },
-      { t:'Gold tested using advanced machines', d:"Every piece is photographed for a clear record, then XRF-tested and precision-weighed in front of you." },
-      { t:'Purity, weight and live pricing shown before sale', d:'You see every number before you decide to sell.' },
-      { t:'Instant payment without any delay', d:'Bank or UPI transfer the moment you accept the offer.' },
+      { t:"Book a free home visit, or walk in", d:"We come to your home at a time that suits you, or visit our Kharghar centre." },
+      { t:"We test your gold in front of you", d:"Every piece is photographed for a clear record, then XRF-tested and weighed to 0.001 g." },
+      { t:"See your final offer before you decide", d:"Purity, weight and the live rate, all shown to you. No obligation to sell." },
+      { t:"Get paid instantly", d:"Bank or UPI transfer the moment you accept, plus a free valuation certificate." },
     ],
-    proc_cta: 'Get a free estimate',
+    proc_cta: "Get my estimate",
 
-    rev_title: 'Why thousands trust Carat Money', rev_sub: 'What sellers across Navi Mumbai say about us.', rev_note: 'Quotes paraphrased from handwritten notes our customers have given us.', rev_who: 'Carat Money customer',
+    rev_title: "What our customers say", rev_sub: 'What sellers across Navi Mumbai say about us.', rev_note: 'Quotes paraphrased from handwritten notes our customers have given us.', rev_who: 'Carat Money customer',
     review_quotes: [
       'They turned the XRF screen towards me and I saw the purity reading myself. No guesswork at all.',
       'The rate matched the live price on their website, and the money reached my UPI before I left.',
@@ -510,23 +510,22 @@ const STR = {
     faq_title: 'Frequently asked questions', faq_sub: 'Everything to know before you sell your gold.',
     faq_panel_title: 'Still have questions?', faq_panel_sub: 'Reach us on any of these, all days, 9 am to 9 pm.', email: 'Email',
     faqs: [
-      { q:"How is my gold's price calculated?", a:'We weigh your gold, test its purity on an XRF machine and multiply the pure gold content by the live rate shown on this page. You see every number before you decide.' },
-      { q:'Do you melt or damage my jewellery during testing?', a:'No. XRF testing is non-destructive, so your jewellery stays exactly as it is while we test it.' },
+      { q:"How is my gold's price calculated?", a:"We weigh your gold, test its purity on an XRF machine and multiply the pure gold by our live rate shown on this page. You see every number before you decide." },
+      { q:"Will testing damage my jewellery?", a:"No. The XRF test doesn't scratch or melt anything. Your jewellery stays exactly as it is." },
       { q:"Do you photograph my jewellery?", a:"Yes. Every piece is photographed before testing, so there is a clear record of exactly what you handed over." },
-      { q:'Do you offer a free home pickup?', a:'Yes, in Bangalore and Mumbai. Our executive visits at a time that suits you, tests your gold in front of you and makes a firm offer on the spot.' },
+      { q:"Do you offer a free home visit?", a:"Yes, across Navi Mumbai, Mumbai and Thane. Our executive comes at a time that suits you, tests your gold in front of you and makes a final offer on the spot." },
       { q:"Can the visit be discreet?", a:"Yes. Tick \"Discreet visit\" when you book, and our executive comes in plain clothes, with no logo on the bag or vehicle. At our centre, every visit happens in a private consultation room." },
       { q:"Can I ask for a woman executive?", a:"Yes. Tick \"Woman executive\" when you book, whether we come to you or you visit our centre." },
-      { q:"I need money urgently. Can you come today?", a:"Yes. Tick \"Urgent, same day\" when you book a doorstep visit. We call you within 30 minutes, and if you book before 4 pm, we visit you the same day." },
-      { q:'Is the estimate free?', a:"Yes. Estimates are free with no obligation. You sell only if you're happy with the offer." },
-      { q:'Are there any deductions?', a:'Only the weight of stones, which we measure and show you. There are no extra "wastage" cuts and no hidden charges.' },
+      { q:"I need money urgently. Can you come today?", a:"Yes. Tick \"Urgent, same day\" when you book a home visit. We call you within 30 minutes, and if you book before 4 pm, we visit you the same day." },
+      { q:"Is anything charged if I don't sell?", a:"No. Everything before you sell is free: the home visit, the testing and the valuation certificate. You sell only if you're happy with the final offer." },
+      { q:"Are there any deductions?", a:"Only the weight of the stones, which we measure and show you. No \"wastage\" cuts and no hidden charges." },
       { q:"Do I get my stones back?", a:"Yes. Stones and any non-gold parts are removed with care and returned to you. You are paid for the gold." },
-      { q:'What if my jewellery is broken or not hallmarked?', a:"We accept all gold jewellery, including broken, old and non-hallmarked pieces. XRF testing finds the real purity, so you're paid for the actual gold content." },
-      { q:'How will I be paid?', a:'Instantly, by bank transfer or UPI, as soon as you accept the offer. We never pay in cash.' },
-      { q:'Will I get any paperwork?', a:'Yes. You receive an invoice for the sale and a free, detailed valuation certificate.' },
-      { q:'Can I walk away after testing?', a:"Yes, at no cost. You're under no obligation to sell until you accept the final offer." },
-      { q:'How long does it take?', a:'About 15 minutes. Testing, the offer and payment all happen in one sitting.' },
-      { q:'Which documents do I need?', a:'Your Aadhaar and PAN, for KYC.' },
-      { q:'Do you buy gold pledged with a bank or NBFC?', a:"Yes. We help release gold pledged with a bank or NBFC and buy it at today's rate. WhatsApp us for details." },
+      { q:"What if my jewellery is broken or not hallmarked?", a:"We buy all gold jewellery, including broken, old and non-hallmarked pieces. The XRF test finds the real purity, so you're paid for the gold you actually have." },
+      { q:"How will I be paid?", a:"Instantly, by bank transfer or UPI, as soon as you accept the final offer. We never pay in cash." },
+      { q:"Will I get any paperwork?", a:"Yes. You get an invoice for the sale and a free valuation certificate." },
+      { q:"How long does it take?", a:"About 15 minutes for most visits. Testing, the final offer and payment all happen in one sitting." },
+      { q:"Which documents do I need?", a:"Your Aadhaar and PAN, to confirm your identity." },
+      { q:"My gold is pledged for a loan. Can you still buy it?", a:"Yes. We help release gold pledged with a bank or gold-loan company and buy it at our live rate. WhatsApp us for details." },
     ],
 
     visit_label: 'Visit our centre', visit_title: 'Carat Money, Kharghar', visit_hours: 'All days, 9 am to 9 pm', visit_dir: 'Get directions',
@@ -535,7 +534,7 @@ const STR = {
     blog_title: 'Gold insights', blog_sub: 'Straight answers before you sell your gold.', blog_all: 'View all articles', blog_read: 'Read', blog_note: '',
 
     app_h: 'Carat Money, soon in your pocket.',
-    app_body: 'Track the live gold rate, value your jewellery and book a doorstep pickup — all in one app. Launching soon on iOS and Android.',
+    app_body: "Track the live gold rate, get an estimate for your jewellery and book a free home visit, all in one app. Launching soon on iOS and Android.",
     app_soon: 'Coming soon', app_hint: 'Tap either button to get a launch alert on WhatsApp.',
     app_chip1: 'XRF-tested purity', app_chip2: 'Instant UPI payout',
 
@@ -545,7 +544,7 @@ const STR = {
     f_live: 'Live rate', f_calc: 'Value calculator', f_why: 'Why us', f_reviews: 'Reviews', f_faqs: 'FAQs', f_visit: 'Visit us',
     f_sell: 'Sell gold', f_buy: 'Buy gold coins', f_margin: 'Margin calculator', f_blog: 'Blog', f_partner: 'Partner Program',
     f_rights: 'All rights reserved.',
-    f_legal: "Gold rates shown on this website are indicative and update with the market; the final price is confirmed after testing your gold in front of you. Use of this website is subject to Carat Money's Terms of Service and Privacy Policy. By submitting your details, you consent to Carat Money contacting you about your enquiry and processing your information for that purpose.",
+    f_legal: "Gold rates shown on this website are indicative and update with the market; the final offer is made after testing your gold in front of you. Use of this website is subject to Carat Money's Terms of Service and Privacy Policy. By submitting your details, you consent to Carat Money contacting you about your enquiry and processing your information for that purpose.",
     wa_float: 'Chat on WhatsApp',
   },
 
@@ -556,48 +555,48 @@ const STR = {
 
     hero_eyebrow:   'हम सही दाम पर सोना खरीदते हैं',
     hero_h1:        ['अपना सोना ', 'लाइव', ' मार्केट रेट पर बेचें।'],
-    hero_sub:       'पेमेंट तुरंत आपके बैंक या UPI में।',
+    hero_sub:       "15 मिनट में जाँच और पेमेंट",
     hero_guarantee: 'हमारी गारंटी — हमसे बेहतर दाम कोई नहीं देगा',
-    hero_cta_wa:    'WhatsApp पर मुफ़्त कोटेशन पाएँ',
+    hero_cta_wa:    "WhatsApp पर मेरा अनुमान पाएँ",
     hero_cta_calc:  'अपने सोने की कीमत जानें',
-    hero_stats:     '5,000+ ग्राहक · ₹100 करोड़+ की खरीद · 4.9★',
-    hero_pickup:    'बेंगलुरु और मुंबई में होम पिकअप उपलब्ध',
+    hero_stats:     "500+ ग्राहक · ₹10 करोड़+ की खरीद",
+    hero_pickup:    "नवी मुंबई, मुंबई और ठाणे में मुफ़्त होम विज़िट",
     hero_turn:      ["पुराना सोना, अब ", "।"],
     hero_uses:      ["घर की शादी के लिए", "बच्चों की पढ़ाई के लिए", "नए घर के लिए", "अपने बिज़नेस के लिए", "ज़रूरी इलाज के लिए", "कर्ज़ से मुक्ति के लिए", "किसी अच्छे काम के लिए"],
     hero_family:    "उन्होंने इसे आपके परिवार के कल के लिए सँजोया था। आज, यह आपके लिए है।",
     tiles: [
-      { t:'घर पर सेवा',     d:"हम पूरी गोपनीयता से आपके पास आते हैं, ताकि आपके सोने को कहीं ले जाना न पड़े।" },
-      { t:'सटीक मूल्यांकन', d:'XRF टेस्टिंग से सही शुद्धता मापी जाती है, और रीडिंग आप ख़ुद देखते हैं।' },
-      { t:'तुरंत ट्रांसफ़र',  d:'पैसा तुरंत आपके बैंक या UPI में, साथ में मुफ़्त और विस्तृत वैल्यूएशन सर्टिफ़िकेट।' },
+      { t:"मुफ़्त होम विज़िट", d:"हम पूरी गोपनीयता से आपके घर आते हैं। आपके सोने को कहीं ले जाना नहीं पड़ता।" },
+      { t:"आपके सामने जाँच", d:"XRF मशीन सही शुद्धता बताती है। न खरोंच, न पिघलाना, और रीडिंग आप ख़ुद देखते हैं।" },
+      { t:"वहीं पेमेंट", d:"पैसा तुरंत आपके बैंक या UPI में, साथ में मुफ़्त वैल्यूएशन सर्टिफ़िकेट।" },
     ],
 
-    rate_title: 'हमारा खरीद रेट', rate_loading: 'लोड हो रहा है…', rate_updated: 'लाइव रेट · {time} पर अपडेट', rate_fetching: 'लाइव रेट लाया जा रहा है…',
-    rate_unavailable: 'लाइव रेट अभी उपलब्ध नहीं है', rate_refresh: 'हर मिनट अपडेट होता है · GST सहित', rate_cta: 'WhatsApp पर कोटेशन माँगें', est_live: 'लाइव 24K', est_w: 'वज़न', why_photo: 'हर जाँच आपके सामने स्क्रीन पर: यहाँ 91.6% सोना, यानी 22K।',
+    rate_title: "हमारा लाइव रेट", rate_loading: 'लोड हो रहा है…', rate_updated: "{time} पर अपडेट", rate_fetching: 'लाइव रेट लाया जा रहा है…',
+    rate_unavailable: 'लाइव रेट अभी उपलब्ध नहीं है', rate_refresh: 'हर मिनट अपडेट होता है · GST सहित', est_live: 'लाइव 24K', est_w: 'वज़न', why_photo: 'हर जाँच आपके सामने स्क्रीन पर: यहाँ 91.6% सोना, यानी 22K।',
     gst_excl: 'GST के बिना 24K:',
     gst_note: 'ऊपर दिखाया गया रेट GST सहित है। अगर आप GST-रजिस्टर्ड हैं, तो हम टैक्स क्रेडिट आपको वापस देते हैं।',
 
     calc_title: 'आपके सोने की अभी कितनी कीमत है?', calc_weight: 'वज़न (ग्राम)', calc_weight_ph: 'जैसे 10', calc_karat: 'शुद्धता चुनें',
-    calc_est: 'अनुमानित कीमत', calc_at: '{k}K के लिए ₹{rate}/ग्राम पर', calc_cta: 'यह कीमत WhatsApp पर पाएँ',
-    calc_disclaimer: 'यह सिर्फ़ अनुमान है। अंतिम कीमत आपके सामने XRF टेस्टिंग के बाद तय होती है।',
-    calc_margin: 'किसी और खरीदार से कोटेशन मिला है? उनका मार्जिन जाँचें →',
-    est_chips: ["कोई बाध्यता नहीं", "बिना शुल्क मना कर सकते हैं", "आपके सामने 0.001 ग्राम तक तौल"],
+    calc_est: "आपका अनुमान", calc_at: '{k}K के लिए ₹{rate}/ग्राम पर', calc_cta: "WhatsApp पर मेरा अनुमान पाएँ",
+    calc_disclaimer: "यह अनुमान है। अंतिम ऑफ़र आपके सामने XRF जाँच के बाद मिलता है।",
+    calc_margin: "किसी और खरीदार से ऑफ़र मिला है? उनका मार्जिन जाँचें →",
+    est_chips: ["कोई बाध्यता नहीं", "आपके सामने 0.001 ग्राम तक तौल", "पत्थर आपको वापस"],
     soft_t: "अभी तैयार नहीं हैं? कोई बात नहीं।", soft_d: "हर सुबह WhatsApp पर लाइव रेट पाएँ, ताकि आपको पता रहे कि सही समय कब है।",
     soft_cta: "मुझे रोज़ का रेट भेजें", soft_cta_save: "मेरा अनुमान सेव करें और रोज़ का रेट पाएँ", rate_daily: "यह रेट रोज़ WhatsApp पर पाएँ",
     xrf_photo: "फ़ोटो ली गई", xrf_gold: "सोना (Au)",
 
-    git_title: 'मुफ़्त अपॉइंटमेंट बुक करें', git_sub: "अपनी जानकारी दें, हम WhatsApp पर समय तय करेंगे। अनुरोध पर गोपनीय विज़िट और महिला एग्ज़ीक्यूटिव।",
+    git_title: "मुफ़्त विज़िट बुक करें", git_sub: "अपनी जानकारी दें, हम WhatsApp पर समय तय करेंगे। अनुरोध पर गोपनीय विज़िट और महिला एग्ज़ीक्यूटिव।",
     git_name: 'आपका नाम', git_name_ph: 'जैसे प्रिया एस', git_mobile: 'मोबाइल नंबर', git_mobile_ph: '10 अंकों का नंबर',
-    git_pref: 'मुझे पसंद है', git_doorstep: 'घर से पिकअप', git_centre: 'सेंटर पर आना',
-    git_book: 'मुफ़्त अपॉइंटमेंट बुक करें', git_call: 'अभी कॉल करें',
+    git_pref: 'मुझे पसंद है', git_doorstep: "होम विज़िट", git_centre: "हमारा खारघर सेंटर",
+    git_book: "मुफ़्त विज़िट बुक करें", git_call: 'अभी कॉल करें',
     git_consent: 'सबमिट करके, आप अपने सोने की बिक्री के बारे में संपर्क किए जाने के लिए सहमत हैं।',
-    git_err: 'अपना नाम और सही 10 अंकों का मोबाइल नंबर डालें।', git_done_t: 'अनुरोध मिल गया', git_done_d: 'हमने आपकी जानकारी के साथ WhatsApp खोला है। वहाँ भेजें दबाएँ, हम जल्द ही आपका समय पक्का करेंगे।', git_again: 'एक और अपॉइंटमेंट बुक करें',
+    git_err: 'अपना नाम और सही 10 अंकों का मोबाइल नंबर डालें।', git_done_t: 'अनुरोध मिल गया', git_done_d: "हमने आपकी जानकारी के साथ WhatsApp खोला है। वहाँ भेजें दबाएँ, हम जल्द ही समय पक्का करेंगे। उस दिन जाँच और पेमेंट में लगभग 15 मिनट लगते हैं।", git_again: "एक और विज़िट बुक करें",
     git_prefs: "विज़िट से जुड़ी पसंद (वैकल्पिक)", git_p_discreet: "गोपनीय विज़िट", git_p_discreet_d: "सादे कपड़े, बैग या गाड़ी पर कोई लोगो नहीं।",
     git_p_woman: "महिला एग्ज़ीक्यूटिव", git_p_urgent: "अर्जेंट, उसी दिन", git_urgent_note: "शाम 4 बजे से पहले बुक करें, हम आज ही आएँगे। हम 30 मिनट के अंदर आपको कॉल करेंगे।",
     git_done_thanks: "इतनी ख़ास चीज़ के लिए हम पर भरोसा करने के लिए धन्यवाद।", git_done_urgent: "अर्जेंट के रूप में दर्ज: हम 30 मिनट के अंदर आपको कॉल करेंगे।",
 
     why_title: 'लोग Carat Money पर भरोसा क्यों करते हैं',
-    why_intro: 'पुराना सोना बेचने में अक्सर अंदाज़ा, छिपी कटौतियाँ और कोई कागज़ात नहीं होते। हमने हर कदम को मापा हुआ, आपको दिखाया हुआ और दस्तावेज़ों के साथ बनाया है।',
-    why_them: 'आम सोना खरीदार', why_tag: 'प्राइस गारंटी',
+    why_intro: "पुराना सोना बेचने में अक्सर अंदाज़ा, छिपी कटौतियाँ और कोई कागज़ात नहीं होते। हमारे यहाँ हर कदम मापा जाता है, आपको दिखाया जाता है और लिखकर दिया जाता है।",
+    why_them: "ज़्यादातर स्थानीय खरीदार", why_tag: 'प्राइस गारंटी',
     why_rows: [
       { k:'शुद्धता जाँच',      us:'XRF टेस्टिंग, बिना नुकसान के, रीडिंग स्क्रीन पर आपको दिखाई जाती है।', them:'कसौटी पत्थर से जाँच, या ऐसी रीडिंग जो आपको दिखाई ही नहीं जाती।' },
       { k:'वज़न',             us:'आपके सामने तौला जाता है, 0.001 ग्राम तक सटीक।', them:'वज़न नीचे राउंड किया जाता है और पत्थरों का सिर्फ़ अंदाज़ा लगाया जाता है।' },
@@ -609,16 +608,16 @@ const STR = {
       { k:"गोपनीयता", us:"अनुरोध पर बिना ब्रांडिंग वाली गोपनीय विज़िट, और सेंटर पर निजी परामर्श कक्ष।", them:"भीड़ भरा दुकान का काउंटर, सबके सामने।" },
     ],
 
-    proc_title: 'Carat Money की प्रक्रिया, 4 आसान कदमों में', proc_sub: 'हर कदम पारदर्शी, और लगभग 15 मिनट में पूरा।',
+    proc_title: "यह कैसे काम करता है: 15 मिनट में पूरा", proc_sub: "चार आसान कदम, सब कुछ आपके सामने।",
     proc_steps: [
-      { t:'Carat Money सेंटर आएँ या घर पर अपॉइंटमेंट बुक करें', d:'खारघर में हमारे सेंटर आएँ, या हम आपकी सुविधा के समय आपके घर आएँगे।' },
-      { t:'आधुनिक मशीनों से सोने की जाँच', d:"साफ़ रिकॉर्ड के लिए हर गहने की पहले फ़ोटो ली जाती है, फिर आपके सामने XRF जाँच और सटीक तौल।" },
-      { t:'बिक्री से पहले शुद्धता, वज़न और लाइव कीमत दिखाई जाती है', d:'बेचने का फ़ैसला लेने से पहले आप हर आँकड़ा देखते हैं।' },
-      { t:'बिना किसी देरी के तुरंत पेमेंट', d:'ऑफ़र मानते ही बैंक या UPI ट्रांसफ़र।' },
+      { t:"मुफ़्त होम विज़िट बुक करें, या सेंटर आएँ", d:"हम आपकी सुविधा के समय आपके घर आते हैं, या आप हमारे खारघर सेंटर आएँ।" },
+      { t:"हम आपके सामने सोने की जाँच करते हैं", d:"साफ़ रिकॉर्ड के लिए हर गहने की फ़ोटो, फिर XRF जाँच और 0.001 ग्राम तक तौल।" },
+      { t:"फ़ैसले से पहले अंतिम ऑफ़र देखें", d:"शुद्धता, वज़न और लाइव रेट, सब आपके सामने। बेचने की कोई बाध्यता नहीं।" },
+      { t:"तुरंत पेमेंट पाएँ", d:"ऑफ़र मानते ही बैंक या UPI ट्रांसफ़र, साथ में मुफ़्त वैल्यूएशन सर्टिफ़िकेट।" },
     ],
-    proc_cta: 'मुफ़्त अनुमान पाएँ',
+    proc_cta: "मेरा अनुमान पाएँ",
 
-    rev_title: 'हज़ारों लोग Carat Money पर भरोसा क्यों करते हैं', rev_sub: 'नवी मुंबई के विक्रेता हमारे बारे में क्या कहते हैं।', rev_note: 'ग्राहकों के हाथ से लिखे नोट्स से, हमारे शब्दों में।', rev_who: 'Carat Money ग्राहक',
+    rev_title: "हमारे ग्राहक क्या कहते हैं", rev_sub: 'नवी मुंबई के विक्रेता हमारे बारे में क्या कहते हैं।', rev_note: 'ग्राहकों के हाथ से लिखे नोट्स से, हमारे शब्दों में।', rev_who: 'Carat Money ग्राहक',
     review_quotes: [
       'उन्होंने XRF स्क्रीन मेरी तरफ़ घुमाई और मैंने शुद्धता की रीडिंग ख़ुद देखी। कोई अंदाज़ा नहीं।',
       'रेट उनकी वेबसाइट के लाइव भाव से मेल खाया, और मेरे निकलने से पहले पैसा UPI में आ गया।',
@@ -631,23 +630,22 @@ const STR = {
     faq_title: 'अक्सर पूछे जाने वाले सवाल', faq_sub: 'सोना बेचने से पहले जानने लायक हर बात।',
     faq_panel_title: 'अब भी कोई सवाल है?', faq_panel_sub: 'इनमें से किसी पर भी संपर्क करें, हर दिन सुबह 9 से रात 9 बजे तक।', email: 'ईमेल',
     faqs: [
-      { q:'मेरे सोने की कीमत कैसे तय होती है?', a:'हम आपका सोना तौलते हैं, XRF मशीन पर उसकी शुद्धता जाँचते हैं, और शुद्ध सोने की मात्रा को इस पेज पर दिखाए गए लाइव रेट से गुणा करते हैं। फ़ैसला लेने से पहले आप हर आँकड़ा देखते हैं।' },
-      { q:'क्या जाँच के दौरान मेरी ज्वेलरी पिघलाई या ख़राब की जाती है?', a:'नहीं। XRF टेस्टिंग से कोई नुकसान नहीं होता, जाँच के दौरान आपकी ज्वेलरी जैसी है वैसी ही रहती है।' },
+      { q:"मेरे सोने की कीमत कैसे तय होती है?", a:"हम आपका सोना तौलते हैं, XRF मशीन पर उसकी शुद्धता जाँचते हैं, और शुद्ध सोने को इस पेज पर दिखाए गए हमारे लाइव रेट से गुणा करते हैं। फ़ैसले से पहले आप हर आँकड़ा देखते हैं।" },
+      { q:"क्या जाँच से मेरी ज्वेलरी को नुकसान होगा?", a:"नहीं। XRF जाँच में न खरोंच लगती है, न कुछ पिघलाया जाता है। आपकी ज्वेलरी जैसी है वैसी ही रहती है।" },
       { q:"क्या आप मेरी ज्वेलरी की फ़ोटो लेते हैं?", a:"हाँ। जाँच से पहले हर गहने की फ़ोटो ली जाती है, ताकि आपने जो सौंपा उसका साफ़ रिकॉर्ड रहे।" },
-      { q:'क्या आप मुफ़्त होम पिकअप देते हैं?', a:'हाँ, बेंगलुरु और मुंबई में। हमारा एग्ज़ीक्यूटिव आपकी सुविधा के समय पर आता है, आपके सामने सोने की जाँच करता है और वहीं पक्का ऑफ़र देता है।' },
+      { q:"क्या आप मुफ़्त होम विज़िट देते हैं?", a:"हाँ, नवी मुंबई, मुंबई और ठाणे में। हमारा एग्ज़ीक्यूटिव आपकी सुविधा के समय आता है, आपके सामने सोने की जाँच करता है और वहीं अंतिम ऑफ़र देता है।" },
       { q:"क्या विज़िट गोपनीय रखी जा सकती है?", a:"हाँ। बुकिंग के समय \"गोपनीय विज़िट\" चुनें, हमारा एग्ज़ीक्यूटिव सादे कपड़ों में आएगा और बैग या गाड़ी पर कोई लोगो नहीं होगा। हमारे सेंटर पर हर विज़िट निजी परामर्श कक्ष में होती है।" },
       { q:"क्या मैं महिला एग्ज़ीक्यूटिव के लिए कह सकती/सकता हूँ?", a:"हाँ। बुकिंग के समय \"महिला एग्ज़ीक्यूटिव\" चुनें, चाहे हम आपके घर आएँ या आप हमारे सेंटर आएँ।" },
       { q:"मुझे तुरंत पैसों की ज़रूरत है। क्या आप आज आ सकते हैं?", a:"हाँ। घर पर विज़िट बुक करते समय \"अर्जेंट, उसी दिन\" चुनें। हम 30 मिनट के अंदर कॉल करते हैं, और शाम 4 बजे से पहले बुक करने पर उसी दिन आपके पास आते हैं।" },
-      { q:'क्या अनुमान मुफ़्त है?', a:'हाँ। अनुमान मुफ़्त है और कोई बाध्यता नहीं। ऑफ़र पसंद आए तभी बेचें।' },
+      { q:"अगर मैं न बेचूँ तो क्या कोई शुल्क लगता है?", a:"नहीं। बेचने से पहले सब कुछ मुफ़्त है: होम विज़िट, जाँच और वैल्यूएशन सर्टिफ़िकेट। अंतिम ऑफ़र पसंद आए तभी बेचें।" },
       { q:'क्या कोई कटौती होती है?', a:'सिर्फ़ पत्थरों के वज़न की, जिसे हम मापकर आपको दिखाते हैं। कोई अतिरिक्त "वेस्टेज" कटौती या छिपा चार्ज नहीं।' },
       { q:"क्या मुझे मेरे पत्थर वापस मिलेंगे?", a:"हाँ। पत्थर और सोने के अलावा बाकी हिस्से सावधानी से निकालकर आपको लौटाए जाते हैं। आपको सोने का पैसा मिलता है।" },
       { q:'अगर मेरी ज्वेलरी टूटी हुई है या उस पर हॉलमार्क नहीं है तो?', a:'हम हर तरह की सोने की ज्वेलरी लेते हैं, टूटी, पुरानी और बिना हॉलमार्क वाली भी। XRF टेस्टिंग असली शुद्धता बताती है, इसलिए आपको सोने की असली मात्रा का पैसा मिलता है।' },
       { q:'मुझे पेमेंट कैसे मिलेगा?', a:'ऑफ़र मानते ही तुरंत, बैंक ट्रांसफ़र या UPI से। हम कभी नकद भुगतान नहीं करते।' },
       { q:'क्या मुझे कोई कागज़ात मिलेंगे?', a:'हाँ। आपको बिक्री का इनवॉइस और एक मुफ़्त, विस्तृत वैल्यूएशन सर्टिफ़िकेट मिलता है।' },
-      { q:'क्या जाँच के बाद मैं बिना बेचे जा सकता/सकती हूँ?', a:'हाँ, बिना किसी शुल्क के। अंतिम ऑफ़र मानने तक आप बेचने के लिए बाध्य नहीं हैं।' },
-      { q:'इसमें कितना समय लगता है?', a:'लगभग 15 मिनट। जाँच, ऑफ़र और पेमेंट सब एक ही बार में हो जाते हैं।' },
-      { q:'कौन से दस्तावेज़ चाहिए?', a:'KYC के लिए आपका आधार और PAN।' },
-      { q:'क्या आप बैंक या NBFC में गिरवी रखा सोना खरीदते हैं?', a:'हाँ। हम बैंक या NBFC में गिरवी रखा सोना छुड़ाने में मदद करते हैं और उसे आज के रेट पर खरीदते हैं। जानकारी के लिए हमें WhatsApp करें।' },
+      { q:"इसमें कितना समय लगता है?", a:"ज़्यादातर विज़िट में लगभग 15 मिनट। जाँच, अंतिम ऑफ़र और पेमेंट सब एक ही बार में।" },
+      { q:"कौन से दस्तावेज़ चाहिए?", a:"पहचान की पुष्टि के लिए आपका आधार और PAN।" },
+      { q:"मेरा सोना लोन के लिए गिरवी है। क्या आप फिर भी खरीदेंगे?", a:"हाँ। हम बैंक या गोल्ड-लोन कंपनी में गिरवी रखा सोना छुड़ाने में मदद करते हैं और उसे हमारे लाइव रेट पर खरीदते हैं। जानकारी के लिए हमें WhatsApp करें।" },
     ],
 
     visit_label: 'हमारे सेंटर आएँ', visit_title: 'Carat Money, खारघर', visit_hours: 'हर दिन, सुबह 9 से रात 9 बजे तक', visit_dir: 'रास्ता देखें',
@@ -656,7 +654,7 @@ const STR = {
     blog_title: 'गोल्ड इनसाइट्स', blog_sub: 'सोना बेचने से पहले सीधे जवाब।', blog_all: 'सभी लेख देखें', blog_read: 'पढ़ें', blog_note: 'लेख अंग्रेज़ी में हैं।',
 
     app_h: 'Carat Money, जल्द ही आपकी जेब में।',
-    app_body: 'लाइव गोल्ड रेट देखें, अपनी ज्वेलरी की कीमत जानें और घर से पिकअप बुक करें — सब एक ही ऐप में। जल्द ही iOS और Android पर।',
+    app_body: "लाइव गोल्ड रेट देखें, अपनी ज्वेलरी का अनुमान पाएँ और मुफ़्त होम विज़िट बुक करें, सब एक ही ऐप में। जल्द ही iOS और Android पर।",
     app_soon: 'जल्द आ रहा है', app_hint: 'लॉन्च की सूचना WhatsApp पर पाने के लिए किसी भी बटन पर टैप करें।',
     app_chip1: 'XRF से जाँची शुद्धता', app_chip2: 'तुरंत UPI पेमेंट',
 
@@ -677,48 +675,48 @@ const STR = {
 
     hero_eyebrow:   'आम्ही योग्य दरात सोने खरेदी करतो',
     hero_h1:        ['तुमचे सोने ', 'लाइव्ह', ' बाजारभावाने विका.'],
-    hero_sub:       'पैसे लगेच तुमच्या बँक खात्यात किंवा UPI वर.',
+    hero_sub:       "15 मिनिटांत चाचणी आणि पेमेंट",
     hero_guarantee: 'आमची हमी — आमच्यापेक्षा चांगला भाव कोणीही देणार नाही',
-    hero_cta_wa:    'WhatsApp वर मोफत कोटेशन मिळवा',
+    hero_cta_wa:    "WhatsApp वर माझा अंदाज मिळवा",
     hero_cta_calc:  'तुमच्या सोन्याचे मूल्य जाणून घ्या',
-    hero_stats:     '5,000+ ग्राहक · ₹100 कोटी+ खरेदी · 4.9★',
-    hero_pickup:    'बंगळुरू आणि मुंबईत घरून पिकअपची सोय',
+    hero_stats:     "500+ ग्राहक · ₹10 कोटी+ ची खरेदी",
+    hero_pickup:    "नवी मुंबई, मुंबई आणि ठाणे येथे मोफत घरभेट",
     hero_turn:      ["जुने सोने, आता ", "."],
     hero_uses:      ["घरच्या लग्नासाठी", "मुलांच्या शिक्षणासाठी", "नव्या घरासाठी", "स्वतःच्या व्यवसायासाठी", "तातडीच्या उपचारासाठी", "कर्जमुक्तीसाठी", "एखाद्या चांगल्या कामासाठी"],
     hero_family:    "त्यांनी ते तुमच्या कुटुंबाच्या उद्यासाठी जपून ठेवले होते. आज, ते तुमच्यासाठी आहे.",
     tiles: [
-      { t:'घरपोच सेवा',      d:"आम्ही पूर्ण गोपनीयतेने तुमच्याकडे येतो, म्हणजे तुमचे सोने कुठेही न्यावे लागत नाही." },
-      { t:'अचूक मूल्यांकन',   d:'XRF चाचणीने अचूक शुद्धता मोजली जाते, आणि रीडिंग तुम्ही स्वतः पाहता.' },
-      { t:'त्वरित ट्रान्सफर',   d:'पैसे लगेच तुमच्या बँक खात्यात किंवा UPI वर, सोबत मोफत आणि सविस्तर मूल्यांकन प्रमाणपत्र.' },
+      { t:"मोफत घरभेट", d:"आम्ही पूर्ण गोपनीयतेने तुमच्या घरी येतो. तुमचे सोने कुठेही न्यावे लागत नाही." },
+      { t:"तुमच्यासमोर चाचणी", d:"XRF मशीन अचूक शुद्धता सांगते. ना ओरखडा, ना वितळवणे, आणि रीडिंग तुम्ही स्वतः पाहता." },
+      { t:"जागेवरच पेमेंट", d:"पैसे लगेच तुमच्या बँक खात्यात किंवा UPI वर, सोबत मोफत मूल्यांकन प्रमाणपत्र." },
     ],
 
-    rate_title: 'आमचा खरेदी दर', rate_loading: 'लोड होत आहे…', rate_updated: 'लाइव्ह दर · {time} ला अपडेट', rate_fetching: 'लाइव्ह दर आणत आहोत…',
-    rate_unavailable: 'लाइव्ह दर सध्या उपलब्ध नाही', rate_refresh: 'दर मिनिटाला अपडेट होतो · GST सह', rate_cta: 'WhatsApp वर कोटेशन मागा', est_live: 'लाइव्ह 24K', est_w: 'वजन', why_photo: 'प्रत्येक चाचणी तुमच्यासमोर स्क्रीनवर: इथे 91.6% सोने, म्हणजे 22K.',
+    rate_title: "आमचा लाइव्ह दर", rate_loading: 'लोड होत आहे…', rate_updated: "{time} ला अपडेट", rate_fetching: 'लाइव्ह दर आणत आहोत…',
+    rate_unavailable: 'लाइव्ह दर सध्या उपलब्ध नाही', rate_refresh: 'दर मिनिटाला अपडेट होतो · GST सह', est_live: 'लाइव्ह 24K', est_w: 'वजन', why_photo: 'प्रत्येक चाचणी तुमच्यासमोर स्क्रीनवर: इथे 91.6% सोने, म्हणजे 22K.',
     gst_excl: 'GST शिवाय 24K:',
     gst_note: 'वर दाखवलेला दर GST सह आहे. तुम्ही GST-नोंदणीकृत असाल, तर आम्ही कर क्रेडिट तुम्हाला परत देतो.',
 
     calc_title: 'तुमच्या सोन्याची आत्ताची किंमत किती?', calc_weight: 'वजन (ग्रॅम)', calc_weight_ph: 'उदा. 10', calc_karat: 'शुद्धता निवडा',
-    calc_est: 'अंदाजे मूल्य', calc_at: '{k}K साठी ₹{rate}/ग्रॅम दराने', calc_cta: 'ही किंमत WhatsApp वर मिळवा',
-    calc_disclaimer: 'हा फक्त अंदाज आहे. अंतिम मूल्य तुमच्यासमोर XRF चाचणीनंतर निश्चित होते.',
-    calc_margin: 'दुसऱ्या खरेदीदाराकडून कोटेशन मिळाले आहे? त्यांचे मार्जिन तपासा →',
-    est_chips: ["कोणतीही सक्ती नाही", "विनाशुल्क नकार देण्याची मुभा", "तुमच्यासमोर 0.001 ग्रॅमपर्यंत वजन"],
+    calc_est: "तुमचा अंदाज", calc_at: '{k}K साठी ₹{rate}/ग्रॅम दराने', calc_cta: "WhatsApp वर माझा अंदाज मिळवा",
+    calc_disclaimer: "हा अंदाज आहे. अंतिम ऑफर तुमच्यासमोर XRF चाचणीनंतर मिळते.",
+    calc_margin: "दुसऱ्या खरेदीदाराकडून ऑफर मिळाली आहे? त्यांचा मार्जिन तपासा →",
+    est_chips: ["कोणतीही सक्ती नाही", "तुमच्यासमोर 0.001 ग्रॅमपर्यंत वजन", "खडे तुम्हाला परत"],
     soft_t: "अजून तयार नाही? काही हरकत नाही.", soft_d: "दररोज सकाळी WhatsApp वर लाइव्ह दर मिळवा, म्हणजे योग्य वेळ कधी आहे ते तुम्हाला कळेल.",
     soft_cta: "मला रोजचा दर पाठवा", soft_cta_save: "माझा अंदाज सेव्ह करा आणि रोजचा दर मिळवा", rate_daily: "हा दर रोज WhatsApp वर मिळवा",
     xrf_photo: "फोटो घेतला", xrf_gold: "सोने (Au)",
 
-    git_title: 'मोफत अपॉइंटमेंट बुक करा', git_sub: "तुमची माहिती द्या, आम्ही WhatsApp वर वेळ निश्चित करू. विनंतीनुसार गोपनीय भेट आणि महिला एक्झिक्युटिव्ह.",
+    git_title: "मोफत भेट बुक करा", git_sub: "तुमची माहिती द्या, आम्ही WhatsApp वर वेळ निश्चित करू. विनंतीनुसार गोपनीय भेट आणि महिला एक्झिक्युटिव्ह.",
     git_name: 'तुमचे नाव', git_name_ph: 'उदा. प्रिया एस', git_mobile: 'मोबाइल नंबर', git_mobile_ph: '10 अंकी नंबर',
-    git_pref: 'माझी पसंती', git_doorstep: 'घरून पिकअप', git_centre: 'सेंटरला भेट',
-    git_book: 'मोफत अपॉइंटमेंट बुक करा', git_call: 'आत्ता कॉल करा',
+    git_pref: 'माझी पसंती', git_doorstep: "घरभेट", git_centre: "आमचे खारघर सेंटर",
+    git_book: "मोफत भेट बुक करा", git_call: 'आत्ता कॉल करा',
     git_consent: 'सबमिट करून, तुमच्या सोने विक्रीबद्दल संपर्क करण्यास तुम्ही संमती देता.',
-    git_err: 'तुमचे नाव आणि योग्य 10 अंकी मोबाइल नंबर टाका.', git_done_t: 'विनंती मिळाली', git_done_d: 'तुमच्या माहितीसह आम्ही WhatsApp उघडले आहे. तिथे पाठवा दाबा, आम्ही लवकरच तुमची वेळ निश्चित करू.', git_again: 'आणखी एक अपॉइंटमेंट बुक करा',
+    git_err: 'तुमचे नाव आणि योग्य 10 अंकी मोबाइल नंबर टाका.', git_done_t: 'विनंती मिळाली', git_done_d: "तुमच्या माहितीसह आम्ही WhatsApp उघडले आहे. तिथे पाठवा दाबा, आम्ही लवकरच वेळ निश्चित करू. त्या दिवशी चाचणी आणि पेमेंटला सुमारे 15 मिनिटे लागतात.", git_again: "आणखी एक भेट बुक करा",
     git_prefs: "भेटीसंबंधी पसंती (ऐच्छिक)", git_p_discreet: "गोपनीय भेट", git_p_discreet_d: "साधे कपडे, बॅग किंवा गाडीवर लोगो नाही.",
     git_p_woman: "महिला एक्झिक्युटिव्ह", git_p_urgent: "तातडीचे, त्याच दिवशी", git_urgent_note: "दुपारी 4 पूर्वी बुक करा, आम्ही आजच येऊ. आम्ही 30 मिनिटांत तुम्हाला कॉल करू.",
     git_done_thanks: "एवढ्या मोलाच्या गोष्टीसाठी आमच्यावर विश्वास ठेवल्याबद्दल धन्यवाद.", git_done_urgent: "तातडीचे म्हणून नोंद: आम्ही 30 मिनिटांत तुम्हाला कॉल करू.",
 
     why_title: 'लोक Carat Money वर विश्वास का ठेवतात',
-    why_intro: 'जुने सोने विकताना बहुतेक वेळा अंदाज, छुपी कपात आणि कागदपत्रांचा अभाव असतो. आम्ही प्रत्येक टप्पा मोजलेला, तुम्हाला दाखवलेला आणि नोंदवलेला ठेवला आहे.',
-    why_them: 'सामान्य सोने खरेदीदार', why_tag: 'भावाची हमी',
+    why_intro: "जुने सोने विकताना अनेकदा अंदाज, छुपी कपात आणि कोणतीही कागदपत्रे नसतात. आमच्याकडे प्रत्येक पायरी मोजली जाते, तुम्हाला दाखवली जाते आणि लिहून दिली जाते.",
+    why_them: "बहुतेक स्थानिक खरेदीदार", why_tag: 'भावाची हमी',
     why_rows: [
       { k:'शुद्धता चाचणी',        us:'XRF चाचणी, कोणतेही नुकसान न करता, रीडिंग स्क्रीनवर तुम्हाला दाखवले जाते.', them:'कसोटीच्या दगडावर चाचणी, किंवा तुम्हाला न दाखवलेले रीडिंग.' },
       { k:'वजन',                us:'तुमच्यासमोर वजन, 0.001 ग्रॅमपर्यंत अचूक.', them:'वजन कमी करून राउंड केले जाते आणि खड्यांचा फक्त अंदाज घेतला जातो.' },
@@ -730,16 +728,16 @@ const STR = {
       { k:"गोपनीयता", us:"विनंतीनुसार ब्रँडिंगशिवाय गोपनीय भेट, आणि सेंटरवर खाजगी सल्ला कक्ष.", them:"गर्दीचा दुकानाचा काउंटर, सर्वांसमोर." },
     ],
 
-    proc_title: 'Carat Money ची प्रक्रिया, 4 सोप्या टप्प्यांत', proc_sub: 'प्रत्येक टप्पा पारदर्शक, आणि सुमारे 15 मिनिटांत पूर्ण.',
+    proc_title: "हे कसे चालते: 15 मिनिटांत पूर्ण", proc_sub: "चार सोप्या पायऱ्या, सर्व काही तुमच्यासमोर.",
     proc_steps: [
-      { t:'Carat Money सेंटरला या किंवा घरपोच अपॉइंटमेंट बुक करा', d:'खारघरमधील आमच्या सेंटरला या, किंवा तुमच्या सोयीच्या वेळी आम्ही तुमच्या घरी येऊ.' },
-      { t:'आधुनिक मशीनद्वारे सोन्याची चाचणी', d:"स्पष्ट नोंदीसाठी प्रत्येक दागिन्याचा आधी फोटो घेतला जातो, मग तुमच्यासमोर XRF चाचणी आणि अचूक वजन." },
-      { t:'विक्रीपूर्वी शुद्धता, वजन आणि लाइव्ह किंमत दाखवली जाते', d:'विकण्याचा निर्णय घेण्यापूर्वी तुम्ही प्रत्येक आकडा पाहता.' },
-      { t:'कोणताही विलंब न करता त्वरित पेमेंट', d:'ऑफर स्वीकारताच बँक किंवा UPI ट्रान्सफर.' },
+      { t:"मोफत घरभेट बुक करा, किंवा सेंटरला या", d:"तुमच्या सोयीच्या वेळी आम्ही तुमच्या घरी येतो, किंवा आमच्या खारघर सेंटरला भेट द्या." },
+      { t:"आम्ही तुमच्यासमोर सोन्याची चाचणी करतो", d:"स्पष्ट नोंदीसाठी प्रत्येक दागिन्याचा फोटो, मग XRF चाचणी आणि 0.001 ग्रॅमपर्यंत वजन." },
+      { t:"निर्णयापूर्वी अंतिम ऑफर पाहा", d:"शुद्धता, वजन आणि लाइव्ह दर, सर्व तुमच्यासमोर. विकण्याची कोणतीही सक्ती नाही." },
+      { t:"लगेच पेमेंट मिळवा", d:"ऑफर स्वीकारताच बँक किंवा UPI ट्रान्सफर, सोबत मोफत मूल्यांकन प्रमाणपत्र." },
     ],
-    proc_cta: 'मोफत अंदाज मिळवा',
+    proc_cta: "माझा अंदाज मिळवा",
 
-    rev_title: 'हजारो लोक Carat Money वर विश्वास का ठेवतात', rev_sub: 'नवी मुंबईतील विक्रेते आमच्याबद्दल काय म्हणतात.',
+    rev_title: "आमचे ग्राहक काय म्हणतात", rev_sub: 'नवी मुंबईतील विक्रेते आमच्याबद्दल काय म्हणतात.',
     rev_note: 'ग्राहकांनी हाताने लिहून दिलेल्या नोंदींवरून, आमच्या शब्दांत.', rev_who: 'Carat Money ग्राहक',
     review_quotes: [
       'त्यांनी XRF स्क्रीन माझ्याकडे वळवली आणि शुद्धतेचे रीडिंग मी स्वतः पाहिले. कोणताही अंदाज नाही.',
@@ -753,23 +751,22 @@ const STR = {
     faq_title: 'नेहमी विचारले जाणारे प्रश्न', faq_sub: 'सोने विकण्यापूर्वी जाणून घ्यायचे सर्व काही.',
     faq_panel_title: 'अजून काही प्रश्न आहेत?', faq_panel_sub: 'यापैकी कशावरही संपर्क करा, दररोज सकाळी 9 ते रात्री 9.', email: 'ईमेल',
     faqs: [
-      { q:'माझ्या सोन्याची किंमत कशी ठरते?', a:'आम्ही तुमच्या सोन्याचे वजन करतो, XRF मशीनवर शुद्धता तपासतो आणि शुद्ध सोन्याच्या प्रमाणाला या पानावर दाखवलेल्या लाइव्ह दराने गुणतो. निर्णय घेण्यापूर्वी तुम्ही प्रत्येक आकडा पाहता.' },
-      { q:'चाचणीदरम्यान माझे दागिने वितळवता किंवा खराब करता का?', a:'नाही. XRF चाचणीने कोणतेही नुकसान होत नाही, चाचणीदरम्यान तुमचे दागिने जसे आहेत तसेच राहतात.' },
+      { q:"माझ्या सोन्याची किंमत कशी ठरते?", a:"आम्ही तुमचे सोने तोलतो, XRF मशीनवर त्याची शुद्धता तपासतो आणि शुद्ध सोन्याला या पेजवरील आमच्या लाइव्ह दराने गुणतो. निर्णयापूर्वी तुम्ही प्रत्येक आकडा पाहता." },
+      { q:"चाचणीमुळे माझ्या दागिन्यांचे नुकसान होईल का?", a:"नाही. XRF चाचणीत ना ओरखडा येतो, ना काही वितळवले जाते. तुमचे दागिने जसे आहेत तसेच राहतात." },
       { q:"तुम्ही माझ्या दागिन्यांचे फोटो घेता का?", a:"हो. चाचणीपूर्वी प्रत्येक दागिन्याचा फोटो घेतला जातो, म्हणजे तुम्ही काय सुपूर्द केले याची स्पष्ट नोंद राहते." },
-      { q:'तुम्ही मोफत घरून पिकअप देता का?', a:'हो, बंगळुरू आणि मुंबईत. आमचे प्रतिनिधी तुमच्या सोयीच्या वेळी येतात, तुमच्यासमोर सोन्याची चाचणी करतात आणि तिथेच पक्की ऑफर देतात.' },
+      { q:"तुम्ही मोफत घरभेट देता का?", a:"हो, नवी मुंबई, मुंबई आणि ठाणे येथे. आमचा एक्झिक्युटिव्ह तुमच्या सोयीच्या वेळी येतो, तुमच्यासमोर सोन्याची चाचणी करतो आणि तिथेच अंतिम ऑफर देतो." },
       { q:"भेट गोपनीय ठेवता येईल का?", a:"हो. बुकिंग करताना \"गोपनीय भेट\" निवडा; आमचा एक्झिक्युटिव्ह साध्या कपड्यांत येईल आणि बॅग किंवा गाडीवर लोगो नसेल. आमच्या सेंटरवर प्रत्येक भेट खाजगी सल्ला कक्षात होते." },
       { q:"मला महिला एक्झिक्युटिव्ह मिळू शकेल का?", a:"हो. बुकिंग करताना \"महिला एक्झिक्युटिव्ह\" निवडा, आम्ही तुमच्याकडे आलो किंवा तुम्ही सेंटरला आलात तरी." },
       { q:"मला तातडीने पैशांची गरज आहे. तुम्ही आज येऊ शकता का?", a:"हो. घरी भेट बुक करताना \"तातडीचे, त्याच दिवशी\" निवडा. आम्ही 30 मिनिटांत कॉल करतो, आणि दुपारी 4 पूर्वी बुक केल्यास त्याच दिवशी येतो." },
-      { q:'अंदाज मोफत आहे का?', a:'हो. अंदाज मोफत आहे, कोणतेही बंधन नाही. ऑफर आवडली तरच विका.' },
+      { q:"मी विकले नाही तर काही शुल्क लागते का?", a:"नाही. विकण्यापूर्वी सर्व काही मोफत आहे: घरभेट, चाचणी आणि मूल्यांकन प्रमाणपत्र. अंतिम ऑफर पसंत पडली तरच विका." },
       { q:'काही कपात होते का?', a:'फक्त खड्यांच्या वजनाची, जे आम्ही मोजून तुम्हाला दाखवतो. कोणतीही अतिरिक्त "वेस्टेज" कपात किंवा छुपे शुल्क नाही.' },
       { q:"मला माझे खडे परत मिळतील का?", a:"हो. खडे आणि सोन्याव्यतिरिक्त भाग काळजीपूर्वक काढून तुम्हाला परत दिले जातात. तुम्हाला सोन्याचे पैसे मिळतात." },
       { q:'माझे दागिने तुटलेले असतील किंवा हॉलमार्क नसेल तर?', a:'तुटलेले, जुने आणि हॉलमार्क नसलेले दागिनेही धरून आम्ही सर्व सोन्याचे दागिने स्वीकारतो. XRF चाचणी खरी शुद्धता सांगते, त्यामुळे तुम्हाला प्रत्यक्ष सोन्याच्या प्रमाणाचे पैसे मिळतात.' },
       { q:'मला पेमेंट कसे मिळेल?', a:'ऑफर स्वीकारताच लगेच, बँक ट्रान्सफर किंवा UPI ने. आम्ही कधीही रोख पैसे देत नाही.' },
       { q:'मला काही कागदपत्रे मिळतील का?', a:'हो. तुम्हाला विक्रीचे इनव्हॉइस आणि मोफत, सविस्तर मूल्यांकन प्रमाणपत्र मिळते.' },
-      { q:'चाचणीनंतर न विकता जाऊ शकतो का?', a:'हो, कोणतेही शुल्क न देता. अंतिम ऑफर स्वीकारेपर्यंत विकण्याचे कोणतेही बंधन नाही.' },
-      { q:'याला किती वेळ लागतो?', a:'सुमारे 15 मिनिटे. चाचणी, ऑफर आणि पेमेंट सर्व एकाच भेटीत होते.' },
-      { q:'कोणती कागदपत्रे लागतात?', a:'KYC साठी तुमचे आधार आणि PAN.' },
-      { q:'बँक किंवा NBFC कडे गहाण ठेवलेले सोने तुम्ही खरेदी करता का?', a:'हो. बँक किंवा NBFC कडे गहाण ठेवलेले सोने सोडवण्यासाठी आम्ही मदत करतो आणि ते आजच्या दराने खरेदी करतो. माहितीसाठी आम्हाला WhatsApp करा.' },
+      { q:"याला किती वेळ लागतो?", a:"बहुतेक भेटींमध्ये सुमारे 15 मिनिटे. चाचणी, अंतिम ऑफर आणि पेमेंट सर्व एकाच वेळी." },
+      { q:"कोणती कागदपत्रे लागतात?", a:"ओळख पटवण्यासाठी तुमचे आधार आणि PAN." },
+      { q:"माझे सोने कर्जासाठी गहाण आहे. तरीही तुम्ही ते घ्याल का?", a:"हो. बँक किंवा गोल्ड-लोन कंपनीकडे गहाण असलेले सोने सोडवायला आम्ही मदत करतो आणि ते आमच्या लाइव्ह दराने विकत घेतो. माहितीसाठी आम्हाला WhatsApp करा." },
     ],
 
     visit_label: 'आमच्या सेंटरला भेट द्या', visit_title: 'Carat Money, खारघर', visit_hours: 'दररोज, सकाळी 9 ते रात्री 9', visit_dir: 'मार्ग पहा',
@@ -778,7 +775,7 @@ const STR = {
     blog_title: 'गोल्ड इनसाइट्स', blog_sub: 'सोने विकण्यापूर्वी थेट उत्तरे.', blog_all: 'सर्व लेख पहा', blog_read: 'वाचा', blog_note: 'लेख इंग्रजीत आहेत.',
 
     app_h: 'Carat Money, लवकरच तुमच्या खिशात.',
-    app_body: 'लाइव्ह सोन्याचा दर पहा, तुमच्या दागिन्यांचे मूल्य जाणून घ्या आणि घरून पिकअप बुक करा — सर्व एकाच ॲपमध्ये. लवकरच iOS आणि Android वर.',
+    app_body: "लाइव्ह सोन्याचा दर पाहा, तुमच्या दागिन्यांचा अंदाज मिळवा आणि मोफत घरभेट बुक करा, सर्व एकाच ॲपमध्ये. लवकरच iOS आणि Android वर.",
     app_soon: 'लवकरच येत आहे', app_hint: 'लॉन्चची सूचना WhatsApp वर मिळवण्यासाठी कोणत्याही बटणावर टॅप करा.',
     app_chip1: 'XRF ने तपासलेली शुद्धता', app_chip2: 'त्वरित UPI पेमेंट',
 
@@ -799,48 +796,48 @@ const STR = {
 
     hero_eyebrow:   'ನ್ಯಾಯಯುತ ಬೆಲೆಗೆ ನಾವು ಚಿನ್ನ ಖರೀದಿಸುತ್ತೇವೆ',
     hero_h1:        ['ನಿಮ್ಮ ಚಿನ್ನವನ್ನು ', 'ಲೈವ್', ' ಮಾರುಕಟ್ಟೆ ದರದಲ್ಲಿ ಮಾರಾಟ ಮಾಡಿ.'],
-    hero_sub:       'ಹಣ ತಕ್ಷಣ ನಿಮ್ಮ ಬ್ಯಾಂಕ್ ಅಥವಾ UPI ಗೆ.',
+    hero_sub:       "15 ನಿಮಿಷಗಳಲ್ಲಿ ಪರೀಕ್ಷೆ ಮತ್ತು ಪಾವತಿ",
     hero_guarantee: 'ನಮ್ಮ ಗ್ಯಾರಂಟಿ — ನಮ್ಮ ಬೆಲೆಗೆ ಯಾರೂ ಸರಿಸಾಟಿಯಾಗಲಾರರು',
-    hero_cta_wa:    'WhatsApp ನಲ್ಲಿ ಉಚಿತ ಕೊಟೇಶನ್ ಪಡೆಯಿರಿ',
+    hero_cta_wa:    "WhatsApp ನಲ್ಲಿ ನನ್ನ ಅಂದಾಜು ಪಡೆಯಿರಿ",
     hero_cta_calc:  'ನಿಮ್ಮ ಚಿನ್ನದ ಮೌಲ್ಯ ತಿಳಿಯಿರಿ',
-    hero_stats:     '5,000+ ಗ್ರಾಹಕರು · ₹100 ಕೋಟಿ+ ಖರೀದಿ · 4.9★',
-    hero_pickup:    'ಬೆಂಗಳೂರು ಮತ್ತು ಮುಂಬೈನಲ್ಲಿ ಮನೆಯಿಂದ ಪಿಕಪ್ ಲಭ್ಯ',
+    hero_stats:     "500+ ಗ್ರಾಹಕರು · ₹10 ಕೋಟಿ+ ಖರೀದಿ",
+    hero_pickup:    "ನವಿ ಮುಂಬೈ, ಮುಂಬೈ ಮತ್ತು ಥಾಣೆಯಲ್ಲಿ ಉಚಿತ ಮನೆ ಭೇಟಿ",
     hero_turn:      ["ಹಳೆಯ ಚಿನ್ನ, ಈಗ ", "."],
     hero_uses:      ["ಮನೆಯ ಮದುವೆಗೆ", "ಮಕ್ಕಳ ವಿದ್ಯಾಭ್ಯಾಸಕ್ಕೆ", "ಹೊಸ ಮನೆಗೆ", "ಸ್ವಂತ ವ್ಯಾಪಾರಕ್ಕೆ", "ತುರ್ತು ಚಿಕಿತ್ಸೆಗೆ", "ಸಾಲದಿಂದ ಮುಕ್ತಿಗೆ", "ಒಳ್ಳೆಯ ಕೆಲಸಕ್ಕೆ"],
     hero_family:    "ಅವರು ಇದನ್ನು ನಿಮ್ಮ ಕುಟುಂಬದ ನಾಳೆಗಾಗಿ ಕೂಡಿಟ್ಟಿದ್ದರು. ಇಂದು, ಇದು ನಿಮಗಾಗಿ.",
     tiles: [
-      { t:'ಮನೆ ಬಾಗಿಲಿಗೆ ಸೇವೆ', d:"ನಾವು ಸಂಪೂರ್ಣ ಗೌಪ್ಯತೆಯಿಂದ ನಿಮ್ಮ ಬಳಿಗೆ ಬರುತ್ತೇವೆ, ನಿಮ್ಮ ಚಿನ್ನ ಎಲ್ಲಿಗೂ ಹೋಗಬೇಕಿಲ್ಲ." },
-      { t:'ನಿಖರ ಮೌಲ್ಯಮಾಪನ',  d:'XRF ಪರೀಕ್ಷೆ ನಿಖರ ಶುದ್ಧತೆಯನ್ನು ಅಳೆಯುತ್ತದೆ, ರೀಡಿಂಗ್ ಅನ್ನು ನೀವೇ ನೋಡುತ್ತೀರಿ.' },
-      { t:'ತಕ್ಷಣ ವರ್ಗಾವಣೆ',   d:'ಹಣ ತಕ್ಷಣ ನಿಮ್ಮ ಬ್ಯಾಂಕ್ ಅಥವಾ UPI ಗೆ, ಜೊತೆಗೆ ಉಚಿತ ಮತ್ತು ವಿವರವಾದ ಮೌಲ್ಯಮಾಪನ ಪ್ರಮಾಣಪತ್ರ.' },
+      { t:"ಉಚಿತ ಮನೆ ಭೇಟಿ", d:"ನಾವು ಸಂಪೂರ್ಣ ಗೌಪ್ಯತೆಯಿಂದ ನಿಮ್ಮ ಮನೆಗೆ ಬರುತ್ತೇವೆ. ನಿಮ್ಮ ಚಿನ್ನ ಎಲ್ಲಿಗೂ ಹೋಗಬೇಕಿಲ್ಲ." },
+      { t:"ನಿಮ್ಮ ಮುಂದೆಯೇ ಪರೀಕ್ಷೆ", d:"XRF ಯಂತ್ರ ನಿಖರ ಶುದ್ಧತೆಯನ್ನು ತಿಳಿಸುತ್ತದೆ. ಗೀರು ಇಲ್ಲ, ಕರಗಿಸುವುದಿಲ್ಲ, ರೀಡಿಂಗ್ ನೀವೇ ನೋಡುತ್ತೀರಿ." },
+      { t:"ಅಲ್ಲಿಯೇ ಪಾವತಿ", d:"ಹಣ ತಕ್ಷಣ ನಿಮ್ಮ ಬ್ಯಾಂಕ್ ಅಥವಾ UPI ಗೆ, ಜೊತೆಗೆ ಉಚಿತ ಮೌಲ್ಯಮಾಪನ ಪ್ರಮಾಣಪತ್ರ." },
     ],
 
-    rate_title: 'ನಮ್ಮ ಖರೀದಿ ದರ', rate_loading: 'ಲೋಡ್ ಆಗುತ್ತಿದೆ…', rate_updated: 'ಲೈವ್ ದರ · {time} ಕ್ಕೆ ಅಪ್‌ಡೇಟ್', rate_fetching: 'ಲೈವ್ ದರ ಪಡೆಯಲಾಗುತ್ತಿದೆ…',
-    rate_unavailable: 'ಲೈವ್ ದರ ತಾತ್ಕಾಲಿಕವಾಗಿ ಲಭ್ಯವಿಲ್ಲ', rate_refresh: 'ಪ್ರತಿ ನಿಮಿಷ ಅಪ್‌ಡೇಟ್ ಆಗುತ್ತದೆ · GST ಸಹಿತ', rate_cta: 'WhatsApp ನಲ್ಲಿ ಕೊಟೇಶನ್ ಕೇಳಿ', est_live: 'ಲೈವ್ 24K', est_w: 'ತೂಕ', why_photo: 'ಪ್ರತಿ ಪರೀಕ್ಷೆಯೂ ನಿಮ್ಮ ಮುಂದೆಯೇ ಪರದೆಯ ಮೇಲೆ: ಇಲ್ಲಿ 91.6% ಚಿನ್ನ, ಅಂದರೆ 22K.',
+    rate_title: "ನಮ್ಮ ಲೈವ್ ದರ", rate_loading: 'ಲೋಡ್ ಆಗುತ್ತಿದೆ…', rate_updated: "{time} ಕ್ಕೆ ಅಪ್‌ಡೇಟ್", rate_fetching: 'ಲೈವ್ ದರ ಪಡೆಯಲಾಗುತ್ತಿದೆ…',
+    rate_unavailable: 'ಲೈವ್ ದರ ತಾತ್ಕಾಲಿಕವಾಗಿ ಲಭ್ಯವಿಲ್ಲ', rate_refresh: 'ಪ್ರತಿ ನಿಮಿಷ ಅಪ್‌ಡೇಟ್ ಆಗುತ್ತದೆ · GST ಸಹಿತ', est_live: 'ಲೈವ್ 24K', est_w: 'ತೂಕ', why_photo: 'ಪ್ರತಿ ಪರೀಕ್ಷೆಯೂ ನಿಮ್ಮ ಮುಂದೆಯೇ ಪರದೆಯ ಮೇಲೆ: ಇಲ್ಲಿ 91.6% ಚಿನ್ನ, ಅಂದರೆ 22K.',
     gst_excl: 'GST ಇಲ್ಲದೆ 24K:',
     gst_note: 'ಮೇಲೆ ತೋರಿಸಿರುವ ದರ GST ಸಹಿತ. ನೀವು GST ನೋಂದಾಯಿತರಾಗಿದ್ದರೆ, ತೆರಿಗೆ ಕ್ರೆಡಿಟ್ ಅನ್ನು ನಿಮಗೆ ಹಿಂತಿರುಗಿಸುತ್ತೇವೆ.',
 
     calc_title: 'ನಿಮ್ಮ ಚಿನ್ನದ ಈಗಿನ ಮೌಲ್ಯ ಎಷ್ಟು?', calc_weight: 'ತೂಕ (ಗ್ರಾಂ)', calc_weight_ph: 'ಉದಾ. 10', calc_karat: 'ಶುದ್ಧತೆ ಆಯ್ಕೆಮಾಡಿ',
-    calc_est: 'ಅಂದಾಜು ಮೌಲ್ಯ', calc_at: '{k}K ಗೆ ₹{rate}/ಗ್ರಾಂ ದರದಲ್ಲಿ', calc_cta: 'ಈ ಬೆಲೆಯನ್ನು WhatsApp ನಲ್ಲಿ ಪಡೆಯಿರಿ',
-    calc_disclaimer: 'ಇದು ಕೇವಲ ಅಂದಾಜು. ಅಂತಿಮ ಮೌಲ್ಯವನ್ನು ನಿಮ್ಮ ಮುಂದೆಯೇ XRF ಪರೀಕ್ಷೆಯ ನಂತರ ದೃಢಪಡಿಸಲಾಗುತ್ತದೆ.',
-    calc_margin: 'ಬೇರೆ ಖರೀದಿದಾರರಿಂದ ಕೊಟೇಶನ್ ಬಂದಿದೆಯೇ? ಅವರ ಮಾರ್ಜಿನ್ ಪರಿಶೀಲಿಸಿ →',
-    est_chips: ["ಯಾವುದೇ ಒತ್ತಾಯವಿಲ್ಲ", "ಉಚಿತವಾಗಿ ನಿರಾಕರಿಸಬಹುದು", "ನಿಮ್ಮ ಮುಂದೆಯೇ 0.001 ಗ್ರಾಂವರೆಗೆ ತೂಕ"],
+    calc_est: "ನಿಮ್ಮ ಅಂದಾಜು", calc_at: '{k}K ಗೆ ₹{rate}/ಗ್ರಾಂ ದರದಲ್ಲಿ', calc_cta: "WhatsApp ನಲ್ಲಿ ನನ್ನ ಅಂದಾಜು ಪಡೆಯಿರಿ",
+    calc_disclaimer: "ಇದು ಅಂದಾಜು. ಅಂತಿಮ ಆಫರ್ ನಿಮ್ಮ ಮುಂದೆಯೇ XRF ಪರೀಕ್ಷೆಯ ನಂತರ ಸಿಗುತ್ತದೆ.",
+    calc_margin: "ಬೇರೆ ಖರೀದಿದಾರರಿಂದ ಆಫರ್ ಸಿಕ್ಕಿದೆಯೇ? ಅವರ ಮಾರ್ಜಿನ್ ಪರಿಶೀಲಿಸಿ →",
+    est_chips: ["ಯಾವುದೇ ಒತ್ತಾಯವಿಲ್ಲ", "ನಿಮ್ಮ ಮುಂದೆಯೇ 0.001 ಗ್ರಾಂವರೆಗೆ ತೂಕ", "ಕಲ್ಲುಗಳು ನಿಮಗೆ ವಾಪಸ್"],
     soft_t: "ಇನ್ನೂ ಸಿದ್ಧವಿಲ್ಲವೇ? ಪರವಾಗಿಲ್ಲ.", soft_d: "ಪ್ರತಿದಿನ ಬೆಳಿಗ್ಗೆ WhatsApp ನಲ್ಲಿ ಲೈವ್ ದರ ಪಡೆಯಿರಿ, ಸರಿಯಾದ ಸಮಯ ಯಾವಾಗ ಎಂದು ತಿಳಿಯಲು.",
     soft_cta: "ನನಗೆ ದಿನದ ದರ ಕಳುಹಿಸಿ", soft_cta_save: "ನನ್ನ ಅಂದಾಜು ಉಳಿಸಿ, ದಿನದ ದರ ಪಡೆಯಿರಿ", rate_daily: "ಈ ದರವನ್ನು ಪ್ರತಿದಿನ WhatsApp ನಲ್ಲಿ ಪಡೆಯಿರಿ",
     xrf_photo: "ಫೋಟೋ ತೆಗೆಯಲಾಗಿದೆ", xrf_gold: "ಚಿನ್ನ (Au)",
 
-    git_title: 'ಉಚಿತ ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್ ಬುಕ್ ಮಾಡಿ', git_sub: "ನಿಮ್ಮ ವಿವರಗಳನ್ನು ನೀಡಿ, ನಾವು WhatsApp ನಲ್ಲಿ ಸಮಯವನ್ನು ದೃಢಪಡಿಸುತ್ತೇವೆ. ವಿನಂತಿಯ ಮೇರೆಗೆ ಗೌಪ್ಯ ಭೇಟಿ ಮತ್ತು ಮಹಿಳಾ ಎಕ್ಸಿಕ್ಯೂಟಿವ್.",
+    git_title: "ಉಚಿತ ಭೇಟಿ ಬುಕ್ ಮಾಡಿ", git_sub: "ನಿಮ್ಮ ವಿವರಗಳನ್ನು ನೀಡಿ, ನಾವು WhatsApp ನಲ್ಲಿ ಸಮಯವನ್ನು ದೃಢಪಡಿಸುತ್ತೇವೆ. ವಿನಂತಿಯ ಮೇರೆಗೆ ಗೌಪ್ಯ ಭೇಟಿ ಮತ್ತು ಮಹಿಳಾ ಎಕ್ಸಿಕ್ಯೂಟಿವ್.",
     git_name: 'ನಿಮ್ಮ ಹೆಸರು', git_name_ph: 'ಉದಾ. ಪ್ರಿಯಾ ಎಸ್', git_mobile: 'ಮೊಬೈಲ್ ಸಂಖ್ಯೆ', git_mobile_ph: '10 ಅಂಕಿಯ ಸಂಖ್ಯೆ',
-    git_pref: 'ನನ್ನ ಆಯ್ಕೆ', git_doorstep: 'ಮನೆಯಿಂದ ಪಿಕಪ್', git_centre: 'ಕೇಂದ್ರಕ್ಕೆ ಭೇಟಿ',
-    git_book: 'ಉಚಿತ ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್ ಬುಕ್ ಮಾಡಿ', git_call: 'ಈಗ ಕರೆ ಮಾಡಿ',
+    git_pref: 'ನನ್ನ ಆಯ್ಕೆ', git_doorstep: "ಮನೆ ಭೇಟಿ", git_centre: "ನಮ್ಮ ಖಾರ್‌ಘರ್ ಕೇಂದ್ರ",
+    git_book: "ಉಚಿತ ಭೇಟಿ ಬುಕ್ ಮಾಡಿ", git_call: 'ಈಗ ಕರೆ ಮಾಡಿ',
     git_consent: 'ಸಲ್ಲಿಸುವ ಮೂಲಕ, ನಿಮ್ಮ ಚಿನ್ನ ಮಾರಾಟದ ಕುರಿತು ನಿಮ್ಮನ್ನು ಸಂಪರ್ಕಿಸಲು ನೀವು ಒಪ್ಪುತ್ತೀರಿ.',
-    git_err: 'ನಿಮ್ಮ ಹೆಸರು ಮತ್ತು ಸರಿಯಾದ 10 ಅಂಕಿಯ ಮೊಬೈಲ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ.', git_done_t: 'ವಿನಂತಿ ಸ್ವೀಕರಿಸಲಾಗಿದೆ', git_done_d: 'ನಿಮ್ಮ ವಿವರಗಳೊಂದಿಗೆ WhatsApp ತೆರೆಯಲಾಗಿದೆ. ಅಲ್ಲಿ ಕಳುಹಿಸಿ ಒತ್ತಿ, ನಾವು ಶೀಘ್ರದಲ್ಲೇ ನಿಮ್ಮ ಸಮಯವನ್ನು ದೃಢಪಡಿಸುತ್ತೇವೆ.', git_again: 'ಇನ್ನೊಂದು ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್ ಬುಕ್ ಮಾಡಿ',
+    git_err: 'ನಿಮ್ಮ ಹೆಸರು ಮತ್ತು ಸರಿಯಾದ 10 ಅಂಕಿಯ ಮೊಬೈಲ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ.', git_done_t: 'ವಿನಂತಿ ಸ್ವೀಕರಿಸಲಾಗಿದೆ', git_done_d: "ನಿಮ್ಮ ವಿವರಗಳೊಂದಿಗೆ WhatsApp ತೆರೆಯಲಾಗಿದೆ. ಅಲ್ಲಿ ಕಳುಹಿಸಿ ಒತ್ತಿ, ನಾವು ಶೀಘ್ರದಲ್ಲೇ ಸಮಯ ದೃಢಪಡಿಸುತ್ತೇವೆ. ಆ ದಿನ ಪರೀಕ್ಷೆ ಮತ್ತು ಪಾವತಿಗೆ ಸುಮಾರು 15 ನಿಮಿಷ ಸಾಕು.", git_again: "ಇನ್ನೊಂದು ಭೇಟಿ ಬುಕ್ ಮಾಡಿ",
     git_prefs: "ಭೇಟಿಯ ಆದ್ಯತೆಗಳು (ಐಚ್ಛಿಕ)", git_p_discreet: "ಗೌಪ್ಯ ಭೇಟಿ", git_p_discreet_d: "ಸಾಮಾನ್ಯ ಉಡುಪು, ಬ್ಯಾಗ್ ಅಥವಾ ವಾಹನದ ಮೇಲೆ ಲೋಗೋ ಇಲ್ಲ.",
     git_p_woman: "ಮಹಿಳಾ ಎಕ್ಸಿಕ್ಯೂಟಿವ್", git_p_urgent: "ತುರ್ತು, ಅದೇ ದಿನ", git_urgent_note: "ಸಂಜೆ 4 ಗಂಟೆಯೊಳಗೆ ಬುಕ್ ಮಾಡಿದರೆ ಇಂದೇ ಬರುತ್ತೇವೆ. 30 ನಿಮಿಷಗಳೊಳಗೆ ನಿಮಗೆ ಕರೆ ಮಾಡುತ್ತೇವೆ.",
     git_done_thanks: "ಇಷ್ಟು ಅಮೂಲ್ಯವಾದುದಕ್ಕೆ ನಮ್ಮನ್ನು ನಂಬಿದ್ದಕ್ಕಾಗಿ ಧನ್ಯವಾದಗಳು.", git_done_urgent: "ತುರ್ತು ಎಂದು ದಾಖಲಿಸಲಾಗಿದೆ: 30 ನಿಮಿಷಗಳೊಳಗೆ ನಿಮಗೆ ಕರೆ ಮಾಡುತ್ತೇವೆ.",
 
     why_title: 'ಜನರು Carat Money ಅನ್ನು ಏಕೆ ನಂಬುತ್ತಾರೆ',
-    why_intro: 'ಹಳೆಯ ಚಿನ್ನ ಮಾರುವಾಗ ಸಾಮಾನ್ಯವಾಗಿ ಊಹೆ, ಮರೆಮಾಚಿದ ಕಡಿತಗಳು ಮತ್ತು ದಾಖಲೆಗಳ ಕೊರತೆ ಇರುತ್ತದೆ. ನಾವು ಪ್ರತಿಯೊಂದು ಹಂತವನ್ನೂ ಅಳೆದು, ನಿಮಗೆ ತೋರಿಸಿ, ದಾಖಲಿಸುವಂತೆ ರೂಪಿಸಿದ್ದೇವೆ.',
-    why_them: 'ಸಾಮಾನ್ಯ ಚಿನ್ನ ಖರೀದಿದಾರರು', why_tag: 'ಬೆಲೆ ಗ್ಯಾರಂಟಿ',
+    why_intro: "ಹಳೆಯ ಚಿನ್ನ ಮಾರುವಾಗ ಸಾಮಾನ್ಯವಾಗಿ ಅಂದಾಜು, ಗುಪ್ತ ಕಡಿತಗಳು ಮತ್ತು ಯಾವುದೇ ದಾಖಲೆ ಇರುವುದಿಲ್ಲ. ನಮ್ಮಲ್ಲಿ ಪ್ರತಿ ಹಂತವನ್ನೂ ಅಳೆದು, ನಿಮಗೆ ತೋರಿಸಿ, ಬರೆದು ಕೊಡಲಾಗುತ್ತದೆ.",
+    why_them: "ಹೆಚ್ಚಿನ ಸ್ಥಳೀಯ ಖರೀದಿದಾರರು", why_tag: 'ಬೆಲೆ ಗ್ಯಾರಂಟಿ',
     why_rows: [
       { k:'ಶುದ್ಧತೆ ಪರೀಕ್ಷೆ',     us:'XRF ಪರೀಕ್ಷೆ, ಯಾವುದೇ ಹಾನಿಯಿಲ್ಲದೆ, ರೀಡಿಂಗ್ ಅನ್ನು ಪರದೆಯ ಮೇಲೆ ನಿಮಗೆ ತೋರಿಸಲಾಗುತ್ತದೆ.', them:'ಒರೆಗಲ್ಲಿನ ಪರೀಕ್ಷೆ, ಅಥವಾ ನಿಮಗೆ ತೋರಿಸದ ರೀಡಿಂಗ್.' },
       { k:'ತೂಕ',              us:'ನಿಮ್ಮ ಮುಂದೆಯೇ ತೂಕ, 0.001 ಗ್ರಾಂವರೆಗೆ ನಿಖರ.', them:'ತೂಕವನ್ನು ಕಡಿಮೆಗೆ ರೌಂಡ್ ಮಾಡಲಾಗುತ್ತದೆ, ಕಲ್ಲುಗಳ ತೂಕವನ್ನು ಕೇವಲ ಅಂದಾಜಿಸಲಾಗುತ್ತದೆ.' },
@@ -852,16 +849,16 @@ const STR = {
       { k:"ಗೌಪ್ಯತೆ", us:"ವಿನಂತಿಯ ಮೇರೆಗೆ ಬ್ರ್ಯಾಂಡಿಂಗ್ ಇಲ್ಲದ ಗೌಪ್ಯ ಭೇಟಿ, ಮತ್ತು ಕೇಂದ್ರದಲ್ಲಿ ಖಾಸಗಿ ಸಮಾಲೋಚನಾ ಕೊಠಡಿ.", them:"ಜನಸಂದಣಿಯ ಅಂಗಡಿ ಕೌಂಟರ್, ಎಲ್ಲರ ಮುಂದೆ." },
     ],
 
-    proc_title: 'Carat Money ಪ್ರಕ್ರಿಯೆ, 4 ಸುಲಭ ಹಂತಗಳಲ್ಲಿ', proc_sub: 'ಪ್ರತಿ ಹಂತವೂ ಪಾರದರ್ಶಕ, ಸುಮಾರು 15 ನಿಮಿಷಗಳಲ್ಲಿ ಪೂರ್ಣ.',
+    proc_title: "ಇದು ಹೇಗೆ ನಡೆಯುತ್ತದೆ: 15 ನಿಮಿಷಗಳಲ್ಲಿ ಮುಗಿಯುತ್ತದೆ", proc_sub: "ನಾಲ್ಕು ಸರಳ ಹಂತಗಳು, ಎಲ್ಲವೂ ನಿಮ್ಮ ಮುಂದೆ.",
     proc_steps: [
-      { t:'Carat Money ಕೇಂದ್ರಕ್ಕೆ ಬನ್ನಿ ಅಥವಾ ಮನೆ ಬಾಗಿಲಿಗೆ ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್ ಬುಕ್ ಮಾಡಿ', d:'ಖಾರ್‌ಘರ್‌ನಲ್ಲಿರುವ ನಮ್ಮ ಕೇಂದ್ರಕ್ಕೆ ಬನ್ನಿ, ಅಥವಾ ನಿಮಗೆ ಅನುಕೂಲವಾದ ಸಮಯಕ್ಕೆ ನಾವೇ ನಿಮ್ಮ ಮನೆಗೆ ಬರುತ್ತೇವೆ.' },
-      { t:'ಸುಧಾರಿತ ಯಂತ್ರಗಳಿಂದ ಚಿನ್ನದ ಪರೀಕ್ಷೆ', d:"ಸ್ಪಷ್ಟ ದಾಖಲೆಗಾಗಿ ಪ್ರತಿ ಆಭರಣದ ಫೋಟೋವನ್ನು ಮೊದಲು ತೆಗೆಯಲಾಗುತ್ತದೆ, ನಂತರ ನಿಮ್ಮ ಮುಂದೆಯೇ XRF ಪರೀಕ್ಷೆ ಮತ್ತು ನಿಖರ ತೂಕ." },
-      { t:'ಮಾರಾಟಕ್ಕೆ ಮುನ್ನ ಶುದ್ಧತೆ, ತೂಕ ಮತ್ತು ಲೈವ್ ಬೆಲೆ ತೋರಿಸಲಾಗುತ್ತದೆ', d:'ಮಾರಾಟದ ನಿರ್ಧಾರಕ್ಕೆ ಮುನ್ನ ಪ್ರತಿಯೊಂದು ಅಂಕಿಯನ್ನೂ ನೀವು ನೋಡುತ್ತೀರಿ.' },
-      { t:'ಯಾವುದೇ ವಿಳಂಬವಿಲ್ಲದೆ ತಕ್ಷಣ ಪಾವತಿ', d:'ಆಫರ್ ಒಪ್ಪಿದ ಕ್ಷಣವೇ ಬ್ಯಾಂಕ್ ಅಥವಾ UPI ವರ್ಗಾವಣೆ.' },
+      { t:"ಉಚಿತ ಮನೆ ಭೇಟಿ ಬುಕ್ ಮಾಡಿ, ಅಥವಾ ಕೇಂದ್ರಕ್ಕೆ ಬನ್ನಿ", d:"ನಿಮಗೆ ಅನುಕೂಲವಾದ ಸಮಯಕ್ಕೆ ನಾವು ನಿಮ್ಮ ಮನೆಗೆ ಬರುತ್ತೇವೆ, ಅಥವಾ ನಮ್ಮ ಖಾರ್‌ಘರ್ ಕೇಂದ್ರಕ್ಕೆ ಬನ್ನಿ." },
+      { t:"ನಿಮ್ಮ ಮುಂದೆಯೇ ಚಿನ್ನ ಪರೀಕ್ಷಿಸುತ್ತೇವೆ", d:"ಸ್ಪಷ್ಟ ದಾಖಲೆಗಾಗಿ ಪ್ರತಿ ಆಭರಣದ ಫೋಟೋ, ನಂತರ XRF ಪರೀಕ್ಷೆ ಮತ್ತು 0.001 ಗ್ರಾಂವರೆಗೆ ತೂಕ." },
+      { t:"ನಿರ್ಧರಿಸುವ ಮೊದಲು ಅಂತಿಮ ಆಫರ್ ನೋಡಿ", d:"ಶುದ್ಧತೆ, ತೂಕ ಮತ್ತು ಲೈವ್ ದರ, ಎಲ್ಲವೂ ನಿಮ್ಮ ಮುಂದೆ. ಮಾರಾಟ ಮಾಡುವ ಒತ್ತಾಯವಿಲ್ಲ." },
+      { t:"ತಕ್ಷಣ ಪಾವತಿ ಪಡೆಯಿರಿ", d:"ಆಫರ್ ಒಪ್ಪಿದ ಕ್ಷಣ ಬ್ಯಾಂಕ್ ಅಥವಾ UPI ವರ್ಗಾವಣೆ, ಜೊತೆಗೆ ಉಚಿತ ಮೌಲ್ಯಮಾಪನ ಪ್ರಮಾಣಪತ್ರ." },
     ],
-    proc_cta: 'ಉಚಿತ ಅಂದಾಜು ಪಡೆಯಿರಿ',
+    proc_cta: "ನನ್ನ ಅಂದಾಜು ಪಡೆಯಿರಿ",
 
-    rev_title: 'ಸಾವಿರಾರು ಜನರು Carat Money ಅನ್ನು ಏಕೆ ನಂಬುತ್ತಾರೆ', rev_sub: 'ನವಿ ಮುಂಬೈನ ಮಾರಾಟಗಾರರು ನಮ್ಮ ಬಗ್ಗೆ ಏನು ಹೇಳುತ್ತಾರೆ.', rev_note: 'ಗ್ರಾಹಕರು ಕೈಯಾರೆ ಬರೆದು ನೀಡಿದ ಟಿಪ್ಪಣಿಗಳಿಂದ, ನಮ್ಮ ಮಾತುಗಳಲ್ಲಿ.', rev_who: 'Carat Money ಗ್ರಾಹಕರು',
+    rev_title: "ನಮ್ಮ ಗ್ರಾಹಕರು ಏನು ಹೇಳುತ್ತಾರೆ", rev_sub: 'ನವಿ ಮುಂಬೈನ ಮಾರಾಟಗಾರರು ನಮ್ಮ ಬಗ್ಗೆ ಏನು ಹೇಳುತ್ತಾರೆ.', rev_note: 'ಗ್ರಾಹಕರು ಕೈಯಾರೆ ಬರೆದು ನೀಡಿದ ಟಿಪ್ಪಣಿಗಳಿಂದ, ನಮ್ಮ ಮಾತುಗಳಲ್ಲಿ.', rev_who: 'Carat Money ಗ್ರಾಹಕರು',
     review_quotes: [
       'ಅವರು XRF ಪರದೆಯನ್ನು ನನ್ನತ್ತ ತಿರುಗಿಸಿದರು, ಶುದ್ಧತೆಯ ರೀಡಿಂಗ್ ಅನ್ನು ನಾನೇ ನೋಡಿದೆ. ಯಾವುದೇ ಊಹೆ ಇಲ್ಲ.',
       'ದರ ಅವರ ವೆಬ್‌ಸೈಟ್‌ನ ಲೈವ್ ಬೆಲೆಗೆ ಹೊಂದಿಕೆಯಾಯಿತು, ನಾನು ಹೊರಡುವ ಮೊದಲೇ ಹಣ UPI ಗೆ ಬಂತು.',
@@ -874,23 +871,22 @@ const STR = {
     faq_title: 'ಪದೇ ಪದೇ ಕೇಳುವ ಪ್ರಶ್ನೆಗಳು', faq_sub: 'ಚಿನ್ನ ಮಾರುವ ಮೊದಲು ತಿಳಿಯಬೇಕಾದ ಎಲ್ಲವೂ.',
     faq_panel_title: 'ಇನ್ನೂ ಪ್ರಶ್ನೆಗಳಿವೆಯೇ?', faq_panel_sub: 'ಇವುಗಳಲ್ಲಿ ಯಾವುದರ ಮೂಲಕವಾದರೂ ಸಂಪರ್ಕಿಸಿ, ಪ್ರತಿದಿನ ಬೆಳಿಗ್ಗೆ 9 ರಿಂದ ರಾತ್ರಿ 9 ರವರೆಗೆ.', email: 'ಇಮೇಲ್',
     faqs: [
-      { q:'ನನ್ನ ಚಿನ್ನದ ಬೆಲೆಯನ್ನು ಹೇಗೆ ಲೆಕ್ಕ ಹಾಕಲಾಗುತ್ತದೆ?', a:'ನಾವು ನಿಮ್ಮ ಚಿನ್ನವನ್ನು ತೂಕ ಮಾಡಿ, XRF ಯಂತ್ರದಲ್ಲಿ ಶುದ್ಧತೆಯನ್ನು ಪರೀಕ್ಷಿಸಿ, ಶುದ್ಧ ಚಿನ್ನದ ಪ್ರಮಾಣವನ್ನು ಈ ಪುಟದಲ್ಲಿ ತೋರಿಸಿರುವ ಲೈವ್ ದರದಿಂದ ಗುಣಿಸುತ್ತೇವೆ. ನಿರ್ಧರಿಸುವ ಮೊದಲು ಪ್ರತಿಯೊಂದು ಅಂಕಿಯನ್ನೂ ನೀವು ನೋಡುತ್ತೀರಿ.' },
-      { q:'ಪರೀಕ್ಷೆಯ ವೇಳೆ ನನ್ನ ಆಭರಣವನ್ನು ಕರಗಿಸುತ್ತೀರಾ ಅಥವಾ ಹಾನಿ ಮಾಡುತ್ತೀರಾ?', a:'ಇಲ್ಲ. XRF ಪರೀಕ್ಷೆಯಿಂದ ಯಾವುದೇ ಹಾನಿಯಾಗುವುದಿಲ್ಲ, ಪರೀಕ್ಷೆಯ ವೇಳೆ ನಿಮ್ಮ ಆಭರಣ ಇದ್ದ ಹಾಗೆಯೇ ಇರುತ್ತದೆ.' },
+      { q:"ನನ್ನ ಚಿನ್ನದ ಬೆಲೆಯನ್ನು ಹೇಗೆ ಲೆಕ್ಕ ಹಾಕುತ್ತೀರಿ?", a:"ನಿಮ್ಮ ಚಿನ್ನವನ್ನು ತೂಕ ಮಾಡಿ, XRF ಯಂತ್ರದಲ್ಲಿ ಶುದ್ಧತೆ ಪರೀಕ್ಷಿಸಿ, ಶುದ್ಧ ಚಿನ್ನವನ್ನು ಈ ಪುಟದಲ್ಲಿರುವ ನಮ್ಮ ಲೈವ್ ದರದಿಂದ ಗುಣಿಸುತ್ತೇವೆ. ನಿರ್ಧರಿಸುವ ಮೊದಲು ಪ್ರತಿ ಅಂಕಿಯನ್ನೂ ನೀವು ನೋಡುತ್ತೀರಿ." },
+      { q:"ಪರೀಕ್ಷೆಯಿಂದ ನನ್ನ ಆಭರಣಕ್ಕೆ ಹಾನಿಯಾಗುತ್ತದೆಯೇ?", a:"ಇಲ್ಲ. XRF ಪರೀಕ್ಷೆಯಲ್ಲಿ ಗೀರು ಬೀಳುವುದಿಲ್ಲ, ಏನನ್ನೂ ಕರಗಿಸುವುದಿಲ್ಲ. ನಿಮ್ಮ ಆಭರಣ ಇದ್ದಂತೆಯೇ ಇರುತ್ತದೆ." },
       { q:"ನೀವು ನನ್ನ ಆಭರಣಗಳ ಫೋಟೋ ತೆಗೆಯುತ್ತೀರಾ?", a:"ಹೌದು. ಪರೀಕ್ಷೆಗೆ ಮೊದಲು ಪ್ರತಿ ಆಭರಣದ ಫೋಟೋ ತೆಗೆಯಲಾಗುತ್ತದೆ, ಆದ್ದರಿಂದ ನೀವು ಏನನ್ನು ಒಪ್ಪಿಸಿದಿರಿ ಎಂಬುದರ ಸ್ಪಷ್ಟ ದಾಖಲೆ ಇರುತ್ತದೆ." },
-      { q:'ನೀವು ಉಚಿತವಾಗಿ ಮನೆಯಿಂದ ಪಿಕಪ್ ಮಾಡುತ್ತೀರಾ?', a:'ಹೌದು, ಬೆಂಗಳೂರು ಮತ್ತು ಮುಂಬೈನಲ್ಲಿ. ನಮ್ಮ ಸಿಬ್ಬಂದಿ ನಿಮಗೆ ಅನುಕೂಲವಾದ ಸಮಯಕ್ಕೆ ಬಂದು, ನಿಮ್ಮ ಮುಂದೆಯೇ ಚಿನ್ನವನ್ನು ಪರೀಕ್ಷಿಸಿ, ಅಲ್ಲೇ ಖಚಿತ ಆಫರ್ ನೀಡುತ್ತಾರೆ.' },
+      { q:"ನೀವು ಉಚಿತ ಮನೆ ಭೇಟಿ ನೀಡುತ್ತೀರಾ?", a:"ಹೌದು, ನವಿ ಮುಂಬೈ, ಮುಂಬೈ ಮತ್ತು ಥಾಣೆಯಲ್ಲಿ. ನಮ್ಮ ಎಕ್ಸಿಕ್ಯೂಟಿವ್ ನಿಮಗೆ ಅನುಕೂಲವಾದ ಸಮಯಕ್ಕೆ ಬಂದು, ನಿಮ್ಮ ಮುಂದೆಯೇ ಚಿನ್ನ ಪರೀಕ್ಷಿಸಿ, ಅಲ್ಲಿಯೇ ಅಂತಿಮ ಆಫರ್ ನೀಡುತ್ತಾರೆ." },
       { q:"ಭೇಟಿಯನ್ನು ಗೌಪ್ಯವಾಗಿಡಬಹುದೇ?", a:"ಹೌದು. ಬುಕ್ ಮಾಡುವಾಗ \"ಗೌಪ್ಯ ಭೇಟಿ\" ಆಯ್ಕೆಮಾಡಿ; ನಮ್ಮ ಎಕ್ಸಿಕ್ಯೂಟಿವ್ ಸಾಮಾನ್ಯ ಉಡುಪಿನಲ್ಲಿ ಬರುತ್ತಾರೆ, ಬ್ಯಾಗ್ ಅಥವಾ ವಾಹನದ ಮೇಲೆ ಲೋಗೋ ಇರುವುದಿಲ್ಲ. ನಮ್ಮ ಕೇಂದ್ರದಲ್ಲಿ ಪ್ರತಿ ಭೇಟಿಯೂ ಖಾಸಗಿ ಸಮಾಲೋಚನಾ ಕೊಠಡಿಯಲ್ಲಿ ನಡೆಯುತ್ತದೆ." },
       { q:"ನಾನು ಮಹಿಳಾ ಎಕ್ಸಿಕ್ಯೂಟಿವ್ ಅನ್ನು ಕೇಳಬಹುದೇ?", a:"ಹೌದು. ಬುಕ್ ಮಾಡುವಾಗ \"ಮಹಿಳಾ ಎಕ್ಸಿಕ್ಯೂಟಿವ್\" ಆಯ್ಕೆಮಾಡಿ, ನಾವು ನಿಮ್ಮ ಬಳಿ ಬಂದರೂ ಅಥವಾ ನೀವು ನಮ್ಮ ಕೇಂದ್ರಕ್ಕೆ ಬಂದರೂ." },
       { q:"ನನಗೆ ತುರ್ತಾಗಿ ಹಣ ಬೇಕು. ನೀವು ಇಂದೇ ಬರಬಹುದೇ?", a:"ಹೌದು. ಮನೆ ಭೇಟಿ ಬುಕ್ ಮಾಡುವಾಗ \"ತುರ್ತು, ಅದೇ ದಿನ\" ಆಯ್ಕೆಮಾಡಿ. 30 ನಿಮಿಷಗಳೊಳಗೆ ಕರೆ ಮಾಡುತ್ತೇವೆ, ಮತ್ತು ಸಂಜೆ 4 ಗಂಟೆಯೊಳಗೆ ಬುಕ್ ಮಾಡಿದರೆ ಅದೇ ದಿನ ಬರುತ್ತೇವೆ." },
-      { q:'ಅಂದಾಜು ಉಚಿತವೇ?', a:'ಹೌದು. ಅಂದಾಜು ಉಚಿತ, ಯಾವುದೇ ಬದ್ಧತೆ ಇಲ್ಲ. ಆಫರ್ ಇಷ್ಟವಾದರೆ ಮಾತ್ರ ಮಾರಾಟ ಮಾಡಿ.' },
+      { q:"ನಾನು ಮಾರದಿದ್ದರೆ ಏನಾದರೂ ಶುಲ್ಕವಿದೆಯೇ?", a:"ಇಲ್ಲ. ಮಾರುವ ಮೊದಲು ಎಲ್ಲವೂ ಉಚಿತ: ಮನೆ ಭೇಟಿ, ಪರೀಕ್ಷೆ ಮತ್ತು ಮೌಲ್ಯಮಾಪನ ಪ್ರಮಾಣಪತ್ರ. ಅಂತಿಮ ಆಫರ್ ಇಷ್ಟವಾದರೆ ಮಾತ್ರ ಮಾರಿ." },
       { q:'ಯಾವುದಾದರೂ ಕಡಿತ ಇದೆಯೇ?', a:'ಕಲ್ಲುಗಳ ತೂಕ ಮಾತ್ರ, ಅದನ್ನು ನಾವು ಅಳೆದು ನಿಮಗೆ ತೋರಿಸುತ್ತೇವೆ. ಯಾವುದೇ ಹೆಚ್ಚುವರಿ "ವೇಸ್ಟೇಜ್" ಕಡಿತ ಅಥವಾ ಮರೆಮಾಚಿದ ಶುಲ್ಕವಿಲ್ಲ.' },
       { q:"ನನ್ನ ಕಲ್ಲುಗಳು ನನಗೆ ಹಿಂತಿರುಗುತ್ತವೆಯೇ?", a:"ಹೌದು. ಕಲ್ಲುಗಳು ಮತ್ತು ಚಿನ್ನವಲ್ಲದ ಭಾಗಗಳನ್ನು ಜಾಗರೂಕತೆಯಿಂದ ತೆಗೆದು ನಿಮಗೆ ಹಿಂತಿರುಗಿಸಲಾಗುತ್ತದೆ. ನಿಮಗೆ ಚಿನ್ನದ ಹಣ ಸಿಗುತ್ತದೆ." },
       { q:'ನನ್ನ ಆಭರಣ ಮುರಿದಿದ್ದರೆ ಅಥವಾ ಹಾಲ್‌ಮಾರ್ಕ್ ಇಲ್ಲದಿದ್ದರೆ?', a:'ಮುರಿದ, ಹಳೆಯ ಮತ್ತು ಹಾಲ್‌ಮಾರ್ಕ್ ಇಲ್ಲದ ಆಭರಣಗಳನ್ನೂ ಸೇರಿ ಎಲ್ಲಾ ಚಿನ್ನಾಭರಣಗಳನ್ನು ನಾವು ಸ್ವೀಕರಿಸುತ್ತೇವೆ. XRF ಪರೀಕ್ಷೆ ನಿಜವಾದ ಶುದ್ಧತೆಯನ್ನು ತಿಳಿಸುತ್ತದೆ, ಹಾಗಾಗಿ ನಿಜವಾದ ಚಿನ್ನದ ಪ್ರಮಾಣಕ್ಕೆ ನಿಮಗೆ ಹಣ ಸಿಗುತ್ತದೆ.' },
       { q:'ನನಗೆ ಪಾವತಿ ಹೇಗೆ ಸಿಗುತ್ತದೆ?', a:'ಆಫರ್ ಒಪ್ಪಿದ ತಕ್ಷಣ, ಬ್ಯಾಂಕ್ ವರ್ಗಾವಣೆ ಅಥವಾ UPI ಮೂಲಕ. ನಾವು ಎಂದಿಗೂ ನಗದು ಪಾವತಿಸುವುದಿಲ್ಲ.' },
       { q:'ನನಗೆ ಯಾವುದಾದರೂ ದಾಖಲೆಗಳು ಸಿಗುತ್ತವೆಯೇ?', a:'ಹೌದು. ಮಾರಾಟದ ಇನ್‌ವಾಯ್ಸ್ ಮತ್ತು ಉಚಿತ, ವಿವರವಾದ ಮೌಲ್ಯಮಾಪನ ಪ್ರಮಾಣಪತ್ರ ನಿಮಗೆ ಸಿಗುತ್ತದೆ.' },
-      { q:'ಪರೀಕ್ಷೆಯ ನಂತರ ಮಾರಾಟ ಮಾಡದೇ ಹೋಗಬಹುದೇ?', a:'ಹೌದು, ಯಾವುದೇ ಶುಲ್ಕವಿಲ್ಲದೆ. ಅಂತಿಮ ಆಫರ್ ಒಪ್ಪುವವರೆಗೆ ಮಾರಾಟ ಮಾಡಲು ನೀವು ಬದ್ಧರಲ್ಲ.' },
-      { q:'ಇದಕ್ಕೆ ಎಷ್ಟು ಸಮಯ ಬೇಕು?', a:'ಸುಮಾರು 15 ನಿಮಿಷಗಳು. ಪರೀಕ್ಷೆ, ಆಫರ್ ಮತ್ತು ಪಾವತಿ ಎಲ್ಲವೂ ಒಂದೇ ಭೇಟಿಯಲ್ಲಿ ಮುಗಿಯುತ್ತದೆ.' },
-      { q:'ಯಾವ ದಾಖಲೆಗಳು ಬೇಕು?', a:'KYC ಗಾಗಿ ನಿಮ್ಮ ಆಧಾರ್ ಮತ್ತು PAN.' },
-      { q:'ಬ್ಯಾಂಕ್ ಅಥವಾ NBFC ಯಲ್ಲಿ ಅಡವಿಟ್ಟ ಚಿನ್ನವನ್ನು ಖರೀದಿಸುತ್ತೀರಾ?', a:'ಹೌದು. ಬ್ಯಾಂಕ್ ಅಥವಾ NBFC ಯಲ್ಲಿ ಅಡವಿಟ್ಟ ಚಿನ್ನವನ್ನು ಬಿಡಿಸಲು ನಾವು ಸಹಾಯ ಮಾಡುತ್ತೇವೆ ಮತ್ತು ಅದನ್ನು ಇಂದಿನ ದರದಲ್ಲಿ ಖರೀದಿಸುತ್ತೇವೆ. ವಿವರಗಳಿಗೆ ನಮಗೆ WhatsApp ಮಾಡಿ.' },
+      { q:"ಇದಕ್ಕೆ ಎಷ್ಟು ಸಮಯ ಬೇಕು?", a:"ಹೆಚ್ಚಿನ ಭೇಟಿಗಳಲ್ಲಿ ಸುಮಾರು 15 ನಿಮಿಷ. ಪರೀಕ್ಷೆ, ಅಂತಿಮ ಆಫರ್ ಮತ್ತು ಪಾವತಿ ಎಲ್ಲವೂ ಒಂದೇ ಸಲದಲ್ಲಿ." },
+      { q:"ಯಾವ ದಾಖಲೆಗಳು ಬೇಕು?", a:"ನಿಮ್ಮ ಗುರುತು ದೃಢಪಡಿಸಲು ಆಧಾರ್ ಮತ್ತು PAN." },
+      { q:"ನನ್ನ ಚಿನ್ನ ಸಾಲಕ್ಕಾಗಿ ಅಡವಿಟ್ಟಿದೆ. ಆದರೂ ನೀವು ಖರೀದಿಸುತ್ತೀರಾ?", a:"ಹೌದು. ಬ್ಯಾಂಕ್ ಅಥವಾ ಗೋಲ್ಡ್-ಲೋನ್ ಕಂಪನಿಯಲ್ಲಿ ಅಡವಿಟ್ಟ ಚಿನ್ನವನ್ನು ಬಿಡಿಸಲು ಸಹಾಯ ಮಾಡಿ, ನಮ್ಮ ಲೈವ್ ದರದಲ್ಲಿ ಖರೀದಿಸುತ್ತೇವೆ. ವಿವರಗಳಿಗೆ WhatsApp ಮಾಡಿ." },
     ],
 
     visit_label: 'ನಮ್ಮ ಕೇಂದ್ರಕ್ಕೆ ಭೇಟಿ ನೀಡಿ', visit_title: 'Carat Money, ಖಾರ್‌ಘರ್', visit_hours: 'ಪ್ರತಿದಿನ, ಬೆಳಿಗ್ಗೆ 9 ರಿಂದ ರಾತ್ರಿ 9 ರವರೆಗೆ', visit_dir: 'ದಾರಿ ತೋರಿಸಿ',
@@ -899,7 +895,7 @@ const STR = {
     blog_title: 'ಚಿನ್ನದ ಒಳನೋಟಗಳು', blog_sub: 'ಚಿನ್ನ ಮಾರುವ ಮೊದಲು ನೇರ ಉತ್ತರಗಳು.', blog_all: 'ಎಲ್ಲಾ ಲೇಖನಗಳನ್ನು ನೋಡಿ', blog_read: 'ಓದಿ', blog_note: 'ಲೇಖನಗಳು ಇಂಗ್ಲಿಷ್‌ನಲ್ಲಿವೆ.',
 
     app_h: 'Carat Money, ಶೀಘ್ರದಲ್ಲೇ ನಿಮ್ಮ ಜೇಬಿನಲ್ಲಿ.',
-    app_body: 'ಲೈವ್ ಚಿನ್ನದ ದರ ನೋಡಿ, ನಿಮ್ಮ ಆಭರಣದ ಮೌಲ್ಯ ತಿಳಿಯಿರಿ ಮತ್ತು ಮನೆಯಿಂದ ಪಿಕಪ್ ಬುಕ್ ಮಾಡಿ — ಎಲ್ಲವೂ ಒಂದೇ ಆ್ಯಪ್‌ನಲ್ಲಿ. ಶೀಘ್ರದಲ್ಲೇ iOS ಮತ್ತು Android ನಲ್ಲಿ.',
+    app_body: "ಲೈವ್ ಚಿನ್ನದ ದರ ನೋಡಿ, ನಿಮ್ಮ ಆಭರಣದ ಅಂದಾಜು ಪಡೆಯಿರಿ ಮತ್ತು ಉಚಿತ ಮನೆ ಭೇಟಿ ಬುಕ್ ಮಾಡಿ, ಎಲ್ಲವೂ ಒಂದೇ ಆ್ಯಪ್‌ನಲ್ಲಿ. ಶೀಘ್ರದಲ್ಲೇ iOS ಮತ್ತು Android ನಲ್ಲಿ.",
     app_soon: 'ಶೀಘ್ರದಲ್ಲೇ ಬರಲಿದೆ', app_hint: 'ಬಿಡುಗಡೆಯ ಸೂಚನೆಯನ್ನು WhatsApp ನಲ್ಲಿ ಪಡೆಯಲು ಯಾವುದೇ ಬಟನ್ ಒತ್ತಿ.',
     app_chip1: 'XRF ಪರೀಕ್ಷಿತ ಶುದ್ಧತೆ', app_chip2: 'ತಕ್ಷಣ UPI ಪಾವತಿ',
 
@@ -1479,7 +1475,7 @@ function Hero({ navigate, spot }) {
             <RotatingUse/>
             <p className="hero-family it-en">{t('hero_family')}</p>
             <div className="hero-assure">
-              <span><Zap size={16} color={C.gold} style={{ flexShrink:0 }}/>{t('hero_sub').replace(/[.।]\s*$/, '')}</span>
+              <span><Clock size={16} color={C.gold} style={{ flexShrink:0 }}/>{t('hero_sub').replace(/[.।]\s*$/, '')}</span>
               <span><ShieldCheck size={17} color={C.gold} style={{ flexShrink:0 }}/>{t('hero_guarantee')}</span>
             </div>
             <HeroEstimator spot={spot} navigate={navigate}/>
@@ -1542,9 +1538,9 @@ function GetInTouch() {
   const [tried, setTried]       = useState(false);
   const [sent, setSent]         = useState(false);
   const valid    = name.trim().length >= 2 && /^[6-9]\d{9}$/.test(mobile);
-  const prefEn   = pref === 'doorstep' ? 'Doorstep pickup' : pref === 'centre' ? 'Visit centre' : 'Not specified';
+  const prefEn   = pref === 'doorstep' ? 'Home visit' : pref === 'centre' ? 'Kharghar centre' : 'Not specified';
   const door     = pref === 'doorstep';
-  const isUrgent = door && urgent;              // same day + discreet are doorstep-only
+  const isUrgent = door && urgent;              // same day + discreet are for home visits only
   const isDisc   = door && discreet;
   const isWoman  = !!pref && woman;
   const LBLD     = { ...LBL, color:'rgba(241,215,141,.85)' };
@@ -1554,9 +1550,9 @@ function GetInTouch() {
     if (!valid) { setTried(true); return; }
     if (hp) return;
     const extras = [isUrgent && 'Urgent (same day)', isDisc && 'Discreet visit', isWoman && 'Woman executive'].filter(Boolean);
-    postLead({ name:name.trim(), mobile, preference:prefEn, urgent:isUrgent, discreet:isDisc, woman_executive:isWoman, source:'Homepage · Book free appointment', lang, page:window.location.href });
+    postLead({ name:name.trim(), mobile, preference:prefEn, urgent:isUrgent, discreet:isDisc, woman_executive:isWoman, source:'Homepage · Book a free visit', lang, page:window.location.href });
     track('generate_lead', { preference:prefEn, urgent:isUrgent ? 'yes' : 'no', discreet:isDisc ? 'yes' : 'no', woman_executive:isWoman ? 'yes' : 'no' });
-    const lines = ["Hi Carat Money — I'd like to book a free appointment.", '', `Name: ${name.trim()}`, `Phone: +91${mobile}`, `Preference: ${prefEn}`];
+    const lines = ["Hi Carat Money — I'd like to book a free visit.", '', `Name: ${name.trim()}`, `Phone: +91${mobile}`, `Preference: ${prefEn}`];
     if (extras.length) lines.push(`Visit preferences: ${extras.join(', ')}`);
     openWA(lines.join('\n'), 'book_appointment');
     setSent(true);
@@ -2257,8 +2253,8 @@ function PhoneMock({ spot }) {
           <div style={{ fontFamily:SANS, fontSize:'10px', color:'rgba(241,215,141,.6)', marginTop:'2px' }}>22K ₹{fmt(r22,0)}/g</div>
         </div>
         <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'8px', margin:'10px 12px 0' }}>
-          <div style={tileS}><Sparkles size={16} color={C.gold}/>Value my gold</div>
-          <div style={tileS}><HomeIcon size={16} color={C.gold}/>Book pickup</div>
+          <div style={tileS}><Sparkles size={16} color={C.gold}/>Get my estimate</div>
+          <div style={tileS}><HomeIcon size={16} color={C.gold}/>Book home visit</div>
         </div>
         <div style={{ margin:'10px 12px 0', padding:'12px', borderRadius:'14px', background:C.white, border:'1px solid rgba(26,20,38,.08)' }}>
           <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', fontFamily:SANS, fontSize:'10.5px', fontWeight:600, color:C.ink }}>
@@ -2270,10 +2266,10 @@ function PhoneMock({ spot }) {
         </div>
         <div style={{ margin:'10px 12px 0', padding:'10px 12px', borderRadius:'14px', background:C.white, border:'1px solid rgba(26,20,38,.08)', display:'flex', alignItems:'center', gap:'8px' }}>
           <span style={{ width:'28px', height:'28px', borderRadius:'50%', background:C.paper2, display:'inline-flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}><Clock size={14} color={C.gold}/></span>
-          <span style={{ fontFamily:SANS, fontSize:'10.5px', lineHeight:1.35, color:C.ink }}><b style={{ fontWeight:600 }}>Pickup booked</b><br/><span style={{ color:C.mute }}>Today · 4:30 pm · Kharghar</span></span>
+          <span style={{ fontFamily:SANS, fontSize:'10.5px', lineHeight:1.35, color:C.ink }}><b style={{ fontWeight:600 }}>Home visit booked</b><br/><span style={{ color:C.mute }}>Today · 4:30 pm · Kharghar</span></span>
         </div>
         <div style={{ margin:'auto 12px 16px', padding:'11px', borderRadius:'10px', background:C.green, color:C.ink, textAlign:'center', fontFamily:SANS, fontSize:'11px', fontWeight:600 }}>
-          Book doorstep pickup
+          Book a free home visit
         </div>
       </div>
     </div>
