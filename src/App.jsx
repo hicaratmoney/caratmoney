@@ -134,7 +134,7 @@ function HeroMark() {
     const BAR_H    = 44 * z;
     const barEndT  = 0.55;
     const desk     = vw >= 1024;                          // desktop: start in the gap, never over the headline
-    const startX   = desk ? Math.max(tr + BAR_W / 2 + 16, cx - ovalHalf - BAR_W / 2 - 300) : -BAR_W / 2;   // desktop: start in the gap right of the calculator
+    const startX   = -BAR_W / 2;                            // enters from the left screen edge on every size
     const endX     = cx - ovalHalf - BAR_W / 2;
     const barX     = startX + Math.min(t / barEndT, 1) * (endX - startX);
     const barRight = barX + BAR_W / 2;
@@ -142,7 +142,7 @@ function HeroMark() {
     let k = 1;
     if (dist < approach && dist >= 0) k = dist / approach;
     if (dist < 0) k = 0;
-    const fadeIn   = desk ? Math.min(1, t / 0.12) : 1;
+    const fadeIn   = 1;
     if (t < barEndT && k > 0.02) bar = { x: barX, y: cy, w: BAR_W * k, h: BAR_H * k, d: 10 * z * k, k, z, o: fadeIn };
     cmGlow = barRight > (cx - ovalHalf - approach) && t < 0.78 && t > 0;
 
