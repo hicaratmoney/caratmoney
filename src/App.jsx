@@ -6,6 +6,7 @@ import {
   KeyRound, Search, ShieldCheck, X, Share2, Copy, AlertCircle, Check, Phone,
   ChevronLeft, ChevronRight, Menu, Mail, MapPin, Clock, Star, Quote, TrendingUp,
   Microscope, Scale, IndianRupee, Gem, Wallet, Percent, Store, Navigation, Smartphone,
+  Camera, Landmark, Lock, EyeOff, Diamond, User,
 } from 'lucide-react';
 
 // ═════════════════════════════════════════════════════════════════════════════
@@ -409,7 +410,7 @@ function useSpotRate() {
 }
 
 // ─── Languages (homepage only — blog and other pages stay in English) ─────────
-// Hindi and Kannada are first drafts: have a native speaker review before launch.
+// Hindi, Marathi and Kannada are first drafts: have a native speaker review before launch.
 const LANGS = [
   { code:'en', short:'EN',  name:'English' },
   { code:'hi', short:'हिं', name:'हिन्दी' },
@@ -440,8 +441,11 @@ const STR = {
     hero_cta_calc:  'Value your gold',
     hero_stats:     '5,000+ customers · ₹100Cr+ purchased · 4.9★',
     hero_pickup:    'Home pickup available in Bangalore & Mumbai',
+    hero_turn:      ["Turning old gold into ", "."],
+    hero_uses:      ["a wedding in the family", "your child's education", "a new home", "your own business", "medical care, today", "a debt-free start", "something useful"],
+    hero_family:    "They saved it for your family's tomorrow. Today, it's here for you.",
     tiles: [
-      { t:'Doorstep service',   d:'We come to you, so your gold never has to travel.' },
+      { t:'Doorstep service',   d:"We come to you, discreetly, so your gold never has to travel." },
       { t:'Accurate valuation', d:'XRF testing measures exact purity, and you see the reading yourself.' },
       { t:'Instant transfer',   d:'Money in your bank or UPI right away, plus a free, detailed valuation certificate.' },
     ],
@@ -455,13 +459,20 @@ const STR = {
     calc_est: 'Estimated value', calc_at: 'at ₹{rate}/g for {k}K', calc_cta: 'Get this price on WhatsApp',
     calc_disclaimer: 'Estimate only. Final value is confirmed after XRF testing in front of you.',
     calc_margin: 'Already have a quote from another buyer? Check their margin →',
+    est_chips: ["No obligation", "Walk away free", "Weighed to 0.001 g in front of you"],
+    soft_t: "Not ready yet? That's okay.", soft_d: "Get the live rate on WhatsApp every morning, so you know when the time is right.",
+    soft_cta: "Send me the daily rate", soft_cta_save: "Save my estimate & get the daily rate", rate_daily: "Get this rate daily on WhatsApp",
+    xrf_photo: "Photographed", xrf_gold: "Gold (Au)",
 
-    git_title: 'Book a free appointment', git_sub: "Share your details and we'll confirm a slot on WhatsApp.",
+    git_title: 'Book a free appointment', git_sub: "Share your details and we'll confirm a slot on WhatsApp. Discreet visits and women executives, on request.",
     git_name: 'Your name', git_name_ph: 'e.g. Priya S', git_mobile: 'Mobile number', git_mobile_ph: '10-digit number',
     git_pref: 'I prefer', git_doorstep: 'Doorstep pickup', git_centre: 'Visit our centre',
     git_book: 'Book free appointment', git_call: 'Call now',
     git_consent: 'By submitting, you agree to be contacted about your gold sale.',
     git_err: 'Enter your name and a valid 10-digit mobile number.', git_done_t: 'Request received', git_done_d: "We've opened WhatsApp with your details. Tap send there and we'll confirm your slot shortly.", git_again: 'Book another appointment',
+    git_prefs: "Visit preferences (optional)", git_p_discreet: "Discreet visit", git_p_discreet_d: "Plain clothes, no logo on the bag or vehicle.",
+    git_p_woman: "Woman executive", git_p_urgent: "Urgent, same day", git_urgent_note: "Book before 4 pm and we'll visit you today. We'll call you within 30 minutes.",
+    git_done_thanks: "Thank you for trusting us with something that matters.", git_done_urgent: "Marked urgent: we'll call you within 30 minutes.",
 
     why_title: 'Why people trust Carat Money',
     why_intro: 'Selling old gold usually means guesswork, hidden cuts and no paperwork. We built every step to be measured, shown to you and documented.',
@@ -471,14 +482,16 @@ const STR = {
       { k:'Weight',             us:'Weighed in front of you, precise to 0.001 g.', them:'Weight rounded down and stones only estimated.' },
       { k:'Pricing',            us:'Live market-linked rate, published openly.', them:'Stale or unclear rates that change at the counter.' },
       { k:'Deductions',         us:'No extra "wastage" cuts.', them:'Hidden deductions under different names: excess stone deductions, melting loss, service charges, etc.' },
+      { k:"Stones", us:"Stones and non-gold parts removed with care and returned to you.", them:"Stones often kept by the buyer." },
       { k:'Payment',            us:'Instant bank or UPI transfer + a free valuation certificate.', them:'Cash, no paperwork, no invoices.' },
       { k:'Jewellery accepted', us:'All jewellery accepted, broken or old, BIS-hallmarked or not. Purity verified scientifically.', them:"Non-hallmarked or other brands' jewellery is rejected." },
+      { k:"Privacy", us:"Discreet, unbranded visits on request, and a private consultation room at our centre.", them:"A busy shop counter, in full view." },
     ],
 
     proc_title: 'Carat Money process in 4 easy steps', proc_sub: 'Transparent at every step, and done in about 15 minutes.',
     proc_steps: [
       { t:'Walk into a Carat Money centre or schedule a doorstep appointment', d:'Visit us in Kharghar, or we come to your home at a time that suits you.' },
-      { t:'Gold tested using advanced machines', d:'XRF purity testing and precision weighing, done in front of you.' },
+      { t:'Gold tested using advanced machines', d:"Every piece is photographed for a clear record, then XRF-tested and precision-weighed in front of you." },
       { t:'Purity, weight and live pricing shown before sale', d:'You see every number before you decide to sell.' },
       { t:'Instant payment without any delay', d:'Bank or UPI transfer the moment you accept the offer.' },
     ],
@@ -499,9 +512,14 @@ const STR = {
     faqs: [
       { q:"How is my gold's price calculated?", a:'We weigh your gold, test its purity on an XRF machine and multiply the pure gold content by the live rate shown on this page. You see every number before you decide.' },
       { q:'Do you melt or damage my jewellery during testing?', a:'No. XRF testing is non-destructive, so your jewellery stays exactly as it is while we test it.' },
+      { q:"Do you photograph my jewellery?", a:"Yes. Every piece is photographed before testing, so there is a clear record of exactly what you handed over." },
       { q:'Do you offer a free home pickup?', a:'Yes, in Bangalore and Mumbai. Our executive visits at a time that suits you, tests your gold in front of you and makes a firm offer on the spot.' },
+      { q:"Can the visit be discreet?", a:"Yes. Tick \"Discreet visit\" when you book, and our executive comes in plain clothes, with no logo on the bag or vehicle. At our centre, every visit happens in a private consultation room." },
+      { q:"Can I ask for a woman executive?", a:"Yes. Tick \"Woman executive\" when you book, whether we come to you or you visit our centre." },
+      { q:"I need money urgently. Can you come today?", a:"Yes. Tick \"Urgent, same day\" when you book a doorstep visit. We call you within 30 minutes, and if you book before 4 pm, we visit you the same day." },
       { q:'Is the estimate free?', a:"Yes. Estimates are free with no obligation. You sell only if you're happy with the offer." },
       { q:'Are there any deductions?', a:'Only the weight of stones, which we measure and show you. There are no extra "wastage" cuts and no hidden charges.' },
+      { q:"Do I get my stones back?", a:"Yes. Stones and any non-gold parts are removed with care and returned to you. You are paid for the gold." },
       { q:'What if my jewellery is broken or not hallmarked?', a:"We accept all gold jewellery, including broken, old and non-hallmarked pieces. XRF testing finds the real purity, so you're paid for the actual gold content." },
       { q:'How will I be paid?', a:'Instantly, by bank transfer or UPI, as soon as you accept the offer. We never pay in cash.' },
       { q:'Will I get any paperwork?', a:'Yes. You receive an invoice for the sale and a free, detailed valuation certificate.' },
@@ -512,6 +530,7 @@ const STR = {
     ],
 
     visit_label: 'Visit our centre', visit_title: 'Carat Money, Kharghar', visit_hours: 'All days, 9 am to 9 pm', visit_dir: 'Get directions',
+    visit_private: "Private consultation room for every visit",
 
     blog_title: 'Gold insights', blog_sub: 'Straight answers before you sell your gold.', blog_all: 'View all articles', blog_read: 'Read', blog_note: '',
 
@@ -543,8 +562,11 @@ const STR = {
     hero_cta_calc:  'अपने सोने की कीमत जानें',
     hero_stats:     '5,000+ ग्राहक · ₹100 करोड़+ की खरीद · 4.9★',
     hero_pickup:    'बेंगलुरु और मुंबई में होम पिकअप उपलब्ध',
+    hero_turn:      ["पुराना सोना, अब ", "।"],
+    hero_uses:      ["घर की शादी के लिए", "बच्चों की पढ़ाई के लिए", "नए घर के लिए", "अपने बिज़नेस के लिए", "ज़रूरी इलाज के लिए", "कर्ज़ से मुक्ति के लिए", "किसी अच्छे काम के लिए"],
+    hero_family:    "उन्होंने इसे आपके परिवार के कल के लिए सँजोया था। आज, यह आपके लिए है।",
     tiles: [
-      { t:'घर पर सेवा',     d:'हम आपके पास आते हैं, ताकि आपके सोने को कहीं ले जाना न पड़े।' },
+      { t:'घर पर सेवा',     d:"हम पूरी गोपनीयता से आपके पास आते हैं, ताकि आपके सोने को कहीं ले जाना न पड़े।" },
       { t:'सटीक मूल्यांकन', d:'XRF टेस्टिंग से सही शुद्धता मापी जाती है, और रीडिंग आप ख़ुद देखते हैं।' },
       { t:'तुरंत ट्रांसफ़र',  d:'पैसा तुरंत आपके बैंक या UPI में, साथ में मुफ़्त और विस्तृत वैल्यूएशन सर्टिफ़िकेट।' },
     ],
@@ -558,13 +580,20 @@ const STR = {
     calc_est: 'अनुमानित कीमत', calc_at: '{k}K के लिए ₹{rate}/ग्राम पर', calc_cta: 'यह कीमत WhatsApp पर पाएँ',
     calc_disclaimer: 'यह सिर्फ़ अनुमान है। अंतिम कीमत आपके सामने XRF टेस्टिंग के बाद तय होती है।',
     calc_margin: 'किसी और खरीदार से कोटेशन मिला है? उनका मार्जिन जाँचें →',
+    est_chips: ["कोई बाध्यता नहीं", "बिना शुल्क मना कर सकते हैं", "आपके सामने 0.001 ग्राम तक तौल"],
+    soft_t: "अभी तैयार नहीं हैं? कोई बात नहीं।", soft_d: "हर सुबह WhatsApp पर लाइव रेट पाएँ, ताकि आपको पता रहे कि सही समय कब है।",
+    soft_cta: "मुझे रोज़ का रेट भेजें", soft_cta_save: "मेरा अनुमान सेव करें और रोज़ का रेट पाएँ", rate_daily: "यह रेट रोज़ WhatsApp पर पाएँ",
+    xrf_photo: "फ़ोटो ली गई", xrf_gold: "सोना (Au)",
 
-    git_title: 'मुफ़्त अपॉइंटमेंट बुक करें', git_sub: 'अपनी जानकारी दें, हम WhatsApp पर समय तय करेंगे।',
+    git_title: 'मुफ़्त अपॉइंटमेंट बुक करें', git_sub: "अपनी जानकारी दें, हम WhatsApp पर समय तय करेंगे। अनुरोध पर गोपनीय विज़िट और महिला एग्ज़ीक्यूटिव।",
     git_name: 'आपका नाम', git_name_ph: 'जैसे प्रिया एस', git_mobile: 'मोबाइल नंबर', git_mobile_ph: '10 अंकों का नंबर',
     git_pref: 'मुझे पसंद है', git_doorstep: 'घर से पिकअप', git_centre: 'सेंटर पर आना',
     git_book: 'मुफ़्त अपॉइंटमेंट बुक करें', git_call: 'अभी कॉल करें',
     git_consent: 'सबमिट करके, आप अपने सोने की बिक्री के बारे में संपर्क किए जाने के लिए सहमत हैं।',
     git_err: 'अपना नाम और सही 10 अंकों का मोबाइल नंबर डालें।', git_done_t: 'अनुरोध मिल गया', git_done_d: 'हमने आपकी जानकारी के साथ WhatsApp खोला है। वहाँ भेजें दबाएँ, हम जल्द ही आपका समय पक्का करेंगे।', git_again: 'एक और अपॉइंटमेंट बुक करें',
+    git_prefs: "विज़िट से जुड़ी पसंद (वैकल्पिक)", git_p_discreet: "गोपनीय विज़िट", git_p_discreet_d: "सादे कपड़े, बैग या गाड़ी पर कोई लोगो नहीं।",
+    git_p_woman: "महिला एग्ज़ीक्यूटिव", git_p_urgent: "अर्जेंट, उसी दिन", git_urgent_note: "शाम 4 बजे से पहले बुक करें, हम आज ही आएँगे। हम 30 मिनट के अंदर आपको कॉल करेंगे।",
+    git_done_thanks: "इतनी ख़ास चीज़ के लिए हम पर भरोसा करने के लिए धन्यवाद।", git_done_urgent: "अर्जेंट के रूप में दर्ज: हम 30 मिनट के अंदर आपको कॉल करेंगे।",
 
     why_title: 'लोग Carat Money पर भरोसा क्यों करते हैं',
     why_intro: 'पुराना सोना बेचने में अक्सर अंदाज़ा, छिपी कटौतियाँ और कोई कागज़ात नहीं होते। हमने हर कदम को मापा हुआ, आपको दिखाया हुआ और दस्तावेज़ों के साथ बनाया है।',
@@ -574,14 +603,16 @@ const STR = {
       { k:'वज़न',             us:'आपके सामने तौला जाता है, 0.001 ग्राम तक सटीक।', them:'वज़न नीचे राउंड किया जाता है और पत्थरों का सिर्फ़ अंदाज़ा लगाया जाता है।' },
       { k:'कीमत',            us:'लाइव मार्केट से जुड़ा रेट, खुले तौर पर प्रकाशित।', them:'पुराने या अस्पष्ट रेट, जो काउंटर पर बदल जाते हैं।' },
       { k:'कटौतियाँ',          us:'कोई अतिरिक्त "वेस्टेज" कटौती नहीं।', them:'अलग-अलग नामों से छिपी कटौतियाँ: पत्थरों की ज़्यादा कटौती, पिघलाने में नुकसान, सर्विस चार्ज आदि।' },
+      { k:"पत्थर", us:"पत्थर और सोने के अलावा बाकी हिस्से सावधानी से निकालकर आपको लौटाए जाते हैं।", them:"पत्थर अक्सर खरीदार ही रख लेता है।" },
       { k:'पेमेंट',            us:'तुरंत बैंक या UPI ट्रांसफ़र + मुफ़्त वैल्यूएशन सर्टिफ़िकेट।', them:'नकद, कोई कागज़ात नहीं, कोई इनवॉइस नहीं।' },
       { k:'स्वीकार्य ज्वेलरी',    us:'हर तरह की ज्वेलरी स्वीकार, टूटी या पुरानी, BIS हॉलमार्क हो या न हो। शुद्धता की वैज्ञानिक जाँच।', them:'बिना हॉलमार्क या दूसरे ब्रांड की ज्वेलरी लेने से मना।' },
+      { k:"गोपनीयता", us:"अनुरोध पर बिना ब्रांडिंग वाली गोपनीय विज़िट, और सेंटर पर निजी परामर्श कक्ष।", them:"भीड़ भरा दुकान का काउंटर, सबके सामने।" },
     ],
 
     proc_title: 'Carat Money की प्रक्रिया, 4 आसान कदमों में', proc_sub: 'हर कदम पारदर्शी, और लगभग 15 मिनट में पूरा।',
     proc_steps: [
       { t:'Carat Money सेंटर आएँ या घर पर अपॉइंटमेंट बुक करें', d:'खारघर में हमारे सेंटर आएँ, या हम आपकी सुविधा के समय आपके घर आएँगे।' },
-      { t:'आधुनिक मशीनों से सोने की जाँच', d:'आपके सामने XRF शुद्धता जाँच और सटीक तौल।' },
+      { t:'आधुनिक मशीनों से सोने की जाँच', d:"साफ़ रिकॉर्ड के लिए हर गहने की पहले फ़ोटो ली जाती है, फिर आपके सामने XRF जाँच और सटीक तौल।" },
       { t:'बिक्री से पहले शुद्धता, वज़न और लाइव कीमत दिखाई जाती है', d:'बेचने का फ़ैसला लेने से पहले आप हर आँकड़ा देखते हैं।' },
       { t:'बिना किसी देरी के तुरंत पेमेंट', d:'ऑफ़र मानते ही बैंक या UPI ट्रांसफ़र।' },
     ],
@@ -602,9 +633,14 @@ const STR = {
     faqs: [
       { q:'मेरे सोने की कीमत कैसे तय होती है?', a:'हम आपका सोना तौलते हैं, XRF मशीन पर उसकी शुद्धता जाँचते हैं, और शुद्ध सोने की मात्रा को इस पेज पर दिखाए गए लाइव रेट से गुणा करते हैं। फ़ैसला लेने से पहले आप हर आँकड़ा देखते हैं।' },
       { q:'क्या जाँच के दौरान मेरी ज्वेलरी पिघलाई या ख़राब की जाती है?', a:'नहीं। XRF टेस्टिंग से कोई नुकसान नहीं होता, जाँच के दौरान आपकी ज्वेलरी जैसी है वैसी ही रहती है।' },
+      { q:"क्या आप मेरी ज्वेलरी की फ़ोटो लेते हैं?", a:"हाँ। जाँच से पहले हर गहने की फ़ोटो ली जाती है, ताकि आपने जो सौंपा उसका साफ़ रिकॉर्ड रहे।" },
       { q:'क्या आप मुफ़्त होम पिकअप देते हैं?', a:'हाँ, बेंगलुरु और मुंबई में। हमारा एग्ज़ीक्यूटिव आपकी सुविधा के समय पर आता है, आपके सामने सोने की जाँच करता है और वहीं पक्का ऑफ़र देता है।' },
+      { q:"क्या विज़िट गोपनीय रखी जा सकती है?", a:"हाँ। बुकिंग के समय \"गोपनीय विज़िट\" चुनें, हमारा एग्ज़ीक्यूटिव सादे कपड़ों में आएगा और बैग या गाड़ी पर कोई लोगो नहीं होगा। हमारे सेंटर पर हर विज़िट निजी परामर्श कक्ष में होती है।" },
+      { q:"क्या मैं महिला एग्ज़ीक्यूटिव के लिए कह सकती/सकता हूँ?", a:"हाँ। बुकिंग के समय \"महिला एग्ज़ीक्यूटिव\" चुनें, चाहे हम आपके घर आएँ या आप हमारे सेंटर आएँ।" },
+      { q:"मुझे तुरंत पैसों की ज़रूरत है। क्या आप आज आ सकते हैं?", a:"हाँ। घर पर विज़िट बुक करते समय \"अर्जेंट, उसी दिन\" चुनें। हम 30 मिनट के अंदर कॉल करते हैं, और शाम 4 बजे से पहले बुक करने पर उसी दिन आपके पास आते हैं।" },
       { q:'क्या अनुमान मुफ़्त है?', a:'हाँ। अनुमान मुफ़्त है और कोई बाध्यता नहीं। ऑफ़र पसंद आए तभी बेचें।' },
       { q:'क्या कोई कटौती होती है?', a:'सिर्फ़ पत्थरों के वज़न की, जिसे हम मापकर आपको दिखाते हैं। कोई अतिरिक्त "वेस्टेज" कटौती या छिपा चार्ज नहीं।' },
+      { q:"क्या मुझे मेरे पत्थर वापस मिलेंगे?", a:"हाँ। पत्थर और सोने के अलावा बाकी हिस्से सावधानी से निकालकर आपको लौटाए जाते हैं। आपको सोने का पैसा मिलता है।" },
       { q:'अगर मेरी ज्वेलरी टूटी हुई है या उस पर हॉलमार्क नहीं है तो?', a:'हम हर तरह की सोने की ज्वेलरी लेते हैं, टूटी, पुरानी और बिना हॉलमार्क वाली भी। XRF टेस्टिंग असली शुद्धता बताती है, इसलिए आपको सोने की असली मात्रा का पैसा मिलता है।' },
       { q:'मुझे पेमेंट कैसे मिलेगा?', a:'ऑफ़र मानते ही तुरंत, बैंक ट्रांसफ़र या UPI से। हम कभी नकद भुगतान नहीं करते।' },
       { q:'क्या मुझे कोई कागज़ात मिलेंगे?', a:'हाँ। आपको बिक्री का इनवॉइस और एक मुफ़्त, विस्तृत वैल्यूएशन सर्टिफ़िकेट मिलता है।' },
@@ -615,6 +651,7 @@ const STR = {
     ],
 
     visit_label: 'हमारे सेंटर आएँ', visit_title: 'Carat Money, खारघर', visit_hours: 'हर दिन, सुबह 9 से रात 9 बजे तक', visit_dir: 'रास्ता देखें',
+    visit_private: "हर विज़िट के लिए निजी परामर्श कक्ष",
 
     blog_title: 'गोल्ड इनसाइट्स', blog_sub: 'सोना बेचने से पहले सीधे जवाब।', blog_all: 'सभी लेख देखें', blog_read: 'पढ़ें', blog_note: 'लेख अंग्रेज़ी में हैं।',
 
@@ -646,8 +683,11 @@ const STR = {
     hero_cta_calc:  'तुमच्या सोन्याचे मूल्य जाणून घ्या',
     hero_stats:     '5,000+ ग्राहक · ₹100 कोटी+ खरेदी · 4.9★',
     hero_pickup:    'बंगळुरू आणि मुंबईत घरून पिकअपची सोय',
+    hero_turn:      ["जुने सोने, आता ", "."],
+    hero_uses:      ["घरच्या लग्नासाठी", "मुलांच्या शिक्षणासाठी", "नव्या घरासाठी", "स्वतःच्या व्यवसायासाठी", "तातडीच्या उपचारासाठी", "कर्जमुक्तीसाठी", "एखाद्या चांगल्या कामासाठी"],
+    hero_family:    "त्यांनी ते तुमच्या कुटुंबाच्या उद्यासाठी जपून ठेवले होते. आज, ते तुमच्यासाठी आहे.",
     tiles: [
-      { t:'घरपोच सेवा',      d:'आम्ही तुमच्याकडे येतो, त्यामुळे तुमचे सोने कुठेही न्यावे लागत नाही.' },
+      { t:'घरपोच सेवा',      d:"आम्ही पूर्ण गोपनीयतेने तुमच्याकडे येतो, म्हणजे तुमचे सोने कुठेही न्यावे लागत नाही." },
       { t:'अचूक मूल्यांकन',   d:'XRF चाचणीने अचूक शुद्धता मोजली जाते, आणि रीडिंग तुम्ही स्वतः पाहता.' },
       { t:'त्वरित ट्रान्सफर',   d:'पैसे लगेच तुमच्या बँक खात्यात किंवा UPI वर, सोबत मोफत आणि सविस्तर मूल्यांकन प्रमाणपत्र.' },
     ],
@@ -661,13 +701,20 @@ const STR = {
     calc_est: 'अंदाजे मूल्य', calc_at: '{k}K साठी ₹{rate}/ग्रॅम दराने', calc_cta: 'ही किंमत WhatsApp वर मिळवा',
     calc_disclaimer: 'हा फक्त अंदाज आहे. अंतिम मूल्य तुमच्यासमोर XRF चाचणीनंतर निश्चित होते.',
     calc_margin: 'दुसऱ्या खरेदीदाराकडून कोटेशन मिळाले आहे? त्यांचे मार्जिन तपासा →',
+    est_chips: ["कोणतीही सक्ती नाही", "विनाशुल्क नकार देण्याची मुभा", "तुमच्यासमोर 0.001 ग्रॅमपर्यंत वजन"],
+    soft_t: "अजून तयार नाही? काही हरकत नाही.", soft_d: "दररोज सकाळी WhatsApp वर लाइव्ह दर मिळवा, म्हणजे योग्य वेळ कधी आहे ते तुम्हाला कळेल.",
+    soft_cta: "मला रोजचा दर पाठवा", soft_cta_save: "माझा अंदाज सेव्ह करा आणि रोजचा दर मिळवा", rate_daily: "हा दर रोज WhatsApp वर मिळवा",
+    xrf_photo: "फोटो घेतला", xrf_gold: "सोने (Au)",
 
-    git_title: 'मोफत अपॉइंटमेंट बुक करा', git_sub: 'तुमची माहिती द्या, आम्ही WhatsApp वर वेळ निश्चित करू.',
+    git_title: 'मोफत अपॉइंटमेंट बुक करा', git_sub: "तुमची माहिती द्या, आम्ही WhatsApp वर वेळ निश्चित करू. विनंतीनुसार गोपनीय भेट आणि महिला एक्झिक्युटिव्ह.",
     git_name: 'तुमचे नाव', git_name_ph: 'उदा. प्रिया एस', git_mobile: 'मोबाइल नंबर', git_mobile_ph: '10 अंकी नंबर',
     git_pref: 'माझी पसंती', git_doorstep: 'घरून पिकअप', git_centre: 'सेंटरला भेट',
     git_book: 'मोफत अपॉइंटमेंट बुक करा', git_call: 'आत्ता कॉल करा',
     git_consent: 'सबमिट करून, तुमच्या सोने विक्रीबद्दल संपर्क करण्यास तुम्ही संमती देता.',
     git_err: 'तुमचे नाव आणि योग्य 10 अंकी मोबाइल नंबर टाका.', git_done_t: 'विनंती मिळाली', git_done_d: 'तुमच्या माहितीसह आम्ही WhatsApp उघडले आहे. तिथे पाठवा दाबा, आम्ही लवकरच तुमची वेळ निश्चित करू.', git_again: 'आणखी एक अपॉइंटमेंट बुक करा',
+    git_prefs: "भेटीसंबंधी पसंती (ऐच्छिक)", git_p_discreet: "गोपनीय भेट", git_p_discreet_d: "साधे कपडे, बॅग किंवा गाडीवर लोगो नाही.",
+    git_p_woman: "महिला एक्झिक्युटिव्ह", git_p_urgent: "तातडीचे, त्याच दिवशी", git_urgent_note: "दुपारी 4 पूर्वी बुक करा, आम्ही आजच येऊ. आम्ही 30 मिनिटांत तुम्हाला कॉल करू.",
+    git_done_thanks: "एवढ्या मोलाच्या गोष्टीसाठी आमच्यावर विश्वास ठेवल्याबद्दल धन्यवाद.", git_done_urgent: "तातडीचे म्हणून नोंद: आम्ही 30 मिनिटांत तुम्हाला कॉल करू.",
 
     why_title: 'लोक Carat Money वर विश्वास का ठेवतात',
     why_intro: 'जुने सोने विकताना बहुतेक वेळा अंदाज, छुपी कपात आणि कागदपत्रांचा अभाव असतो. आम्ही प्रत्येक टप्पा मोजलेला, तुम्हाला दाखवलेला आणि नोंदवलेला ठेवला आहे.',
@@ -677,14 +724,16 @@ const STR = {
       { k:'वजन',                us:'तुमच्यासमोर वजन, 0.001 ग्रॅमपर्यंत अचूक.', them:'वजन कमी करून राउंड केले जाते आणि खड्यांचा फक्त अंदाज घेतला जातो.' },
       { k:'किंमत',               us:'लाइव्ह बाजाराशी जोडलेला दर, उघडपणे जाहीर.', them:'जुने किंवा अस्पष्ट दर, जे काउंटरवर बदलतात.' },
       { k:'कपात',               us:'कोणतीही अतिरिक्त "वेस्टेज" कपात नाही.', them:'वेगवेगळ्या नावांनी छुपी कपात: खड्यांची जास्त कपात, वितळवताना होणारी घट, सर्व्हिस चार्ज इ.' },
+      { k:"खडे", us:"खडे आणि सोन्याव्यतिरिक्त भाग काळजीपूर्वक काढून तुम्हाला परत दिले जातात.", them:"खडे बहुतेकदा खरेदीदारच ठेवून घेतो." },
       { k:'पेमेंट',               us:'त्वरित बँक किंवा UPI ट्रान्सफर + मोफत मूल्यांकन प्रमाणपत्र.', them:'रोख, कागदपत्रे नाहीत, इनव्हॉइस नाही.' },
       { k:'स्वीकारले जाणारे दागिने', us:'सर्व दागिने स्वीकारले जातात, तुटलेले किंवा जुने, BIS हॉलमार्क असो वा नसो. शुद्धतेची वैज्ञानिक तपासणी.', them:'हॉलमार्क नसलेले किंवा इतर ब्रँडचे दागिने नाकारले जातात.' },
+      { k:"गोपनीयता", us:"विनंतीनुसार ब्रँडिंगशिवाय गोपनीय भेट, आणि सेंटरवर खाजगी सल्ला कक्ष.", them:"गर्दीचा दुकानाचा काउंटर, सर्वांसमोर." },
     ],
 
     proc_title: 'Carat Money ची प्रक्रिया, 4 सोप्या टप्प्यांत', proc_sub: 'प्रत्येक टप्पा पारदर्शक, आणि सुमारे 15 मिनिटांत पूर्ण.',
     proc_steps: [
       { t:'Carat Money सेंटरला या किंवा घरपोच अपॉइंटमेंट बुक करा', d:'खारघरमधील आमच्या सेंटरला या, किंवा तुमच्या सोयीच्या वेळी आम्ही तुमच्या घरी येऊ.' },
-      { t:'आधुनिक मशीनद्वारे सोन्याची चाचणी', d:'तुमच्यासमोर XRF शुद्धता चाचणी आणि अचूक वजन.' },
+      { t:'आधुनिक मशीनद्वारे सोन्याची चाचणी', d:"स्पष्ट नोंदीसाठी प्रत्येक दागिन्याचा आधी फोटो घेतला जातो, मग तुमच्यासमोर XRF चाचणी आणि अचूक वजन." },
       { t:'विक्रीपूर्वी शुद्धता, वजन आणि लाइव्ह किंमत दाखवली जाते', d:'विकण्याचा निर्णय घेण्यापूर्वी तुम्ही प्रत्येक आकडा पाहता.' },
       { t:'कोणताही विलंब न करता त्वरित पेमेंट', d:'ऑफर स्वीकारताच बँक किंवा UPI ट्रान्सफर.' },
     ],
@@ -706,9 +755,14 @@ const STR = {
     faqs: [
       { q:'माझ्या सोन्याची किंमत कशी ठरते?', a:'आम्ही तुमच्या सोन्याचे वजन करतो, XRF मशीनवर शुद्धता तपासतो आणि शुद्ध सोन्याच्या प्रमाणाला या पानावर दाखवलेल्या लाइव्ह दराने गुणतो. निर्णय घेण्यापूर्वी तुम्ही प्रत्येक आकडा पाहता.' },
       { q:'चाचणीदरम्यान माझे दागिने वितळवता किंवा खराब करता का?', a:'नाही. XRF चाचणीने कोणतेही नुकसान होत नाही, चाचणीदरम्यान तुमचे दागिने जसे आहेत तसेच राहतात.' },
+      { q:"तुम्ही माझ्या दागिन्यांचे फोटो घेता का?", a:"हो. चाचणीपूर्वी प्रत्येक दागिन्याचा फोटो घेतला जातो, म्हणजे तुम्ही काय सुपूर्द केले याची स्पष्ट नोंद राहते." },
       { q:'तुम्ही मोफत घरून पिकअप देता का?', a:'हो, बंगळुरू आणि मुंबईत. आमचे प्रतिनिधी तुमच्या सोयीच्या वेळी येतात, तुमच्यासमोर सोन्याची चाचणी करतात आणि तिथेच पक्की ऑफर देतात.' },
+      { q:"भेट गोपनीय ठेवता येईल का?", a:"हो. बुकिंग करताना \"गोपनीय भेट\" निवडा; आमचा एक्झिक्युटिव्ह साध्या कपड्यांत येईल आणि बॅग किंवा गाडीवर लोगो नसेल. आमच्या सेंटरवर प्रत्येक भेट खाजगी सल्ला कक्षात होते." },
+      { q:"मला महिला एक्झिक्युटिव्ह मिळू शकेल का?", a:"हो. बुकिंग करताना \"महिला एक्झिक्युटिव्ह\" निवडा, आम्ही तुमच्याकडे आलो किंवा तुम्ही सेंटरला आलात तरी." },
+      { q:"मला तातडीने पैशांची गरज आहे. तुम्ही आज येऊ शकता का?", a:"हो. घरी भेट बुक करताना \"तातडीचे, त्याच दिवशी\" निवडा. आम्ही 30 मिनिटांत कॉल करतो, आणि दुपारी 4 पूर्वी बुक केल्यास त्याच दिवशी येतो." },
       { q:'अंदाज मोफत आहे का?', a:'हो. अंदाज मोफत आहे, कोणतेही बंधन नाही. ऑफर आवडली तरच विका.' },
       { q:'काही कपात होते का?', a:'फक्त खड्यांच्या वजनाची, जे आम्ही मोजून तुम्हाला दाखवतो. कोणतीही अतिरिक्त "वेस्टेज" कपात किंवा छुपे शुल्क नाही.' },
+      { q:"मला माझे खडे परत मिळतील का?", a:"हो. खडे आणि सोन्याव्यतिरिक्त भाग काळजीपूर्वक काढून तुम्हाला परत दिले जातात. तुम्हाला सोन्याचे पैसे मिळतात." },
       { q:'माझे दागिने तुटलेले असतील किंवा हॉलमार्क नसेल तर?', a:'तुटलेले, जुने आणि हॉलमार्क नसलेले दागिनेही धरून आम्ही सर्व सोन्याचे दागिने स्वीकारतो. XRF चाचणी खरी शुद्धता सांगते, त्यामुळे तुम्हाला प्रत्यक्ष सोन्याच्या प्रमाणाचे पैसे मिळतात.' },
       { q:'मला पेमेंट कसे मिळेल?', a:'ऑफर स्वीकारताच लगेच, बँक ट्रान्सफर किंवा UPI ने. आम्ही कधीही रोख पैसे देत नाही.' },
       { q:'मला काही कागदपत्रे मिळतील का?', a:'हो. तुम्हाला विक्रीचे इनव्हॉइस आणि मोफत, सविस्तर मूल्यांकन प्रमाणपत्र मिळते.' },
@@ -719,6 +773,7 @@ const STR = {
     ],
 
     visit_label: 'आमच्या सेंटरला भेट द्या', visit_title: 'Carat Money, खारघर', visit_hours: 'दररोज, सकाळी 9 ते रात्री 9', visit_dir: 'मार्ग पहा',
+    visit_private: "प्रत्येक भेटीसाठी खाजगी सल्ला कक्ष",
 
     blog_title: 'गोल्ड इनसाइट्स', blog_sub: 'सोने विकण्यापूर्वी थेट उत्तरे.', blog_all: 'सर्व लेख पहा', blog_read: 'वाचा', blog_note: 'लेख इंग्रजीत आहेत.',
 
@@ -750,8 +805,11 @@ const STR = {
     hero_cta_calc:  'ನಿಮ್ಮ ಚಿನ್ನದ ಮೌಲ್ಯ ತಿಳಿಯಿರಿ',
     hero_stats:     '5,000+ ಗ್ರಾಹಕರು · ₹100 ಕೋಟಿ+ ಖರೀದಿ · 4.9★',
     hero_pickup:    'ಬೆಂಗಳೂರು ಮತ್ತು ಮುಂಬೈನಲ್ಲಿ ಮನೆಯಿಂದ ಪಿಕಪ್ ಲಭ್ಯ',
+    hero_turn:      ["ಹಳೆಯ ಚಿನ್ನ, ಈಗ ", "."],
+    hero_uses:      ["ಮನೆಯ ಮದುವೆಗೆ", "ಮಕ್ಕಳ ವಿದ್ಯಾಭ್ಯಾಸಕ್ಕೆ", "ಹೊಸ ಮನೆಗೆ", "ಸ್ವಂತ ವ್ಯಾಪಾರಕ್ಕೆ", "ತುರ್ತು ಚಿಕಿತ್ಸೆಗೆ", "ಸಾಲದಿಂದ ಮುಕ್ತಿಗೆ", "ಒಳ್ಳೆಯ ಕೆಲಸಕ್ಕೆ"],
+    hero_family:    "ಅವರು ಇದನ್ನು ನಿಮ್ಮ ಕುಟುಂಬದ ನಾಳೆಗಾಗಿ ಕೂಡಿಟ್ಟಿದ್ದರು. ಇಂದು, ಇದು ನಿಮಗಾಗಿ.",
     tiles: [
-      { t:'ಮನೆ ಬಾಗಿಲಿಗೆ ಸೇವೆ', d:'ನಾವೇ ನಿಮ್ಮಲ್ಲಿಗೆ ಬರುತ್ತೇವೆ, ನಿಮ್ಮ ಚಿನ್ನವನ್ನು ಎಲ್ಲಿಗೂ ಕೊಂಡೊಯ್ಯಬೇಕಾಗಿಲ್ಲ.' },
+      { t:'ಮನೆ ಬಾಗಿಲಿಗೆ ಸೇವೆ', d:"ನಾವು ಸಂಪೂರ್ಣ ಗೌಪ್ಯತೆಯಿಂದ ನಿಮ್ಮ ಬಳಿಗೆ ಬರುತ್ತೇವೆ, ನಿಮ್ಮ ಚಿನ್ನ ಎಲ್ಲಿಗೂ ಹೋಗಬೇಕಿಲ್ಲ." },
       { t:'ನಿಖರ ಮೌಲ್ಯಮಾಪನ',  d:'XRF ಪರೀಕ್ಷೆ ನಿಖರ ಶುದ್ಧತೆಯನ್ನು ಅಳೆಯುತ್ತದೆ, ರೀಡಿಂಗ್ ಅನ್ನು ನೀವೇ ನೋಡುತ್ತೀರಿ.' },
       { t:'ತಕ್ಷಣ ವರ್ಗಾವಣೆ',   d:'ಹಣ ತಕ್ಷಣ ನಿಮ್ಮ ಬ್ಯಾಂಕ್ ಅಥವಾ UPI ಗೆ, ಜೊತೆಗೆ ಉಚಿತ ಮತ್ತು ವಿವರವಾದ ಮೌಲ್ಯಮಾಪನ ಪ್ರಮಾಣಪತ್ರ.' },
     ],
@@ -765,13 +823,20 @@ const STR = {
     calc_est: 'ಅಂದಾಜು ಮೌಲ್ಯ', calc_at: '{k}K ಗೆ ₹{rate}/ಗ್ರಾಂ ದರದಲ್ಲಿ', calc_cta: 'ಈ ಬೆಲೆಯನ್ನು WhatsApp ನಲ್ಲಿ ಪಡೆಯಿರಿ',
     calc_disclaimer: 'ಇದು ಕೇವಲ ಅಂದಾಜು. ಅಂತಿಮ ಮೌಲ್ಯವನ್ನು ನಿಮ್ಮ ಮುಂದೆಯೇ XRF ಪರೀಕ್ಷೆಯ ನಂತರ ದೃಢಪಡಿಸಲಾಗುತ್ತದೆ.',
     calc_margin: 'ಬೇರೆ ಖರೀದಿದಾರರಿಂದ ಕೊಟೇಶನ್ ಬಂದಿದೆಯೇ? ಅವರ ಮಾರ್ಜಿನ್ ಪರಿಶೀಲಿಸಿ →',
+    est_chips: ["ಯಾವುದೇ ಒತ್ತಾಯವಿಲ್ಲ", "ಉಚಿತವಾಗಿ ನಿರಾಕರಿಸಬಹುದು", "ನಿಮ್ಮ ಮುಂದೆಯೇ 0.001 ಗ್ರಾಂವರೆಗೆ ತೂಕ"],
+    soft_t: "ಇನ್ನೂ ಸಿದ್ಧವಿಲ್ಲವೇ? ಪರವಾಗಿಲ್ಲ.", soft_d: "ಪ್ರತಿದಿನ ಬೆಳಿಗ್ಗೆ WhatsApp ನಲ್ಲಿ ಲೈವ್ ದರ ಪಡೆಯಿರಿ, ಸರಿಯಾದ ಸಮಯ ಯಾವಾಗ ಎಂದು ತಿಳಿಯಲು.",
+    soft_cta: "ನನಗೆ ದಿನದ ದರ ಕಳುಹಿಸಿ", soft_cta_save: "ನನ್ನ ಅಂದಾಜು ಉಳಿಸಿ, ದಿನದ ದರ ಪಡೆಯಿರಿ", rate_daily: "ಈ ದರವನ್ನು ಪ್ರತಿದಿನ WhatsApp ನಲ್ಲಿ ಪಡೆಯಿರಿ",
+    xrf_photo: "ಫೋಟೋ ತೆಗೆಯಲಾಗಿದೆ", xrf_gold: "ಚಿನ್ನ (Au)",
 
-    git_title: 'ಉಚಿತ ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್ ಬುಕ್ ಮಾಡಿ', git_sub: 'ನಿಮ್ಮ ವಿವರಗಳನ್ನು ನೀಡಿ, ನಾವು WhatsApp ನಲ್ಲಿ ಸಮಯವನ್ನು ದೃಢಪಡಿಸುತ್ತೇವೆ.',
+    git_title: 'ಉಚಿತ ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್ ಬುಕ್ ಮಾಡಿ', git_sub: "ನಿಮ್ಮ ವಿವರಗಳನ್ನು ನೀಡಿ, ನಾವು WhatsApp ನಲ್ಲಿ ಸಮಯವನ್ನು ದೃಢಪಡಿಸುತ್ತೇವೆ. ವಿನಂತಿಯ ಮೇರೆಗೆ ಗೌಪ್ಯ ಭೇಟಿ ಮತ್ತು ಮಹಿಳಾ ಎಕ್ಸಿಕ್ಯೂಟಿವ್.",
     git_name: 'ನಿಮ್ಮ ಹೆಸರು', git_name_ph: 'ಉದಾ. ಪ್ರಿಯಾ ಎಸ್', git_mobile: 'ಮೊಬೈಲ್ ಸಂಖ್ಯೆ', git_mobile_ph: '10 ಅಂಕಿಯ ಸಂಖ್ಯೆ',
     git_pref: 'ನನ್ನ ಆಯ್ಕೆ', git_doorstep: 'ಮನೆಯಿಂದ ಪಿಕಪ್', git_centre: 'ಕೇಂದ್ರಕ್ಕೆ ಭೇಟಿ',
     git_book: 'ಉಚಿತ ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್ ಬುಕ್ ಮಾಡಿ', git_call: 'ಈಗ ಕರೆ ಮಾಡಿ',
     git_consent: 'ಸಲ್ಲಿಸುವ ಮೂಲಕ, ನಿಮ್ಮ ಚಿನ್ನ ಮಾರಾಟದ ಕುರಿತು ನಿಮ್ಮನ್ನು ಸಂಪರ್ಕಿಸಲು ನೀವು ಒಪ್ಪುತ್ತೀರಿ.',
     git_err: 'ನಿಮ್ಮ ಹೆಸರು ಮತ್ತು ಸರಿಯಾದ 10 ಅಂಕಿಯ ಮೊಬೈಲ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ.', git_done_t: 'ವಿನಂತಿ ಸ್ವೀಕರಿಸಲಾಗಿದೆ', git_done_d: 'ನಿಮ್ಮ ವಿವರಗಳೊಂದಿಗೆ WhatsApp ತೆರೆಯಲಾಗಿದೆ. ಅಲ್ಲಿ ಕಳುಹಿಸಿ ಒತ್ತಿ, ನಾವು ಶೀಘ್ರದಲ್ಲೇ ನಿಮ್ಮ ಸಮಯವನ್ನು ದೃಢಪಡಿಸುತ್ತೇವೆ.', git_again: 'ಇನ್ನೊಂದು ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್ ಬುಕ್ ಮಾಡಿ',
+    git_prefs: "ಭೇಟಿಯ ಆದ್ಯತೆಗಳು (ಐಚ್ಛಿಕ)", git_p_discreet: "ಗೌಪ್ಯ ಭೇಟಿ", git_p_discreet_d: "ಸಾಮಾನ್ಯ ಉಡುಪು, ಬ್ಯಾಗ್ ಅಥವಾ ವಾಹನದ ಮೇಲೆ ಲೋಗೋ ಇಲ್ಲ.",
+    git_p_woman: "ಮಹಿಳಾ ಎಕ್ಸಿಕ್ಯೂಟಿವ್", git_p_urgent: "ತುರ್ತು, ಅದೇ ದಿನ", git_urgent_note: "ಸಂಜೆ 4 ಗಂಟೆಯೊಳಗೆ ಬುಕ್ ಮಾಡಿದರೆ ಇಂದೇ ಬರುತ್ತೇವೆ. 30 ನಿಮಿಷಗಳೊಳಗೆ ನಿಮಗೆ ಕರೆ ಮಾಡುತ್ತೇವೆ.",
+    git_done_thanks: "ಇಷ್ಟು ಅಮೂಲ್ಯವಾದುದಕ್ಕೆ ನಮ್ಮನ್ನು ನಂಬಿದ್ದಕ್ಕಾಗಿ ಧನ್ಯವಾದಗಳು.", git_done_urgent: "ತುರ್ತು ಎಂದು ದಾಖಲಿಸಲಾಗಿದೆ: 30 ನಿಮಿಷಗಳೊಳಗೆ ನಿಮಗೆ ಕರೆ ಮಾಡುತ್ತೇವೆ.",
 
     why_title: 'ಜನರು Carat Money ಅನ್ನು ಏಕೆ ನಂಬುತ್ತಾರೆ',
     why_intro: 'ಹಳೆಯ ಚಿನ್ನ ಮಾರುವಾಗ ಸಾಮಾನ್ಯವಾಗಿ ಊಹೆ, ಮರೆಮಾಚಿದ ಕಡಿತಗಳು ಮತ್ತು ದಾಖಲೆಗಳ ಕೊರತೆ ಇರುತ್ತದೆ. ನಾವು ಪ್ರತಿಯೊಂದು ಹಂತವನ್ನೂ ಅಳೆದು, ನಿಮಗೆ ತೋರಿಸಿ, ದಾಖಲಿಸುವಂತೆ ರೂಪಿಸಿದ್ದೇವೆ.',
@@ -781,14 +846,16 @@ const STR = {
       { k:'ತೂಕ',              us:'ನಿಮ್ಮ ಮುಂದೆಯೇ ತೂಕ, 0.001 ಗ್ರಾಂವರೆಗೆ ನಿಖರ.', them:'ತೂಕವನ್ನು ಕಡಿಮೆಗೆ ರೌಂಡ್ ಮಾಡಲಾಗುತ್ತದೆ, ಕಲ್ಲುಗಳ ತೂಕವನ್ನು ಕೇವಲ ಅಂದಾಜಿಸಲಾಗುತ್ತದೆ.' },
       { k:'ಬೆಲೆ ನಿಗದಿ',         us:'ಲೈವ್ ಮಾರುಕಟ್ಟೆಗೆ ಜೋಡಿಸಿದ ದರ, ಬಹಿರಂಗವಾಗಿ ಪ್ರಕಟಿತ.', them:'ಹಳೆಯ ಅಥವಾ ಅಸ್ಪಷ್ಟ ದರಗಳು, ಕೌಂಟರ್‌ನಲ್ಲಿ ಬದಲಾಗುತ್ತವೆ.' },
       { k:'ಕಡಿತಗಳು',           us:'ಯಾವುದೇ ಹೆಚ್ಚುವರಿ "ವೇಸ್ಟೇಜ್" ಕಡಿತವಿಲ್ಲ.', them:'ಬೇರೆ ಬೇರೆ ಹೆಸರಿನಲ್ಲಿ ಮರೆಮಾಚಿದ ಕಡಿತಗಳು: ಕಲ್ಲುಗಳ ಅತಿಯಾದ ಕಡಿತ, ಕರಗಿಸುವಾಗಿನ ನಷ್ಟ, ಸೇವಾ ಶುಲ್ಕ ಇತ್ಯಾದಿ.' },
+      { k:"ಕಲ್ಲುಗಳು", us:"ಕಲ್ಲುಗಳು ಮತ್ತು ಚಿನ್ನವಲ್ಲದ ಭಾಗಗಳನ್ನು ಜಾಗರೂಕತೆಯಿಂದ ತೆಗೆದು ನಿಮಗೆ ಹಿಂತಿರುಗಿಸಲಾಗುತ್ತದೆ.", them:"ಕಲ್ಲುಗಳನ್ನು ಹೆಚ್ಚಾಗಿ ಖರೀದಿದಾರರೇ ಇಟ್ಟುಕೊಳ್ಳುತ್ತಾರೆ." },
       { k:'ಪಾವತಿ',             us:'ತಕ್ಷಣ ಬ್ಯಾಂಕ್ ಅಥವಾ UPI ವರ್ಗಾವಣೆ + ಉಚಿತ ಮೌಲ್ಯಮಾಪನ ಪ್ರಮಾಣಪತ್ರ.', them:'ನಗದು, ಯಾವುದೇ ದಾಖಲೆಗಳಿಲ್ಲ, ಇನ್‌ವಾಯ್ಸ್ ಇಲ್ಲ.' },
       { k:'ಸ್ವೀಕರಿಸುವ ಆಭರಣಗಳು',  us:'ಎಲ್ಲಾ ಆಭರಣಗಳೂ ಸ್ವೀಕಾರ, ಮುರಿದ ಅಥವಾ ಹಳೆಯ, BIS ಹಾಲ್‌ಮಾರ್ಕ್ ಇರಲಿ ಇಲ್ಲದಿರಲಿ. ಶುದ್ಧತೆಯ ವೈಜ್ಞಾನಿಕ ಪರಿಶೀಲನೆ.', them:'ಹಾಲ್‌ಮಾರ್ಕ್ ಇಲ್ಲದ ಅಥವಾ ಬೇರೆ ಬ್ರ್ಯಾಂಡ್‌ನ ಆಭರಣಗಳನ್ನು ತಿರಸ್ಕರಿಸುತ್ತಾರೆ.' },
+      { k:"ಗೌಪ್ಯತೆ", us:"ವಿನಂತಿಯ ಮೇರೆಗೆ ಬ್ರ್ಯಾಂಡಿಂಗ್ ಇಲ್ಲದ ಗೌಪ್ಯ ಭೇಟಿ, ಮತ್ತು ಕೇಂದ್ರದಲ್ಲಿ ಖಾಸಗಿ ಸಮಾಲೋಚನಾ ಕೊಠಡಿ.", them:"ಜನಸಂದಣಿಯ ಅಂಗಡಿ ಕೌಂಟರ್, ಎಲ್ಲರ ಮುಂದೆ." },
     ],
 
     proc_title: 'Carat Money ಪ್ರಕ್ರಿಯೆ, 4 ಸುಲಭ ಹಂತಗಳಲ್ಲಿ', proc_sub: 'ಪ್ರತಿ ಹಂತವೂ ಪಾರದರ್ಶಕ, ಸುಮಾರು 15 ನಿಮಿಷಗಳಲ್ಲಿ ಪೂರ್ಣ.',
     proc_steps: [
       { t:'Carat Money ಕೇಂದ್ರಕ್ಕೆ ಬನ್ನಿ ಅಥವಾ ಮನೆ ಬಾಗಿಲಿಗೆ ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್ ಬುಕ್ ಮಾಡಿ', d:'ಖಾರ್‌ಘರ್‌ನಲ್ಲಿರುವ ನಮ್ಮ ಕೇಂದ್ರಕ್ಕೆ ಬನ್ನಿ, ಅಥವಾ ನಿಮಗೆ ಅನುಕೂಲವಾದ ಸಮಯಕ್ಕೆ ನಾವೇ ನಿಮ್ಮ ಮನೆಗೆ ಬರುತ್ತೇವೆ.' },
-      { t:'ಸುಧಾರಿತ ಯಂತ್ರಗಳಿಂದ ಚಿನ್ನದ ಪರೀಕ್ಷೆ', d:'ನಿಮ್ಮ ಮುಂದೆಯೇ XRF ಶುದ್ಧತೆ ಪರೀಕ್ಷೆ ಮತ್ತು ನಿಖರ ತೂಕ.' },
+      { t:'ಸುಧಾರಿತ ಯಂತ್ರಗಳಿಂದ ಚಿನ್ನದ ಪರೀಕ್ಷೆ', d:"ಸ್ಪಷ್ಟ ದಾಖಲೆಗಾಗಿ ಪ್ರತಿ ಆಭರಣದ ಫೋಟೋವನ್ನು ಮೊದಲು ತೆಗೆಯಲಾಗುತ್ತದೆ, ನಂತರ ನಿಮ್ಮ ಮುಂದೆಯೇ XRF ಪರೀಕ್ಷೆ ಮತ್ತು ನಿಖರ ತೂಕ." },
       { t:'ಮಾರಾಟಕ್ಕೆ ಮುನ್ನ ಶುದ್ಧತೆ, ತೂಕ ಮತ್ತು ಲೈವ್ ಬೆಲೆ ತೋರಿಸಲಾಗುತ್ತದೆ', d:'ಮಾರಾಟದ ನಿರ್ಧಾರಕ್ಕೆ ಮುನ್ನ ಪ್ರತಿಯೊಂದು ಅಂಕಿಯನ್ನೂ ನೀವು ನೋಡುತ್ತೀರಿ.' },
       { t:'ಯಾವುದೇ ವಿಳಂಬವಿಲ್ಲದೆ ತಕ್ಷಣ ಪಾವತಿ', d:'ಆಫರ್ ಒಪ್ಪಿದ ಕ್ಷಣವೇ ಬ್ಯಾಂಕ್ ಅಥವಾ UPI ವರ್ಗಾವಣೆ.' },
     ],
@@ -809,9 +876,14 @@ const STR = {
     faqs: [
       { q:'ನನ್ನ ಚಿನ್ನದ ಬೆಲೆಯನ್ನು ಹೇಗೆ ಲೆಕ್ಕ ಹಾಕಲಾಗುತ್ತದೆ?', a:'ನಾವು ನಿಮ್ಮ ಚಿನ್ನವನ್ನು ತೂಕ ಮಾಡಿ, XRF ಯಂತ್ರದಲ್ಲಿ ಶುದ್ಧತೆಯನ್ನು ಪರೀಕ್ಷಿಸಿ, ಶುದ್ಧ ಚಿನ್ನದ ಪ್ರಮಾಣವನ್ನು ಈ ಪುಟದಲ್ಲಿ ತೋರಿಸಿರುವ ಲೈವ್ ದರದಿಂದ ಗುಣಿಸುತ್ತೇವೆ. ನಿರ್ಧರಿಸುವ ಮೊದಲು ಪ್ರತಿಯೊಂದು ಅಂಕಿಯನ್ನೂ ನೀವು ನೋಡುತ್ತೀರಿ.' },
       { q:'ಪರೀಕ್ಷೆಯ ವೇಳೆ ನನ್ನ ಆಭರಣವನ್ನು ಕರಗಿಸುತ್ತೀರಾ ಅಥವಾ ಹಾನಿ ಮಾಡುತ್ತೀರಾ?', a:'ಇಲ್ಲ. XRF ಪರೀಕ್ಷೆಯಿಂದ ಯಾವುದೇ ಹಾನಿಯಾಗುವುದಿಲ್ಲ, ಪರೀಕ್ಷೆಯ ವೇಳೆ ನಿಮ್ಮ ಆಭರಣ ಇದ್ದ ಹಾಗೆಯೇ ಇರುತ್ತದೆ.' },
+      { q:"ನೀವು ನನ್ನ ಆಭರಣಗಳ ಫೋಟೋ ತೆಗೆಯುತ್ತೀರಾ?", a:"ಹೌದು. ಪರೀಕ್ಷೆಗೆ ಮೊದಲು ಪ್ರತಿ ಆಭರಣದ ಫೋಟೋ ತೆಗೆಯಲಾಗುತ್ತದೆ, ಆದ್ದರಿಂದ ನೀವು ಏನನ್ನು ಒಪ್ಪಿಸಿದಿರಿ ಎಂಬುದರ ಸ್ಪಷ್ಟ ದಾಖಲೆ ಇರುತ್ತದೆ." },
       { q:'ನೀವು ಉಚಿತವಾಗಿ ಮನೆಯಿಂದ ಪಿಕಪ್ ಮಾಡುತ್ತೀರಾ?', a:'ಹೌದು, ಬೆಂಗಳೂರು ಮತ್ತು ಮುಂಬೈನಲ್ಲಿ. ನಮ್ಮ ಸಿಬ್ಬಂದಿ ನಿಮಗೆ ಅನುಕೂಲವಾದ ಸಮಯಕ್ಕೆ ಬಂದು, ನಿಮ್ಮ ಮುಂದೆಯೇ ಚಿನ್ನವನ್ನು ಪರೀಕ್ಷಿಸಿ, ಅಲ್ಲೇ ಖಚಿತ ಆಫರ್ ನೀಡುತ್ತಾರೆ.' },
+      { q:"ಭೇಟಿಯನ್ನು ಗೌಪ್ಯವಾಗಿಡಬಹುದೇ?", a:"ಹೌದು. ಬುಕ್ ಮಾಡುವಾಗ \"ಗೌಪ್ಯ ಭೇಟಿ\" ಆಯ್ಕೆಮಾಡಿ; ನಮ್ಮ ಎಕ್ಸಿಕ್ಯೂಟಿವ್ ಸಾಮಾನ್ಯ ಉಡುಪಿನಲ್ಲಿ ಬರುತ್ತಾರೆ, ಬ್ಯಾಗ್ ಅಥವಾ ವಾಹನದ ಮೇಲೆ ಲೋಗೋ ಇರುವುದಿಲ್ಲ. ನಮ್ಮ ಕೇಂದ್ರದಲ್ಲಿ ಪ್ರತಿ ಭೇಟಿಯೂ ಖಾಸಗಿ ಸಮಾಲೋಚನಾ ಕೊಠಡಿಯಲ್ಲಿ ನಡೆಯುತ್ತದೆ." },
+      { q:"ನಾನು ಮಹಿಳಾ ಎಕ್ಸಿಕ್ಯೂಟಿವ್ ಅನ್ನು ಕೇಳಬಹುದೇ?", a:"ಹೌದು. ಬುಕ್ ಮಾಡುವಾಗ \"ಮಹಿಳಾ ಎಕ್ಸಿಕ್ಯೂಟಿವ್\" ಆಯ್ಕೆಮಾಡಿ, ನಾವು ನಿಮ್ಮ ಬಳಿ ಬಂದರೂ ಅಥವಾ ನೀವು ನಮ್ಮ ಕೇಂದ್ರಕ್ಕೆ ಬಂದರೂ." },
+      { q:"ನನಗೆ ತುರ್ತಾಗಿ ಹಣ ಬೇಕು. ನೀವು ಇಂದೇ ಬರಬಹುದೇ?", a:"ಹೌದು. ಮನೆ ಭೇಟಿ ಬುಕ್ ಮಾಡುವಾಗ \"ತುರ್ತು, ಅದೇ ದಿನ\" ಆಯ್ಕೆಮಾಡಿ. 30 ನಿಮಿಷಗಳೊಳಗೆ ಕರೆ ಮಾಡುತ್ತೇವೆ, ಮತ್ತು ಸಂಜೆ 4 ಗಂಟೆಯೊಳಗೆ ಬುಕ್ ಮಾಡಿದರೆ ಅದೇ ದಿನ ಬರುತ್ತೇವೆ." },
       { q:'ಅಂದಾಜು ಉಚಿತವೇ?', a:'ಹೌದು. ಅಂದಾಜು ಉಚಿತ, ಯಾವುದೇ ಬದ್ಧತೆ ಇಲ್ಲ. ಆಫರ್ ಇಷ್ಟವಾದರೆ ಮಾತ್ರ ಮಾರಾಟ ಮಾಡಿ.' },
       { q:'ಯಾವುದಾದರೂ ಕಡಿತ ಇದೆಯೇ?', a:'ಕಲ್ಲುಗಳ ತೂಕ ಮಾತ್ರ, ಅದನ್ನು ನಾವು ಅಳೆದು ನಿಮಗೆ ತೋರಿಸುತ್ತೇವೆ. ಯಾವುದೇ ಹೆಚ್ಚುವರಿ "ವೇಸ್ಟೇಜ್" ಕಡಿತ ಅಥವಾ ಮರೆಮಾಚಿದ ಶುಲ್ಕವಿಲ್ಲ.' },
+      { q:"ನನ್ನ ಕಲ್ಲುಗಳು ನನಗೆ ಹಿಂತಿರುಗುತ್ತವೆಯೇ?", a:"ಹೌದು. ಕಲ್ಲುಗಳು ಮತ್ತು ಚಿನ್ನವಲ್ಲದ ಭಾಗಗಳನ್ನು ಜಾಗರೂಕತೆಯಿಂದ ತೆಗೆದು ನಿಮಗೆ ಹಿಂತಿರುಗಿಸಲಾಗುತ್ತದೆ. ನಿಮಗೆ ಚಿನ್ನದ ಹಣ ಸಿಗುತ್ತದೆ." },
       { q:'ನನ್ನ ಆಭರಣ ಮುರಿದಿದ್ದರೆ ಅಥವಾ ಹಾಲ್‌ಮಾರ್ಕ್ ಇಲ್ಲದಿದ್ದರೆ?', a:'ಮುರಿದ, ಹಳೆಯ ಮತ್ತು ಹಾಲ್‌ಮಾರ್ಕ್ ಇಲ್ಲದ ಆಭರಣಗಳನ್ನೂ ಸೇರಿ ಎಲ್ಲಾ ಚಿನ್ನಾಭರಣಗಳನ್ನು ನಾವು ಸ್ವೀಕರಿಸುತ್ತೇವೆ. XRF ಪರೀಕ್ಷೆ ನಿಜವಾದ ಶುದ್ಧತೆಯನ್ನು ತಿಳಿಸುತ್ತದೆ, ಹಾಗಾಗಿ ನಿಜವಾದ ಚಿನ್ನದ ಪ್ರಮಾಣಕ್ಕೆ ನಿಮಗೆ ಹಣ ಸಿಗುತ್ತದೆ.' },
       { q:'ನನಗೆ ಪಾವತಿ ಹೇಗೆ ಸಿಗುತ್ತದೆ?', a:'ಆಫರ್ ಒಪ್ಪಿದ ತಕ್ಷಣ, ಬ್ಯಾಂಕ್ ವರ್ಗಾವಣೆ ಅಥವಾ UPI ಮೂಲಕ. ನಾವು ಎಂದಿಗೂ ನಗದು ಪಾವತಿಸುವುದಿಲ್ಲ.' },
       { q:'ನನಗೆ ಯಾವುದಾದರೂ ದಾಖಲೆಗಳು ಸಿಗುತ್ತವೆಯೇ?', a:'ಹೌದು. ಮಾರಾಟದ ಇನ್‌ವಾಯ್ಸ್ ಮತ್ತು ಉಚಿತ, ವಿವರವಾದ ಮೌಲ್ಯಮಾಪನ ಪ್ರಮಾಣಪತ್ರ ನಿಮಗೆ ಸಿಗುತ್ತದೆ.' },
@@ -822,6 +894,7 @@ const STR = {
     ],
 
     visit_label: 'ನಮ್ಮ ಕೇಂದ್ರಕ್ಕೆ ಭೇಟಿ ನೀಡಿ', visit_title: 'Carat Money, ಖಾರ್‌ಘರ್', visit_hours: 'ಪ್ರತಿದಿನ, ಬೆಳಿಗ್ಗೆ 9 ರಿಂದ ರಾತ್ರಿ 9 ರವರೆಗೆ', visit_dir: 'ದಾರಿ ತೋರಿಸಿ',
+    visit_private: "ಪ್ರತಿ ಭೇಟಿಗೂ ಖಾಸಗಿ ಸಮಾಲೋಚನಾ ಕೊಠಡಿ",
 
     blog_title: 'ಚಿನ್ನದ ಒಳನೋಟಗಳು', blog_sub: 'ಚಿನ್ನ ಮಾರುವ ಮೊದಲು ನೇರ ಉತ್ತರಗಳು.', blog_all: 'ಎಲ್ಲಾ ಲೇಖನಗಳನ್ನು ನೋಡಿ', blog_read: 'ಓದಿ', blog_note: 'ಲೇಖನಗಳು ಇಂಗ್ಲಿಷ್‌ನಲ್ಲಿವೆ.',
 
@@ -969,14 +1042,62 @@ const GLOBAL_CSS = `
   @media (min-width:1024px) { .tile { flex-direction:row; gap:16px; padding:24px; } }
 
   /* rate + calculator + get in touch */
+  /* hero: rotating "what the gold becomes" line, family line, assurances */
+  .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+  .hero-turn { font-family:var(--f-serif); font-size:clamp(20px, 2.4vw, 26px); font-weight:350; color:${C.gold}; line-height:1.3; margin:0 0 12px; }
+  .ru { display:grid; justify-items:center; }   /* own centred line on phones/tablets, so short phrases never leave a gap */
+  @media (min-width:1024px) { .ru { display:inline-grid; justify-items:start; vertical-align:bottom; } }
+  .ru > span { grid-area:1 / 1; white-space:nowrap; font-style:italic; color:${C.plum}; opacity:0; transform:translateY(.4em); transition:opacity .55s ease, transform .6s cubic-bezier(.2,.7,.2,1); }
+  .ru > span.on  { opacity:1; transform:none; }
+  .ru > span.off { opacity:0; transform:translateY(-.4em); }
+  .hero-family { font-family:var(--f-serif); font-style:italic; font-size:16px; font-weight:350; color:${C.ink2}; line-height:1.55; margin:0 auto 16px; max-width:440px; animation:fadeSlide .9s ease 1.1s both; }
+  @media (min-width:1024px) { .hero-family { margin:0 0 18px; max-width:520px; padding-left:14px; border-left:2px solid rgba(224,183,101,.75); } }
+  .hero-assure { display:flex; flex-wrap:wrap; justify-content:center; gap:6px 18px; font-family:var(--f-sans); font-size:14px; font-weight:600; color:${C.ink2}; line-height:1.45; }
+  .hero-assure > span { display:inline-flex; align-items:center; gap:7px; }
+  @media (min-width:1024px) { .hero-assure { justify-content:flex-start; } }
+  :root:is([lang=hi],[lang=mr],[lang=kn]) .ru > span,
+  :root:is([lang=hi],[lang=mr],[lang=kn]) .it-en { font-style:normal!important; }
+
+  /* estimator: reassurance that settles in once a weight is typed */
+  .est-chips { display:flex; flex-wrap:wrap; gap:6px 14px; margin-top:12px; }
+  .est-chips > span { display:inline-flex; align-items:center; gap:5px; font-family:var(--f-sans); font-size:12.5px; font-weight:500; color:${C.ink2}; }
+  .est-soft { display:flex; flex-wrap:wrap; align-items:baseline; gap:2px 8px; margin-top:12px; padding-top:12px; border-top:1px dashed rgba(26,20,38,.14); font-family:var(--f-sans); font-size:13px; }
+  .est-soft button { background:none; border:none; padding:0; cursor:pointer; font:600 13px/1.4 var(--f-sans); color:${C.goldInk}; text-decoration:underline; text-underline-offset:3px; text-align:left; }
+
+  /* XRF photo: photographed → scanned → read → 22K */
+  .xrf-mask { position:absolute; aspect-ratio:1 / 1; border-radius:50%; background:#56636c; transition:opacity .6s ease; pointer-events:none; }
+  .xrf-flash { position:absolute; inset:0; background:#fff; pointer-events:none; animation:xrfFlash .45s ease-out both; }
+  @keyframes xrfFlash { 0% { opacity:0; } 25% { opacity:.85; } 100% { opacity:0; } }
+  .xrf-scan { position:absolute; overflow:hidden; pointer-events:none; }
+  .xrf-scan i { position:absolute; left:0; right:0; top:-14%; height:14%; background:linear-gradient(180deg, rgba(241,215,141,0), rgba(241,215,141,.5) 70%, rgba(224,183,101,.95)); box-shadow:0 2px 10px rgba(224,183,101,.6); animation:xrfScan 1.15s ease-in-out infinite; }
+  @keyframes xrfScan { from { top:-14%; } to { top:100%; } }
+  .xrf-chip { position:absolute; left:4%; top:4%; display:inline-flex; align-items:center; gap:5px; padding:4px 9px; border-radius:999px; background:rgba(43,20,80,.9); color:${C.gold3}; font:600 11px/1.3 var(--f-sans); animation:fadeSlide .35s ease both; }
+  .xrf-card { position:absolute; left:7%; right:7%; bottom:5%; display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:8px; background:rgba(43,20,80,.93); color:${C.gold3}; font-family:var(--f-sans); font-size:12px; box-shadow:0 8px 20px rgba(0,0,0,.25); animation:fadeSlide .35s ease both; }
+  .xrf-k { opacity:.8; white-space:nowrap; }
+  .xrf-v { font-family:var(--f-mono); font-weight:600; font-size:14px; color:${C.white}; min-width:50px; text-align:right; }
+  .xrf-bar { flex:1; height:4px; border-radius:2px; background:rgba(241,215,141,.18); overflow:hidden; }
+  .xrf-bar i { display:block; height:100%; background:linear-gradient(90deg, ${C.gold}, ${C.gold3}); }
+  .xrf-r { display:inline-flex; align-items:center; justify-content:flex-end; gap:4px; min-width:44px; font-family:var(--f-mono); font-weight:700; font-size:13px; color:rgba(241,215,141,.45); }
+  .xrf-r.on { color:${C.gold3}; animation:popIn .4s cubic-bezier(.2,.7,.2,1) both; }
+
+  /* booking: visit preferences + thank-you */
+  .git-opts { display:flex; flex-wrap:wrap; gap:8px; }
+  .git-opt { display:inline-flex; align-items:center; gap:6px; padding:8px 13px; border-radius:999px; border:1px solid rgba(224,183,101,.35); background:transparent; color:${C.gold3}; font:600 13px/1.2 var(--f-sans); cursor:pointer; transition:background .2s, border-color .2s; }
+  .git-opt[data-on] { background:rgba(224,183,101,.18); border-color:${C.gold2}; }
+  .bank-drop { position:relative; width:64px; height:64px; border-radius:50%; background:rgba(224,183,101,.12); border:1px solid rgba(224,183,101,.35); display:flex; align-items:center; justify-content:center; }
+  .bd-coin { position:absolute; left:50%; top:4px; width:22px; height:22px; margin-left:-11px; border-radius:50%; background:linear-gradient(${C.gold3}, ${C.gold}); color:${C.plum}; font:700 13px/22px var(--f-sans); text-align:center; animation:coinDrop .9s cubic-bezier(.5,0,.75,0) .15s both; }
+  @keyframes coinDrop { 0% { transform:translateY(-26px); opacity:0; } 25% { opacity:1; } 85% { transform:translateY(14px) scale(.8); opacity:1; } 100% { transform:translateY(18px) scale(.5); opacity:0; } }
+  .bd-tick { position:absolute; right:-3px; bottom:-3px; width:24px; height:24px; border-radius:50%; background:${C.green}; display:flex; align-items:center; justify-content:center; box-shadow:0 0 0 3px ${C.plum}; animation:popIn .45s cubic-bezier(.2,.7,.2,1) 1.05s both; }
+
   .est-row { display:grid; gap:10px; }
   @media (min-width:600px) { .est-row { grid-template-columns:150px 1fr; } }
   .est-out { display:grid; gap:12px; margin-top:14px; align-items:center; }
   @media (min-width:600px) { .est-out { grid-template-columns:1fr auto; } }
   .rs-row { display:flex; flex-wrap:wrap; align-items:center; gap:12px 28px; }
-  .rs-time { margin-left:auto; }
+  .rs-time { margin-left:auto; display:flex; flex-direction:column; align-items:flex-end; gap:6px; }
+  .rs-daily { background:none; border:none; padding:0; cursor:pointer; display:inline-flex; align-items:center; gap:6px; font:600 13px/1.3 var(--f-sans); color:${C.gold2}; text-decoration:underline; text-underline-offset:3px; }
   @media (min-width:768px) { .rs-sep { padding-left:28px; border-left:1px solid rgba(224,183,101,.18); } }
-  @media (max-width:767.98px) { .rs-time { margin-left:0; width:100%; } }
+  @media (max-width:767.98px) { .rs-time { margin-left:0; width:100%; align-items:flex-start; } }
   .why-head { display:grid; gap:28px; margin-bottom:32px; align-items:center; }
   @media (min-width:1024px) { .why-head { grid-template-columns:7fr 5fr; gap:56px; margin-bottom:44px; } }
   .karats { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; }
@@ -1355,9 +1476,11 @@ function Hero({ navigate, spot }) {
         <div className="hero-grid">
           <div className="hero-text rv" style={stagger(1)}>
             <h1 className="hero-h1">{h[0]}<span style={{ fontStyle:'italic', color:C.plum }}>{h[1]}</span>{h[2]}</h1>
-            <p style={{ fontFamily:SERIF, fontSize:'clamp(20px, 2.4vw, 26px)', fontWeight:350, color:C.gold, margin:'0 0 16px', lineHeight:1.3 }}>{t('hero_sub')}</p>
-            <div style={{ display:'inline-flex', alignItems:'center', gap:'8px', fontFamily:SANS, fontSize:'14px', fontWeight:600, color:C.ink2, lineHeight:1.45, textAlign:'left' }}>
-              <ShieldCheck size={17} color={C.gold} style={{ flexShrink:0 }}/>{t('hero_guarantee')}
+            <RotatingUse/>
+            <p className="hero-family it-en">{t('hero_family')}</p>
+            <div className="hero-assure">
+              <span><Zap size={16} color={C.gold} style={{ flexShrink:0 }}/>{t('hero_sub').replace(/[.।]\s*$/, '')}</span>
+              <span><ShieldCheck size={17} color={C.gold} style={{ flexShrink:0 }}/>{t('hero_guarantee')}</span>
             </div>
             <HeroEstimator spot={spot} navigate={navigate}/>
             <div style={{ fontFamily: en ? MONO : SANS, fontSize:'12px', color:C.mute, letterSpacing: en ? '0.04em' : 0, lineHeight:1.8 }}>
@@ -1397,27 +1520,48 @@ function Hero({ navigate, spot }) {
 }
 
 // ─── 2c. Get in touch → Google Sheet lead + WhatsApp ─────────────────────────
+function BankDrop() {
+  return (
+    <div className="bank-drop" aria-hidden="true">
+      <span className="bd-coin">₹</span>
+      <Landmark size={30} color={C.gold2} strokeWidth={1.6}/>
+      <span className="bd-tick"><Check size={14} color={C.white} strokeWidth={3.5}/></span>
+    </div>
+  );
+}
+
 function GetInTouch() {
   const { t, lang } = useT();
-  const [name, setName]     = useState('');
-  const [mobile, setMobile] = useState('');
-  const [pref, setPref]     = useState('');
-  const [hp, setHp]         = useState('');   // spam trap — real visitors never see it
-  const [tried, setTried]   = useState(false);
-  const [sent, setSent]     = useState(false);
-  const valid  = name.trim().length >= 2 && /^[6-9]\d{9}$/.test(mobile);
-  const prefEn = pref === 'doorstep' ? 'Doorstep pickup' : pref === 'centre' ? 'Visit centre' : 'Not specified';
-  const LBLD   = { ...LBL, color:'rgba(241,215,141,.85)' };
+  const [name, setName]         = useState('');
+  const [mobile, setMobile]     = useState('');
+  const [pref, setPref]         = useState('');
+  const [urgent, setUrgent]     = useState(false);
+  const [discreet, setDiscreet] = useState(false);
+  const [woman, setWoman]       = useState(false);
+  const [hp, setHp]             = useState('');   // spam trap — real visitors never see it
+  const [tried, setTried]       = useState(false);
+  const [sent, setSent]         = useState(false);
+  const valid    = name.trim().length >= 2 && /^[6-9]\d{9}$/.test(mobile);
+  const prefEn   = pref === 'doorstep' ? 'Doorstep pickup' : pref === 'centre' ? 'Visit centre' : 'Not specified';
+  const door     = pref === 'doorstep';
+  const isUrgent = door && urgent;              // same day + discreet are doorstep-only
+  const isDisc   = door && discreet;
+  const isWoman  = !!pref && woman;
+  const LBLD     = { ...LBL, color:'rgba(241,215,141,.85)' };
+  const hint     = { fontFamily:SANS, fontSize:'12.5px', color:'rgba(241,215,141,.78)', lineHeight:1.5, marginTop:'8px', animation:'fadeSlide .25s ease' };
 
   const onBook = () => {
     if (!valid) { setTried(true); return; }
     if (hp) return;
-    postLead({ name:name.trim(), mobile, preference:prefEn, source:'Homepage · Book free appointment', lang, page:window.location.href });
-    track('generate_lead', { preference:prefEn });
+    const extras = [isUrgent && 'Urgent (same day)', isDisc && 'Discreet visit', isWoman && 'Woman executive'].filter(Boolean);
+    postLead({ name:name.trim(), mobile, preference:prefEn, urgent:isUrgent, discreet:isDisc, woman_executive:isWoman, source:'Homepage · Book free appointment', lang, page:window.location.href });
+    track('generate_lead', { preference:prefEn, urgent:isUrgent ? 'yes' : 'no', discreet:isDisc ? 'yes' : 'no', woman_executive:isWoman ? 'yes' : 'no' });
     const lines = ["Hi Carat Money — I'd like to book a free appointment.", '', `Name: ${name.trim()}`, `Phone: +91${mobile}`, `Preference: ${prefEn}`];
+    if (extras.length) lines.push(`Visit preferences: ${extras.join(', ')}`);
     openWA(lines.join('\n'), 'book_appointment');
     setSent(true);
   };
+  const reset = () => { setSent(false); setName(''); setMobile(''); setPref(''); setUrgent(false); setDiscreet(false); setWoman(false); setTried(false); };
 
   const chip = (key, label) => {
     const on = pref === key;
@@ -1428,6 +1572,11 @@ function GetInTouch() {
       </button>
     );
   };
+  const opt = (on, set, I, label) => (
+    <button type="button" className="git-opt" aria-pressed={on} data-on={on ? '' : undefined} onClick={() => set(!on)}>
+      {on ? <Check size={14} strokeWidth={3}/> : <I size={14} strokeWidth={1.9}/>}{label}
+    </button>
+  );
 
   return (
     <div id="book" className="git rv">
@@ -1437,10 +1586,16 @@ function GetInTouch() {
       </div>
       {sent ? (
       <div className="git-body" role="status" style={{ display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'flex-start', gap:'12px', minHeight:'260px', animation:'fadeSlide .45s ease' }}>
-        <div style={{ width:'56px', height:'56px', borderRadius:'50%', background:C.green, display:'flex', alignItems:'center', justifyContent:'center', animation:'popIn .5s cubic-bezier(.2,.7,.2,1) both' }}><Check size={30} color={C.white} strokeWidth={3}/></div>
-        <h2 style={{ fontFamily:SERIF, fontSize:'clamp(24px, 3vw, 30px)', fontWeight:350, color:C.gold3, margin:0, letterSpacing:'-0.02em', lineHeight:1.15 }}>{t('git_done_t')}</h2>
+        <BankDrop/>
+        <h2 style={{ fontFamily:SERIF, fontSize:'clamp(24px, 3vw, 30px)', fontWeight:350, color:C.gold3, margin:'6px 0 0', letterSpacing:'-0.02em', lineHeight:1.15 }}>{t('git_done_t')}</h2>
+        <p className="it-en" style={{ fontFamily:SERIF, fontStyle:'italic', fontSize:'clamp(17px, 2vw, 19px)', fontWeight:350, color:C.gold2, margin:0, lineHeight:1.45, maxWidth:'520px' }}>{t('git_done_thanks')}</p>
         <p style={{ fontFamily:SANS, fontSize:'15px', color:'rgba(241,215,141,.8)', margin:0, lineHeight:1.6, maxWidth:'520px' }}>{t('git_done_d')}</p>
-        <button type="button" onClick={() => { setSent(false); setName(''); setMobile(''); setPref(''); setTried(false); }}
+        {isUrgent && (
+          <p style={{ display:'flex', alignItems:'center', gap:'8px', fontFamily:SANS, fontSize:'14px', fontWeight:600, color:C.gold3, margin:0, padding:'8px 12px', borderRadius:'6px', background:'rgba(224,183,101,.12)' }}>
+            <Zap size={16} color={C.gold2} style={{ flexShrink:0 }}/>{t('git_done_urgent')}
+          </p>
+        )}
+        <button type="button" onClick={reset}
           style={{ marginTop:'6px', background:'none', border:'none', padding:0, color:C.gold2, fontFamily:SANS, fontSize:'14px', fontWeight:600, cursor:'pointer', textDecoration:'underline', textUnderlineOffset:'3px' }}>{t('git_again')}</button>
       </div>
       ) : (
@@ -1462,6 +1617,18 @@ function GetInTouch() {
           <div className="git-pref">
             <div style={LBLD}>{t('git_pref')}</div>
             <div className="seg">{chip('doorstep', t('git_doorstep'))}{chip('centre', t('git_centre'))}</div>
+            {pref && (
+              <div style={{ marginTop:'14px', animation:'fadeSlide .3s ease' }}>
+                <div style={{ ...LBLD, fontWeight:500, fontSize:'13px' }}>{t('git_prefs')}</div>
+                <div className="git-opts">
+                  {door && opt(urgent, setUrgent, Zap, t('git_p_urgent'))}
+                  {door && opt(discreet, setDiscreet, EyeOff, t('git_p_discreet'))}
+                  {opt(woman, setWoman, User, t('git_p_woman'))}
+                </div>
+                {isUrgent && <div style={hint}>{t('git_urgent_note')}</div>}
+                {isDisc && <div style={hint}>{t('git_p_discreet_d')}</div>}
+              </div>
+            )}
           </div>
         </div>
         <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" value={hp} onChange={e => setHp(e.target.value)}
@@ -1479,7 +1646,7 @@ function GetInTouch() {
 }
 
 // ─── 3. Why people trust Carat Money (table on desktop, accordion on phones) ─
-const TRUST_ICONS = [Microscope, Scale, TrendingUp, Percent, Wallet, Gem];
+const TRUST_ICONS = [Microscope, Scale, TrendingUp, Percent, Diamond, Wallet, Gem, Lock];
 
 function TrustIcon({ I, size = 44 }) {
   return (
@@ -1512,7 +1679,7 @@ function TrustCompare() {
           </div>
           {xrfOk && <figure className="rv" style={{ margin:0, ...stagger(2) }}>
             <div style={{ background:C.white, borderRadius:'14px', padding:'10px', boxShadow:'0 18px 40px rgba(0,0,0,.35)', maxWidth:'360px', margin:'0 auto' }}>
-               <img src="/xrf-test.jpg" onError={() => setXrfOk(false)} alt={t('why_photo')} width="760" height="760" loading="lazy" decoding="async" style={{ display:'block', width:'100%', height:'auto', borderRadius:'8px' }}/>
+              <XrfPhoto onError={() => setXrfOk(false)}/>
             </div>
             <figcaption style={{ fontFamily:SANS, fontSize:'13px', color:'rgba(241,215,141,.7)', margin:'10px auto 0', maxWidth:'360px', textAlign:'center', lineHeight:1.5 }}>{t('why_photo')}</figcaption>
           </figure>}
@@ -1686,9 +1853,22 @@ function HeroEstimator({ spot, navigate }) {
           <BtnWhatsApp onClick={onCTA}><WhatsAppGlyph size={18} color={C.white}/> {value === null ? t('hero_cta_wa') : t('calc_cta')}</BtnWhatsApp>
         </div>
       </div>
+      {value !== null && (
+        <div className="est-chips">
+          {t('est_chips').map((c, j) => (
+            <span key={j} style={{ animation:`fadeSlide .45s ease ${j * 150}ms both` }}><Check size={13} color={C.green} strokeWidth={3}/>{c}</span>
+          ))}
+        </div>
+      )}
       <div style={{ display:'flex', justifyContent:'space-between', gap:'6px 16px', flexWrap:'wrap', marginTop:'12px', fontFamily:SANS, fontSize:'12px', lineHeight:1.5 }}>
         <span style={{ color:C.mute }}>{t('calc_disclaimer')}</span>
         <Link to="/margin" navigate={navigate} style={{ display:'inline', color:C.goldInk, fontWeight:600 }}>{t('calc_margin')}</Link>
+      </div>
+      <div className="est-soft">
+        <span style={{ color:C.mute }}>{t('soft_t')}</span>
+        <button type="button" onClick={() => optInDaily('hero_estimator', value === null ? null : { w, k, value, rate })}>
+          {value === null ? t('soft_cta') : t('soft_cta_save')} →
+        </button>
       </div>
     </div>
   );
@@ -1730,16 +1910,110 @@ function RateStrip({ spot }) {
               </div>
             </>
           )}
-        <div className="rs-time" style={{ display:'flex', alignItems:'center', gap:'6px', fontFamily:SERIF, fontSize:'12px', fontStyle:'italic', color:'rgba(241,215,141,.7)' }}>
-          <span>{spot.error && !spot.updatedAt ? t('rate_unavailable') : time ? fill(t('rate_updated'), { time }) : t('rate_fetching')}</span>
-          <button type="button" onClick={() => setShowGstTip(v => !v)} aria-expanded={showGstTip} aria-label="GST details"
-            style={{ background:'none', border:'none', fontSize:'15px', color:C.gold2, cursor:'pointer', padding:'2px 4px', lineHeight:1, fontStyle:'normal' }}>ⓘ</button>
+        <div className="rs-time">
+          <div style={{ display:'flex', alignItems:'center', gap:'6px', fontFamily:SERIF, fontSize:'12px', fontStyle:'italic', color:'rgba(241,215,141,.7)' }}>
+            <span>{spot.error && !spot.updatedAt ? t('rate_unavailable') : time ? fill(t('rate_updated'), { time }) : t('rate_fetching')}</span>
+            <button type="button" onClick={() => setShowGstTip(v => !v)} aria-expanded={showGstTip} aria-label="GST details"
+              style={{ background:'none', border:'none', fontSize:'15px', color:C.gold2, cursor:'pointer', padding:'2px 4px', lineHeight:1, fontStyle:'normal' }}>ⓘ</button>
+          </div>
+          <button type="button" className="rs-daily" onClick={() => optInDaily('rate_strip')}><WhatsAppGlyph size={14} color={C.gold2}/> {t('rate_daily')}</button>
         </div>
       </div>
       {showGstTip && (
         <div style={{ marginTop:'12px', padding:'10px 14px', background:'rgba(224,183,101,.1)', borderRadius:'4px', fontFamily:SANS, fontSize:'13px', color:C.gold3, lineHeight:1.55, animation:'fadeSlide .25s ease' }}>
           {t('gst_excl')} <b>₹{fmt(preGST,0)}/g</b><br/>{t('gst_note')}
         </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Hero: what the gold becomes (rotating) ──────────────────────────────────
+function RotatingUse() {
+  const { t, lang } = useT();
+  const frame = t('hero_turn');
+  const uses  = t('hero_uses');
+  const [tick, setTick] = useState(0);
+  const paused = useRef(false);
+  useEffect(() => {
+    setTick(0);
+    if (prefersReduced()) return;
+    const id = setInterval(() => { if (!paused.current && !document.hidden) setTick(n => n + 1); }, 2800);
+    return () => clearInterval(id);
+  }, [lang]);
+  const n = uses.length, on = tick % n, off = tick > 0 ? (tick - 1) % n : -1;
+  return (
+    <p className="hero-turn" onMouseEnter={() => { paused.current = true; }} onMouseLeave={() => { paused.current = false; }}>
+      <span className="sr-only">{frame[0]}{uses.join(', ')}{frame[1]}</span>
+      <span aria-hidden="true">
+        {frame[0]}
+        <span className="ru">
+          {uses.map((u, i) => <span key={i} className={i === on ? 'on' : i === off ? 'off' : undefined}>{u}{frame[1]}</span>)}
+        </span>
+      </span>
+    </p>
+  );
+}
+
+// ─── Low-intent path: daily rate on WhatsApp (their message is the opt-in) ───
+function optInDaily(source, est) {
+  const lines = est
+    ? ['Hi Carat Money — please save my estimate and send me the daily gold rate.', '',
+       `Weight: ${est.w} g · ${est.k}K`, `Website estimate: ₹${fmt(est.value,0)} (at ₹${fmt(est.rate,0)}/g)`]
+    : ['Hi Carat Money — please send me the daily gold rate on WhatsApp.'];
+  track('rate_alert_optin', { source, with_estimate: est ? 'yes' : 'no' });
+  openWA(lines.join('\n'), 'rate_alert_' + source);
+}
+
+function SoftCard({ source }) {
+  const { t } = useT();
+  return (
+    <div style={{ background:C.white, border:'1px solid rgba(184,136,58,.35)', borderRadius:'8px', padding:'20px', textAlign:'center' }}>
+      <div style={{ fontFamily:SERIF, fontSize:'18px', fontWeight:350, color:C.ink, letterSpacing:'-0.01em' }}>{t('soft_t')}</div>
+      <p style={{ fontFamily:SANS, fontSize:'13.5px', color:C.mute, lineHeight:1.55, margin:'6px 0 14px' }}>{t('soft_d')}</p>
+      <button type="button" onClick={() => optInDaily(source)}
+        style={{ width:'100%', padding:'12px 16px', background:'transparent', color:'#0E7A3F', border:`1.5px solid ${C.green}`, borderRadius:'999px', fontFamily:SANS, fontSize:'14px', fontWeight:600, display:'inline-flex', alignItems:'center', justifyContent:'center', gap:'8px', cursor:'pointer' }}>
+        <WhatsAppGlyph size={16} color={C.green}/> {t('soft_cta')}
+      </button>
+    </div>
+  );
+}
+
+// ─── XRF photo: photographed → scanned → read → 22K (plays once, in view) ────
+const XRF_BADGE  = { left:'48.8%', top:'32.1%', width:'17.9%' };          // the "22K" badge on the photo's screen
+const XRF_SCREEN = { left:'24.5%', top:'22%', width:'52.2%', height:'30.3%' };
+function XrfPhoto({ onError }) {
+  const { t } = useT();
+  const ref = useRef(null);
+  const [stage, setStage] = useState(() => (prefersReduced() ? 4 : 0));   // 0 wait · 1 photo · 2 scan · 3 read · 4 result
+  const au = useTween(stage >= 3 ? 91.6 : 0, 1100);
+  useEffect(() => {
+    if (stage === 4) return;
+    const el = ref.current;
+    if (!el || !('IntersectionObserver' in window)) { setStage(4); return; }
+    let timers = [];
+    const io = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return;
+      io.disconnect();
+      timers = [[1, 300], [2, 700], [3, 1900], [4, 3200]].map(([s, ms]) => setTimeout(() => setStage(s), ms));
+    }, { threshold:0.6 });
+    io.observe(el);
+    return () => { io.disconnect(); timers.forEach(clearTimeout); };
+  }, []);
+  return (
+    <div ref={ref} style={{ position:'relative', borderRadius:'8px', overflow:'hidden' }}>
+      <img src="/xrf-test.jpg" onError={onError} alt={t('why_photo')} width="760" height="760" loading="lazy" decoding="async" style={{ display:'block', width:'100%', height:'auto' }}/>
+      <span className="xrf-mask" aria-hidden="true" style={{ ...XRF_BADGE, opacity: stage >= 4 ? 0 : 1 }}/>
+      {(stage === 2 || stage === 3) && <span className="xrf-scan" aria-hidden="true" style={XRF_SCREEN}><i/></span>}
+      {stage === 1 && <span className="xrf-flash" aria-hidden="true"/>}
+      {stage >= 1 && <span className="xrf-chip" aria-hidden="true"><Camera size={13} strokeWidth={2}/> {t('xrf_photo')}</span>}
+      {stage >= 2 && (
+        <span className="xrf-card" aria-hidden="true">
+          <span className="xrf-k">{t('xrf_gold')}</span>
+          <b className="xrf-v">{(au || 0).toFixed(1)}%</b>
+          <span className="xrf-bar"><i style={{ width:`${au || 0}%` }}/></span>
+          <span className={'xrf-r' + (stage >= 4 ? ' on' : '')}>{stage >= 4 ? <>22K <Check size={13} color={C.green} strokeWidth={3}/></> : '…'}</span>
+        </span>
       )}
     </div>
   );
@@ -1892,6 +2166,7 @@ function VisitUs() {
             <h2 style={{ fontFamily:SERIF, fontSize:'clamp(26px, 3vw, 32px)', fontWeight:350, color:C.ink, margin:0, letterSpacing:'-0.02em', lineHeight:1.15 }}><Brand text={t('visit_title')}/></h2>
             <div style={row}><MapPin size={18} color={C.gold} style={{ flexShrink:0, marginTop:'2px' }}/><address style={{ fontStyle:'normal' }}>{ADDRESS}</address></div>
             <div style={row}><Clock size={18} color={C.gold} style={{ flexShrink:0, marginTop:'2px' }}/>{t('visit_hours')}</div>
+            <div style={row}><Lock size={18} color={C.gold} style={{ flexShrink:0, marginTop:'2px' }}/>{t('visit_private')}</div>
             <div style={row}><Mail size={18} color={C.gold} style={{ flexShrink:0, marginTop:'2px' }}/><a href={`mailto:${EMAIL}`} style={{ color:C.ink2, textDecoration:'none', wordBreak:'break-all' }}>{EMAIL}</a></div>
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'10px', marginTop:'auto', paddingTop:'8px' }}>
               <a href={DIRECTIONS_URL} target="_blank" rel="noreferrer" onClick={() => track('directions_click')}
@@ -2506,6 +2781,7 @@ function BlogArticlePage({ navigate, slug }) {
           )}
         </div>
         
+        <div style={{ marginBottom:'16px' }}><SoftCard source="blog_article"/></div>
         {/* Article share */}
         <div style={{ background:C.plum, borderRadius:'8px', padding:'20px', border:`1px solid rgba(224,183,101,.2)`, textAlign:'center' }}>
           <div style={{ fontFamily:SERIF, fontSize:'18px', fontWeight:350, color:C.gold3, marginBottom:'6px', letterSpacing:'-0.02em' }}>Found this useful?</div>
