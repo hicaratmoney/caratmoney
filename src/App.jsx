@@ -443,7 +443,7 @@ const STR = {
     ],
 
     rate_title: 'Our Buy Rate', rate_loading: 'Loading…', rate_updated: 'Live rate · Updated {time}', rate_fetching: 'Fetching live rate…',
-    rate_unavailable: 'Live rate temporarily unavailable', rate_refresh: 'Refreshes every minute · GST inclusive', rate_cta: 'Ask for a quote on WhatsApp',
+    rate_unavailable: 'Live rate temporarily unavailable', rate_refresh: 'Refreshes every minute · GST inclusive', rate_cta: 'Ask for a quote on WhatsApp', est_live: 'Live 24K', est_gst: 'GST incl.', why_photo: 'Every test happens on screen in front of you: here, 91.78% gold, read as 22K.',
     gst_excl: '24K without GST:',
     gst_note: "GST-inclusive rate shown above. If you're GST-registered, we pass the tax credit back to you.",
 
@@ -546,7 +546,7 @@ const STR = {
     ],
 
     rate_title: 'हमारा खरीद रेट', rate_loading: 'लोड हो रहा है…', rate_updated: 'लाइव रेट · {time} पर अपडेट', rate_fetching: 'लाइव रेट लाया जा रहा है…',
-    rate_unavailable: 'लाइव रेट अभी उपलब्ध नहीं है', rate_refresh: 'हर मिनट अपडेट होता है · GST सहित', rate_cta: 'WhatsApp पर कोटेशन माँगें',
+    rate_unavailable: 'लाइव रेट अभी उपलब्ध नहीं है', rate_refresh: 'हर मिनट अपडेट होता है · GST सहित', rate_cta: 'WhatsApp पर कोटेशन माँगें', est_live: 'लाइव 24K', est_gst: 'GST सहित', why_photo: 'हर जाँच आपके सामने स्क्रीन पर: यहाँ 91.78% सोना, यानी 22K।',
     gst_excl: 'GST के बिना 24K:',
     gst_note: 'ऊपर दिखाया गया रेट GST सहित है। अगर आप GST-रजिस्टर्ड हैं, तो हम टैक्स क्रेडिट आपको वापस देते हैं।',
 
@@ -649,7 +649,7 @@ const STR = {
     ],
 
     rate_title: 'आमचा खरेदी दर', rate_loading: 'लोड होत आहे…', rate_updated: 'लाइव्ह दर · {time} ला अपडेट', rate_fetching: 'लाइव्ह दर आणत आहोत…',
-    rate_unavailable: 'लाइव्ह दर सध्या उपलब्ध नाही', rate_refresh: 'दर मिनिटाला अपडेट होतो · GST सह', rate_cta: 'WhatsApp वर कोटेशन मागा',
+    rate_unavailable: 'लाइव्ह दर सध्या उपलब्ध नाही', rate_refresh: 'दर मिनिटाला अपडेट होतो · GST सह', rate_cta: 'WhatsApp वर कोटेशन मागा', est_live: 'लाइव्ह 24K', est_gst: 'GST सह', why_photo: 'प्रत्येक चाचणी तुमच्यासमोर स्क्रीनवर: इथे 91.78% सोने, म्हणजे 22K.',
     gst_excl: 'GST शिवाय 24K:',
     gst_note: 'वर दाखवलेला दर GST सह आहे. तुम्ही GST-नोंदणीकृत असाल, तर आम्ही कर क्रेडिट तुम्हाला परत देतो.',
 
@@ -753,7 +753,7 @@ const STR = {
     ],
 
     rate_title: 'ನಮ್ಮ ಖರೀದಿ ದರ', rate_loading: 'ಲೋಡ್ ಆಗುತ್ತಿದೆ…', rate_updated: 'ಲೈವ್ ದರ · {time} ಕ್ಕೆ ಅಪ್‌ಡೇಟ್', rate_fetching: 'ಲೈವ್ ದರ ಪಡೆಯಲಾಗುತ್ತಿದೆ…',
-    rate_unavailable: 'ಲೈವ್ ದರ ತಾತ್ಕಾಲಿಕವಾಗಿ ಲಭ್ಯವಿಲ್ಲ', rate_refresh: 'ಪ್ರತಿ ನಿಮಿಷ ಅಪ್‌ಡೇಟ್ ಆಗುತ್ತದೆ · GST ಸಹಿತ', rate_cta: 'WhatsApp ನಲ್ಲಿ ಕೊಟೇಶನ್ ಕೇಳಿ',
+    rate_unavailable: 'ಲೈವ್ ದರ ತಾತ್ಕಾಲಿಕವಾಗಿ ಲಭ್ಯವಿಲ್ಲ', rate_refresh: 'ಪ್ರತಿ ನಿಮಿಷ ಅಪ್‌ಡೇಟ್ ಆಗುತ್ತದೆ · GST ಸಹಿತ', rate_cta: 'WhatsApp ನಲ್ಲಿ ಕೊಟೇಶನ್ ಕೇಳಿ', est_live: 'ಲೈವ್ 24K', est_gst: 'GST ಸಹಿತ', why_photo: 'ಪ್ರತಿ ಪರೀಕ್ಷೆಯೂ ನಿಮ್ಮ ಮುಂದೆಯೇ ಪರದೆಯ ಮೇಲೆ: ಇಲ್ಲಿ 91.78% ಚಿನ್ನ, ಅಂದರೆ 22K.',
     gst_excl: 'GST ಇಲ್ಲದೆ 24K:',
     gst_note: 'ಮೇಲೆ ತೋರಿಸಿರುವ ದರ GST ಸಹಿತ. ನೀವು GST ನೋಂದಾಯಿತರಾಗಿದ್ದರೆ, ತೆರಿಗೆ ಕ್ರೆಡಿಟ್ ಅನ್ನು ನಿಮಗೆ ಹಿಂತಿರುಗಿಸುತ್ತೇವೆ.',
 
@@ -965,8 +965,16 @@ const GLOBAL_CSS = `
   @media (min-width:1024px) { .tile { flex-direction:row; gap:16px; padding:24px; } }
 
   /* rate + calculator + get in touch */
-  .rc-grid { display:grid; gap:16px; }
-  @media (min-width:1024px) { .rc-grid { grid-template-columns:5fr 7fr; gap:24px; } }
+  .est-row { display:grid; gap:10px; }
+  @media (min-width:600px) { .est-row { grid-template-columns:150px 1fr; } }
+  .est-out { display:grid; gap:12px; margin-top:14px; align-items:center; }
+  @media (min-width:600px) { .est-out { grid-template-columns:1fr auto; } }
+  .rs-row { display:flex; flex-wrap:wrap; align-items:center; gap:12px 28px; }
+  .rs-time { margin-left:auto; }
+  @media (min-width:768px) { .rs-sep { padding-left:28px; border-left:1px solid rgba(224,183,101,.18); } }
+  @media (max-width:767.98px) { .rs-time { margin-left:0; width:100%; } }
+  .why-head { display:grid; gap:28px; margin-bottom:32px; align-items:center; }
+  @media (min-width:1024px) { .why-head { grid-template-columns:7fr 5fr; gap:56px; margin-bottom:44px; } }
   .karats { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; }
   .git { display:grid; background:${C.plum}; border:1px solid rgba(224,183,101,.2); border-radius:8px; margin-top:16px; box-shadow:0 8px 32px rgba(43,20,80,.18); }
   @media (min-width:1024px) { .git { grid-template-columns:40% 1fr; margin-top:24px; } }
@@ -1330,7 +1338,7 @@ function SectionHead({ title, lead, align = 'center', children }) {
 // ═════════════════════════════════════════════════════════════════════════════
 
 // ─── 1. Hero ─────────────────────────────────────────────────────────────────
-function Hero({ navigate }) {
+function Hero({ navigate, spot }) {
   const { t, lang } = useT();
   const en    = lang === 'en';
   const h     = t('hero_h1');
@@ -1347,15 +1355,7 @@ function Hero({ navigate }) {
             <div style={{ display:'inline-flex', alignItems:'center', gap:'8px', fontFamily:SANS, fontSize:'14px', fontWeight:600, color:C.ink2, lineHeight:1.45, textAlign:'left' }}>
               <ShieldCheck size={17} color={C.gold} style={{ flexShrink:0 }}/>{t('hero_guarantee')}
             </div>
-            <div className="hero-ctas">
-              <BtnPrimary onClick={() => openWA(WA_MSG, 'hero')} style={{ width:'auto', padding:'15px 24px' }}>
-                <WhatsAppGlyph size={17}/> {t('hero_cta_wa')}
-              </BtnPrimary>
-              <button type="button" onClick={() => goSection('calculator', navigate)}
-                style={{ display:'inline-flex', alignItems:'center', justifyContent:'center', gap:'8px', padding:'14px 22px', background:'transparent', color:C.plum, border:`1.5px solid ${C.plum}`, borderRadius:'4px', fontFamily:SANS, fontSize:'15px', fontWeight:600, cursor:'pointer' }}>
-                <Sparkles size={16}/> {t('hero_cta_calc')}
-              </button>
-            </div>
+            <HeroEstimator spot={spot} navigate={navigate}/>
             <div style={{ fontFamily: en ? MONO : SANS, fontSize:'12px', color:C.mute, letterSpacing: en ? '0.04em' : 0, lineHeight:1.8 }}>
               <CountUp text={t('hero_stats')}/><br/>{t('hero_pickup')}
             </div>
@@ -1389,134 +1389,6 @@ function Hero({ navigate }) {
         </div>
       </div>
     </section>
-  );
-}
-
-// ─── 2a. Live rate card (formulas unchanged) ──────────────────────────────────
-function RateCard({ spot }) {
-  const { t } = useT();
-  const [showGstTip, setShowGstTip]       = useState(false);
-  const [selectedKarat, setSelectedKarat] = useState('22');
-  const r24     = spot.display ?? SPOT_FALLBACK;
-  const r22     = Math.round(r24 * 22 / 24);
-  const r18     = Math.round(r24 * 18 / 24);
-  const selRate = selectedKarat === '22' ? r22 : r18;
-  const preGST  = Math.round(r24 / 1.03);
-  const time    = fmtTime(spot.updatedAt);
-  const r24A    = useTween(r24, 700);
-  const selA    = useTween(selRate, 450);
-  return (
-    <Card dark className="rv" style={{ display:'flex', flexDirection:'column', height:'100%' }}>
-      <h2 style={{ fontFamily:SERIF, fontSize:'26px', fontWeight:350, color:C.gold2, letterSpacing:'-0.02em', lineHeight:1.1, margin:'0 0 12px' }}>{t('rate_title')}</h2>
-      {spot.loading && !spot.display
-        ? <span style={{ fontFamily:SERIF, fontSize:'40px', color:'rgba(241,215,141,.4)', letterSpacing:'-0.02em' }}>{t('rate_loading')}</span>
-        : (
-          <>
-            <div style={{ display:'flex', alignItems:'baseline', gap:'6px', marginBottom:'12px', flexWrap:'wrap' }}>
-              <span style={{ fontFamily:SERIF, fontSize:'clamp(32px, 9vw, 56px)', fontWeight:350, lineHeight:1, letterSpacing:'-0.03em', color:C.gold3, whiteSpace:'nowrap' }}>₹{fmt(Math.round(r24A),0)}</span>
-              <span style={{ fontFamily:SANS, fontSize:'13px', color:'rgba(241,215,141,.6)', whiteSpace:'nowrap' }}>/g · 24K</span>
-            </div>
-            <div style={{ display:'flex', alignItems:'center', gap:'12px', padding:'12px 0', borderTop:'1px solid rgba(224,183,101,.15)', borderBottom:'1px solid rgba(224,183,101,.15)' }}>
-              <select aria-label="Karat" value={selectedKarat} onChange={e => setSelectedKarat(e.target.value)}
-                style={{ background:'rgba(224,183,101,.12)', border:'1px solid rgba(224,183,101,.3)', borderRadius:'4px', color:C.gold2, fontFamily:MONO, fontSize:'12px', fontWeight:500, padding:'6px 10px', cursor:'pointer', outline:'none', letterSpacing:'0.08em' }}>
-                <option value="22" style={{ background:C.plum }}>22K</option>
-                <option value="18" style={{ background:C.plum }}>18K</option>
-              </select>
-              <div style={{ display:'flex', alignItems:'baseline', gap:'4px' }}>
-                <span style={{ fontFamily:SERIF, fontSize:'clamp(18px, 5vw, 24px)', fontWeight:350, color:C.gold2, letterSpacing:'-0.02em', whiteSpace:'nowrap' }}>₹{fmt(Math.round(selA),0)}</span>
-                <span style={{ fontFamily:SANS, fontSize:'12px', color:'rgba(241,215,141,.5)', whiteSpace:'nowrap' }}>/g · {selectedKarat}K</span>
-              </div>
-            </div>
-            <div style={{ display:'flex', alignItems:'center', gap:'8px', marginTop:'10px' }}>
-              <div style={{ fontFamily:SERIF, fontSize:'12px', color:'rgba(241,215,141,.7)', fontStyle:'italic', flex:1 }}>
-                {spot.error && !spot.updatedAt ? t('rate_unavailable') : time ? fill(t('rate_updated'), { time }) : t('rate_fetching')}
-              </div>
-              <button type="button" onClick={() => setShowGstTip(v => !v)} aria-expanded={showGstTip} aria-label="GST details"
-                style={{ background:'none', border:'none', fontSize:'15px', color:C.gold, cursor:'pointer', padding:'2px 4px', lineHeight:1 }}>ⓘ</button>
-            </div>
-            {showGstTip && (
-              <div style={{ marginTop:'10px', padding:'10px 14px', background:'rgba(224,183,101,.1)', borderRadius:'4px', fontFamily:SANS, fontSize:'13px', color:C.gold3, lineHeight:1.55, animation:'fadeSlide .25s ease' }}>
-                {t('gst_excl')} <b>₹{fmt(preGST,0)}/g</b><br/>{t('gst_note')}
-              </div>
-            )}
-          </>
-        )}
-      <div style={{ marginTop:'auto', paddingTop:'18px' }}>
-        <div className="hide-lt-lg" style={{ marginBottom:'16px' }}>
-          <BtnPrimary onClick={() => openWA("Hi Carat Money — I'd like a quote for my gold at today's rate.", 'rate_card')} style={{ padding:'14px 20px' }}>
-            <WhatsAppGlyph size={16}/> {t('rate_cta')}
-          </BtnPrimary>
-        </div>
-        <div style={{ display:'flex', alignItems:'center', gap:'6px', fontFamily:SANS, fontSize:'12px', color:'rgba(241,215,141,.7)' }}>
-          <Zap size={12} strokeWidth={2.5}/> {t('rate_refresh')}
-        </div>
-      </div>
-    </Card>
-  );
-}
-
-// ─── 2b. Value calculator — weight × the karat rate shown on the rate card ───
-function ValueCalculator({ spot, navigate }) {
-  const { t } = useT();
-  const [w, setW] = useState('');
-  const [k, setK] = useState(22);
-  const r24   = spot.display ?? SPOT_FALLBACK;
-  const rate  = k === 24 ? r24 : Math.round(r24 * k / 24);
-  const wN    = parseNum(w);
-  const value = wN !== null && wN > 0 ? wN * rate : null;
-  const shown = useTween(value ?? 0, 450);
-  const onW = v => {
-    const s = v.replace(',', '.');
-    if (s === '' || /^\d{0,5}(\.\d{0,3})?$/.test(s)) setW(s);
-  };
-  const onCTA = () => {
-    if (value === null) return;
-    const lines = [
-      "Hi Carat Money — I'd like to sell my gold.", '',
-      `Weight: ${w} g · ${k}K`,
-      `Website estimate: ₹${fmt(value,0)} (at ₹${fmt(rate,0)}/g)`, '',
-      'Please share your best offer.',
-    ];
-    openWA(lines.join('\n'), 'calculator');
-  };
-  return (
-    <Card id="calculator" className="rv" style={{ display:'flex', flexDirection:'column', ...stagger(1) }}>
-      <h2 style={{ fontFamily:SERIF, fontSize:'clamp(24px, 3vw, 30px)', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1.15, margin:'0 0 20px' }}>{t('calc_title')}</h2>
-      <label htmlFor="calc-w" style={LBL}>{t('calc_weight')}</label>
-      <div style={{ position:'relative', marginBottom:'18px' }}>
-        <input id="calc-w" type="text" inputMode="decimal" autoComplete="off" placeholder={t('calc_weight_ph')} value={w} onChange={e => onW(e.target.value)} style={{ ...INP, paddingRight:'40px' }}/>
-        <span style={{ position:'absolute', right:'14px', top:'50%', transform:'translateY(-50%)', fontFamily:MONO, fontSize:'13px', color:C.mute, pointerEvents:'none' }}>g</span>
-      </div>
-      <div style={LBL}>{t('calc_karat')}</div>
-      <div className="karats" role="group" aria-label={t('calc_karat')}>
-        {KARATS.map(kk => {
-          const on = kk === k;
-          return (
-            <button key={kk} type="button" aria-pressed={on} onClick={() => setK(kk)}
-              style={{ padding:'12px 0', borderRadius:'4px', border: on ? `1.5px solid ${C.plum}` : '1.5px solid rgba(26,20,38,.15)', background: on ? C.plum : C.white, color: on ? C.gold3 : C.ink, fontFamily:MONO, fontSize:'14px', fontWeight:500, cursor:'pointer' }}>
-              {kk}K
-            </button>
-          );
-        })}
-      </div>
-      <div style={{ marginTop:'20px', padding:'18px 20px', background:C.paper, border:'1px solid rgba(184,136,58,.3)', borderRadius:'6px', display:'flex', alignItems:'center', justifyContent:'space-between', gap:'12px' }}>
-        <div style={{ minWidth:0 }}>
-          <div style={{ fontFamily:SANS, fontSize:'13px', fontWeight:600, color:C.mute, marginBottom:'4px' }}>{t('calc_est')}</div>
-          <div data-testid="calc-value" style={{ fontFamily:SERIF, fontSize:'clamp(30px, 5vw, 42px)', fontWeight:350, color: value ? C.plum : 'rgba(43,20,80,.3)', letterSpacing:'-0.03em', lineHeight:1.05, whiteSpace:'nowrap' }}>
-            ₹{value ? fmt(Math.round(shown),0) : '0'}
-          </div>
-          <div style={{ fontFamily:SANS, fontSize:'12px', color:C.mute, marginTop:'6px' }}>{fill(t('calc_at'), { rate: fmt(rate,0), k })}</div>
-        </div>
-        <CaratMark size={34} color={C.gold} showDots={false} style={{ flexShrink:0, opacity:.8 }}/>
-      </div>
-      <div style={{ marginTop:'16px', borderRadius:'999px', animation: value !== null ? 'glowGreen .9s ease-out 1' : 'none' }}>
-        <BtnWhatsApp onClick={onCTA} disabled={value === null}><WhatsAppGlyph size={18} color={C.white}/> {t('calc_cta')}</BtnWhatsApp>
-      </div>
-      <div style={{ fontFamily:SANS, fontSize:'12px', color:C.mute, marginTop:'12px', lineHeight:1.5, textAlign:'center' }}>{t('calc_disclaimer')}</div>
-      <div style={{ textAlign:'center', marginTop:'10px' }}>
-        <Link to="/margin" navigate={navigate} style={{ display:'inline', fontFamily:SANS, fontSize:'13px', color:C.goldInk, fontWeight:600 }}>{t('calc_margin')}</Link>
-      </div>
-    </Card>
   );
 }
 
@@ -1626,10 +1498,21 @@ function TrustCompare() {
   const themBox = { background:'rgba(0,0,0,.18)', border:'1px solid rgba(255,255,255,.06)', borderRadius:'8px', padding:'18px 20px', display:'flex', gap:'12px', alignItems:'flex-start', color:'rgba(255,255,255,.62)', fontFamily:SANS, fontSize:'15px', lineHeight:1.55 };
 
   return (
-    <section id="why" className="cm-sec">
+    <section id="why" className="cm-sec" style={{ background:C.plum }}>
       <div className="cm-wrap">
-        <SectionHead title={t('why_title')} lead={t('why_intro')}/>
-        <div className="rv" style={{ background:C.plum, borderRadius:'10px', border:'1px solid rgba(224,183,101,.2)', boxShadow:'0 12px 40px rgba(43,20,80,.22)', padding:'clamp(16px, 3vw, 36px)' }}>
+        <div className="why-head">
+          <div className="rv">
+            <h2 className="cm-h2" style={{ color:C.gold3 }}><Brand text={t('why_title')} color={C.gold2}/></h2>
+            <p style={{ fontFamily:SANS, fontSize:'16px', color:'rgba(241,215,141,.75)', lineHeight:1.65, margin:'14px 0 0', maxWidth:'560px' }}>{t('why_intro')}</p>
+          </div>
+          <figure className="rv" style={{ margin:0, ...stagger(2) }}>
+            <div style={{ background:C.white, borderRadius:'14px', padding:'10px', boxShadow:'0 18px 40px rgba(0,0,0,.35)', maxWidth:'360px', margin:'0 auto' }}>
+              <img src="/xrf-test.jpg" alt={t('why_photo')} width="760" height="760" loading="lazy" decoding="async" style={{ display:'block', width:'100%', height:'auto', borderRadius:'8px' }}/>
+            </div>
+            <figcaption style={{ fontFamily:SANS, fontSize:'13px', color:'rgba(241,215,141,.7)', margin:'10px auto 0', maxWidth:'360px', textAlign:'center', lineHeight:1.5 }}>{t('why_photo')}</figcaption>
+          </figure>
+        </div>
+        <div className="rv" style={{ background:'rgba(0,0,0,.14)', borderRadius:'10px', border:'1px solid rgba(224,183,101,.18)', padding:'clamp(16px, 3vw, 32px)' }}>
 
           {/* desktop table */}
           <div className="hide-lt-lg">
@@ -1713,7 +1596,7 @@ function Process() {
   return (
     <section id="process" className="cm-sec" style={{ background:C.white, borderTop:'1px solid rgba(26,20,38,.06)', borderBottom:'1px solid rgba(26,20,38,.06)' }}>
       <div className="cm-wrap">
-        <SectionHead title={t('proc_title')} lead={t('proc_sub')}/>
+        <SectionHead title={t('proc_title')} lead={t('proc_sub')} align="left"/>
         <div className="proc">
           {steps.map((s, i) => (
             <div className="proc-step rv" key={i} style={stagger(i, 160)}>
@@ -1726,12 +1609,134 @@ function Process() {
           ))}
         </div>
         <div style={{ textAlign:'center', marginTop:'36px' }}>
-          <BtnPrimary onClick={() => openWA(WA_MSG, 'process')} style={{ width:'auto', display:'inline-flex', padding:'14px 24px' }}>
-            <WhatsAppGlyph size={16}/> {t('proc_cta')}
-          </BtnPrimary>
+          <button type="button" onClick={() => goSection('calculator')} style={{ background:'none', border:'none', padding:'6px 0', cursor:'pointer', fontFamily:SANS, fontSize:'15px', fontWeight:600, color:C.goldInk, textDecoration:'underline', textUnderlineOffset:'4px' }}>
+            {t('proc_cta')} ↑
+          </button>
         </div>
       </div>
     </section>
+  );
+}
+
+// ─── Hero estimator (the calculator, now in the first screen) ────────────────
+function HeroEstimator({ spot, navigate }) {
+  const { t } = useT();
+  const [w, setW] = useState('');
+  const [k, setK] = useState(22);
+  const r24   = spot.display ?? SPOT_FALLBACK;
+  const rate  = k === 24 ? r24 : Math.round(r24 * k / 24);
+  const wN    = parseNum(w);
+  const value = wN !== null && wN > 0 ? wN * rate : null;
+  const shown = useTween(value ?? 0, 450);
+  const r24A  = useTween(r24, 700);
+  const onW = v => {
+    const s = v.replace(',', '.');
+    if (s === '' || /^\d{0,5}(\.\d{0,3})?$/.test(s)) setW(s);
+  };
+  const onCTA = () => {
+    if (value === null) { openWA(WA_MSG, 'hero_estimator'); return; }
+    const lines = [
+      "Hi Carat Money — I'd like to sell my gold.", '',
+      `Weight: ${w} g · ${k}K`,
+      `Website estimate: ₹${fmt(value,0)} (at ₹${fmt(rate,0)}/g)`, '',
+      'Please share your best offer.',
+    ];
+    openWA(lines.join('\n'), 'hero_estimator');
+  };
+  return (
+    <div id="calculator" className="est" style={{ background:C.white, border:'1px solid rgba(184,136,58,.35)', borderRadius:'10px', boxShadow:'0 12px 32px rgba(43,20,80,.10)', padding:'18px', margin:'22px 0 16px', textAlign:'left' }}>
+      <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:'8px 16px', flexWrap:'wrap', marginBottom:'14px' }}>
+        <div style={{ fontFamily:SERIF, fontSize:'19px', fontWeight:350, color:C.ink, letterSpacing:'-0.01em' }}>{t('calc_title')}</div>
+        <div style={{ display:'inline-flex', alignItems:'center', gap:'6px', fontFamily:SANS, fontSize:'12px', color:C.mute, whiteSpace:'nowrap' }}>
+          <span key={r24} style={{ width:'6px', height:'6px', borderRadius:'50%', background:C.green, animation:'dotPing 1.2s ease-out 1' }}/>
+          {t('est_live')} <b style={{ color:C.plum, fontWeight:600 }}>₹{fmt(Math.round(r24A),0)}/g</b> · {t('est_gst')}
+        </div>
+      </div>
+      <div className="est-row">
+        <div style={{ position:'relative' }}>
+          <input id="calc-w" type="text" inputMode="decimal" autoComplete="off" aria-label={t('calc_weight')} placeholder={t('calc_weight')} value={w} onChange={e => onW(e.target.value)} style={{ ...INP, paddingRight:'34px' }}/>
+          <span style={{ position:'absolute', right:'12px', top:'50%', transform:'translateY(-50%)', fontFamily:MONO, fontSize:'13px', color:C.mute, pointerEvents:'none' }}>g</span>
+        </div>
+        <div className="karats" role="group" aria-label={t('calc_karat')}>
+          {KARATS.map(kk => {
+            const on = kk === k;
+            return (
+              <button key={kk} type="button" aria-pressed={on} onClick={() => setK(kk)}
+                style={{ padding:'12px 0', borderRadius:'4px', border: on ? `1.5px solid ${C.plum}` : '1.5px solid rgba(26,20,38,.15)', background: on ? C.plum : C.white, color: on ? C.gold3 : C.ink, fontFamily:MONO, fontSize:'13px', fontWeight:500, cursor:'pointer' }}>
+                {kk}K
+              </button>
+            );
+          })}
+        </div>
+      </div>
+      <div className="est-out">
+        <div style={{ minWidth:0 }}>
+          <div style={{ fontFamily:SANS, fontSize:'12px', fontWeight:600, color:C.mute }}>{t('calc_est')}</div>
+          <div data-testid="calc-value" style={{ fontFamily:SERIF, fontSize:'clamp(30px, 4vw, 38px)', fontWeight:350, color: value ? C.plum : 'rgba(43,20,80,.3)', letterSpacing:'-0.03em', lineHeight:1.1, whiteSpace:'nowrap' }}>
+            ₹{value ? fmt(Math.round(shown),0) : '0'}
+          </div>
+          <div style={{ fontFamily:SANS, fontSize:'12px', color:C.mute }}>{fill(t('calc_at'), { rate: fmt(rate,0), k })}</div>
+        </div>
+        <div style={{ borderRadius:'999px', animation: value !== null ? 'glowGreen .9s ease-out 1' : 'none' }}>
+          <BtnWhatsApp onClick={onCTA}><WhatsAppGlyph size={18} color={C.white}/> {value === null ? t('hero_cta_wa') : t('calc_cta')}</BtnWhatsApp>
+        </div>
+      </div>
+      <div style={{ display:'flex', justifyContent:'space-between', gap:'6px 16px', flexWrap:'wrap', marginTop:'12px', fontFamily:SANS, fontSize:'12px', lineHeight:1.5 }}>
+        <span style={{ color:C.mute }}>{t('calc_disclaimer')}</span>
+        <Link to="/margin" navigate={navigate} style={{ display:'inline', color:C.goldInk, fontWeight:600 }}>{t('calc_margin')}</Link>
+      </div>
+    </div>
+  );
+}
+
+// ─── 2. Live-rate strip (formulas unchanged) ─────────────────────────────────
+function RateStrip({ spot }) {
+  const { t } = useT();
+  const [showGstTip, setShowGstTip]       = useState(false);
+  const [selectedKarat, setSelectedKarat] = useState('22');
+  const r24     = spot.display ?? SPOT_FALLBACK;
+  const r22     = Math.round(r24 * 22 / 24);
+  const r18     = Math.round(r24 * 18 / 24);
+  const selRate = selectedKarat === '22' ? r22 : r18;
+  const preGST  = Math.round(r24 / 1.03);
+  const time    = fmtTime(spot.updatedAt);
+  const r24A    = useTween(r24, 700);
+  const selA    = useTween(selRate, 450);
+  return (
+    <div className="rate-strip rv" style={{ background:C.plum, borderRadius:'10px', border:'1px solid rgba(224,183,101,.2)', boxShadow:'0 8px 32px rgba(43,20,80,.18)', padding:'18px 24px' }}>
+      <div className="rs-row">
+        <h2 style={{ fontFamily:SERIF, fontSize:'22px', fontWeight:350, color:C.gold2, letterSpacing:'-0.02em', lineHeight:1.1, margin:0, whiteSpace:'nowrap' }}>{t('rate_title')}</h2>
+        {spot.loading && !spot.display
+          ? <span style={{ fontFamily:SERIF, fontSize:'28px', color:'rgba(241,215,141,.4)' }}>{t('rate_loading')}</span>
+          : (
+            <>
+              <div style={{ display:'flex', alignItems:'baseline', gap:'6px' }}>
+                <span style={{ fontFamily:SERIF, fontSize:'clamp(32px, 4vw, 44px)', fontWeight:350, lineHeight:1, letterSpacing:'-0.03em', color:C.gold3, whiteSpace:'nowrap' }}>₹{fmt(Math.round(r24A),0)}</span>
+                <span style={{ fontFamily:SANS, fontSize:'13px', color:'rgba(241,215,141,.6)', whiteSpace:'nowrap' }}>/g · 24K</span>
+              </div>
+              <div className="rs-sep" style={{ display:'flex', alignItems:'center', gap:'10px' }}>
+                <select aria-label="Karat" value={selectedKarat} onChange={e => setSelectedKarat(e.target.value)}
+                  style={{ background:'rgba(224,183,101,.12)', border:'1px solid rgba(224,183,101,.3)', borderRadius:'4px', color:C.gold2, fontFamily:MONO, fontSize:'12px', fontWeight:500, padding:'6px 10px', cursor:'pointer', outline:'none' }}>
+                  <option value="22" style={{ background:C.plum }}>22K</option>
+                  <option value="18" style={{ background:C.plum }}>18K</option>
+                </select>
+                <span style={{ fontFamily:SERIF, fontSize:'24px', fontWeight:350, color:C.gold2, whiteSpace:'nowrap' }}>₹{fmt(Math.round(selA),0)}</span>
+                <span style={{ fontFamily:SANS, fontSize:'12px', color:'rgba(241,215,141,.6)', whiteSpace:'nowrap' }}>/g · {selectedKarat}K</span>
+              </div>
+            </>
+          )}
+        <div className="rs-time" style={{ display:'flex', alignItems:'center', gap:'6px', fontFamily:SERIF, fontSize:'12px', fontStyle:'italic', color:'rgba(241,215,141,.7)' }}>
+          <span>{spot.error && !spot.updatedAt ? t('rate_unavailable') : time ? fill(t('rate_updated'), { time }) : t('rate_fetching')}</span>
+          <button type="button" onClick={() => setShowGstTip(v => !v)} aria-expanded={showGstTip} aria-label="GST details"
+            style={{ background:'none', border:'none', fontSize:'15px', color:C.gold2, cursor:'pointer', padding:'2px 4px', lineHeight:1, fontStyle:'normal' }}>ⓘ</button>
+        </div>
+      </div>
+      {showGstTip && (
+        <div style={{ marginTop:'12px', padding:'10px 14px', background:'rgba(224,183,101,.1)', borderRadius:'4px', fontFamily:SANS, fontSize:'13px', color:C.gold3, lineHeight:1.55, animation:'fadeSlide .25s ease' }}>
+          {t('gst_excl')} <b>₹{fmt(preGST,0)}/g</b><br/>{t('gst_note')}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -2163,13 +2168,10 @@ function HomePage({ navigate, spot }) {
     <div style={{ minHeight:'100dvh', background:C.paper, fontFamily:SANS, color:C.ink }}>
       <TopBar spot={spot} navigate={navigate} showLang/>
       <main>
-        <Hero navigate={navigate}/>
+        <Hero navigate={navigate} spot={spot}/>
         <section id="rate" className="cm-sec" style={{ paddingTop:'8px' }}>
           <div className="cm-wrap">
-            <div className="rc-grid">
-              <RateCard spot={spot}/>
-              <ValueCalculator spot={spot} navigate={navigate}/>
-            </div>
+            <RateStrip spot={spot}/>
             <GetInTouch/>
           </div>
         </section>
