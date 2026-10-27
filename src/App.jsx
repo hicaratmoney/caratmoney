@@ -12,7 +12,7 @@ import {
 // ═════════════════════════════════════════════════════════════════════════════
 const SHOW_CERTIFICATIONS = false; // true once IBJA membership + ISO 27001 certificate are in hand
 const REVIEWS_ARE_SAMPLES = true;  // false once the sample reviews are replaced with real ones
-const LEADS_URL           = '';    // paste the Google Apps Script web-app URL (fills the "Website leads" tab)
+const LEADS_URL           = 'https://script.google.com/macros/s/AKfycbxu4TMd91-s_LLdCwas_mbThurBMjg5zdKrN5E4hxruGwFRiO038W8vLyLkEJDNPkZW/exec';    // paste the Google Apps Script web-app URL (fills the "Website leads" tab)
 
 // ─── Brand Tokens ─────────────────────────────────────────────────────────────
 const C = {
