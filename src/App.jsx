@@ -1298,6 +1298,8 @@ function CallPicker({ variant = 'outline', label, full = false, align = 'right',
   const big  = (variant !== 'outline' && variant !== 'gold-sm') || full;
   const look = variant === 'gold' || variant === 'gold-sm'
     ? { background:C.gold2, color:C.plum, border:`1px solid ${C.gold2}` }
+    : variant === 'gold-outline'
+    ? { background:'rgba(224,183,101,.08)', color:C.gold3, border:`1.5px solid ${C.gold2}` }
     : { background:'transparent', color:C.white, border:'1px solid rgba(255,255,255,.3)' };
   return (
     <div ref={ref} style={{ position:'relative', width: full ? '100%' : 'auto' }}>
@@ -1662,7 +1664,7 @@ function GetInTouch() {
           style={{ position:'absolute', left:'-9999px', width:'1px', height:'1px', opacity:0 }}/>
         <div className="git-actions">
           <BtnWhatsApp onClick={onBook}><WhatsAppGlyph size={18} color={C.white}/> {t('git_book')}</BtnWhatsApp>
-          <CallPicker variant="outline" full label={t('git_call')} source="get_in_touch" align="left"/>
+          <CallPicker variant="gold-outline" full label={t('git_call')} source="get_in_touch" align="left"/>
           <div className="git-consent" style={{ fontFamily:SANS, fontSize:'12px', color:'rgba(241,215,141,.7)', lineHeight:1.5 }}>{t('git_consent')}</div>
         </div>
         {tried && !valid && <div role="alert" style={{ marginTop:'10px', fontFamily:SANS, fontSize:'13px', color:'#FCA5A5', fontWeight:500 }}>{t('git_err')}</div>}
