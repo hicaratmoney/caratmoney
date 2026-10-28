@@ -448,15 +448,15 @@ const STR = {
 
     hero_eyebrow:   'We buy gold at fair price',
     hero_h1:        ['Sell your old gold at ', 'live', ' market rate.'],
-    hero_sub:       "Tested and paid in 15 minutes, at home or at our Kharghar centre",
+    hero_sub:       "Money in your account in 15 minutes, at home or at our Kharghar centre",
     hero_guarantee: 'We guarantee — nobody can match our price',
     hero_cta_wa:    "Get my estimate on WhatsApp",
     hero_cta_calc:  'Value your gold',
     hero_stats:     "500+ customers · ₹10 crore+ purchased",
     hero_pickup:    "Kharghar centre open daily, 9 am to 9 pm",
     hero_turn:      ["Turning old gold into ", "."],
-    hero_uses:      ["a wedding in the family", "your child's education", "a new home", "your own business", "medical care, today", "a debt-free start", "something useful"],
-    hero_family:    "They saved it for your family's tomorrow. Today, it's here for you.",
+    hero_uses:      ["a wedding in the family", "your child's education", "a new home", "your own business", "medical care, today", "a debt-free start"],
+    hero_family:    "It was passed down to you for your family's tomorrow. Now, it's here for your today.",
     tiles: [
       { t:"Free home visit, or walk in", d:"We come to you across Navi Mumbai, Mumbai and Thane, or you can visit our Kharghar centre." },
       { t:"Tested in front of you", d:"An XRF machine reads the exact purity. No scratching, no melting, and you see the reading." },
@@ -542,7 +542,6 @@ const STR = {
     ],
 
     visit_label: 'Visit our centre', visit_title: 'Carat Money, Kharghar', visit_hours: 'All days, 9 am to 9 pm', visit_dir: 'Get directions',
-    visit_private: "Private consultation room for every visit",
 
     blog_title: 'Gold insights', blog_sub: 'Straight answers before you sell your gold.', blog_all: 'View all articles', blog_read: 'Read', blog_note: '',
 
@@ -568,15 +567,15 @@ const STR = {
 
     hero_eyebrow:   'हम सही दाम पर सोना खरीदते हैं',
     hero_h1:        ['अपना सोना ', 'लाइव', ' मार्केट रेट पर बेचें।'],
-    hero_sub:       "15 मिनट में जाँच और पेमेंट, घर पर या हमारे खारघर सेंटर में",
+    hero_sub:       "15 मिनट में पैसा आपके खाते में, घर पर या हमारे खारघर सेंटर में",
     hero_guarantee: 'हमारी गारंटी — हमसे बेहतर दाम कोई नहीं देगा',
     hero_cta_wa:    "WhatsApp पर मेरा अनुमान पाएँ",
     hero_cta_calc:  'अपने सोने की कीमत जानें',
     hero_stats:     "500+ ग्राहक · ₹10 करोड़+ की खरीद",
     hero_pickup:    "खारघर सेंटर हर दिन खुला, सुबह 9 से रात 9 बजे तक",
     hero_turn:      ["पुराना सोना, अब ", "।"],
-    hero_uses:      ["घर की शादी के लिए", "बच्चों की पढ़ाई के लिए", "नए घर के लिए", "अपने बिज़नेस के लिए", "ज़रूरी इलाज के लिए", "कर्ज़ से मुक्ति के लिए", "किसी अच्छे काम के लिए"],
-    hero_family:    "उन्होंने इसे आपके परिवार के कल के लिए सँजोया था। आज, यह आपके लिए है।",
+    hero_uses:      ["घर की शादी के लिए", "बच्चों की पढ़ाई के लिए", "नए घर के लिए", "अपने बिज़नेस के लिए", "ज़रूरी इलाज के लिए", "कर्ज़ से मुक्ति के लिए"],
+    hero_family:    "यह आपको परिवार के कल के लिए सौंपा गया था। आज, यह आपके आज के काम आए।",
     tiles: [
       { t:"मुफ़्त होम विज़िट, या सेंटर आएँ", d:"हम नवी मुंबई, मुंबई और ठाणे में आपके घर आते हैं, या आप हमारे खारघर सेंटर आ सकते हैं।" },
       { t:"आपके सामने जाँच", d:"XRF मशीन सही शुद्धता बताती है। न खरोंच, न पिघलाना, और रीडिंग आप ख़ुद देखते हैं।" },
@@ -662,7 +661,6 @@ const STR = {
     ],
 
     visit_label: 'हमारे सेंटर आएँ', visit_title: 'Carat Money, खारघर', visit_hours: 'हर दिन, सुबह 9 से रात 9 बजे तक', visit_dir: 'रास्ता देखें',
-    visit_private: "हर विज़िट के लिए निजी परामर्श कक्ष",
 
     blog_title: 'गोल्ड इनसाइट्स', blog_sub: 'सोना बेचने से पहले सीधे जवाब।', blog_all: 'सभी लेख देखें', blog_read: 'पढ़ें', blog_note: 'लेख अंग्रेज़ी में हैं।',
 
@@ -688,15 +686,15 @@ const STR = {
 
     hero_eyebrow:   'आम्ही योग्य दरात सोने खरेदी करतो',
     hero_h1:        ['तुमचे सोने ', 'लाइव्ह', ' बाजारभावाने विका.'],
-    hero_sub:       "15 मिनिटांत चाचणी आणि पेमेंट, घरी किंवा आमच्या खारघर सेंटरमध्ये",
+    hero_sub:       "15 मिनिटांत पैसे तुमच्या खात्यात, घरी किंवा आमच्या खारघर सेंटरमध्ये",
     hero_guarantee: 'आमची हमी — आमच्यापेक्षा चांगला भाव कोणीही देणार नाही',
     hero_cta_wa:    "WhatsApp वर माझा अंदाज मिळवा",
     hero_cta_calc:  'तुमच्या सोन्याचे मूल्य जाणून घ्या',
     hero_stats:     "500+ ग्राहक · ₹10 कोटी+ ची खरेदी",
     hero_pickup:    "खारघर सेंटर दररोज खुले, सकाळी 9 ते रात्री 9",
     hero_turn:      ["जुने सोने, आता ", "."],
-    hero_uses:      ["घरच्या लग्नासाठी", "मुलांच्या शिक्षणासाठी", "नव्या घरासाठी", "स्वतःच्या व्यवसायासाठी", "तातडीच्या उपचारासाठी", "कर्जमुक्तीसाठी", "एखाद्या चांगल्या कामासाठी"],
-    hero_family:    "त्यांनी ते तुमच्या कुटुंबाच्या उद्यासाठी जपून ठेवले होते. आज, ते तुमच्यासाठी आहे.",
+    hero_uses:      ["घरच्या लग्नासाठी", "मुलांच्या शिक्षणासाठी", "नव्या घरासाठी", "स्वतःच्या व्यवसायासाठी", "तातडीच्या उपचारासाठी", "कर्जमुक्तीसाठी"],
+    hero_family:    "हे तुम्हाला कुटुंबाच्या उद्यासाठी सोपवले होते. आता, ते तुमच्या आजसाठी आहे.",
     tiles: [
       { t:"मोफत घरभेट, किंवा सेंटरला या", d:"आम्ही नवी मुंबई, मुंबई आणि ठाणे येथे तुमच्या घरी येतो, किंवा तुम्ही आमच्या खारघर सेंटरला येऊ शकता." },
       { t:"तुमच्यासमोर चाचणी", d:"XRF मशीन अचूक शुद्धता सांगते. ना ओरखडा, ना वितळवणे, आणि रीडिंग तुम्ही स्वतः पाहता." },
@@ -783,7 +781,6 @@ const STR = {
     ],
 
     visit_label: 'आमच्या सेंटरला भेट द्या', visit_title: 'Carat Money, खारघर', visit_hours: 'दररोज, सकाळी 9 ते रात्री 9', visit_dir: 'मार्ग पहा',
-    visit_private: "प्रत्येक भेटीसाठी खाजगी सल्ला कक्ष",
 
     blog_title: 'गोल्ड इनसाइट्स', blog_sub: 'सोने विकण्यापूर्वी थेट उत्तरे.', blog_all: 'सर्व लेख पहा', blog_read: 'वाचा', blog_note: 'लेख इंग्रजीत आहेत.',
 
@@ -809,15 +806,15 @@ const STR = {
 
     hero_eyebrow:   'ನ್ಯಾಯಯುತ ಬೆಲೆಗೆ ನಾವು ಚಿನ್ನ ಖರೀದಿಸುತ್ತೇವೆ',
     hero_h1:        ['ನಿಮ್ಮ ಚಿನ್ನವನ್ನು ', 'ಲೈವ್', ' ಮಾರುಕಟ್ಟೆ ದರದಲ್ಲಿ ಮಾರಾಟ ಮಾಡಿ.'],
-    hero_sub:       "15 ನಿಮಿಷಗಳಲ್ಲಿ ಪರೀಕ್ಷೆ ಮತ್ತು ಪಾವತಿ, ಮನೆಯಲ್ಲೇ ಅಥವಾ ನಮ್ಮ ಖಾರ್‌ಘರ್ ಕೇಂದ್ರದಲ್ಲಿ",
+    hero_sub:       "15 ನಿಮಿಷಗಳಲ್ಲಿ ಹಣ ನಿಮ್ಮ ಖಾತೆಗೆ, ಮನೆಯಲ್ಲೇ ಅಥವಾ ನಮ್ಮ ಖಾರ್‌ಘರ್ ಕೇಂದ್ರದಲ್ಲಿ",
     hero_guarantee: 'ನಮ್ಮ ಗ್ಯಾರಂಟಿ — ನಮ್ಮ ಬೆಲೆಗೆ ಯಾರೂ ಸರಿಸಾಟಿಯಾಗಲಾರರು',
     hero_cta_wa:    "WhatsApp ನಲ್ಲಿ ನನ್ನ ಅಂದಾಜು ಪಡೆಯಿರಿ",
     hero_cta_calc:  'ನಿಮ್ಮ ಚಿನ್ನದ ಮೌಲ್ಯ ತಿಳಿಯಿರಿ',
     hero_stats:     "500+ ಗ್ರಾಹಕರು · ₹10 ಕೋಟಿ+ ಖರೀದಿ",
     hero_pickup:    "ಖಾರ್‌ಘರ್ ಕೇಂದ್ರ ಪ್ರತಿದಿನ ತೆರೆದಿರುತ್ತದೆ, ಬೆಳಿಗ್ಗೆ 9 ರಿಂದ ರಾತ್ರಿ 9",
     hero_turn:      ["ಹಳೆಯ ಚಿನ್ನ, ಈಗ ", "."],
-    hero_uses:      ["ಮನೆಯ ಮದುವೆಗೆ", "ಮಕ್ಕಳ ವಿದ್ಯಾಭ್ಯಾಸಕ್ಕೆ", "ಹೊಸ ಮನೆಗೆ", "ಸ್ವಂತ ವ್ಯಾಪಾರಕ್ಕೆ", "ತುರ್ತು ಚಿಕಿತ್ಸೆಗೆ", "ಸಾಲದಿಂದ ಮುಕ್ತಿಗೆ", "ಒಳ್ಳೆಯ ಕೆಲಸಕ್ಕೆ"],
-    hero_family:    "ಅವರು ಇದನ್ನು ನಿಮ್ಮ ಕುಟುಂಬದ ನಾಳೆಗಾಗಿ ಕೂಡಿಟ್ಟಿದ್ದರು. ಇಂದು, ಇದು ನಿಮಗಾಗಿ.",
+    hero_uses:      ["ಮನೆಯ ಮದುವೆಗೆ", "ಮಕ್ಕಳ ವಿದ್ಯಾಭ್ಯಾಸಕ್ಕೆ", "ಹೊಸ ಮನೆಗೆ", "ಸ್ವಂತ ವ್ಯಾಪಾರಕ್ಕೆ", "ತುರ್ತು ಚಿಕಿತ್ಸೆಗೆ", "ಸಾಲದಿಂದ ಮುಕ್ತಿಗೆ"],
+    hero_family:    "ಇದನ್ನು ನಿಮ್ಮ ಕುಟುಂಬದ ನಾಳೆಗಾಗಿ ನಿಮಗೆ ಒಪ್ಪಿಸಲಾಗಿತ್ತು. ಈಗ, ಇದು ನಿಮ್ಮ ಇಂದಿಗಾಗಿ.",
     tiles: [
       { t:"ಉಚಿತ ಮನೆ ಭೇಟಿ, ಅಥವಾ ಕೇಂದ್ರಕ್ಕೆ ಬನ್ನಿ", d:"ನವಿ ಮುಂಬೈ, ಮುಂಬೈ ಮತ್ತು ಥಾಣೆಯಲ್ಲಿ ನಾವು ನಿಮ್ಮ ಮನೆಗೆ ಬರುತ್ತೇವೆ, ಅಥವಾ ನೀವು ನಮ್ಮ ಖಾರ್‌ಘರ್ ಕೇಂದ್ರಕ್ಕೆ ಬರಬಹುದು." },
       { t:"ನಿಮ್ಮ ಮುಂದೆಯೇ ಪರೀಕ್ಷೆ", d:"XRF ಯಂತ್ರ ನಿಖರ ಶುದ್ಧತೆಯನ್ನು ತಿಳಿಸುತ್ತದೆ. ಗೀರು ಇಲ್ಲ, ಕರಗಿಸುವುದಿಲ್ಲ, ರೀಡಿಂಗ್ ನೀವೇ ನೋಡುತ್ತೀರಿ." },
@@ -903,7 +900,6 @@ const STR = {
     ],
 
     visit_label: 'ನಮ್ಮ ಕೇಂದ್ರಕ್ಕೆ ಭೇಟಿ ನೀಡಿ', visit_title: 'Carat Money, ಖಾರ್‌ಘರ್', visit_hours: 'ಪ್ರತಿದಿನ, ಬೆಳಿಗ್ಗೆ 9 ರಿಂದ ರಾತ್ರಿ 9 ರವರೆಗೆ', visit_dir: 'ದಾರಿ ತೋರಿಸಿ',
-    visit_private: "ಪ್ರತಿ ಭೇಟಿಗೂ ಖಾಸಗಿ ಸಮಾಲೋಚನಾ ಕೊಠಡಿ",
 
     blog_title: 'ಚಿನ್ನದ ಒಳನೋಟಗಳು', blog_sub: 'ಚಿನ್ನ ಮಾರುವ ಮೊದಲು ನೇರ ಉತ್ತರಗಳು.', blog_all: 'ಎಲ್ಲಾ ಲೇಖನಗಳನ್ನು ನೋಡಿ', blog_read: 'ಓದಿ', blog_note: 'ಲೇಖನಗಳು ಇಂಗ್ಲಿಷ್‌ನಲ್ಲಿವೆ.',
 
@@ -985,6 +981,8 @@ const GLOBAL_CSS = `
   .cm-motion .rv[data-in] { opacity:1; transform:none; }
   @keyframes shimmer { 0%, 72% { transform:translateX(-130%) skewX(-18deg); } 100% { transform:translateX(230%) skewX(-18deg); } }
   .hero-mark-svg { overflow:hidden; border-radius:50%; }
+  .call-short { display:none; }
+  @media (max-width:379.98px) { .call-full { display:none; } .call-short { display:inline; } }
   .cm-menu-open .hero-fly { display:none; }
   .cm-shimmer { position:absolute; top:0; left:0; width:45%; height:100%; pointer-events:none; background:linear-gradient(90deg, rgba(255,255,255,0), rgba(255,246,214,.55), rgba(255,255,255,0)); animation:shimmer 7s ease-in-out 4.2s infinite; transform:translateX(-130%) skewX(-18deg); mix-blend-mode:soft-light; }
   @keyframes popIn  { 0% { transform:scale(.6); opacity:0; } 70% { transform:scale(1.08); opacity:1; } 100% { transform:scale(1); } }
@@ -1063,7 +1061,7 @@ const GLOBAL_CSS = `
   .ru > span.off { opacity:0; transform:translateY(-.4em); }
   @media (prefers-reduced-motion: reduce) { .ru > span { transform:none!important; transition-property:opacity!important; transition-duration:.5s!important; } }
   .hero-family { font-family:var(--f-serif); font-style:italic; font-size:16px; font-weight:350; color:${C.ink2}; line-height:1.55; margin:0 auto 16px; max-width:440px; animation:fadeSlide .9s ease 1.1s both; }
-  @media (min-width:1024px) { .hero-family { margin:0 0 18px; max-width:520px; padding-left:14px; border-left:2px solid rgba(224,183,101,.75); } }
+  @media (min-width:1024px) { .hero-family { margin:0 0 18px; max-width:640px; padding-left:14px; border-left:2px solid rgba(224,183,101,.75); } }
   .hero-assure { display:flex; flex-wrap:wrap; justify-content:center; gap:6px 18px; font-family:var(--f-sans); font-size:14px; font-weight:600; color:${C.ink2}; line-height:1.45; }
   .hero-assure > span { display:inline-flex; align-items:flex-start; gap:7px; text-align:left; max-width:100%; }
   .hero-assure > span > svg { margin-top:2px; }
@@ -1155,7 +1153,9 @@ const GLOBAL_CSS = `
   @media (min-width:1024px) { .faq-grid { grid-template-columns:5fr 7fr; gap:48px; align-items:start; } .faq-panel { order:0; position:sticky; top:84px; } }
 
   /* visit us */
-  .visit { display:grid; background:${C.white}; border:1px solid rgba(184,136,58,.35); border-radius:8px; overflow:hidden; box-shadow:0 2px 12px rgba(22,18,31,.06); }
+  .visit { display:grid; background:${C.white}; border:1px solid rgba(184,136,58,.35); border-radius:8px; box-shadow:0 2px 12px rgba(22,18,31,.06); }
+  .visit-map { overflow:hidden; border-radius:8px 8px 0 0; }
+  @media (min-width:1024px) { .visit-map { border-radius:8px 0 0 8px; } }
   .visit-map iframe { display:block; width:100%; height:220px; border:0; }
   @media (min-width:1024px) { .visit { grid-template-columns:3fr 2fr; } .visit-map iframe { height:100%; min-height:380px; } }
 
@@ -1295,8 +1295,8 @@ function CallPicker({ variant = 'outline', label, full = false, align = 'right',
     document.addEventListener('keydown', esc);
     return () => { document.removeEventListener('pointerdown', close); document.removeEventListener('keydown', esc); };
   }, [open]);
-  const big  = variant !== 'outline' || full;
-  const look = variant === 'gold'
+  const big  = (variant !== 'outline' && variant !== 'gold-sm') || full;
+  const look = variant === 'gold' || variant === 'gold-sm'
     ? { background:C.gold2, color:C.plum, border:`1px solid ${C.gold2}` }
     : { background:'transparent', color:C.white, border:'1px solid rgba(255,255,255,.3)' };
   return (
@@ -1420,7 +1420,7 @@ function TopBar({ spot, navigate, showLang = false }) {
             style={{ display:'inline-flex', alignItems:'center', gap:'6px', background:C.green, color:C.ink, padding:'7px 12px', borderRadius:'999px', fontFamily:SANS, fontSize:'13px', fontWeight:600, textDecoration:'none', whiteSpace:'nowrap' }}>
             <WhatsAppGlyph size={15} color={C.ink}/> WhatsApp
           </a>
-          <CallPicker source="topbar" label={t('call_short')}/>
+          <CallPicker source="topbar" variant="gold-sm" label={<><span className="call-full">{t('git_call')}</span><span className="call-short">{t('call_short')}</span></>}/>
           <button type="button" className="tb-menu-btn" onClick={() => setMenuOpen(v => !v)} aria-label={t('menu')} aria-expanded={menuOpen}
             style={{ width:'36px', height:'36px', display:'inline-flex', alignItems:'center', justifyContent:'center', background:'transparent', border:'1px solid rgba(255,255,255,.25)', borderRadius:'8px', color:C.gold3, cursor:'pointer', flexShrink:0 }}>
             {menuOpen ? <X size={18}/> : <Menu size={18}/>}
@@ -2194,14 +2194,13 @@ function VisitUs() {
             <h2 style={{ fontFamily:SERIF, fontSize:'clamp(26px, 3vw, 32px)', fontWeight:350, color:C.ink, margin:0, letterSpacing:'-0.02em', lineHeight:1.15 }}><Brand text={t('visit_title')}/></h2>
             <div style={row}><MapPin size={18} color={C.gold} style={{ flexShrink:0, marginTop:'2px' }}/><address style={{ fontStyle:'normal' }}>{ADDRESS}</address></div>
             <div style={row}><Clock size={18} color={C.gold} style={{ flexShrink:0, marginTop:'2px' }}/>{t('visit_hours')}</div>
-            <div style={row}><Lock size={18} color={C.gold} style={{ flexShrink:0, marginTop:'2px' }}/>{t('visit_private')}</div>
             <div style={row}><Mail size={18} color={C.gold} style={{ flexShrink:0, marginTop:'2px' }}/><a href={`mailto:${EMAIL}`} style={{ color:C.ink2, textDecoration:'none', wordBreak:'break-all' }}>{EMAIL}</a></div>
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'10px', marginTop:'auto', paddingTop:'8px' }}>
               <a href={DIRECTIONS_URL} target="_blank" rel="noreferrer" onClick={() => track('directions_click')}
                 style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:'7px', padding:'14px 12px', borderRadius:'4px', background:C.plum, color:C.gold3, fontFamily:SANS, fontSize:'15px', fontWeight:600, textDecoration:'none', whiteSpace:'nowrap' }}>
                 <Navigation size={16}/> {t('visit_dir')}
               </a>
-              <CallPicker variant="gold" full source="visit"/>
+              <CallPicker variant="gold" full source="visit" label={t('git_call')}/>
             </div>
           </div>
         </div>
