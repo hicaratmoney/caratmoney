@@ -42,7 +42,7 @@ const MAX_ORNAMENTS    = 10;
 const BUY_RATE_24K     = 15901;
 const BUY_RATE_DATE    = '27 Apr 2026';
 const KARATS           = [24, 22, 18, 14, 10];
-const EMAIL            = 'hicaratmoney@gmail.com';
+const EMAIL            = 'hi@carat.money';
 const ADDRESS          = '304, Zion, Sector 10, Kharghar, Navi Mumbai - 410210';
 const PARTNER_URL      = 'https://carat-money-partners.web.app/partner/';
 const MAP_EMBED        = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3771.6109258300326!2d73.07529277602526!3d19.036858782159722!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c3cf243723c3%3A0xa7274f01c46ec2d2!2sCarat%20Money!5e0!3m2!1sen!2sin!4v1793084207797!5m2!1sen!2sin';
