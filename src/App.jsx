@@ -457,6 +457,7 @@ const STR = {
     hero_turn:      ["Turning old gold into ", "."],
     hero_uses:      ["a wedding in the family", "your child's education", "a new home", "your own business", "medical care, today", "a debt-free start"],
     hero_family:    "It was passed down to you for your family's tomorrow. Now, it's here for your today.",
+    hero_photo_alt: "A wife gently places her gold bangles in her husband's hands at home.",
     tiles: [
       { t:"Free home visit, or walk in", d:"We come to you across Navi Mumbai, Mumbai and Thane, or you can visit our Kharghar centre." },
       { t:"Tested in front of you", d:"An XRF machine reads the exact purity. No scratching, no melting, and you see the reading." },
@@ -576,6 +577,7 @@ const STR = {
     hero_turn:      ["पुराना सोना, अब ", "।"],
     hero_uses:      ["घर की शादी के लिए", "बच्चों की पढ़ाई के लिए", "नए घर के लिए", "अपने बिज़नेस के लिए", "ज़रूरी इलाज के लिए", "कर्ज़ से मुक्ति के लिए"],
     hero_family:    "यह आपको परिवार के कल के लिए सौंपा गया था। आज, यह आपके आज के काम आए।",
+    hero_photo_alt: "घर पर पत्नी अपने सोने के कंगन प्यार से पति के हाथों में रखती हुई।",
     tiles: [
       { t:"मुफ़्त होम विज़िट, या सेंटर आएँ", d:"हम नवी मुंबई, मुंबई और ठाणे में आपके घर आते हैं, या आप हमारे खारघर सेंटर आ सकते हैं।" },
       { t:"आपके सामने जाँच", d:"XRF मशीन सही शुद्धता बताती है। न खरोंच, न पिघलाना, और रीडिंग आप ख़ुद देखते हैं।" },
@@ -695,6 +697,7 @@ const STR = {
     hero_turn:      ["जुने सोने, आता ", "."],
     hero_uses:      ["घरच्या लग्नासाठी", "मुलांच्या शिक्षणासाठी", "नव्या घरासाठी", "स्वतःच्या व्यवसायासाठी", "तातडीच्या उपचारासाठी", "कर्जमुक्तीसाठी"],
     hero_family:    "हे तुम्हाला कुटुंबाच्या उद्यासाठी सोपवले होते. आता, ते तुमच्या आजसाठी आहे.",
+    hero_photo_alt: "घरी पत्नी आपल्या सोन्याच्या बांगड्या प्रेमाने पतीच्या हातात ठेवताना.",
     tiles: [
       { t:"मोफत घरभेट, किंवा सेंटरला या", d:"आम्ही नवी मुंबई, मुंबई आणि ठाणे येथे तुमच्या घरी येतो, किंवा तुम्ही आमच्या खारघर सेंटरला येऊ शकता." },
       { t:"तुमच्यासमोर चाचणी", d:"XRF मशीन अचूक शुद्धता सांगते. ना ओरखडा, ना वितळवणे, आणि रीडिंग तुम्ही स्वतः पाहता." },
@@ -815,6 +818,7 @@ const STR = {
     hero_turn:      ["ಹಳೆಯ ಚಿನ್ನ, ಈಗ ", "."],
     hero_uses:      ["ಮನೆಯ ಮದುವೆಗೆ", "ಮಕ್ಕಳ ವಿದ್ಯಾಭ್ಯಾಸಕ್ಕೆ", "ಹೊಸ ಮನೆಗೆ", "ಸ್ವಂತ ವ್ಯಾಪಾರಕ್ಕೆ", "ತುರ್ತು ಚಿಕಿತ್ಸೆಗೆ", "ಸಾಲದಿಂದ ಮುಕ್ತಿಗೆ"],
     hero_family:    "ಇದನ್ನು ನಿಮ್ಮ ಕುಟುಂಬದ ನಾಳೆಗಾಗಿ ನಿಮಗೆ ಒಪ್ಪಿಸಲಾಗಿತ್ತು. ಈಗ, ಇದು ನಿಮ್ಮ ಇಂದಿಗಾಗಿ.",
+    hero_photo_alt: "ಮನೆಯಲ್ಲಿ ಪತ್ನಿ ತನ್ನ ಚಿನ್ನದ ಬಳೆಗಳನ್ನು ಪ್ರೀತಿಯಿಂದ ಪತಿಯ ಕೈಗೆ ಇಡುತ್ತಿರುವುದು.",
     tiles: [
       { t:"ಉಚಿತ ಮನೆ ಭೇಟಿ, ಅಥವಾ ಕೇಂದ್ರಕ್ಕೆ ಬನ್ನಿ", d:"ನವಿ ಮುಂಬೈ, ಮುಂಬೈ ಮತ್ತು ಥಾಣೆಯಲ್ಲಿ ನಾವು ನಿಮ್ಮ ಮನೆಗೆ ಬರುತ್ತೇವೆ, ಅಥವಾ ನೀವು ನಮ್ಮ ಖಾರ್‌ಘರ್ ಕೇಂದ್ರಕ್ಕೆ ಬರಬಹುದು." },
       { t:"ನಿಮ್ಮ ಮುಂದೆಯೇ ಪರೀಕ್ಷೆ", d:"XRF ಯಂತ್ರ ನಿಖರ ಶುದ್ಧತೆಯನ್ನು ತಿಳಿಸುತ್ತದೆ. ಗೀರು ಇಲ್ಲ, ಕರಗಿಸುವುದಿಲ್ಲ, ರೀಡಿಂಗ್ ನೀವೇ ನೋಡುತ್ತೀರಿ." },
@@ -1027,6 +1031,18 @@ const GLOBAL_CSS = `
   @media (min-width:768px)  { .hero-mark-svg { width:140px; } }
   @media (min-width:1024px) { .hero-mark-svg { width:220px; } }
   .hero-text { text-align:center; }
+  /* hero photo: right column on desktop with the hallmark as a seal on its corner; below the calculator on phones */
+  .hero-figure { position:relative; display:flex; flex-direction:column; align-items:center; }
+  .hero-photo { display:none; }
+  .hero-photo-m { margin:22px auto 0; max-width:420px; }
+  .hero-photo-m img { display:block; width:100%; height:auto; border-radius:12px; box-shadow:0 16px 36px rgba(43,20,80,.16); }
+  @media (min-width:1024px) {
+    .hero-figure { display:block; width:100%; max-width:440px; margin:0 auto; }
+    .hero-photo { display:block; width:100%; height:auto; border-radius:14px; box-shadow:0 24px 50px rgba(43,20,80,.18); }
+    .hero-glow { display:none; }
+    .hero-seal { position:absolute; top:-26px; right:-26px; z-index:2; }
+    .hero-seal .hero-mark-svg { width:120px; background:${C.paper}; box-shadow:0 10px 24px rgba(43,20,80,.2); }
+  }
   .hero-h1 { font-family:var(--f-serif); font-weight:350; font-size:clamp(34px, 5.4vw, 62px); line-height:1.04; letter-spacing:-0.025em; color:${C.ink}; margin:0 0 14px; }
   .hero-ctas { display:flex; flex-direction:column; gap:10px; margin:24px 0 18px; }
   @media (min-width:600px)  { .hero-ctas { flex-direction:row; justify-content:center; } }
@@ -1507,12 +1523,18 @@ function Hero({ navigate, spot }) {
             <div style={{ fontFamily: en ? MONO : SANS, fontSize:'12px', color:C.mute, letterSpacing: en ? '0.04em' : 0, lineHeight:1.8 }}>
               <CountUp text={t('hero_stats')}/><br/>{t('hero_pickup')}
             </div>
+            <figure className="hero-photo-m hide-lg">
+              <img src="/hero-family.webp" alt={t('hero_photo_alt')} width="900" height="1117" loading="lazy" decoding="async"/>
+            </figure>
           </div>
 
           <div className="hero-visual rv">
             <div style={{ position:'relative', display:'flex', flexDirection:'column', alignItems:'center' }}>
-              <div aria-hidden="true" style={{ position:'absolute', left:'50%', top:'42%', width:'340px', height:'340px', transform:'translate(-50%,-50%)', borderRadius:'50%', background:'radial-gradient(circle, rgba(224,183,101,.22) 0%, rgba(224,183,101,0) 65%)', pointerEvents:'none' }}/>
-              <HeroMark/>
+              <div className="hero-figure">
+                <img className="hero-photo" src="/hero-family.webp" alt={t('hero_photo_alt')} width="900" height="1117" fetchpriority="high" decoding="async"/>
+                <div className="hero-glow" aria-hidden="true" style={{ position:'absolute', left:'50%', top:'50%', width:'340px', height:'340px', transform:'translate(-50%,-50%)', borderRadius:'50%', background:'radial-gradient(circle, rgba(224,183,101,.22) 0%, rgba(224,183,101,0) 65%)', pointerEvents:'none' }}/>
+                <div className="hero-seal"><HeroMark/></div>
+              </div>
               <div style={{ position:'relative', fontFamily:SERIF, fontSize:'clamp(30px, 3.2vw, 42px)', fontWeight:350, color:C.ink, letterSpacing:'-0.02em', lineHeight:1.05, marginTop:'14px' }}>
                 Carat <span style={{ fontStyle:'italic', color:C.plum }}>Money</span>
               </div>
