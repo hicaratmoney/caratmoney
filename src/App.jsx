@@ -448,7 +448,7 @@ const STR = {
 
     hero_eyebrow:   'We buy gold at fair price',
     hero_h1:        ['Sell your old gold at ', 'live', ' market rate.'],
-    hero_points:    ["Free valuation, at home or at our centre", "Tested in front of you, paid in 15 mins", "Best price guaranteed. No pressure to sell."],
+    hero_points:    ["Free valuation, at home or at our centre", "Tested in front of you, paid in 15 mins", "Best price guaranteed. No pressure to sell"],
     hero_cta_wa:    "Get my estimate on WhatsApp",
     hero_cta_calc:  'Value your gold',
     hero_stats:     "500+ customers · ₹10 crore+ purchased",
@@ -564,7 +564,7 @@ const STR = {
 
     hero_eyebrow:   'हम सही दाम पर सोना खरीदते हैं',
     hero_h1:        ['अपना सोना ', 'लाइव', ' मार्केट रेट पर बेचें।'],
-    hero_points:    ["मुफ़्त मूल्यांकन, घर पर या हमारे सेंटर में", "आपके सामने जाँच, 15 मिनट में पेमेंट", "सबसे अच्छे दाम की गारंटी। बेचने का कोई दबाव नहीं।"],
+    hero_points:    ["मुफ़्त मूल्यांकन, घर पर या हमारे सेंटर में", "आपके सामने जाँच, 15 मिनट में पेमेंट", "सबसे अच्छे दाम की गारंटी। बेचने का कोई दबाव नहीं"],
     hero_cta_wa:    "WhatsApp पर मेरा अनुमान पाएँ",
     hero_cta_calc:  'अपने सोने की कीमत जानें',
     hero_stats:     "500+ ग्राहक · ₹10 करोड़+ की खरीद",
@@ -680,7 +680,7 @@ const STR = {
 
     hero_eyebrow:   'आम्ही योग्य दरात सोने खरेदी करतो',
     hero_h1:        ['तुमचे सोने ', 'लाइव्ह', ' बाजारभावाने विका.'],
-    hero_points:    ["मोफत मूल्यांकन, घरी किंवा आमच्या सेंटरमध्ये", "तुमच्यासमोर चाचणी, 15 मिनिटांत पेमेंट", "सर्वोत्तम भावाची हमी. विकण्याचा दबाव नाही."],
+    hero_points:    ["मोफत मूल्यांकन, घरी किंवा आमच्या सेंटरमध्ये", "तुमच्यासमोर चाचणी, 15 मिनिटांत पेमेंट", "सर्वोत्तम भावाची हमी. विकण्याचा दबाव नाही"],
     hero_cta_wa:    "WhatsApp वर माझा अंदाज मिळवा",
     hero_cta_calc:  'तुमच्या सोन्याचे मूल्य जाणून घ्या',
     hero_stats:     "500+ ग्राहक · ₹10 कोटी+ ची खरेदी",
@@ -797,7 +797,7 @@ const STR = {
 
     hero_eyebrow:   'ನ್ಯಾಯಯುತ ಬೆಲೆಗೆ ನಾವು ಚಿನ್ನ ಖರೀದಿಸುತ್ತೇವೆ',
     hero_h1:        ['ನಿಮ್ಮ ಚಿನ್ನವನ್ನು ', 'ಲೈವ್', ' ಮಾರುಕಟ್ಟೆ ದರದಲ್ಲಿ ಮಾರಾಟ ಮಾಡಿ.'],
-    hero_points:    ["ಉಚಿತ ಮೌಲ್ಯಮಾಪನ, ಮನೆಯಲ್ಲೇ ಅಥವಾ ನಮ್ಮ ಕೇಂದ್ರದಲ್ಲಿ", "ನಿಮ್ಮ ಮುಂದೆಯೇ ಪರೀಕ್ಷೆ, 15 ನಿಮಿಷಗಳಲ್ಲಿ ಪಾವತಿ", "ಅತ್ಯುತ್ತಮ ಬೆಲೆಯ ಗ್ಯಾರಂಟಿ. ಮಾರುವ ಒತ್ತಡವಿಲ್ಲ."],
+    hero_points:    ["ಉಚಿತ ಮೌಲ್ಯಮಾಪನ, ಮನೆಯಲ್ಲೇ ಅಥವಾ ನಮ್ಮ ಕೇಂದ್ರದಲ್ಲಿ", "ನಿಮ್ಮ ಮುಂದೆಯೇ ಪರೀಕ್ಷೆ, 15 ನಿಮಿಷಗಳಲ್ಲಿ ಪಾವತಿ", "ಅತ್ಯುತ್ತಮ ಬೆಲೆಯ ಗ್ಯಾರಂಟಿ. ಮಾರುವ ಒತ್ತಡವಿಲ್ಲ"],
     hero_cta_wa:    "WhatsApp ನಲ್ಲಿ ನನ್ನ ಅಂದಾಜು ಪಡೆಯಿರಿ",
     hero_cta_calc:  'ನಿಮ್ಮ ಚಿನ್ನದ ಮೌಲ್ಯ ತಿಳಿಯಿರಿ',
     hero_stats:     "500+ ಗ್ರಾಹಕರು · ₹10 ಕೋಟಿ+ ಖರೀದಿ",
