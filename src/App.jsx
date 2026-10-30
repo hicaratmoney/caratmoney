@@ -1936,7 +1936,9 @@ function HeroEstimator({ spot, navigate }) {
         </button>
       </div>
       <div className="est-gst">
-        <button type="button" onClick={() => setShowGst(v => !v)} aria-expanded={showGst}>{t('gst_incl')} <Info size={13}/></button>
+        <button type="button" onClick={() => setShowGst(v => !v)} aria-expanded={showGst} aria-label={`${t('gst_incl')} — ${spot.updatedAt ? fill(t('rate_updated'), { time: fmtTime(spot.updatedAt) }) : ''}`}>
+          {spot.error && !spot.updatedAt ? t('rate_unavailable') : spot.updatedAt ? fill(t('rate_updated'), { time: fmtTime(spot.updatedAt) }) : t('rate_fetching')} <Info size={13}/>
+        </button>
         {showGst && (
           <div className="est-gst-tip">
             {fill(t('gst_excl_k'), { k })} <b>₹{fmt(Math.round(rate / 1.03), 0)}/g</b><br/>{t('gst_note')}
