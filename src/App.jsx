@@ -448,8 +448,7 @@ const STR = {
 
     hero_eyebrow:   'We buy gold at fair price',
     hero_h1:        ['Sell your old gold at ', 'live', ' market rate.'],
-    hero_sub:       "Money in your account in 15 minutes, at home or at our Kharghar centre",
-    hero_guarantee: 'We guarantee — nobody can match our price',
+    hero_points:    ["Paid in 15 mins, at home or at our centre", "Free valuation, tested in front of you", "Best price guaranteed. No pressure to sell."],
     hero_cta_wa:    "Get my estimate on WhatsApp",
     hero_cta_calc:  'Value your gold',
     hero_stats:     "500+ customers · ₹10 crore+ purchased",
@@ -458,16 +457,13 @@ const STR = {
     hero_uses:      ["a wedding in the family", "your child's education", "a new home", "your own business", "medical care, today", "a debt-free start"],
     hero_family:    "It was passed down to you for your family's tomorrow. Now, it's here for your today.",
     hero_photo_alt: "A wife gently places her gold bangles in her husband's hands at home.",
-    tiles: [
-      { t:"Free home visit, or walk in", d:"We come to you across Navi Mumbai, Mumbai and Thane, or you can visit our Kharghar centre." },
-      { t:"Tested in front of you", d:"An XRF machine reads the exact purity. No scratching, no melting, and you see the reading." },
-      { t:"Paid on the spot", d:"Money in your bank or UPI right away, plus a free valuation certificate." },
-    ],
 
     rate_title: "Our live rate", rate_loading: 'Loading…', rate_updated: "Updated {time}", rate_fetching: 'Fetching live rate…',
     rate_unavailable: 'Live rate temporarily unavailable', rate_refresh: 'Refreshes every minute · GST inclusive', est_live: 'Live 24K', est_w: 'Weight', why_photo: 'Every test happens on screen in front of you: here, 91.6% gold, read as 22K.',
     gst_excl: '24K without GST:',
     gst_note: "GST-inclusive rate shown above. If you're GST-registered, we pass the tax credit back to you.",
+    gst_incl: "Rates include GST", gst_excl_k: "Without GST, {k}K:",
+    next_title: "What would you like to know first?", next_cards: ["How is my price worked out?", "What happens on the day?", "What do others say?", "I have a question"],
 
     calc_title: "What's your gold worth now?", calc_weight: 'Weight (grams)', calc_weight_ph: 'e.g. 10', calc_karat: 'Select purity',
     calc_est: "Your estimate", calc_at: 'at ₹{rate}/g for {k}K', calc_cta: "Get my estimate on WhatsApp",
@@ -529,7 +525,7 @@ const STR = {
       { q:"Do you photograph my jewellery?", a:"Yes. Every piece is photographed before testing, so there is a clear record of exactly what you handed over." },
       { q:"Do you offer a free home visit?", a:"Yes, across Navi Mumbai, Mumbai and Thane. Our executive comes at a time that suits you, tests your gold in front of you and makes a final offer on the spot." },
       { q:"Can the visit be discreet?", a:"Yes. Tick \"Discreet visit\" when you book, and our executive comes in plain clothes, with no logo on the bag or vehicle. At our centre, every visit happens in a private consultation room." },
-      { q:"Can I ask for a woman executive?", a:"Yes. Tick \"Woman executive\" when you book, whether we come to you or you visit our centre." },
+      { q:"Can I ask for a woman executive?", a:"Yes. Tick \"Woman executive\" when you book a home visit. Visiting our centre? Just mention it on WhatsApp." },
       { q:"I need money urgently. Can you come today?", a:"Yes. Tick \"Urgent, same day\" when you book a home visit. We call you within 30 minutes, and if you book before 4 pm, we visit you the same day." },
       { q:"Is anything charged if I don't sell?", a:"No. Everything before you sell is free: the home visit, the testing and the valuation certificate. You sell only if you're happy with the final offer." },
       { q:"Are there any deductions?", a:"Only the weight of the stones, which we measure and show you. No \"wastage\" cuts and no hidden charges." },
@@ -568,8 +564,7 @@ const STR = {
 
     hero_eyebrow:   'हम सही दाम पर सोना खरीदते हैं',
     hero_h1:        ['अपना सोना ', 'लाइव', ' मार्केट रेट पर बेचें।'],
-    hero_sub:       "15 मिनट में पैसा आपके खाते में, घर पर या हमारे खारघर सेंटर में",
-    hero_guarantee: 'हमारी गारंटी — हमसे बेहतर दाम कोई नहीं देगा',
+    hero_points:    ["15 मिनट में पेमेंट, घर पर या हमारे सेंटर में", "मुफ़्त मूल्यांकन, आपके सामने जाँच", "सबसे अच्छे दाम की गारंटी। बेचने का कोई दबाव नहीं।"],
     hero_cta_wa:    "WhatsApp पर मेरा अनुमान पाएँ",
     hero_cta_calc:  'अपने सोने की कीमत जानें',
     hero_stats:     "500+ ग्राहक · ₹10 करोड़+ की खरीद",
@@ -578,16 +573,13 @@ const STR = {
     hero_uses:      ["घर की शादी के लिए", "बच्चों की पढ़ाई के लिए", "नए घर के लिए", "अपने बिज़नेस के लिए", "ज़रूरी इलाज के लिए", "कर्ज़ से मुक्ति के लिए"],
     hero_family:    "यह आपको परिवार के कल के लिए सौंपा गया था। आज, यह आपके आज के काम आए।",
     hero_photo_alt: "घर पर पत्नी अपने सोने के कंगन प्यार से पति के हाथों में रखती हुई।",
-    tiles: [
-      { t:"मुफ़्त होम विज़िट, या सेंटर आएँ", d:"हम नवी मुंबई, मुंबई और ठाणे में आपके घर आते हैं, या आप हमारे खारघर सेंटर आ सकते हैं।" },
-      { t:"आपके सामने जाँच", d:"XRF मशीन सही शुद्धता बताती है। न खरोंच, न पिघलाना, और रीडिंग आप ख़ुद देखते हैं।" },
-      { t:"वहीं पेमेंट", d:"पैसा तुरंत आपके बैंक या UPI में, साथ में मुफ़्त वैल्यूएशन सर्टिफ़िकेट।" },
-    ],
 
     rate_title: "हमारा लाइव रेट", rate_loading: 'लोड हो रहा है…', rate_updated: "{time} पर अपडेट", rate_fetching: 'लाइव रेट लाया जा रहा है…',
     rate_unavailable: 'लाइव रेट अभी उपलब्ध नहीं है', rate_refresh: 'हर मिनट अपडेट होता है · GST सहित', est_live: 'लाइव 24K', est_w: 'वज़न', why_photo: 'हर जाँच आपके सामने स्क्रीन पर: यहाँ 91.6% सोना, यानी 22K।',
     gst_excl: 'GST के बिना 24K:',
     gst_note: 'ऊपर दिखाया गया रेट GST सहित है। अगर आप GST-रजिस्टर्ड हैं, तो हम टैक्स क्रेडिट आपको वापस देते हैं।',
+    gst_incl: "रेट में GST शामिल है", gst_excl_k: "GST के बिना, {k}K:",
+    next_title: "आप पहले क्या जानना चाहेंगे?", next_cards: ["मेरी कीमत कैसे तय होती है?", "उस दिन क्या होता है?", "दूसरे लोग क्या कहते हैं?", "मेरा एक सवाल है"],
 
     calc_title: 'आपके सोने की अभी कितनी कीमत है?', calc_weight: 'वज़न (ग्राम)', calc_weight_ph: 'जैसे 10', calc_karat: 'शुद्धता चुनें',
     calc_est: "आपका अनुमान", calc_at: '{k}K के लिए ₹{rate}/ग्राम पर', calc_cta: "WhatsApp पर मेरा अनुमान पाएँ",
@@ -649,7 +641,7 @@ const STR = {
       { q:"क्या आप मेरी ज्वेलरी की फ़ोटो लेते हैं?", a:"हाँ। जाँच से पहले हर गहने की फ़ोटो ली जाती है, ताकि आपने जो सौंपा उसका साफ़ रिकॉर्ड रहे।" },
       { q:"क्या आप मुफ़्त होम विज़िट देते हैं?", a:"हाँ, नवी मुंबई, मुंबई और ठाणे में। हमारा एग्ज़ीक्यूटिव आपकी सुविधा के समय आता है, आपके सामने सोने की जाँच करता है और वहीं अंतिम ऑफ़र देता है।" },
       { q:"क्या विज़िट गोपनीय रखी जा सकती है?", a:"हाँ। बुकिंग के समय \"गोपनीय विज़िट\" चुनें, हमारा एग्ज़ीक्यूटिव सादे कपड़ों में आएगा और बैग या गाड़ी पर कोई लोगो नहीं होगा। हमारे सेंटर पर हर विज़िट निजी परामर्श कक्ष में होती है।" },
-      { q:"क्या मैं महिला एग्ज़ीक्यूटिव के लिए कह सकती/सकता हूँ?", a:"हाँ। बुकिंग के समय \"महिला एग्ज़ीक्यूटिव\" चुनें, चाहे हम आपके घर आएँ या आप हमारे सेंटर आएँ।" },
+      { q:"क्या मैं महिला एग्ज़ीक्यूटिव के लिए कह सकती/सकता हूँ?", a:"हाँ। होम विज़िट बुक करते समय \"महिला एग्ज़ीक्यूटिव\" चुनें। सेंटर आ रहे हैं? बस WhatsApp पर बता दें।" },
       { q:"मुझे तुरंत पैसों की ज़रूरत है। क्या आप आज आ सकते हैं?", a:"हाँ। घर पर विज़िट बुक करते समय \"अर्जेंट, उसी दिन\" चुनें। हम 30 मिनट के अंदर कॉल करते हैं, और शाम 4 बजे से पहले बुक करने पर उसी दिन आपके पास आते हैं।" },
       { q:"अगर मैं न बेचूँ तो क्या कोई शुल्क लगता है?", a:"नहीं। बेचने से पहले सब कुछ मुफ़्त है: होम विज़िट, जाँच और वैल्यूएशन सर्टिफ़िकेट। अंतिम ऑफ़र पसंद आए तभी बेचें।" },
       { q:'क्या कोई कटौती होती है?', a:'सिर्फ़ पत्थरों के वज़न की, जिसे हम मापकर आपको दिखाते हैं। कोई अतिरिक्त "वेस्टेज" कटौती या छिपा चार्ज नहीं।' },
@@ -688,8 +680,7 @@ const STR = {
 
     hero_eyebrow:   'आम्ही योग्य दरात सोने खरेदी करतो',
     hero_h1:        ['तुमचे सोने ', 'लाइव्ह', ' बाजारभावाने विका.'],
-    hero_sub:       "15 मिनिटांत पैसे तुमच्या खात्यात, घरी किंवा आमच्या खारघर सेंटरमध्ये",
-    hero_guarantee: 'आमची हमी — आमच्यापेक्षा चांगला भाव कोणीही देणार नाही',
+    hero_points:    ["15 मिनिटांत पेमेंट, घरी किंवा आमच्या सेंटरमध्ये", "मोफत मूल्यांकन, तुमच्यासमोर चाचणी", "सर्वोत्तम भावाची हमी. विकण्याचा दबाव नाही."],
     hero_cta_wa:    "WhatsApp वर माझा अंदाज मिळवा",
     hero_cta_calc:  'तुमच्या सोन्याचे मूल्य जाणून घ्या',
     hero_stats:     "500+ ग्राहक · ₹10 कोटी+ ची खरेदी",
@@ -698,16 +689,13 @@ const STR = {
     hero_uses:      ["घरच्या लग्नासाठी", "मुलांच्या शिक्षणासाठी", "नव्या घरासाठी", "स्वतःच्या व्यवसायासाठी", "तातडीच्या उपचारासाठी", "कर्जमुक्तीसाठी"],
     hero_family:    "हे तुम्हाला कुटुंबाच्या उद्यासाठी सोपवले होते. आता, ते तुमच्या आजसाठी आहे.",
     hero_photo_alt: "घरी पत्नी आपल्या सोन्याच्या बांगड्या प्रेमाने पतीच्या हातात ठेवताना.",
-    tiles: [
-      { t:"मोफत घरभेट, किंवा सेंटरला या", d:"आम्ही नवी मुंबई, मुंबई आणि ठाणे येथे तुमच्या घरी येतो, किंवा तुम्ही आमच्या खारघर सेंटरला येऊ शकता." },
-      { t:"तुमच्यासमोर चाचणी", d:"XRF मशीन अचूक शुद्धता सांगते. ना ओरखडा, ना वितळवणे, आणि रीडिंग तुम्ही स्वतः पाहता." },
-      { t:"जागेवरच पेमेंट", d:"पैसे लगेच तुमच्या बँक खात्यात किंवा UPI वर, सोबत मोफत मूल्यांकन प्रमाणपत्र." },
-    ],
 
     rate_title: "आमचा लाइव्ह दर", rate_loading: 'लोड होत आहे…', rate_updated: "{time} ला अपडेट", rate_fetching: 'लाइव्ह दर आणत आहोत…',
     rate_unavailable: 'लाइव्ह दर सध्या उपलब्ध नाही', rate_refresh: 'दर मिनिटाला अपडेट होतो · GST सह', est_live: 'लाइव्ह 24K', est_w: 'वजन', why_photo: 'प्रत्येक चाचणी तुमच्यासमोर स्क्रीनवर: इथे 91.6% सोने, म्हणजे 22K.',
     gst_excl: 'GST शिवाय 24K:',
     gst_note: 'वर दाखवलेला दर GST सह आहे. तुम्ही GST-नोंदणीकृत असाल, तर आम्ही कर क्रेडिट तुम्हाला परत देतो.',
+    gst_incl: "दरात GST समाविष्ट आहे", gst_excl_k: "GST शिवाय, {k}K:",
+    next_title: "तुम्हाला आधी काय जाणून घ्यायचे आहे?", next_cards: ["माझी किंमत कशी ठरते?", "त्या दिवशी काय होते?", "इतर लोक काय म्हणतात?", "माझा एक प्रश्न आहे"],
 
     calc_title: 'तुमच्या सोन्याची आत्ताची किंमत किती?', calc_weight: 'वजन (ग्रॅम)', calc_weight_ph: 'उदा. 10', calc_karat: 'शुद्धता निवडा',
     calc_est: "तुमचा अंदाज", calc_at: '{k}K साठी ₹{rate}/ग्रॅम दराने', calc_cta: "WhatsApp वर माझा अंदाज मिळवा",
@@ -770,7 +758,7 @@ const STR = {
       { q:"तुम्ही माझ्या दागिन्यांचे फोटो घेता का?", a:"हो. चाचणीपूर्वी प्रत्येक दागिन्याचा फोटो घेतला जातो, म्हणजे तुम्ही काय सुपूर्द केले याची स्पष्ट नोंद राहते." },
       { q:"तुम्ही मोफत घरभेट देता का?", a:"हो, नवी मुंबई, मुंबई आणि ठाणे येथे. आमचा एक्झिक्युटिव्ह तुमच्या सोयीच्या वेळी येतो, तुमच्यासमोर सोन्याची चाचणी करतो आणि तिथेच अंतिम ऑफर देतो." },
       { q:"भेट गोपनीय ठेवता येईल का?", a:"हो. बुकिंग करताना \"गोपनीय भेट\" निवडा; आमचा एक्झिक्युटिव्ह साध्या कपड्यांत येईल आणि बॅग किंवा गाडीवर लोगो नसेल. आमच्या सेंटरवर प्रत्येक भेट खाजगी सल्ला कक्षात होते." },
-      { q:"मला महिला एक्झिक्युटिव्ह मिळू शकेल का?", a:"हो. बुकिंग करताना \"महिला एक्झिक्युटिव्ह\" निवडा, आम्ही तुमच्याकडे आलो किंवा तुम्ही सेंटरला आलात तरी." },
+      { q:"मला महिला एक्झिक्युटिव्ह मिळू शकेल का?", a:"हो. घरभेट बुक करताना \"महिला एक्झिक्युटिव्ह\" निवडा. सेंटरला येत आहात? फक्त WhatsApp वर सांगा." },
       { q:"मला तातडीने पैशांची गरज आहे. तुम्ही आज येऊ शकता का?", a:"हो. घरी भेट बुक करताना \"तातडीचे, त्याच दिवशी\" निवडा. आम्ही 30 मिनिटांत कॉल करतो, आणि दुपारी 4 पूर्वी बुक केल्यास त्याच दिवशी येतो." },
       { q:"मी विकले नाही तर काही शुल्क लागते का?", a:"नाही. विकण्यापूर्वी सर्व काही मोफत आहे: घरभेट, चाचणी आणि मूल्यांकन प्रमाणपत्र. अंतिम ऑफर पसंत पडली तरच विका." },
       { q:'काही कपात होते का?', a:'फक्त खड्यांच्या वजनाची, जे आम्ही मोजून तुम्हाला दाखवतो. कोणतीही अतिरिक्त "वेस्टेज" कपात किंवा छुपे शुल्क नाही.' },
@@ -809,8 +797,7 @@ const STR = {
 
     hero_eyebrow:   'ನ್ಯಾಯಯುತ ಬೆಲೆಗೆ ನಾವು ಚಿನ್ನ ಖರೀದಿಸುತ್ತೇವೆ',
     hero_h1:        ['ನಿಮ್ಮ ಚಿನ್ನವನ್ನು ', 'ಲೈವ್', ' ಮಾರುಕಟ್ಟೆ ದರದಲ್ಲಿ ಮಾರಾಟ ಮಾಡಿ.'],
-    hero_sub:       "15 ನಿಮಿಷಗಳಲ್ಲಿ ಹಣ ನಿಮ್ಮ ಖಾತೆಗೆ, ಮನೆಯಲ್ಲೇ ಅಥವಾ ನಮ್ಮ ಖಾರ್‌ಘರ್ ಕೇಂದ್ರದಲ್ಲಿ",
-    hero_guarantee: 'ನಮ್ಮ ಗ್ಯಾರಂಟಿ — ನಮ್ಮ ಬೆಲೆಗೆ ಯಾರೂ ಸರಿಸಾಟಿಯಾಗಲಾರರು',
+    hero_points:    ["15 ನಿಮಿಷಗಳಲ್ಲಿ ಪಾವತಿ, ಮನೆಯಲ್ಲೇ ಅಥವಾ ನಮ್ಮ ಕೇಂದ್ರದಲ್ಲಿ", "ಉಚಿತ ಮೌಲ್ಯಮಾಪನ, ನಿಮ್ಮ ಮುಂದೆಯೇ ಪರೀಕ್ಷೆ", "ಅತ್ಯುತ್ತಮ ಬೆಲೆಯ ಗ್ಯಾರಂಟಿ. ಮಾರುವ ಒತ್ತಡವಿಲ್ಲ."],
     hero_cta_wa:    "WhatsApp ನಲ್ಲಿ ನನ್ನ ಅಂದಾಜು ಪಡೆಯಿರಿ",
     hero_cta_calc:  'ನಿಮ್ಮ ಚಿನ್ನದ ಮೌಲ್ಯ ತಿಳಿಯಿರಿ',
     hero_stats:     "500+ ಗ್ರಾಹಕರು · ₹10 ಕೋಟಿ+ ಖರೀದಿ",
@@ -819,16 +806,13 @@ const STR = {
     hero_uses:      ["ಮನೆಯ ಮದುವೆಗೆ", "ಮಕ್ಕಳ ವಿದ್ಯಾಭ್ಯಾಸಕ್ಕೆ", "ಹೊಸ ಮನೆಗೆ", "ಸ್ವಂತ ವ್ಯಾಪಾರಕ್ಕೆ", "ತುರ್ತು ಚಿಕಿತ್ಸೆಗೆ", "ಸಾಲದಿಂದ ಮುಕ್ತಿಗೆ"],
     hero_family:    "ಇದನ್ನು ನಿಮ್ಮ ಕುಟುಂಬದ ನಾಳೆಗಾಗಿ ನಿಮಗೆ ಒಪ್ಪಿಸಲಾಗಿತ್ತು. ಈಗ, ಇದು ನಿಮ್ಮ ಇಂದಿಗಾಗಿ.",
     hero_photo_alt: "ಮನೆಯಲ್ಲಿ ಪತ್ನಿ ತನ್ನ ಚಿನ್ನದ ಬಳೆಗಳನ್ನು ಪ್ರೀತಿಯಿಂದ ಪತಿಯ ಕೈಗೆ ಇಡುತ್ತಿರುವುದು.",
-    tiles: [
-      { t:"ಉಚಿತ ಮನೆ ಭೇಟಿ, ಅಥವಾ ಕೇಂದ್ರಕ್ಕೆ ಬನ್ನಿ", d:"ನವಿ ಮುಂಬೈ, ಮುಂಬೈ ಮತ್ತು ಥಾಣೆಯಲ್ಲಿ ನಾವು ನಿಮ್ಮ ಮನೆಗೆ ಬರುತ್ತೇವೆ, ಅಥವಾ ನೀವು ನಮ್ಮ ಖಾರ್‌ಘರ್ ಕೇಂದ್ರಕ್ಕೆ ಬರಬಹುದು." },
-      { t:"ನಿಮ್ಮ ಮುಂದೆಯೇ ಪರೀಕ್ಷೆ", d:"XRF ಯಂತ್ರ ನಿಖರ ಶುದ್ಧತೆಯನ್ನು ತಿಳಿಸುತ್ತದೆ. ಗೀರು ಇಲ್ಲ, ಕರಗಿಸುವುದಿಲ್ಲ, ರೀಡಿಂಗ್ ನೀವೇ ನೋಡುತ್ತೀರಿ." },
-      { t:"ಅಲ್ಲಿಯೇ ಪಾವತಿ", d:"ಹಣ ತಕ್ಷಣ ನಿಮ್ಮ ಬ್ಯಾಂಕ್ ಅಥವಾ UPI ಗೆ, ಜೊತೆಗೆ ಉಚಿತ ಮೌಲ್ಯಮಾಪನ ಪ್ರಮಾಣಪತ್ರ." },
-    ],
 
     rate_title: "ನಮ್ಮ ಲೈವ್ ದರ", rate_loading: 'ಲೋಡ್ ಆಗುತ್ತಿದೆ…', rate_updated: "{time} ಕ್ಕೆ ಅಪ್‌ಡೇಟ್", rate_fetching: 'ಲೈವ್ ದರ ಪಡೆಯಲಾಗುತ್ತಿದೆ…',
     rate_unavailable: 'ಲೈವ್ ದರ ತಾತ್ಕಾಲಿಕವಾಗಿ ಲಭ್ಯವಿಲ್ಲ', rate_refresh: 'ಪ್ರತಿ ನಿಮಿಷ ಅಪ್‌ಡೇಟ್ ಆಗುತ್ತದೆ · GST ಸಹಿತ', est_live: 'ಲೈವ್ 24K', est_w: 'ತೂಕ', why_photo: 'ಪ್ರತಿ ಪರೀಕ್ಷೆಯೂ ನಿಮ್ಮ ಮುಂದೆಯೇ ಪರದೆಯ ಮೇಲೆ: ಇಲ್ಲಿ 91.6% ಚಿನ್ನ, ಅಂದರೆ 22K.',
     gst_excl: 'GST ಇಲ್ಲದೆ 24K:',
     gst_note: 'ಮೇಲೆ ತೋರಿಸಿರುವ ದರ GST ಸಹಿತ. ನೀವು GST ನೋಂದಾಯಿತರಾಗಿದ್ದರೆ, ತೆರಿಗೆ ಕ್ರೆಡಿಟ್ ಅನ್ನು ನಿಮಗೆ ಹಿಂತಿರುಗಿಸುತ್ತೇವೆ.',
+    gst_incl: "ದರಗಳಲ್ಲಿ GST ಸೇರಿದೆ", gst_excl_k: "GST ಇಲ್ಲದೆ, {k}K:",
+    next_title: "ನೀವು ಮೊದಲು ಏನು ತಿಳಿಯಲು ಬಯಸುತ್ತೀರಿ?", next_cards: ["ನನ್ನ ಬೆಲೆ ಹೇಗೆ ಲೆಕ್ಕವಾಗುತ್ತದೆ?", "ಆ ದಿನ ಏನಾಗುತ್ತದೆ?", "ಇತರರು ಏನು ಹೇಳುತ್ತಾರೆ?", "ನನಗೊಂದು ಪ್ರಶ್ನೆ ಇದೆ"],
 
     calc_title: 'ನಿಮ್ಮ ಚಿನ್ನದ ಈಗಿನ ಮೌಲ್ಯ ಎಷ್ಟು?', calc_weight: 'ತೂಕ (ಗ್ರಾಂ)', calc_weight_ph: 'ಉದಾ. 10', calc_karat: 'ಶುದ್ಧತೆ ಆಯ್ಕೆಮಾಡಿ',
     calc_est: "ನಿಮ್ಮ ಅಂದಾಜು", calc_at: '{k}K ಗೆ ₹{rate}/ಗ್ರಾಂ ದರದಲ್ಲಿ', calc_cta: "WhatsApp ನಲ್ಲಿ ನನ್ನ ಅಂದಾಜು ಪಡೆಯಿರಿ",
@@ -890,7 +874,7 @@ const STR = {
       { q:"ನೀವು ನನ್ನ ಆಭರಣಗಳ ಫೋಟೋ ತೆಗೆಯುತ್ತೀರಾ?", a:"ಹೌದು. ಪರೀಕ್ಷೆಗೆ ಮೊದಲು ಪ್ರತಿ ಆಭರಣದ ಫೋಟೋ ತೆಗೆಯಲಾಗುತ್ತದೆ, ಆದ್ದರಿಂದ ನೀವು ಏನನ್ನು ಒಪ್ಪಿಸಿದಿರಿ ಎಂಬುದರ ಸ್ಪಷ್ಟ ದಾಖಲೆ ಇರುತ್ತದೆ." },
       { q:"ನೀವು ಉಚಿತ ಮನೆ ಭೇಟಿ ನೀಡುತ್ತೀರಾ?", a:"ಹೌದು, ನವಿ ಮುಂಬೈ, ಮುಂಬೈ ಮತ್ತು ಥಾಣೆಯಲ್ಲಿ. ನಮ್ಮ ಎಕ್ಸಿಕ್ಯೂಟಿವ್ ನಿಮಗೆ ಅನುಕೂಲವಾದ ಸಮಯಕ್ಕೆ ಬಂದು, ನಿಮ್ಮ ಮುಂದೆಯೇ ಚಿನ್ನ ಪರೀಕ್ಷಿಸಿ, ಅಲ್ಲಿಯೇ ಅಂತಿಮ ಆಫರ್ ನೀಡುತ್ತಾರೆ." },
       { q:"ಭೇಟಿಯನ್ನು ಗೌಪ್ಯವಾಗಿಡಬಹುದೇ?", a:"ಹೌದು. ಬುಕ್ ಮಾಡುವಾಗ \"ಗೌಪ್ಯ ಭೇಟಿ\" ಆಯ್ಕೆಮಾಡಿ; ನಮ್ಮ ಎಕ್ಸಿಕ್ಯೂಟಿವ್ ಸಾಮಾನ್ಯ ಉಡುಪಿನಲ್ಲಿ ಬರುತ್ತಾರೆ, ಬ್ಯಾಗ್ ಅಥವಾ ವಾಹನದ ಮೇಲೆ ಲೋಗೋ ಇರುವುದಿಲ್ಲ. ನಮ್ಮ ಕೇಂದ್ರದಲ್ಲಿ ಪ್ರತಿ ಭೇಟಿಯೂ ಖಾಸಗಿ ಸಮಾಲೋಚನಾ ಕೊಠಡಿಯಲ್ಲಿ ನಡೆಯುತ್ತದೆ." },
-      { q:"ನಾನು ಮಹಿಳಾ ಎಕ್ಸಿಕ್ಯೂಟಿವ್ ಅನ್ನು ಕೇಳಬಹುದೇ?", a:"ಹೌದು. ಬುಕ್ ಮಾಡುವಾಗ \"ಮಹಿಳಾ ಎಕ್ಸಿಕ್ಯೂಟಿವ್\" ಆಯ್ಕೆಮಾಡಿ, ನಾವು ನಿಮ್ಮ ಬಳಿ ಬಂದರೂ ಅಥವಾ ನೀವು ನಮ್ಮ ಕೇಂದ್ರಕ್ಕೆ ಬಂದರೂ." },
+      { q:"ನಾನು ಮಹಿಳಾ ಎಕ್ಸಿಕ್ಯೂಟಿವ್ ಅನ್ನು ಕೇಳಬಹುದೇ?", a:"ಹೌದು. ಮನೆ ಭೇಟಿ ಬುಕ್ ಮಾಡುವಾಗ \"ಮಹಿಳಾ ಎಕ್ಸಿಕ್ಯೂಟಿವ್\" ಆಯ್ಕೆಮಾಡಿ. ಕೇಂದ್ರಕ್ಕೆ ಬರುತ್ತಿದ್ದೀರಾ? WhatsApp ನಲ್ಲಿ ತಿಳಿಸಿ ಸಾಕು." },
       { q:"ನನಗೆ ತುರ್ತಾಗಿ ಹಣ ಬೇಕು. ನೀವು ಇಂದೇ ಬರಬಹುದೇ?", a:"ಹೌದು. ಮನೆ ಭೇಟಿ ಬುಕ್ ಮಾಡುವಾಗ \"ತುರ್ತು, ಅದೇ ದಿನ\" ಆಯ್ಕೆಮಾಡಿ. 30 ನಿಮಿಷಗಳೊಳಗೆ ಕರೆ ಮಾಡುತ್ತೇವೆ, ಮತ್ತು ಸಂಜೆ 4 ಗಂಟೆಯೊಳಗೆ ಬುಕ್ ಮಾಡಿದರೆ ಅದೇ ದಿನ ಬರುತ್ತೇವೆ." },
       { q:"ನಾನು ಮಾರದಿದ್ದರೆ ಏನಾದರೂ ಶುಲ್ಕವಿದೆಯೇ?", a:"ಇಲ್ಲ. ಮಾರುವ ಮೊದಲು ಎಲ್ಲವೂ ಉಚಿತ: ಮನೆ ಭೇಟಿ, ಪರೀಕ್ಷೆ ಮತ್ತು ಮೌಲ್ಯಮಾಪನ ಪ್ರಮಾಣಪತ್ರ. ಅಂತಿಮ ಆಫರ್ ಇಷ್ಟವಾದರೆ ಮಾತ್ರ ಮಾರಿ." },
       { q:'ಯಾವುದಾದರೂ ಕಡಿತ ಇದೆಯೇ?', a:'ಕಲ್ಲುಗಳ ತೂಕ ಮಾತ್ರ, ಅದನ್ನು ನಾವು ಅಳೆದು ನಿಮಗೆ ತೋರಿಸುತ್ತೇವೆ. ಯಾವುದೇ ಹೆಚ್ಚುವರಿ "ವೇಸ್ಟೇಜ್" ಕಡಿತ ಅಥವಾ ಮರೆಮಾಚಿದ ಶುಲ್ಕವಿಲ್ಲ.' },
@@ -985,8 +969,6 @@ const GLOBAL_CSS = `
   .cm-motion .rv[data-in] { opacity:1; transform:none; }
   @keyframes shimmer { 0%, 72% { transform:translateX(-130%) skewX(-18deg); } 100% { transform:translateX(230%) skewX(-18deg); } }
   .hero-mark-svg { overflow:hidden; border-radius:50%; }
-  .call-short { display:none; }
-  @media (max-width:379.98px) { .call-full { display:none; } .call-short { display:inline; } }
   .cm-menu-open .hero-fly { display:none; }
   .cm-shimmer { position:absolute; top:0; left:0; width:45%; height:100%; pointer-events:none; background:linear-gradient(90deg, rgba(255,255,255,0), rgba(255,246,214,.55), rgba(255,255,255,0)); animation:shimmer 7s ease-in-out 4.2s infinite; transform:translateX(-130%) skewX(-18deg); mix-blend-mode:soft-light; }
   @keyframes popIn  { 0% { transform:scale(.6); opacity:0; } 70% { transform:scale(1.08); opacity:1; } 100% { transform:scale(1); } }
@@ -1007,7 +989,7 @@ const GLOBAL_CSS = `
 
   /* top bar */
   @media (max-width:599.98px)  { .tb-name { display:none; } }
-  @media (max-width:380px)     { .tb-live { display:none; } }
+  @media (max-width:399.98px)  { .tb-k, .tb-live { display:none; } }
   @media (max-width:1279.98px) { .tb-links { display:none!important; } }
   @media (min-width:1280px)    { .tb-menu-btn { display:none!important; } }
   .tb-navlink { background:none; border:none; color:rgba(241,215,141,.82)!important; font-family:var(--f-sans); font-size:13.5px; font-weight:500; padding:8px 9px; border-radius:4px; cursor:pointer; white-space:nowrap; text-decoration:none; }
@@ -1078,11 +1060,21 @@ const GLOBAL_CSS = `
   @media (prefers-reduced-motion: reduce) { .ru > span { transform:none!important; transition-property:opacity!important; transition-duration:.5s!important; } }
   .hero-family { font-family:var(--f-serif); font-style:italic; font-size:16px; font-weight:350; color:${C.ink2}; line-height:1.55; margin:0 auto 16px; max-width:440px; animation:fadeSlide .9s ease 1.1s both; }
   @media (min-width:1024px) { .hero-family { margin:0 0 18px; max-width:640px; padding-left:14px; border-left:2px solid rgba(224,183,101,.75); } }
-  .hero-assure { display:flex; flex-wrap:wrap; justify-content:center; gap:6px 18px; font-family:var(--f-sans); font-size:14px; font-weight:600; color:${C.ink2}; line-height:1.45; }
-  .hero-assure > span { display:inline-flex; align-items:flex-start; gap:7px; text-align:left; max-width:100%; }
-  .hero-assure > span > svg { margin-top:2px; }
-  @media (max-width:1023.98px) { .hero-assure { flex-direction:column; align-items:center; } }
-  @media (min-width:1024px) { .hero-assure { justify-content:flex-start; } }
+  .hero-assure { list-style:none; padding:0; margin:0 auto; width:fit-content; max-width:100%; display:flex; flex-direction:column; align-items:flex-start; gap:7px; font-family:var(--f-sans); font-size:14px; font-weight:600; color:${C.ink2}; line-height:1.4; text-align:left; }
+  .hero-assure > li { display:flex; align-items:flex-start; gap:8px; }
+  .hero-assure > li > svg { flex-shrink:0; margin-top:2px; }
+  @media (min-width:1024px) { .hero-assure { margin:0; } }
+  @media (max-width:379.98px) { .hero-assure { font-size:13px; } }
+  .est-gst { margin-top:10px; font-family:var(--f-sans); font-size:12px; }
+  .est-gst button { display:inline-flex; align-items:center; gap:4px; background:none; border:none; padding:0; cursor:pointer; color:${C.mute}; font:500 12px/1.4 var(--f-sans); }
+  .est-gst-tip { margin-top:6px; padding:8px 10px; border-radius:4px; background:rgba(224,183,101,.1); color:${C.ink2}; line-height:1.5; animation:fadeSlide .25s ease; }
+  .next-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media (min-width:1024px) { .next-grid { grid-template-columns:repeat(4, 1fr); gap:16px; } }
+  .next-card { position:relative; display:flex; flex-direction:column; align-items:flex-start; gap:10px; min-height:118px; padding:16px; border-radius:10px; text-align:left; cursor:pointer; background:${C.white}; border:1px solid rgba(184,136,58,.3); box-shadow:0 2px 10px rgba(22,18,31,.05); }
+  .next-ic { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:${C.paper}; color:${C.plum}; border:1px solid rgba(184,136,58,.3); }
+  .next-t { font:600 14.5px/1.35 var(--f-sans); color:${C.ink}; padding-right:16px; }
+  .next-arrow { position:absolute; right:12px; bottom:14px; color:${C.goldInk}; }
+  .lang-dd-menu button:hover { background:${C.paper}; }
   :root:is([lang=hi],[lang=mr],[lang=kn]) .ru > span,
   :root:is([lang=hi],[lang=mr],[lang=kn]) .it-en { font-style:normal!important; }
 
@@ -1357,6 +1349,45 @@ function LangSwitch({ size = 'sm' }) {
   );
 }
 
+// Compact language picker in the top bar: "EN ▾" opens the four languages.
+function LangDropdown() {
+  const { t, lang, setLang } = useT();
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+  useEffect(() => {
+    if (!open) return;
+    const close = e => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    const esc   = e => { if (e.key === 'Escape') setOpen(false); };
+    document.addEventListener('pointerdown', close);
+    document.addEventListener('keydown', esc);
+    return () => { document.removeEventListener('pointerdown', close); document.removeEventListener('keydown', esc); };
+  }, [open]);
+  const cur = LANGS.find(l => l.code === lang) || LANGS[0];
+  return (
+    <div ref={ref} style={{ position:'relative', flexShrink:0 }}>
+      <button type="button" className="lang-dd" aria-label={t('language')} aria-haspopup="listbox" aria-expanded={open} onClick={() => setOpen(v => !v)}
+        style={{ display:'inline-flex', alignItems:'center', gap:'3px', padding:'6px 8px 6px 10px', borderRadius:'999px', border:'1px solid rgba(224,183,101,.35)', background:'rgba(0,0,0,.18)', color:C.gold3, fontFamily:LANG_FONT[cur.code], fontSize: cur.code === 'en' ? '12px' : '13px', fontWeight:600, lineHeight:1.2, cursor:'pointer' }}>
+        {cur.short}<ChevronDown size={13} style={{ transform: open ? 'rotate(180deg)' : 'none', transition:'transform .2s' }}/>
+      </button>
+      {open && (
+        <div role="listbox" aria-label={t('language')} className="lang-dd-menu"
+          style={{ position:'absolute', top:'calc(100% + 8px)', right:0, minWidth:'150px', zIndex:120, background:C.white, borderRadius:'8px', border:'1px solid rgba(26,20,38,.1)', boxShadow:'0 8px 24px rgba(22,18,31,.18)', overflow:'hidden', animation:'fadeSlide .2s ease' }}>
+          {LANGS.map(l => {
+            const on = l.code === lang;
+            return (
+              <button key={l.code} type="button" role="option" aria-selected={on} lang={l.code} aria-label={l.name}
+                onClick={() => { setLang(l.code); setOpen(false); }}
+                style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:'10px', width:'100%', padding:'11px 14px', border:'none', borderTop:'1px solid rgba(26,20,38,.06)', background: on ? 'rgba(224,183,101,.14)' : C.white, color:C.ink, fontFamily:LANG_FONT[l.code], fontSize:'14px', fontWeight: on ? 600 : 500, cursor:'pointer', textAlign:'left' }}>
+                {l.name}{on && <Check size={15} color={C.goldInk}/>}
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Top Bar (always visible) ────────────────────────────────────────────────
 function TopBar({ spot, navigate, showLang = false }) {
   const { t } = useT();
@@ -1421,10 +1452,10 @@ function TopBar({ spot, navigate, showLang = false }) {
             Carat <span style={{ fontStyle:'italic' }}>Money</span>
           </span>
         </a>
-        <button type="button" onClick={() => go('rate')} aria-label={`24K live rate ₹${fmt(r24,0)} per gram`}
+        <button type="button" onClick={() => go('calculator')} aria-label={`24K live rate ₹${fmt(r24,0)} per gram`}
           style={{ display:'flex', alignItems:'center', gap:'5px', padding:'5px 10px', borderRadius:'999px', background:'rgba(0,0,0,.22)', border:'1px solid rgba(224,183,101,.2)', fontFamily:MONO, fontSize:'11px', whiteSpace:'nowrap', flexShrink:0, cursor:'pointer' }}>
           <span key={r24} style={{ width:'6px', height:'6px', borderRadius:'50%', background:C.green, animation:'dotPing 1.2s ease-out 1' }}/>
-          <span style={{ color:'rgba(241,215,141,.7)' }}>24K</span>
+          <span className="tb-k" style={{ color:'rgba(241,215,141,.7)' }}>24K</span>
           <span className="tb-live" style={{ color:C.gold2 }}>live</span>
           <span style={{ color:C.gold3 }}>₹{fmt(r24,0)}/g</span>
         </button>
@@ -1433,12 +1464,12 @@ function TopBar({ spot, navigate, showLang = false }) {
           <Link to="/blog" navigate={navigate} className="tb-navlink" style={{ display:'inline-block' }}>{t('nav_blog')}</Link>
         </nav>
         <div style={{ marginLeft:'auto', display:'flex', alignItems:'center', gap:'8px', flexShrink:0 }}>
-          {showLang && <div className="hide-m"><LangSwitch/></div>}
+          {showLang && <LangDropdown/>}
           <a className="hide-m" href={WA_LINK} target="_blank" rel="noreferrer" onClick={() => track('whatsapp_click', { source:'topbar' })}
             style={{ display:'inline-flex', alignItems:'center', gap:'6px', background:C.green, color:C.ink, padding:'7px 12px', borderRadius:'999px', fontFamily:SANS, fontSize:'13px', fontWeight:600, textDecoration:'none', whiteSpace:'nowrap' }}>
             <WhatsAppGlyph size={15} color={C.ink}/> WhatsApp
           </a>
-          <CallPicker source="topbar" variant="gold-sm" label={<><span className="call-full">{t('git_call')}</span><span className="call-short">{t('call_short')}</span></>}/>
+          <CallPicker source="topbar" variant="gold-sm" label={t('call_short')}/>
           <button type="button" className="tb-menu-btn" onClick={() => setMenuOpen(v => !v)} aria-label={t('menu')} aria-expanded={menuOpen}
             style={{ width:'36px', height:'36px', display:'inline-flex', alignItems:'center', justifyContent:'center', background:'transparent', border:'1px solid rgba(255,255,255,.25)', borderRadius:'8px', color:C.gold3, cursor:'pointer', flexShrink:0 }}>
             {menuOpen ? <X size={18}/> : <Menu size={18}/>}
@@ -1454,12 +1485,6 @@ function TopBar({ spot, navigate, showLang = false }) {
             <div className="cm-wrap" style={{ paddingTop:'6px', paddingBottom:'20px' }}>
               {links.map(([id, label]) => <button key={id} type="button" onClick={() => go(id)} style={menuRow}>{label}</button>)}
               <Link to="/blog" navigate={navigate} style={menuRow}>{t('nav_blog')}</Link>
-              {showLang && (
-                <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:'12px', padding:'16px 0' }}>
-                  <span style={{ fontFamily:SANS, fontSize:'14px', color:'rgba(241,215,141,.7)' }}>{t('language')}</span>
-                  <LangSwitch size="lg"/>
-                </div>
-              )}
               <a href={WA_LINK} target="_blank" rel="noreferrer" onClick={() => { track('whatsapp_click', { source:'menu' }); close(); }}
                 style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:'8px', marginTop:'8px', padding:'14px', borderRadius:'999px', background:C.green, color:C.ink, fontFamily:SANS, fontWeight:600, fontSize:'15px', textDecoration:'none' }}>
                 <WhatsAppGlyph size={18} color={C.ink}/> {t('whatsapp')}
@@ -1504,8 +1529,6 @@ function Hero({ navigate, spot }) {
   const { t, lang } = useT();
   const en    = lang === 'en';
   const h     = t('hero_h1');
-  const tiles = t('tiles');
-  const icons = [<HomeIcon size={20}/>, <Microscope size={20} strokeWidth={1.75}/>, <IndianRupee size={20} strokeWidth={1.75}/>];
   const line  = { height:'1px', width:'32px', background:C.gold, opacity:.5, flexShrink:0 };
   return (
     <section id="top" className="hero">
@@ -1515,10 +1538,12 @@ function Hero({ navigate, spot }) {
             <h1 className="hero-h1">{h[0]}<span style={{ fontStyle:'italic', color:C.plum }}>{h[1]}</span>{h[2]}</h1>
             <RotatingUse/>
             <p className="hero-family it-en">{t('hero_family')}</p>
-            <div className="hero-assure">
-              <span><Clock size={16} color={C.gold} style={{ flexShrink:0 }}/>{t('hero_sub').replace(/[.।]\s*$/, '')}</span>
-              <span><ShieldCheck size={17} color={C.gold} style={{ flexShrink:0 }}/>{t('hero_guarantee')}</span>
-            </div>
+            <ul className="hero-assure">
+              {t('hero_points').map((p, i) => {
+                const I = [Clock, Microscope, ShieldCheck][i] || Check;
+                return <li key={i}><I size={16} color={C.gold} strokeWidth={1.9}/>{p}</li>;
+              })}
+            </ul>
             <HeroEstimator spot={spot} navigate={navigate}/>
             <div style={{ fontFamily: en ? MONO : SANS, fontSize:'12px', color:C.mute, letterSpacing: en ? '0.04em' : 0, lineHeight:1.8 }}>
               <CountUp text={t('hero_stats')}/><br/>{t('hero_pickup')}
@@ -1549,22 +1574,6 @@ function Hero({ navigate, spot }) {
           </div>
         </div>
 
-        <div className="tiles">
-          {tiles.map((x, i) => (
-            <div className="tile rv lift" key={i} style={stagger(i + 3, 90)}>
-              <div className="tile-ic">{icons[i]}</div>
-              <div>
-                <div className="tile-t">{x.t}</div><div className="tile-d">{x.d}</div>
-                {i === 0 && (
-                  <a href={DIRECTIONS_URL} target="_blank" rel="noreferrer" onClick={() => track('directions_click', { source:'hero_tile' })} className="tile-link"
-                    style={{ marginTop:'8px', fontFamily:SANS, fontSize:'13.5px', fontWeight:600, color:C.goldInk, textDecoration:'underline', textUnderlineOffset:'3px' }}>
-                    {t('visit_dir')} →
-                  </a>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
       </div>
     </section>
   );
@@ -1597,7 +1606,7 @@ function GetInTouch() {
   const door     = pref === 'doorstep';
   const isUrgent = door && urgent;              // same day + discreet are for home visits only
   const isDisc   = door && discreet;
-  const isWoman  = !!pref && woman;
+  const isWoman  = door && woman;
   const LBLD     = { ...LBL, color:'rgba(241,215,141,.85)' };
   const hint     = { fontFamily:SANS, fontSize:'12.5px', color:'rgba(241,215,141,.78)', lineHeight:1.5, marginTop:'8px', animation:'fadeSlide .25s ease' };
 
@@ -1651,8 +1660,6 @@ function GetInTouch() {
       </div>
       ) : (
       <div className="git-body">
-        <h2 style={{ fontFamily:SERIF, fontSize:'clamp(24px, 3vw, 30px)', fontWeight:350, color:C.gold3, margin:'0 0 6px', letterSpacing:'-0.02em', lineHeight:1.15 }}>{t('git_title')}</h2>
-        <p style={{ fontFamily:SANS, fontSize:'14px', color:'rgba(241,215,141,.65)', margin:'0 0 20px', lineHeight:1.55 }}>{t('git_sub')}</p>
         <div className="git-fields">
           <div>
             <label htmlFor="git-name" style={LBLD}>{t('git_name')}</label>
@@ -1668,12 +1675,18 @@ function GetInTouch() {
           <div className="git-pref">
             <div style={LBLD}>{t('git_pref')}</div>
             <div className="seg">{chip('doorstep', t('git_doorstep'))}{chip('centre', t('git_centre'))}</div>
-            {pref && (
+            {pref === 'centre' && (
+              <div style={{ display:'flex', alignItems:'flex-start', gap:'7px', marginTop:'12px', fontFamily:SANS, fontSize:'12.5px', color:'rgba(241,215,141,.8)', lineHeight:1.5, animation:'fadeSlide .3s ease' }}>
+                <MapPin size={14} color={C.gold2} style={{ flexShrink:0, marginTop:'2px' }}/>
+                <span>{ADDRESS} · {t('visit_hours')}</span>
+              </div>
+            )}
+            {door && (
               <div style={{ marginTop:'14px', animation:'fadeSlide .3s ease' }}>
                 <div style={{ ...LBLD, fontWeight:500, fontSize:'13px' }}>{t('git_prefs')}</div>
                 <div className="git-opts">
-                  {door && opt(urgent, setUrgent, Zap, t('git_p_urgent'))}
-                  {door && opt(discreet, setDiscreet, EyeOff, t('git_p_discreet'))}
+                  {opt(urgent, setUrgent, Zap, t('git_p_urgent'))}
+                  {opt(discreet, setDiscreet, EyeOff, t('git_p_discreet'))}
                   {opt(woman, setWoman, User, t('git_p_woman'))}
                 </div>
                 {isUrgent && <div style={hint}>{t('git_urgent_note')}</div>}
@@ -1846,6 +1859,7 @@ function HeroEstimator({ spot, navigate }) {
   const { t } = useT();
   const [w, setW] = useState('');
   const [k, setK] = useState(22);
+  const [showGst, setShowGst] = useState(false);
   const r24   = spot.display ?? SPOT_FALLBACK;
   const rate  = k === 24 ? r24 : Math.round(r24 * k / 24);
   const wN    = parseNum(w);
@@ -1921,60 +1935,14 @@ function HeroEstimator({ spot, navigate }) {
           {value === null ? t('soft_cta') : t('soft_cta_save')} →
         </button>
       </div>
-    </div>
-  );
-}
-
-// ─── 2. Live-rate strip (formulas unchanged) ─────────────────────────────────
-function RateStrip({ spot }) {
-  const { t } = useT();
-  const [showGstTip, setShowGstTip]       = useState(false);
-  const [selectedKarat, setSelectedKarat] = useState('22');
-  const r24     = spot.display ?? SPOT_FALLBACK;
-  const r22     = Math.round(r24 * 22 / 24);
-  const r18     = Math.round(r24 * 18 / 24);
-  const selRate = selectedKarat === '22' ? r22 : r18;
-  const preGST  = Math.round(r24 / 1.03);
-  const time    = fmtTime(spot.updatedAt);
-  const r24A    = useTween(r24, 700);
-  const selA    = useTween(selRate, 450);
-  return (
-    <div className="rate-strip rv" style={{ background:C.plum, borderRadius:'10px', border:'1px solid rgba(224,183,101,.2)', boxShadow:'0 8px 32px rgba(43,20,80,.18)', padding:'18px 24px' }}>
-      <div className="rs-row">
-        <h2 style={{ fontFamily:SERIF, fontSize:'22px', fontWeight:350, color:C.gold2, letterSpacing:'-0.02em', lineHeight:1.1, margin:0, whiteSpace:'nowrap' }}>{t('rate_title')}</h2>
-        {spot.loading && !spot.display
-          ? <span style={{ fontFamily:SERIF, fontSize:'28px', color:'rgba(241,215,141,.4)' }}>{t('rate_loading')}</span>
-          : (
-            <>
-              <div style={{ display:'flex', alignItems:'baseline', gap:'6px' }}>
-                <span style={{ fontFamily:SERIF, fontSize:'clamp(32px, 4vw, 44px)', fontWeight:350, lineHeight:1, letterSpacing:'-0.03em', color:C.gold3, whiteSpace:'nowrap' }}>₹{fmt(Math.round(r24A),0)}</span>
-                <span style={{ fontFamily:SANS, fontSize:'13px', color:'rgba(241,215,141,.6)', whiteSpace:'nowrap' }}>/g · 24K</span>
-              </div>
-              <div className="rs-sep" style={{ display:'flex', alignItems:'center', gap:'10px' }}>
-                <select aria-label="Karat" value={selectedKarat} onChange={e => setSelectedKarat(e.target.value)}
-                  style={{ background:'rgba(224,183,101,.12)', border:'1px solid rgba(224,183,101,.3)', borderRadius:'4px', color:C.gold2, fontFamily:MONO, fontSize:'12px', fontWeight:500, padding:'6px 10px', cursor:'pointer', outline:'none' }}>
-                  <option value="22" style={{ background:C.plum }}>22K</option>
-                  <option value="18" style={{ background:C.plum }}>18K</option>
-                </select>
-                <span style={{ fontFamily:SERIF, fontSize:'24px', fontWeight:350, color:C.gold2, whiteSpace:'nowrap' }}>₹{fmt(Math.round(selA),0)}</span>
-                <span style={{ fontFamily:SANS, fontSize:'12px', color:'rgba(241,215,141,.6)', whiteSpace:'nowrap' }}>/g · {selectedKarat}K</span>
-              </div>
-            </>
-          )}
-        <div className="rs-time">
-          <div style={{ display:'flex', alignItems:'center', gap:'6px', fontFamily:SERIF, fontSize:'12px', fontStyle:'italic', color:'rgba(241,215,141,.7)' }}>
-            <span>{spot.error && !spot.updatedAt ? t('rate_unavailable') : time ? fill(t('rate_updated'), { time }) : t('rate_fetching')}</span>
-            <button type="button" onClick={() => setShowGstTip(v => !v)} aria-expanded={showGstTip} aria-label="GST details"
-              style={{ background:'none', border:'none', fontSize:'15px', color:C.gold2, cursor:'pointer', padding:'2px 4px', lineHeight:1, fontStyle:'normal' }}>ⓘ</button>
+      <div className="est-gst">
+        <button type="button" onClick={() => setShowGst(v => !v)} aria-expanded={showGst}>{t('gst_incl')} <Info size={13}/></button>
+        {showGst && (
+          <div className="est-gst-tip">
+            {fill(t('gst_excl_k'), { k })} <b>₹{fmt(Math.round(rate / 1.03), 0)}/g</b><br/>{t('gst_note')}
           </div>
-          <button type="button" className="rs-daily" onClick={() => optInDaily('rate_strip')}><WhatsAppGlyph size={14} color={C.gold2}/> {t('rate_daily')}</button>
-        </div>
+        )}
       </div>
-      {showGstTip && (
-        <div style={{ marginTop:'12px', padding:'10px 14px', background:'rgba(224,183,101,.1)', borderRadius:'4px', fontFamily:SANS, fontSize:'13px', color:C.gold3, lineHeight:1.55, animation:'fadeSlide .25s ease' }}>
-          {t('gst_excl')} <b>₹{fmt(preGST,0)}/g</b><br/>{t('gst_note')}
-        </div>
-      )}
     </div>
   );
 }
@@ -2068,6 +2036,30 @@ function XrfPhoto({ onError }) {
         </span>
       )}
     </div>
+  );
+}
+
+// ─── Middle navigation panel (after the booking band) ────────────────────────
+const NEXT_TARGETS = [['why', Scale], ['process', Clock], ['reviews', MessageCircle], ['faqs', Info]];
+function NextSteps() {
+  const { t } = useT();
+  const cards = t('next_cards');
+  return (
+    <section className="cm-sec next-sec" aria-labelledby="next-h">
+      <div className="cm-wrap">
+        <h2 id="next-h" className="cm-h2 rv" style={{ marginBottom:'18px' }}>{t('next_title')}</h2>
+        <div className="next-grid">
+          {NEXT_TARGETS.map(([id, I], i) => (
+            <button key={id} type="button" className="next-card rv lift" style={stagger(i, 80)}
+              onClick={() => { track('nav_panel_click', { target:id }); goSection(id); }}>
+              <span className="next-ic"><I size={18} strokeWidth={1.8}/></span>
+              <span className="next-t">{cards[i]}</span>
+              <ChevronRight size={16} className="next-arrow"/>
+            </button>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -2398,7 +2390,7 @@ function PartnerStrip() {
 function SiteFooter({ navigate }) {
   const { t, lang } = useT();
   const en = lang === 'en';
-  const onPage = [['rate', t('f_live')], ['calculator', t('f_calc')], ['why', t('f_why')], ['reviews', t('f_reviews')], ['faqs', t('f_faqs')], ['visit', t('f_visit')]];
+  const onPage = [['calculator', t('f_calc')], ['why', t('f_why')], ['reviews', t('f_reviews')], ['faqs', t('f_faqs')], ['visit', t('f_visit')]];
   const explore = [['/sell', t('f_sell')], ['/buy', t('f_buy')], ['/margin', t('f_margin')], ['/blog', t('f_blog')]];
   const H = ({ children }) => (
     <div style={{ fontFamily: en ? MONO : SANS, fontSize: en ? '11px' : '13px', letterSpacing: en ? '0.16em' : 0, textTransform: en ? 'uppercase' : 'none', color:C.gold2, marginBottom:'12px', fontWeight:500 }}>{children}</div>
@@ -2500,12 +2492,12 @@ function HomePage({ navigate, spot }) {
       <TopBar spot={spot} navigate={navigate} showLang/>
       <main>
         <Hero navigate={navigate} spot={spot}/>
-        <section id="rate" className="cm-sec" style={{ paddingTop:'8px' }}>
+        <section className="cm-sec" style={{ paddingTop:'8px' }}>
           <div className="cm-wrap">
-            <RateStrip spot={spot}/>
             <GetInTouch/>
           </div>
         </section>
+        <NextSteps/>
         <TrustCompare/>
         <Process/>
         <Reviews/>
