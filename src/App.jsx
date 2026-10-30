@@ -471,7 +471,7 @@ const STR = {
     calc_margin: "Already have an offer from another buyer? Check their margin →",
     est_chips: ["No obligation", "Weighed to 0.001 g in front of you", "Stones returned to you"],
     soft_t: "Not ready yet? That's okay.", soft_d: "Get the live rate on WhatsApp every morning, so you know when the time is right.",
-    soft_cta: "Send me the daily rate", soft_cta_save: "Save my estimate & get the daily rate", rate_daily: "Get this rate daily on WhatsApp",
+    soft_cta: "Send me the daily gold rate on WhatsApp", soft_cta_save: "Save my estimate & get the daily gold rate", rate_daily: "Get this rate daily on WhatsApp",
     xrf_photo: "Photographed", xrf_gold: "Gold (Au)",
 
     git_title: "Book a free visit", git_sub: "Share your details and we'll confirm a time on WhatsApp. Discreet visits and women executives on request.",
@@ -587,7 +587,7 @@ const STR = {
     calc_margin: "किसी और खरीदार से ऑफ़र मिला है? उनका मार्जिन जाँचें →",
     est_chips: ["कोई बाध्यता नहीं", "आपके सामने 0.001 ग्राम तक तौल", "पत्थर आपको वापस"],
     soft_t: "अभी तैयार नहीं हैं? कोई बात नहीं।", soft_d: "हर सुबह WhatsApp पर लाइव रेट पाएँ, ताकि आपको पता रहे कि सही समय कब है।",
-    soft_cta: "मुझे रोज़ का रेट भेजें", soft_cta_save: "मेरा अनुमान सेव करें और रोज़ का रेट पाएँ", rate_daily: "यह रेट रोज़ WhatsApp पर पाएँ",
+    soft_cta: "मुझे WhatsApp पर रोज़ का गोल्ड रेट भेजें", soft_cta_save: "मेरा अनुमान सेव करें और रोज़ का गोल्ड रेट पाएँ", rate_daily: "यह रेट रोज़ WhatsApp पर पाएँ",
     xrf_photo: "फ़ोटो ली गई", xrf_gold: "सोना (Au)",
 
     git_title: "मुफ़्त विज़िट बुक करें", git_sub: "अपनी जानकारी दें, हम WhatsApp पर समय तय करेंगे। अनुरोध पर गोपनीय विज़िट और महिला एग्ज़ीक्यूटिव।",
@@ -703,7 +703,7 @@ const STR = {
     calc_margin: "दुसऱ्या खरेदीदाराकडून ऑफर मिळाली आहे? त्यांचा मार्जिन तपासा →",
     est_chips: ["कोणतीही सक्ती नाही", "तुमच्यासमोर 0.001 ग्रॅमपर्यंत वजन", "खडे तुम्हाला परत"],
     soft_t: "अजून तयार नाही? काही हरकत नाही.", soft_d: "दररोज सकाळी WhatsApp वर लाइव्ह दर मिळवा, म्हणजे योग्य वेळ कधी आहे ते तुम्हाला कळेल.",
-    soft_cta: "मला रोजचा दर पाठवा", soft_cta_save: "माझा अंदाज सेव्ह करा आणि रोजचा दर मिळवा", rate_daily: "हा दर रोज WhatsApp वर मिळवा",
+    soft_cta: "मला WhatsApp वर रोजचा सोन्याचा दर पाठवा", soft_cta_save: "माझा अंदाज सेव्ह करा आणि रोजचा सोन्याचा दर मिळवा", rate_daily: "हा दर रोज WhatsApp वर मिळवा",
     xrf_photo: "फोटो घेतला", xrf_gold: "सोने (Au)",
 
     git_title: "मोफत भेट बुक करा", git_sub: "तुमची माहिती द्या, आम्ही WhatsApp वर वेळ निश्चित करू. विनंतीनुसार गोपनीय भेट आणि महिला एक्झिक्युटिव्ह.",
@@ -820,7 +820,7 @@ const STR = {
     calc_margin: "ಬೇರೆ ಖರೀದಿದಾರರಿಂದ ಆಫರ್ ಸಿಕ್ಕಿದೆಯೇ? ಅವರ ಮಾರ್ಜಿನ್ ಪರಿಶೀಲಿಸಿ →",
     est_chips: ["ಯಾವುದೇ ಒತ್ತಾಯವಿಲ್ಲ", "ನಿಮ್ಮ ಮುಂದೆಯೇ 0.001 ಗ್ರಾಂವರೆಗೆ ತೂಕ", "ಕಲ್ಲುಗಳು ನಿಮಗೆ ವಾಪಸ್"],
     soft_t: "ಇನ್ನೂ ಸಿದ್ಧವಿಲ್ಲವೇ? ಪರವಾಗಿಲ್ಲ.", soft_d: "ಪ್ರತಿದಿನ ಬೆಳಿಗ್ಗೆ WhatsApp ನಲ್ಲಿ ಲೈವ್ ದರ ಪಡೆಯಿರಿ, ಸರಿಯಾದ ಸಮಯ ಯಾವಾಗ ಎಂದು ತಿಳಿಯಲು.",
-    soft_cta: "ನನಗೆ ದಿನದ ದರ ಕಳುಹಿಸಿ", soft_cta_save: "ನನ್ನ ಅಂದಾಜು ಉಳಿಸಿ, ದಿನದ ದರ ಪಡೆಯಿರಿ", rate_daily: "ಈ ದರವನ್ನು ಪ್ರತಿದಿನ WhatsApp ನಲ್ಲಿ ಪಡೆಯಿರಿ",
+    soft_cta: "ನನಗೆ WhatsApp ನಲ್ಲಿ ದಿನದ ಚಿನ್ನದ ದರ ಕಳುಹಿಸಿ", soft_cta_save: "ನನ್ನ ಅಂದಾಜು ಉಳಿಸಿ, ದಿನದ ಚಿನ್ನದ ದರ ಪಡೆಯಿರಿ", rate_daily: "ಈ ದರವನ್ನು ಪ್ರತಿದಿನ WhatsApp ನಲ್ಲಿ ಪಡೆಯಿರಿ",
     xrf_photo: "ಫೋಟೋ ತೆಗೆಯಲಾಗಿದೆ", xrf_gold: "ಚಿನ್ನ (Au)",
 
     git_title: "ಉಚಿತ ಭೇಟಿ ಬುಕ್ ಮಾಡಿ", git_sub: "ನಿಮ್ಮ ವಿವರಗಳನ್ನು ನೀಡಿ, ನಾವು WhatsApp ನಲ್ಲಿ ಸಮಯವನ್ನು ದೃಢಪಡಿಸುತ್ತೇವೆ. ವಿನಂತಿಯ ಮೇರೆಗೆ ಗೌಪ್ಯ ಭೇಟಿ ಮತ್ತು ಮಹಿಳಾ ಎಕ್ಸಿಕ್ಯೂಟಿವ್.",
