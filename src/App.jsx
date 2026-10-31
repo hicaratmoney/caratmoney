@@ -1960,7 +1960,9 @@ function RotatingUse() {
     setTick(0);
     if (window.__CM_STILL__) return;      // test hook only
     // keeps rotating even with "Reduce motion" on: that mode gets a plain fade, no movement (see CSS)
-    const id = setInterval(() => { if (!paused.current && !document.hidden) setTick(n => n + 1); }, 2800);
+    // Hold time per phrase: our visitors are mostly 35–55, often reading on phones and not always in their first language.
+    const holdMs = lang === 'en' ? 3200 : 3600;
+    const id = setInterval(() => { if (!paused.current && !document.hidden) setTick(n => n + 1); }, holdMs);
     return () => clearInterval(id);
   }, [lang]);
   const n = uses.length, on = tick % n, off = tick > 0 ? (tick - 1) % n : -1;
