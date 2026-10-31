@@ -81,11 +81,21 @@ function CaratMark({ size = 64, color = '#e0b765', showInnerRing = true, showDot
 // ─── Hero hallmark + gold bar → ₹ animation ──────────────────────────────────
 // Positions come from the hallmark's real place on screen, so the bar always
 // lands on it: centred on phones, right-hand column on desktop.
+const TOPBAR_H = 56;
+function markInView(el) {
+  if (!el) return false;
+  const r = el.getBoundingClientRect();
+  if (!r.height) return false;
+  const visible = Math.min(r.bottom, window.innerHeight) - Math.max(r.top, TOPBAR_H);
+  return visible / r.height >= 0.6;
+}
+
 function HeroMark() {
   const TOTAL_MS   = 3000;   // desktop: plays once, crossing the whole screen
   const PHONE_MS   = 2400;   // phones: the trip is only ~150px, so a quicker run reads as smooth, not sluggish
-  const PHONE_GAP  = 3600;   // phones: longer rest between loops, so it doesn't compete with the rotating line
-  const CYCLE_MS   = PHONE_MS + PHONE_GAP;
+  const PHONE_GAP  = 3600;   // rest between loops, so it doesn't compete with the rotating line
+  const CYCLE_MS   = PHONE_MS + PHONE_GAP;   // phones: every 6 s
+  const DESK_CYCLE = TOTAL_MS + PHONE_GAP;   // desktop: every 6.6 s
   const START_MS = 800;
 
   const wrapRef = useRef(null);
@@ -94,27 +104,28 @@ function HeroMark() {
   const [scrolled, setScrolled] = useState(false);
   const [geo, setGeo]           = useState(null);
 
+  // "Out of view" = less than 60% of the hallmark visible below the fixed top bar. Until then the animation
+  // keeps playing while the visitor scrolls; the bar is re-measured every frame, so it follows the hallmark.
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 10);
+    const onScroll = () => setScrolled(!markInView(wrapRef.current));
     onScroll();
     window.addEventListener('scroll', onScroll, { passive:true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Phones: loops every 5 s like the original (the hallmark sits above the headline, clear of the calculator).
-  // Desktop: plays once per visit, because the bar crosses the calculator. If the visitor isn't at the top
-  // when it's due, it waits and plays the first time they're back at the top.
+  // Loops on every screen while at least 60% of the hallmark is visible: every 6 s on phones (2.4 s run),
+  // every 6.6 s on desktop (3 s run). Runs are skipped while it's out of view and resume when it's back.
   // Plays whatever the phone's "Reduce Motion" setting, as the original did.
   useEffect(() => {
     if (window.__CM_STILL__) return;   // test hook only
-    let raf, cycleTimer, initialTimer, running = false, played = false;
+    let raf, cycleTimer, initialTimer, running = false;
     const desk    = () => window.innerWidth >= 1024;
     const measure = el => { const r = el.getBoundingClientRect(); return { cx: r.left + r.width / 2, cy: r.top + r.height / 2, w: r.width, vw: window.innerWidth }; };
     const run = () => {
       const el = wrapRef.current;
-      if (!el || running || window.scrollY > 10 || document.hidden) return;
+      if (!el || running || !markInView(el) || document.hidden) return;
       if (!el.getBoundingClientRect().width) return;
-      running = true; played = true;
+      running = true;
       setGeo(measure(el));
       setPhase('running');
       const start = performance.now();
@@ -128,13 +139,11 @@ function HeroMark() {
       };
       raf = requestAnimationFrame(animate);
     };
-    const onTop = () => { if (!played && desk() && window.scrollY <= 10) run(); };
     initialTimer = setTimeout(() => {
       run();
-      if (desk()) window.addEventListener('scroll', onTop, { passive:true });
-      else cycleTimer = setInterval(run, CYCLE_MS);
+      cycleTimer = setInterval(run, desk() ? DESK_CYCLE : CYCLE_MS);   // each run is skipped while the hallmark is out of view
     }, START_MS);
-    return () => { clearTimeout(initialTimer); clearInterval(cycleTimer); cancelAnimationFrame(raf); window.removeEventListener('scroll', onTop); };
+    return () => { clearTimeout(initialTimer); clearInterval(cycleTimer); cancelAnimationFrame(raf); };
   }, []);
 
   const t      = tick;
