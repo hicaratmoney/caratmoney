@@ -82,9 +82,10 @@ function CaratMark({ size = 64, color = '#e0b765', showInnerRing = true, showDot
 // Positions come from the hallmark's real place on screen, so the bar always
 // lands on it: centred on phones, right-hand column on desktop.
 function HeroMark() {
-  const TOTAL_MS = 3000;
-  const GAP_MS   = 2000;   // 2s after rupee disappears
-  const CYCLE_MS = TOTAL_MS + GAP_MS;
+  const TOTAL_MS   = 3000;   // desktop: plays once, crossing the whole screen
+  const PHONE_MS   = 2400;   // phones: the trip is only ~150px, so a quicker run reads as smooth, not sluggish
+  const PHONE_GAP  = 3600;   // phones: longer rest between loops, so it doesn't compete with the rotating line
+  const CYCLE_MS   = PHONE_MS + PHONE_GAP;
   const START_MS = 800;
 
   const wrapRef = useRef(null);
@@ -120,8 +121,9 @@ function HeroMark() {
       const animate = now => {
         const elapsed = now - start;
         setGeo(measure(el));                     // re-measured every frame so the bar stays on the hallmark
-        setTick(Math.min(elapsed / TOTAL_MS, 1));
-        if (elapsed < TOTAL_MS) raf = requestAnimationFrame(animate);
+        const dur = desk() ? TOTAL_MS : PHONE_MS;
+        setTick(Math.min(elapsed / dur, 1));
+        if (elapsed < dur) raf = requestAnimationFrame(animate);
         else { setTick(1); setPhase('idle'); running = false; }
       };
       raf = requestAnimationFrame(animate);
