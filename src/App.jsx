@@ -2312,11 +2312,10 @@ function PhoneMock({ spot }) {
             <span style={{ width:'5px', height:'5px', borderRadius:'50%', background:C.green }}/> LIVE 24K
           </div>
           <div style={{ fontFamily:SERIF, fontSize:'26px', color:C.gold3, lineHeight:1.1, marginTop:'4px' }}>₹{fmt(r24,0)}<span style={{ fontSize:'11px', color:'rgba(241,215,141,.6)' }}>/g</span></div>
-          <div style={{ fontFamily:SANS, fontSize:'10px', color:'rgba(241,215,141,.6)', marginTop:'2px' }}>22K ₹{fmt(r22,0)}/g</div>
         </div>
         <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'8px', margin:'10px 12px 0' }}>
           <div style={tileS}><Sparkles size={16} color={C.gold}/>Get my estimate</div>
-          <div style={tileS}><HomeIcon size={16} color={C.gold}/>Book home visit</div>
+          <div style={tileS}><Store size={16} color={C.gold}/>Book a visit to our centre</div>
         </div>
         <div style={{ margin:'10px 12px 0', padding:'12px', borderRadius:'14px', background:C.white, border:'1px solid rgba(26,20,38,.08)' }}>
           <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', fontFamily:SANS, fontSize:'10.5px', fontWeight:600, color:C.ink }}>
