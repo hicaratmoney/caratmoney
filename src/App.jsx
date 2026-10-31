@@ -34,7 +34,7 @@ const C = {
 };
 
 // ─── Config ───────────────────────────────────────────────────────────────────
-const SPOT_FALLBACK    = 15578;
+const SPOT_FALLBACK    = 15578;   // used only by the /margin calculator; the homepage shows RateWait until the live rate loads
 const WHATSAPP_NUMBER  = '918169874545';
 const STONE_RECOVERY   = 0.50;
 const WASTAGE_RECOVERY = 0.95;
@@ -962,6 +962,7 @@ const GLOBAL_CSS = `
   @keyframes slideUp    { from{transform:translateY(100%)} to{transform:translateY(0)} }
   @keyframes fadeIn     { from{opacity:0} to{opacity:1} }
   @keyframes glowPulse  { 0%{box-shadow:0 0 0 0 rgba(224,183,101,.7)} 50%{box-shadow:0 0 0 14px rgba(224,183,101,0)} 100%{box-shadow:0 0 0 0 rgba(224,183,101,0)} }
+  .rate-wait { letter-spacing:.08em; opacity:.75; animation:pulse 1.4s ease-in-out infinite; }
   @keyframes floatY     { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
   input:focus,textarea:focus,select:focus { outline:none; border-color:${C.gold}!important; box-shadow:0 0 0 3px rgba(184,136,58,.14)!important; }
   a:focus-visible, button:focus-visible { outline:2px solid ${C.gold2}; outline-offset:2px; }
@@ -1399,6 +1400,9 @@ function LangDropdown() {
   );
 }
 
+// Shown wherever the live rate goes, until it has loaded (or if the feed is down).
+const RateWait = () => <span className="rate-wait" aria-label="Loading live rate">₹ – – –</span>;
+
 // ─── Top Bar (always visible) ────────────────────────────────────────────────
 function TopBar({ spot, navigate, showLang = false }) {
   const { t } = useT();
@@ -1430,7 +1434,7 @@ function TopBar({ spot, navigate, showLang = false }) {
     window.addEventListener('scroll', onScroll, { passive:true });
     return () => { window.removeEventListener('scroll', onScroll); cancelAnimationFrame(raf); };
   }, [showLang]);
-  const r24   = spot.display ?? SPOT_FALLBACK;
+  const r24   = spot.display;
   const close = () => setMenuOpen(false);
   const go    = id => { close(); goSection(id, navigate); };
   const home  = e => {
@@ -1463,12 +1467,12 @@ function TopBar({ spot, navigate, showLang = false }) {
             Carat <span style={{ fontStyle:'italic' }}>Money</span>
           </span>
         </a>
-        <button type="button" onClick={() => go('calculator')} aria-label={`24K live rate ₹${fmt(r24,0)} per gram`}
+        <button type="button" onClick={() => go('calculator')} aria-label={r24 ? `24K live rate ₹${fmt(r24,0)} per gram` : '24K live rate loading'}
           style={{ display:'flex', alignItems:'center', gap:'5px', padding:'5px 10px', borderRadius:'999px', background:'rgba(0,0,0,.22)', border:'1px solid rgba(224,183,101,.2)', fontFamily:MONO, fontSize:'11px', whiteSpace:'nowrap', flexShrink:0, cursor:'pointer' }}>
           <span key={r24} style={{ width:'6px', height:'6px', borderRadius:'50%', background:C.green, animation:'dotPing 1.2s ease-out 1' }}/>
           <span className="tb-k" style={{ color:'rgba(241,215,141,.7)' }}>24K</span>
           <span className="tb-live" style={{ color:C.gold2 }}>live</span>
-          <span style={{ color:C.gold3 }}>₹{fmt(r24,0)}/g</span>
+          <span style={{ color:C.gold3 }}>{r24 ? <>₹{fmt(r24,0)}/g</> : <RateWait/>}</span>
         </button>
         <nav className="tb-links" aria-label="Sections" style={{ display:'flex', alignItems:'center', gap:'2px', marginLeft:'6px' }}>
           {links.map(([id, label]) => <button key={id} type="button" className={`tb-navlink${active === id ? ' on' : ''}`} aria-current={active === id ? 'true' : undefined} onClick={() => go(id)}>{label}</button>)}
@@ -1871,10 +1875,10 @@ function HeroEstimator({ spot, navigate }) {
   const [w, setW] = useState('');
   const [k, setK] = useState(22);
   const [showGst, setShowGst] = useState(false);
-  const r24   = spot.display ?? SPOT_FALLBACK;
-  const rate  = k === 24 ? r24 : Math.round(r24 * k / 24);
+  const r24   = spot.display;                     // null until the live rate has loaded
+  const rate  = r24 ? (k === 24 ? r24 : Math.round(r24 * k / 24)) : null;
   const wN    = parseNum(w);
-  const value = wN !== null && wN > 0 ? wN * rate : null;
+  const value = rate && wN !== null && wN > 0 ? wN * rate : null;
   const shown = useTween(value ?? 0, 450);
   const r24A  = useTween(r24, 700);
   const onW = v => {
@@ -1897,7 +1901,7 @@ function HeroEstimator({ spot, navigate }) {
         <div style={{ fontFamily:SERIF, fontSize:'19px', fontWeight:350, color:C.ink, letterSpacing:'-0.01em' }}>{t('calc_title')}</div>
         <div style={{ display:'inline-flex', alignItems:'center', gap:'6px', fontFamily:SANS, fontSize:'12px', color:C.mute, whiteSpace:'nowrap' }}>
           <span key={r24} style={{ width:'6px', height:'6px', borderRadius:'50%', background:C.green, animation:'dotPing 1.2s ease-out 1' }}/>
-          {t('est_live')} <b style={{ color:C.plum, fontWeight:600 }}>₹{fmt(Math.round(r24A),0)}/g</b>
+          {t('est_live')} <b style={{ color:C.plum, fontWeight:600 }}>{r24 ? <>₹{fmt(Math.round(r24A || 0),0)}/g</> : <RateWait/>}</b>
         </div>
       </div>
       <div className="est-row">
@@ -1923,7 +1927,7 @@ function HeroEstimator({ spot, navigate }) {
           <div data-testid="calc-value" style={{ fontFamily:SERIF, fontSize:'clamp(30px, 4vw, 38px)', fontWeight:350, color: value ? C.plum : 'rgba(43,20,80,.3)', letterSpacing:'-0.03em', lineHeight:1.1, whiteSpace:'nowrap' }}>
             ₹{value ? fmt(Math.round(shown),0) : '0'}
           </div>
-          <div style={{ fontFamily:SANS, fontSize:'12px', color:C.mute }}>{fill(t('calc_at'), { rate: fmt(rate,0), k })}</div>
+          <div style={{ fontFamily:SANS, fontSize:'12px', color:C.mute }}>{fill(t('calc_at'), { rate: rate ? fmt(rate,0) : '–', k })}</div>
         </div>
         <div style={{ borderRadius:'999px', animation: value !== null ? 'glowGreen .9s ease-out 1' : 'none' }}>
           <BtnWhatsApp onClick={onCTA}><WhatsAppGlyph size={18} color={C.white}/> {value === null ? t('hero_cta_wa') : t('calc_cta')}</BtnWhatsApp>
@@ -1952,7 +1956,7 @@ function HeroEstimator({ spot, navigate }) {
         </button>
         {showGst && (
           <div className="est-gst-tip">
-            {fill(t('gst_excl_k'), { k })} <b>₹{fmt(Math.round(rate / 1.03), 0)}/g</b><br/>{t('gst_note')}
+            {fill(t('gst_excl_k'), { k })} <b>{rate ? <>₹{fmt(Math.round(rate / 1.03), 0)}/g</> : <RateWait/>}</b><br/>{t('gst_note')}
           </div>
         )}
       </div>
@@ -2290,10 +2294,10 @@ function BlogTeaser({ navigate }) {
 
 // ─── 9. App — coming soon ────────────────────────────────────────────────────
 function PhoneMock({ spot }) {
-  const r24 = spot.display ?? SPOT_FALLBACK;
-  const r22 = Math.round(r24 * 22 / 24);
+  const r24 = spot.display;
+  const r22 = r24 ? Math.round(r24 * 22 / 24) : null;
   const wt  = 12.48;
-  const val = Math.round(wt * r22);
+  const val = r22 ? Math.round(wt * r22) : null;
   const tileS = { background:C.white, borderRadius:'12px', padding:'10px', border:'1px solid rgba(26,20,38,.08)', display:'flex', flexDirection:'column', gap:'6px', fontFamily:SANS, fontSize:'10.5px', fontWeight:600, color:C.ink };
   return (
     <div className="app-phone" aria-hidden="true" style={{ position:'relative', zIndex:1, aspectRatio:'9 / 18.5', background:C.ink, borderRadius:'38px', padding:'9px', boxShadow:'0 30px 60px rgba(22,18,31,.35), inset 0 0 0 1px rgba(255,255,255,.08)' }}>
@@ -2311,7 +2315,7 @@ function PhoneMock({ spot }) {
           <div style={{ display:'flex', alignItems:'center', gap:'5px', fontFamily:MONO, fontSize:'8.5px', letterSpacing:'0.12em', color:C.gold2 }}>
             <span style={{ width:'5px', height:'5px', borderRadius:'50%', background:C.green }}/> LIVE 24K
           </div>
-          <div style={{ fontFamily:SERIF, fontSize:'26px', color:C.gold3, lineHeight:1.1, marginTop:'4px' }}>₹{fmt(r24,0)}<span style={{ fontSize:'11px', color:'rgba(241,215,141,.6)' }}>/g</span></div>
+          <div style={{ fontFamily:SERIF, fontSize:'26px', color:C.gold3, lineHeight:1.1, marginTop:'4px' }}>{r24 ? <>₹{fmt(r24,0)}</> : <RateWait/>}<span style={{ fontSize:'11px', color:'rgba(241,215,141,.6)' }}>/g</span></div>
         </div>
         <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'8px', margin:'10px 12px 0' }}>
           <div style={tileS}><Sparkles size={16} color={C.gold}/>Get my estimate</div>
@@ -2323,7 +2327,7 @@ function PhoneMock({ spot }) {
             <span style={{ display:'inline-flex', alignItems:'center', gap:'3px', fontSize:'9px', color:'#15803D', background:'#DCFCE7', padding:'2px 6px', borderRadius:'999px' }}><Check size={9}/> Verified</span>
           </div>
           <div style={{ fontFamily:MONO, fontSize:'9px', color:C.mute, marginTop:'6px' }}>22K · 12.480 g · 91.67%</div>
-          <div style={{ fontFamily:SERIF, fontSize:'18px', color:C.plum, marginTop:'4px' }}>₹{fmt(val,0)}</div>
+          <div style={{ fontFamily:SERIF, fontSize:'18px', color:C.plum, marginTop:'4px' }}>{val ? <>₹{fmt(val,0)}</> : <RateWait/>}</div>
         </div>
         <div style={{ margin:'10px 12px 0', padding:'10px 12px', borderRadius:'14px', background:C.white, border:'1px solid rgba(26,20,38,.08)', display:'flex', alignItems:'center', gap:'8px' }}>
           <span style={{ width:'28px', height:'28px', borderRadius:'50%', background:C.paper2, display:'inline-flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}><Clock size={14} color={C.gold}/></span>
