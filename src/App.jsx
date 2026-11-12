@@ -13,7 +13,6 @@ import {
 //  SWITCHES — the only lines you normally need to edit
 // ═════════════════════════════════════════════════════════════════════════════
 const SHOW_CERTIFICATIONS = false; // true once IBJA membership + ISO 27001 certificate are in hand
-const SHOW_REVIEWER_NAMES = false; // true only once reviews carry real customer names (with their permission)
 const LEADS_URL           = 'https://script.google.com/macros/s/AKfycbxu4TMd91-s_LLdCwas_mbThurBMjg5zdKrN5E4hxruGwFRiO038W8vLyLkEJDNPkZW/exec'; // Google Apps Script → "Website leads" tab
 
 // ─── Brand Tokens ─────────────────────────────────────────────────────────────
@@ -49,7 +48,7 @@ const MAP_EMBED        = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d
 // Opens Google Maps with directions straight to the Carat Money listing. The place is pinned by its
 // map ID (0x3be7c3cf243723c3:0xa7274f01c46ec2d2, the same one the map embed uses), so the name in the
 // path is only a label. Address text alone matched CaratLane, so never go back to a text-only link.
-const DIRECTIONS_URL   = 'https://www.google.com/maps/dir//Carat+Money,+Zion,+Sector+10,+Kharghar,+Navi+Mumbai,+Maharashtra+410210/data=!4m6!4m5!1m1!4e2!1m2!1m1!1s0x3be7c3cf243723c3:0xa7274f01c46ec2d2';
+const DIRECTIONS_URL   = 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent('Carat Money, Kharghar, Navi Mumbai') + '&destination_place_id=ChIJwyM3JM_D5zsR0sJuxAFPJ6c';
 
 // ─── Typography (Hindi / Kannada fonts switch in via GLOBAL_CSS) ──────────────
 const SERIF = 'var(--f-serif)';
@@ -443,12 +442,17 @@ const LANGS = [
 ];
 const LANG_CODES = LANGS.map(l => l.code);
 
-const REVIEWERS = [
-  { n:'Priya D.',   l:'Kharghar' },
-  { n:'Imran S.',   l:'Panvel' },
-  { n:'Swati K.',   l:'CBD Belapur' },
-  { n:"Rohan D'M.", l:'Ulwe' },
-  { n:'Sachin J.',  l:'Kalamboli' },
+// Real Google reviews, quoted word for word (only first name + initial shown). Update by hand from the listing.
+const GOOGLE_PLACE_ID    = 'ChIJwyM3JM_D5zsR0sJuxAFPJ6c';
+const GOOGLE_REVIEWS_URL = `https://search.google.com/local/reviews?placeid=${GOOGLE_PLACE_ID}`;
+const GOOGLE_RATING      = '5.0';
+const GOOGLE_COUNT       = 13;
+const GOOGLE_REVIEWS = [
+  { n:'Snehal S.',  guide:false, d:'2026-11', q:"I was hesitant about selling our old 22k gold bangles, but Carat Money in Navi Mumbai made it completely transparent. They didn't just guess the value. They used an XRF analyzer machine right in front of me to check the exact purity and weighed it down to the milligram. They walked me through today's live gold rate and explained how the hallmarking verification works. No hidden evaluation fees or any pressure to sell. A very professional gold buying experience." },
+  { n:'Sanchit D.', guide:false, d:'2026-11', q:"It was my first gold selling experience. I checked reviews thoroughly for everyone, only found 5 star ratings but was disappointed with low rates everywhere. Visited 2 places in total before trying carat money. Staff here is very kind. Since it was my first time, i had lots of questions about the old 18K gold i had gotten from my grandmother. They answered all my questions very patiently, even the silly ones. KYC took just 2 mins and they completed the whole process in less than 20 mins. If I sell again, I will definitely come here again. Big thank you to carat money team" },
+  { n:'Sanjiv K.',  guide:true,  d:'2026-11', q:"Amazing experience\nI wanted to sell some old gold chains but had lost the original purchase bill. Most local jewelers make a big issue or try to cut the rate by 15%, but Carat Money in Navi Mumbai was completely professional. They didn't penalize me for the missing receipt. Instead, they tested the gold purity on the spot with their machine and gave me the exact market price for the day. If you need to sell gold without a bill safely, this is the most transparent place." },
+  { n:'Sunil P.',   guide:true,  d:'2026-11', q:"Excellent\nKeep up the good work 👏\nMy family visited to sell our old gold. Tried to sell in 3 other places, they were charging extremely high deductions. We were helpless but Carat money was extremely transparent with pricing. happy to see they are nearby in kharghar" },
+  { n:'Sakshi B.',  guide:false, d:'2026-10', q:"They gave me better rate than jewellers. Very happy with the service.will definitely visit again" },
 ];
 
 const STR = {
@@ -518,14 +522,8 @@ const STR = {
     ],
     proc_cta: "Get my estimate",
 
-    rev_title: "What our customers say", rev_sub: 'What sellers across Navi Mumbai say about us.', rev_note: 'Quotes paraphrased from handwritten notes our customers have given us.', rev_who: 'Carat Money customer',
-    review_quotes: [
-      'They turned the XRF screen towards me and I saw the purity reading myself. No guesswork at all.',
-      'The rate matched the live price on their website, and the money reached my UPI before I left.',
-      'My old chain was broken and had no hallmark. They still tested it properly and paid me fairly.',
-      'They came home at the time we agreed and gave me a free valuation certificate for every piece.',
-      'Weighed to the last milligram in front of me. No hidden deductions anywhere.',
-    ],
+    rev_title: "What our customers say", rev_sub: 'What sellers across Navi Mumbai say about us.',
+    g_rating: "on Google", rev_google: "Google review", rev_all: "Read all {n} reviews on Google", rev_count: "{n} reviews", rev_more: "Read more", rev_less: "Show less", rev_guide: "Local Guide", rev_orig: "",
     prev: 'Previous reviews', next: 'Next reviews', stars: '5 out of 5 stars',
 
     faq_title: 'Frequently asked questions', faq_sub: 'Everything to know before you sell your gold.',
@@ -634,14 +632,8 @@ const STR = {
     ],
     proc_cta: "मेरा अनुमान पाएँ",
 
-    rev_title: "हमारे ग्राहक क्या कहते हैं", rev_sub: 'नवी मुंबई के विक्रेता हमारे बारे में क्या कहते हैं।', rev_note: 'ग्राहकों के हाथ से लिखे नोट्स से, हमारे शब्दों में।', rev_who: 'Carat Money ग्राहक',
-    review_quotes: [
-      'उन्होंने XRF स्क्रीन मेरी तरफ़ घुमाई और मैंने शुद्धता की रीडिंग ख़ुद देखी। कोई अंदाज़ा नहीं।',
-      'रेट उनकी वेबसाइट के लाइव भाव से मेल खाया, और मेरे निकलने से पहले पैसा UPI में आ गया।',
-      'मेरी पुरानी चेन टूटी हुई थी और उस पर हॉलमार्क नहीं था। फिर भी उन्होंने ठीक से जाँच की और सही दाम दिया।',
-      'वे तय समय पर घर आए और हर गहने का मुफ़्त वैल्यूएशन सर्टिफ़िकेट दिया।',
-      'मेरे सामने आख़िरी मिलीग्राम तक तौला। कहीं कोई छिपी कटौती नहीं।',
-    ],
+    rev_title: "हमारे ग्राहक क्या कहते हैं", rev_sub: 'नवी मुंबई के विक्रेता हमारे बारे में क्या कहते हैं।',
+    g_rating: "Google पर", rev_google: "Google समीक्षा", rev_all: "Google पर सभी {n} समीक्षाएँ पढ़ें", rev_count: "{n} समीक्षाएँ", rev_more: "और पढ़ें", rev_less: "कम दिखाएँ", rev_guide: "Local Guide", rev_orig: "समीक्षाएँ जैसी लिखी गईं, वैसी ही अंग्रेज़ी में।",
     prev: 'पिछले रिव्यू', next: 'अगले रिव्यू', stars: '5 में से 5 स्टार',
 
     faq_title: 'अक्सर पूछे जाने वाले सवाल', faq_sub: 'सोना बेचने से पहले जानने लायक हर बात।',
@@ -751,14 +743,8 @@ const STR = {
     proc_cta: "माझा अंदाज मिळवा",
 
     rev_title: "आमचे ग्राहक काय म्हणतात", rev_sub: 'नवी मुंबईतील विक्रेते आमच्याबद्दल काय म्हणतात.',
-    rev_note: 'ग्राहकांनी हाताने लिहून दिलेल्या नोंदींवरून, आमच्या शब्दांत.', rev_who: 'Carat Money ग्राहक',
-    review_quotes: [
-      'त्यांनी XRF स्क्रीन माझ्याकडे वळवली आणि शुद्धतेचे रीडिंग मी स्वतः पाहिले. कोणताही अंदाज नाही.',
-      'दर त्यांच्या वेबसाइटवरील लाइव्ह भावाशी जुळला, आणि मी निघण्यापूर्वीच पैसे UPI वर आले.',
-      'माझी जुनी चेन तुटलेली होती आणि तिला हॉलमार्क नव्हता. तरीही त्यांनी नीट चाचणी केली आणि योग्य भाव दिला.',
-      'ठरलेल्या वेळी ते घरी आले आणि प्रत्येक दागिन्याचे मोफत मूल्यांकन प्रमाणपत्र दिले.',
-      'माझ्यासमोर शेवटच्या मिलिग्रॅमपर्यंत वजन केले. कुठेही छुपी कपात नाही.',
-    ],
+
+    g_rating: "Google वर", rev_google: "Google रिव्ह्यू", rev_all: "Google वर सर्व {n} रिव्ह्यू वाचा", rev_count: "{n} रिव्ह्यू", rev_more: "आणखी वाचा", rev_less: "कमी दाखवा", rev_guide: "Local Guide", rev_orig: "रिव्ह्यू जसे लिहिले तसेच, इंग्रजीत.",
     prev: 'मागील अभिप्राय', next: 'पुढील अभिप्राय', stars: '5 पैकी 5 तारे',
 
     faq_title: 'नेहमी विचारले जाणारे प्रश्न', faq_sub: 'सोने विकण्यापूर्वी जाणून घ्यायचे सर्व काही.',
@@ -867,14 +853,8 @@ const STR = {
     ],
     proc_cta: "ನನ್ನ ಅಂದಾಜು ಪಡೆಯಿರಿ",
 
-    rev_title: "ನಮ್ಮ ಗ್ರಾಹಕರು ಏನು ಹೇಳುತ್ತಾರೆ", rev_sub: 'ನವಿ ಮುಂಬೈನ ಮಾರಾಟಗಾರರು ನಮ್ಮ ಬಗ್ಗೆ ಏನು ಹೇಳುತ್ತಾರೆ.', rev_note: 'ಗ್ರಾಹಕರು ಕೈಯಾರೆ ಬರೆದು ನೀಡಿದ ಟಿಪ್ಪಣಿಗಳಿಂದ, ನಮ್ಮ ಮಾತುಗಳಲ್ಲಿ.', rev_who: 'Carat Money ಗ್ರಾಹಕರು',
-    review_quotes: [
-      'ಅವರು XRF ಪರದೆಯನ್ನು ನನ್ನತ್ತ ತಿರುಗಿಸಿದರು, ಶುದ್ಧತೆಯ ರೀಡಿಂಗ್ ಅನ್ನು ನಾನೇ ನೋಡಿದೆ. ಯಾವುದೇ ಊಹೆ ಇಲ್ಲ.',
-      'ದರ ಅವರ ವೆಬ್‌ಸೈಟ್‌ನ ಲೈವ್ ಬೆಲೆಗೆ ಹೊಂದಿಕೆಯಾಯಿತು, ನಾನು ಹೊರಡುವ ಮೊದಲೇ ಹಣ UPI ಗೆ ಬಂತು.',
-      'ನನ್ನ ಹಳೆಯ ಸರ ಮುರಿದಿತ್ತು, ಹಾಲ್‌ಮಾರ್ಕ್ ಕೂಡ ಇರಲಿಲ್ಲ. ಆದರೂ ಸರಿಯಾಗಿ ಪರೀಕ್ಷಿಸಿ ನ್ಯಾಯಯುತ ಬೆಲೆ ನೀಡಿದರು.',
-      'ಒಪ್ಪಿದ ಸಮಯಕ್ಕೇ ಮನೆಗೆ ಬಂದರು, ಪ್ರತಿ ಆಭರಣಕ್ಕೂ ಉಚಿತ ಮೌಲ್ಯಮಾಪನ ಪ್ರಮಾಣಪತ್ರ ಕೊಟ್ಟರು.',
-      'ನನ್ನ ಮುಂದೆಯೇ ಕೊನೆಯ ಮಿಲಿಗ್ರಾಂವರೆಗೆ ತೂಕ ಮಾಡಿದರು. ಎಲ್ಲಿಯೂ ಮರೆಮಾಚಿದ ಕಡಿತವಿಲ್ಲ.',
-    ],
+    rev_title: "ನಮ್ಮ ಗ್ರಾಹಕರು ಏನು ಹೇಳುತ್ತಾರೆ", rev_sub: 'ನವಿ ಮುಂಬೈನ ಮಾರಾಟಗಾರರು ನಮ್ಮ ಬಗ್ಗೆ ಏನು ಹೇಳುತ್ತಾರೆ.',
+    g_rating: "Google ನಲ್ಲಿ", rev_google: "Google ವಿಮರ್ಶೆ", rev_all: "Google ನಲ್ಲಿ ಎಲ್ಲಾ {n} ವಿಮರ್ಶೆಗಳನ್ನು ಓದಿ", rev_count: "{n} ವಿಮರ್ಶೆಗಳು", rev_more: "ಇನ್ನಷ್ಟು ಓದಿ", rev_less: "ಕಡಿಮೆ ತೋರಿಸಿ", rev_guide: "Local Guide", rev_orig: "ವಿಮರ್ಶೆಗಳನ್ನು ಬರೆದಂತೆಯೇ, ಇಂಗ್ಲಿಷ್‌ನಲ್ಲಿ.",
     prev: 'ಹಿಂದಿನ ವಿಮರ್ಶೆಗಳು', next: 'ಮುಂದಿನ ವಿಮರ್ಶೆಗಳು', stars: '5 ರಲ್ಲಿ 5 ನಕ್ಷತ್ರಗಳು',
 
     faq_title: 'ಪದೇ ಪದೇ ಕೇಳುವ ಪ್ರಶ್ನೆಗಳು', faq_sub: 'ಚಿನ್ನ ಮಾರುವ ಮೊದಲು ತಿಳಿಯಬೇಕಾದ ಎಲ್ಲವೂ.',
@@ -1164,6 +1144,10 @@ const GLOBAL_CSS = `
   .rv-track { display:flex; gap:16px; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; -webkit-overflow-scrolling:touch; padding:4px 2px 14px; }
   .rv-track::-webkit-scrollbar { display:none; }
   .rv-card { flex:0 0 86%; scroll-snap-align:start; }
+  .rev-text.clamp { display:-webkit-box; -webkit-line-clamp:7; -webkit-box-orient:vertical; overflow:hidden; }
+  .rev-rating { display:inline-flex; align-items:center; flex-wrap:wrap; justify-content:center; gap:6px 8px; margin-top:12px; font-family:var(--f-sans); font-size:14px; color:${C.ink2}; text-decoration:none; }
+  .rev-rating b { font-family:var(--f-serif); font-size:22px; font-weight:500; color:${C.plum}; }
+  .rev-rating:hover span:last-child { text-decoration:underline; }
   @media (min-width:768px)  { .rv-card { flex-basis:calc((100% - 16px) / 2); } }
   @media (min-width:1024px) { .rv-card { flex-basis:calc((100% - 32px) / 3); } }
 
@@ -1561,7 +1545,7 @@ function Hero({ navigate, spot }) {
             </ul>
             <HeroEstimator spot={spot} navigate={navigate}/>
             <div style={{ fontFamily: en ? MONO : SANS, fontSize:'12px', color:C.mute, letterSpacing: en ? '0.04em' : 0, lineHeight:1.8 }}>
-              <CountUp text={t('hero_stats')}/><br/>{t('hero_pickup')}
+              <a href={GOOGLE_REVIEWS_URL} target="_blank" rel="noreferrer" onClick={() => track('reviews_google_click', { source:'hero' })} style={{ color:'inherit', textDecoration:'none', borderBottom:'1px dotted currentColor' }}>★ {GOOGLE_RATING} {t('g_rating')}</a><br/><CountUp text={t('hero_stats')}/><br/>{t('hero_pickup')}
             </div>
             <figure className="hero-photo-m hide-lg">
               <img src="/hero-family.webp" alt={t('hero_photo_alt')} width="900" height="1117" loading="lazy" decoding="async"/>
@@ -2086,11 +2070,11 @@ function NextSteps() {
 const initials = n => n.replace(/[^A-Za-z ]/g, '').split(' ').filter(Boolean).map(s => s[0]).join('').slice(0, 2).toUpperCase();
 
 function Reviews() {
-  const { t } = useT();
-  const quotes   = t('review_quotes');
+  const { t, lang } = useT();
+  const [openRev, setOpenRev] = useState(-1);
   const trackRef = useRef(null);
   const [idx, setIdx]     = useState(0);
-  const [pages, setPages] = useState(REVIEWERS.length);
+  const [pages, setPages] = useState(GOOGLE_REVIEWS.length);
 
   const measure = useCallback(() => {
     const el = trackRef.current;
@@ -2098,8 +2082,8 @@ function Reviews() {
     const step    = el.children[0].offsetWidth + 16;
     if (!step || step <= 16) return;
     const visible = Math.max(1, Math.round(el.clientWidth / step));
-    setPages(Math.max(1, REVIEWERS.length - visible + 1));
-    setIdx(Math.min(Math.round(el.scrollLeft / step), REVIEWERS.length - 1));
+    setPages(Math.max(1, GOOGLE_REVIEWS.length - visible + 1));
+    setIdx(Math.min(Math.round(el.scrollLeft / step), GOOGLE_REVIEWS.length - 1));
   }, []);
   useEffect(() => {
     measure();
@@ -2120,36 +2104,42 @@ function Reviews() {
     <section id="reviews" className="cm-sec">
       <div className="cm-wrap">
         <SectionHead title={t('rev_title')} lead={t('rev_sub')}>
-          {!SHOW_REVIEWER_NAMES && <p style={{ fontFamily:SANS, fontSize:'12px', color:C.mute, margin:'8px 0 0', fontStyle:'italic' }}>{t('rev_note')}</p>}
+          <a href={GOOGLE_REVIEWS_URL} target="_blank" rel="noreferrer" onClick={() => track('reviews_google_click', { source:'reviews_head' })} className="rev-rating">
+            <b>{GOOGLE_RATING}</b>
+            <span role="img" aria-label={t('stars')} style={{ display:'inline-flex', gap:'2px' }}>{[0,1,2,3,4].map(s => <Star key={s} size={15} fill={C.gold2} color={C.gold2}/>)}</span>
+            <span>{t('g_rating')} · {fill(t('rev_count'), { n: GOOGLE_COUNT })}</span>
+          </a>
+          {t('rev_orig') && <p style={{ fontFamily:SANS, fontSize:'12px', color:C.mute, margin:'8px 0 0' }}>{t('rev_orig')}</p>}
         </SectionHead>
         <div ref={trackRef} className="rv-track rv">
-          {REVIEWERS.map((r, i) => (
-            <figure key={r.n} className="rv-card lift" style={{ margin:0, background:C.white, border:'1px solid rgba(26,20,38,.1)', borderRadius:'8px', overflow:'hidden', boxShadow:'0 2px 12px rgba(22,18,31,.06)', display:'flex', flexDirection:'column' }}>
-              <blockquote style={{ margin:0, padding:'26px 22px 20px', position:'relative', flex:1 }}>
-                <Quote size={44} color={C.gold2} aria-hidden="true" style={{ position:'absolute', top:'14px', left:'14px', opacity:.2 }}/>
-                <p style={{ position:'relative', fontFamily:SANS, fontSize:'15px', lineHeight:1.65, color:C.ink2, margin:0 }}>“{quotes[i]}”</p>
+          {GOOGLE_REVIEWS.map((r, i) => {
+            const long = r.q.length > 240, open = openRev === i;
+            const when = new Date(r.d + '-15').toLocaleDateString(lang === 'en' ? 'en-IN' : `${lang}-IN`, { month:'long', year:'numeric' });
+            return (
+            <figure key={r.n} className="rv-card lift" lang="en" style={{ margin:0, background:C.white, border:'1px solid rgba(26,20,38,.1)', borderRadius:'8px', overflow:'hidden', boxShadow:'0 2px 12px rgba(22,18,31,.06)', display:'flex', flexDirection:'column' }}>
+              <blockquote style={{ margin:0, padding:'20px 22px 18px', position:'relative', flex:1 }}>
+                <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'10px' }}>
+                  <span role="img" aria-label={t('stars')} style={{ display:'inline-flex', gap:'2px' }}>{[0,1,2,3,4].map(s => <Star key={s} size={14} fill={C.gold2} color={C.gold2}/>)}</span>
+                  <span style={{ fontFamily:SANS, fontSize:'11.5px', fontWeight:600, color:C.mute }}>{t('rev_google')}</span>
+                </div>
+                <p className={'rev-text' + (long && !open ? ' clamp' : '')} style={{ fontFamily:SANS, fontSize:'15px', lineHeight:1.6, color:C.ink2, margin:0, whiteSpace:'pre-line' }}>{r.q}</p>
+                {long && (
+                  <button type="button" onClick={() => setOpenRev(open ? -1 : i)} aria-expanded={open}
+                    style={{ marginTop:'8px', background:'none', border:'none', padding:0, cursor:'pointer', fontFamily:SANS, fontSize:'13px', fontWeight:600, color:C.goldInk, textDecoration:'underline', textUnderlineOffset:'3px' }}>
+                    {open ? t('rev_less') : t('rev_more')}
+                  </button>
+                )}
               </blockquote>
               <figcaption style={{ background:C.paper, padding:'14px 22px', display:'flex', alignItems:'center', gap:'12px', borderTop:'1px solid rgba(26,20,38,.06)' }}>
-                {SHOW_REVIEWER_NAMES ? (
-                  <>
-                    <div aria-hidden="true" style={{ width:'42px', height:'42px', borderRadius:'50%', background:C.plum, color:C.gold3, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:SERIF, fontSize:'16px', flexShrink:0, border:'1px solid rgba(224,183,101,.4)' }}>{initials(r.n)}</div>
-                    <div style={{ minWidth:0 }}>
-                      <div style={{ fontFamily:SANS, fontWeight:600, fontSize:'15px', color:C.ink }}>{r.n}</div>
-                      <div style={{ fontFamily:SANS, fontSize:'13px', color:C.mute }}>{r.l}</div>
-                    </div>
-                    <div role="img" aria-label={t('stars')} style={{ marginLeft:'auto', display:'flex', gap:'2px', flexShrink:0 }}>
-                      {[0,1,2,3,4].map(s => <Star key={s} size={14} fill={C.gold2} color={C.gold2}/>)}
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <CaratMark size={22} color={C.gold} showDots={false}/>
-                    <div style={{ fontFamily:SANS, fontWeight:600, fontSize:'14px', color:C.ink2 }}><Brand text={t('rev_who')}/></div>
-                  </>
-                )}
+                <div aria-hidden="true" style={{ width:'40px', height:'40px', borderRadius:'50%', background:C.plum, color:C.gold3, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:SERIF, fontSize:'15px', flexShrink:0, border:'1px solid rgba(224,183,101,.4)' }}>{initials(r.n)}</div>
+                <div style={{ minWidth:0 }}>
+                  <div style={{ fontFamily:SANS, fontWeight:600, fontSize:'15px', color:C.ink }}>{r.n}</div>
+                  <div style={{ fontFamily:SANS, fontSize:'12.5px', color:C.mute }}>{r.guide ? `${t('rev_guide')} · ` : ''}{when}</div>
+                </div>
               </figcaption>
             </figure>
-          ))}
+            );
+          })}
         </div>
         <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:'18px', marginTop:'14px' }}>
           <button type="button" aria-label={t('prev')} onClick={() => scrollToPage(Math.max(0, page - 1))} disabled={page === 0} style={{ ...arrow, opacity: page === 0 ? .35 : 1 }}><ChevronLeft size={18}/></button>
@@ -2160,6 +2150,12 @@ function Reviews() {
             ))}
           </div>
           <button type="button" aria-label={t('next')} onClick={() => scrollToPage(Math.min(pages - 1, page + 1))} disabled={page >= pages - 1} style={{ ...arrow, opacity: page >= pages - 1 ? .35 : 1 }}><ChevronRight size={18}/></button>
+        </div>
+        <div style={{ textAlign:'center', marginTop:'16px' }}>
+          <a href={GOOGLE_REVIEWS_URL} target="_blank" rel="noreferrer" onClick={() => track('reviews_google_click', { source:'reviews_all' })}
+            style={{ fontFamily:SANS, fontSize:'14px', fontWeight:600, color:C.goldInk, textDecoration:'underline', textUnderlineOffset:'3px' }}>
+            {fill(t('rev_all'), { n: GOOGLE_COUNT })} →
+          </a>
         </div>
       </div>
     </section>
@@ -2841,7 +2837,7 @@ function BlogArticlePage({ navigate, slug }) {
             </>
           )}
         </div>
-        
+
         <div style={{ marginBottom:'16px' }}><SoftCard source="blog_article"/></div>
         {/* Article share */}
         <div style={{ background:C.plum, borderRadius:'8px', padding:'20px', border:`1px solid rgba(224,183,101,.2)`, textAlign:'center' }}>
