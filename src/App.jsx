@@ -522,7 +522,7 @@ const STR = {
     ],
     proc_cta: "Get my estimate",
 
-    rev_title: "What our customers say", rev_sub: 'What sellers across Navi Mumbai say about us.',
+    rev_title: "What our customers say", rev_sub: 'What sellers across Mumbai say about us.',
     g_rating: "on Google", rev_google: "Google review", rev_all: "Read all {n} reviews on Google", rev_count: "{n} reviews", rev_more: "Read more", rev_less: "Show less", rev_guide: "Local Guide", rev_orig: "",
     prev: 'Previous reviews', next: 'Next reviews', stars: '5 out of 5 stars',
 
@@ -632,7 +632,7 @@ const STR = {
     ],
     proc_cta: "मेरा अनुमान पाएँ",
 
-    rev_title: "हमारे ग्राहक क्या कहते हैं", rev_sub: 'नवी मुंबई के विक्रेता हमारे बारे में क्या कहते हैं।',
+    rev_title: "हमारे ग्राहक क्या कहते हैं", rev_sub: 'मुंबई के विक्रेता हमारे बारे में क्या कहते हैं।',
     g_rating: "Google पर", rev_google: "Google समीक्षा", rev_all: "Google पर सभी {n} समीक्षाएँ पढ़ें", rev_count: "{n} समीक्षाएँ", rev_more: "और पढ़ें", rev_less: "कम दिखाएँ", rev_guide: "Local Guide", rev_orig: "समीक्षाएँ जैसी लिखी गईं, वैसी ही अंग्रेज़ी में।",
     prev: 'पिछले रिव्यू', next: 'अगले रिव्यू', stars: '5 में से 5 स्टार',
 
@@ -742,7 +742,7 @@ const STR = {
     ],
     proc_cta: "माझा अंदाज मिळवा",
 
-    rev_title: "आमचे ग्राहक काय म्हणतात", rev_sub: 'नवी मुंबईतील विक्रेते आमच्याबद्दल काय म्हणतात.',
+    rev_title: "आमचे ग्राहक काय म्हणतात", rev_sub: 'मुंबईतील विक्रेते आमच्याबद्दल काय म्हणतात.',
 
     g_rating: "Google वर", rev_google: "Google रिव्ह्यू", rev_all: "Google वर सर्व {n} रिव्ह्यू वाचा", rev_count: "{n} रिव्ह्यू", rev_more: "आणखी वाचा", rev_less: "कमी दाखवा", rev_guide: "Local Guide", rev_orig: "रिव्ह्यू जसे लिहिले तसेच, इंग्रजीत.",
     prev: 'मागील अभिप्राय', next: 'पुढील अभिप्राय', stars: '5 पैकी 5 तारे',
@@ -853,7 +853,7 @@ const STR = {
     ],
     proc_cta: "ನನ್ನ ಅಂದಾಜು ಪಡೆಯಿರಿ",
 
-    rev_title: "ನಮ್ಮ ಗ್ರಾಹಕರು ಏನು ಹೇಳುತ್ತಾರೆ", rev_sub: 'ನವಿ ಮುಂಬೈನ ಮಾರಾಟಗಾರರು ನಮ್ಮ ಬಗ್ಗೆ ಏನು ಹೇಳುತ್ತಾರೆ.',
+    rev_title: "ನಮ್ಮ ಗ್ರಾಹಕರು ಏನು ಹೇಳುತ್ತಾರೆ", rev_sub: 'ಮುಂಬೈನ ಮಾರಾಟಗಾರರು ನಮ್ಮ ಬಗ್ಗೆ ಏನು ಹೇಳುತ್ತಾರೆ.',
     g_rating: "Google ನಲ್ಲಿ", rev_google: "Google ವಿಮರ್ಶೆ", rev_all: "Google ನಲ್ಲಿ ಎಲ್ಲಾ {n} ವಿಮರ್ಶೆಗಳನ್ನು ಓದಿ", rev_count: "{n} ವಿಮರ್ಶೆಗಳು", rev_more: "ಇನ್ನಷ್ಟು ಓದಿ", rev_less: "ಕಡಿಮೆ ತೋರಿಸಿ", rev_guide: "Local Guide", rev_orig: "ವಿಮರ್ಶೆಗಳನ್ನು ಬರೆದಂತೆಯೇ, ಇಂಗ್ಲಿಷ್‌ನಲ್ಲಿ.",
     prev: 'ಹಿಂದಿನ ವಿಮರ್ಶೆಗಳು', next: 'ಮುಂದಿನ ವಿಮರ್ಶೆಗಳು', stars: '5 ರಲ್ಲಿ 5 ನಕ್ಷತ್ರಗಳು',
 
@@ -2134,7 +2134,7 @@ function Reviews() {
                 <div aria-hidden="true" style={{ width:'40px', height:'40px', borderRadius:'50%', background:C.plum, color:C.gold3, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:SERIF, fontSize:'15px', flexShrink:0, border:'1px solid rgba(224,183,101,.4)' }}>{initials(r.n)}</div>
                 <div style={{ minWidth:0 }}>
                   <div style={{ fontFamily:SANS, fontWeight:600, fontSize:'15px', color:C.ink }}>{r.n}</div>
-                  <div style={{ fontFamily:SANS, fontSize:'12.5px', color:C.mute }}>{r.guide ? `${t('rev_guide')} · ` : ''}{when}</div>
+                  <div style={{ fontFamily:SANS, fontSize:'12.5px', color:C.mute }}>{when}</div>
                 </div>
               </figcaption>
             </figure>
