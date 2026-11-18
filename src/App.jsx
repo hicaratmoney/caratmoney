@@ -334,8 +334,15 @@ const CALL_NUMBERS = [
 function track(name, params = {}) {
   try { if (typeof window.gtag === 'function') window.gtag('event', name, params); } catch { /* ignore */ }
 }
-function openWA(text, location) {
-  track('whatsapp_click', { location });
+function openWA(text, location, extra) {
+  // Beacon transport so the hit survives tab switches / the page being backgrounded.
+  // WhatsApp opens synchronously: deferring window.open to event_callback would be
+  // outside the click gesture and get popup-blocked (iOS Safari especially).
+  try {
+    if (typeof window.gtag === 'function') window.gtag('event', 'whatsapp_click', {
+      location, ...(extra || {}), transport_type: 'beacon', event_callback: () => {}, event_timeout: 1500,
+    });
+  } catch { /* ignore */ }
   window.open(waUrl(text), '_blank');
 }
 // Sends one lead row to the Google Sheet (the Apps Script also emails it).
@@ -1910,14 +1917,14 @@ function HeroEstimator({ spot, navigate }) {
     if (s === '' || /^\d{0,5}(\.\d{0,3})?$/.test(s)) setW(s);
   };
   const onCTA = () => {
-    if (value === null) { openWA(WA_MSG, 'hero_estimator'); return; }
+    if (value === null) { openWA(WA_MSG, 'calculator', { karat:k }); return; }
     const lines = [
       "Hi Carat Money — I'd like to sell my gold.", '',
       `Weight: ${w} g · ${k}K`,
       `Website estimate: ₹${fmt(value,0)} (at ₹${fmt(rate,0)}/g)`, '',
       'Please share your best offer.',
     ];
-    openWA(lines.join('\n'), 'hero_estimator');
+    openWA(lines.join('\n'), 'calculator', { grams:wN, karat:k, estimate_inr:Math.round(value) });
   };
   return (
     <div id="calculator" className="est" style={{ background:C.white, border:'1px solid rgba(184,136,58,.35)', borderRadius:'10px', boxShadow:'0 12px 32px rgba(43,20,80,.10)', padding:'18px', margin:'22px 0 16px', textAlign:'left' }}>
