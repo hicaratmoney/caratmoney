@@ -334,20 +334,50 @@ const CALL_NUMBERS = [
 function track(name, params = {}) {
   try { if (typeof window.gtag === 'function') window.gtag('event', name, params); } catch { /* ignore */ }
 }
-function openWA(text, source) {
-  track('whatsapp_click', { source });
+function openWA(text, location) {
+  track('whatsapp_click', { location });
   window.open(waUrl(text), '_blank');
 }
-// Sends one lead row to the Google Sheet. Fire-and-forget: never blocks WhatsApp.
+// Sends one lead row to the Google Sheet (the Apps Script also emails it).
+// Resolves true once the request has gone out, false if it couldn't be sent
+// (offline, blocked, or no reply within 15 s). The response itself is opaque (no-cors).
 function postLead(payload) {
-  if (!LEADS_URL) return;
-  try {
-    fetch(LEADS_URL, {
-      method:'POST', mode:'no-cors', keepalive:true,
-      headers:{ 'Content-Type':'text/plain;charset=utf-8' },
-      body: JSON.stringify({ ...payload, ts: new Date().toISOString() }),
-    }).catch(() => {});
-  } catch { /* ignore */ }
+  if (!LEADS_URL) return Promise.resolve(false);
+  const send = fetch(LEADS_URL, {
+    method:'POST', mode:'no-cors', keepalive:true,
+    headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+    body: JSON.stringify({ ...payload, ts: new Date().toISOString() }),
+  }).then(() => true, () => false);
+  const timeout = new Promise(res => setTimeout(() => res(false), 15000));
+  return Promise.race([send, timeout]).catch(() => false);
+}
+// Full page load to another URL (the test harness can intercept it via window.__CM_NAV__).
+function goTo(url) {
+  if (typeof window.__CM_NAV__ === 'function') window.__CM_NAV__(url);
+  else window.location.href = url;
+}
+// Where on the page a click happened, for call_click / whatsapp_click.
+function clickLocation(el) {
+  const tagged = el.closest('[data-loc]');
+  if (tagged) return tagged.getAttribute('data-loc');
+  if (el.closest('header')) return 'header';
+  if (el.closest('footer')) return 'footer';
+  const sec = el.closest('[id]');
+  return sec ? sec.id : (window.location.pathname.replace(/^\//, '') || 'home');
+}
+// One listener for the whole site: every tel: and WhatsApp link, including ones added later.
+function useClickTracking() {
+  useEffect(() => {
+    const onClick = e => {
+      const a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+      if (!a) return;
+      const href = a.getAttribute('href') || '';
+      if (/^tel:/i.test(href)) track('call_click', { location: clickLocation(a) });
+      else if (/wa\.me\/|api\.whatsapp\.com|^whatsapp:/i.test(href)) track('whatsapp_click', { location: clickLocation(a) });
+    };
+    document.addEventListener('click', onClick, true);
+    return () => document.removeEventListener('click', onClick, true);
+  }, []);
 }
 // Scroll to a homepage section; from any other page, go home first.
 function goSection(id, navigate) {
@@ -385,6 +415,7 @@ const SEO_MAP = {
   '/sell':   { title:'Sell Gold to Carat Money | Best Buying Rates', desc:'Get a free quote on WhatsApp and book a home pickup in Bangalore or Mumbai. Your gold is tested in front of you and paid for instantly.' },
   '/buy':    { title:'Buy 24K Gold Coins | BIS-Hallmarked | Carat Money', desc:'Buy BIS-hallmarked 24K gold coins. 999.9 purity. 48-hour open-box delivery. WhatsApp to order.' },
   '/margin': { title:'Gold Buyer Margin Calculator | Free Tool by Carat Money', desc:'Free tool to check what your gold buyer is keeping above the spot rate. Used by 5,000+ sellers across India.' },
+  '/thank-you': { title:'Thank you | Carat Money', desc:"We've received your request. We'll call you within 30 minutes." },
   '/blog':   { title:'Gold Selling Tips & Insights | Carat Money Blog', desc:'Expert articles on gold selling, buyer margins, and getting the best price for your gold in India.' },
 };
 function setCanonical(href) {
@@ -463,7 +494,7 @@ const STR = {
 
     hero_eyebrow:   'We buy gold at fair price',
     hero_h1:        ['Sell your old gold at ', 'live', ' market rate.'],
-    hero_points:    ["Free valuation, at home or at our centre", "Tested in front of you, paid in 15 mins", "Best price guaranteed. No obligation to sell"],
+    hero_points:    ["Free valuation, at home or at our centre", "Tested in front of you, paid in 15 mins", "Live market rate. No obligation to sell."],
     hero_cta_wa:    "Get my estimate on WhatsApp",
     hero_cta_calc:  'Value your gold',
     hero_stats:     "500+ customers · ₹10 crore+ purchased",
@@ -495,6 +526,7 @@ const STR = {
     git_book: "Book a free visit", git_call: 'Call now',
     git_consent: 'By submitting, you agree to be contacted about your gold sale.',
     git_err: 'Enter your name and a valid 10-digit mobile number.', git_done_t: 'Request received', git_done_d: "We've opened WhatsApp with your details. Tap send and we'll confirm your time shortly. On the day, testing and payment take about 15 minutes.", git_again: "Book another visit",
+    ty_title: "Thank you! We've received your request.", ty_sub: "We'll call you within 30 minutes (9am–9pm). Keep your ornaments ready — no need to clean them.", ty_wa: "WhatsApp us now", ty_call: "Call 816 987 4545", ty_back: "← Back to home", ty_rate: "Live 24K rate", git_sending: "Sending…", git_send_err: "We couldn't send your request. Please check your internet connection and try again, or call us.",
     git_prefs: "Visit preferences (optional)", git_p_discreet: "Discreet visit", git_p_discreet_d: "Plain clothes, no logo on the bag or vehicle.",
     git_p_woman: "Woman executive", git_p_urgent: "Urgent, same day", git_urgent_note: "Book before 4 pm and we'll visit you today. We'll call you within 30 minutes.",
     git_done_thanks: "Thank you for trusting us with something that matters.", git_done_urgent: "Marked urgent: we'll call you within 30 minutes.",
@@ -573,7 +605,7 @@ const STR = {
 
     hero_eyebrow:   'हम सही दाम पर सोना खरीदते हैं',
     hero_h1:        ['अपना सोना ', 'लाइव', ' मार्केट रेट पर बेचें।'],
-    hero_points:    ["मुफ़्त मूल्यांकन, घर पर या हमारे सेंटर में", "आपके सामने जाँच, 15 मिनट में पेमेंट", "सबसे अच्छे दाम की गारंटी। बेचने की कोई बाध्यता नहीं"],
+    hero_points:    ["मुफ़्त मूल्यांकन, घर पर या हमारे सेंटर में", "आपके सामने जाँच, 15 मिनट में पेमेंट", "लाइव मार्केट रेट। बेचने की कोई बाध्यता नहीं।"],
     hero_cta_wa:    "WhatsApp पर मेरा अनुमान पाएँ",
     hero_cta_calc:  'अपने सोने की कीमत जानें',
     hero_stats:     "500+ ग्राहक · ₹10 करोड़+ की खरीद",
@@ -605,6 +637,7 @@ const STR = {
     git_book: "मुफ़्त विज़िट बुक करें", git_call: 'अभी कॉल करें',
     git_consent: 'सबमिट करके, आप अपने सोने की बिक्री के बारे में संपर्क किए जाने के लिए सहमत हैं।',
     git_err: 'अपना नाम और सही 10 अंकों का मोबाइल नंबर डालें।', git_done_t: 'अनुरोध मिल गया', git_done_d: "हमने आपकी जानकारी के साथ WhatsApp खोला है। वहाँ भेजें दबाएँ, हम जल्द ही समय पक्का करेंगे। उस दिन जाँच और पेमेंट में लगभग 15 मिनट लगते हैं।", git_again: "एक और विज़िट बुक करें",
+    ty_title: "धन्यवाद! हमें आपका अनुरोध मिल गया है।", ty_sub: "हम 30 मिनट के अंदर आपको कॉल करेंगे (सुबह 9 से रात 9 बजे तक)। अपने गहने तैयार रखें — उन्हें साफ़ करने की ज़रूरत नहीं है।", ty_wa: "अभी WhatsApp करें", ty_call: "कॉल करें: 816 987 4545", ty_back: "← होम पर वापस जाएँ", ty_rate: "लाइव 24K रेट", git_sending: "भेजा जा रहा है…", git_send_err: "आपका अनुरोध नहीं भेजा जा सका। कृपया अपना इंटरनेट जाँचें और फिर से कोशिश करें, या हमें कॉल करें।",
     git_prefs: "विज़िट से जुड़ी पसंद (वैकल्पिक)", git_p_discreet: "गोपनीय विज़िट", git_p_discreet_d: "सादे कपड़े, बैग या गाड़ी पर कोई लोगो नहीं।",
     git_p_woman: "महिला एग्ज़ीक्यूटिव", git_p_urgent: "अर्जेंट, उसी दिन", git_urgent_note: "शाम 4 बजे से पहले बुक करें, हम आज ही आएँगे। हम 30 मिनट के अंदर आपको कॉल करेंगे।",
     git_done_thanks: "इतनी ख़ास चीज़ के लिए हम पर भरोसा करने के लिए धन्यवाद।", git_done_urgent: "अर्जेंट के रूप में दर्ज: हम 30 मिनट के अंदर आपको कॉल करेंगे।",
@@ -683,7 +716,7 @@ const STR = {
 
     hero_eyebrow:   'आम्ही योग्य दरात सोने खरेदी करतो',
     hero_h1:        ['तुमचे सोने ', 'लाइव्ह', ' बाजारभावाने विका.'],
-    hero_points:    ["मोफत मूल्यांकन, घरी किंवा आमच्या सेंटरमध्ये", "तुमच्यासमोर चाचणी, 15 मिनिटांत पेमेंट", "सर्वोत्तम भावाची हमी. विकण्याची सक्ती नाही"],
+    hero_points:    ["मोफत मूल्यांकन, घरी किंवा आमच्या सेंटरमध्ये", "तुमच्यासमोर चाचणी, 15 मिनिटांत पेमेंट", "लाइव्ह बाजारभाव. विकण्याची सक्ती नाही."],
     hero_cta_wa:    "WhatsApp वर माझा अंदाज मिळवा",
     hero_cta_calc:  'तुमच्या सोन्याचे मूल्य जाणून घ्या',
     hero_stats:     "500+ ग्राहक · ₹10 कोटी+ ची खरेदी",
@@ -715,6 +748,7 @@ const STR = {
     git_book: "मोफत भेट बुक करा", git_call: 'आत्ता कॉल करा',
     git_consent: 'सबमिट करून, तुमच्या सोने विक्रीबद्दल संपर्क करण्यास तुम्ही संमती देता.',
     git_err: 'तुमचे नाव आणि योग्य 10 अंकी मोबाइल नंबर टाका.', git_done_t: 'विनंती मिळाली', git_done_d: "तुमच्या माहितीसह आम्ही WhatsApp उघडले आहे. तिथे पाठवा दाबा, आम्ही लवकरच वेळ निश्चित करू. त्या दिवशी चाचणी आणि पेमेंटला सुमारे 15 मिनिटे लागतात.", git_again: "आणखी एक भेट बुक करा",
+    ty_title: "धन्यवाद! तुमची विनंती आम्हाला मिळाली आहे.", ty_sub: "आम्ही 30 मिनिटांत तुम्हाला कॉल करू (सकाळी 9 ते रात्री 9). तुमचे दागिने तयार ठेवा — ते स्वच्छ करण्याची गरज नाही.", ty_wa: "आत्ताच WhatsApp करा", ty_call: "कॉल करा: 816 987 4545", ty_back: "← मुख्य पानावर परत जा", ty_rate: "लाइव्ह 24K दर", git_sending: "पाठवत आहे…", git_send_err: "तुमची विनंती पाठवता आली नाही. कृपया तुमचे इंटरनेट तपासा आणि पुन्हा प्रयत्न करा, किंवा आम्हाला कॉल करा.",
     git_prefs: "भेटीसंबंधी पसंती (ऐच्छिक)", git_p_discreet: "गोपनीय भेट", git_p_discreet_d: "साधे कपडे, बॅग किंवा गाडीवर लोगो नाही.",
     git_p_woman: "महिला एक्झिक्युटिव्ह", git_p_urgent: "तातडीचे, त्याच दिवशी", git_urgent_note: "दुपारी 4 पूर्वी बुक करा, आम्ही आजच येऊ. आम्ही 30 मिनिटांत तुम्हाला कॉल करू.",
     git_done_thanks: "एवढ्या मोलाच्या गोष्टीसाठी आमच्यावर विश्वास ठेवल्याबद्दल धन्यवाद.", git_done_urgent: "तातडीचे म्हणून नोंद: आम्ही 30 मिनिटांत तुम्हाला कॉल करू.",
@@ -794,7 +828,7 @@ const STR = {
 
     hero_eyebrow:   'ನ್ಯಾಯಯುತ ಬೆಲೆಗೆ ನಾವು ಚಿನ್ನ ಖರೀದಿಸುತ್ತೇವೆ',
     hero_h1:        ['ನಿಮ್ಮ ಚಿನ್ನವನ್ನು ', 'ಲೈವ್', ' ಮಾರುಕಟ್ಟೆ ದರದಲ್ಲಿ ಮಾರಾಟ ಮಾಡಿ.'],
-    hero_points:    ["ಉಚಿತ ಮೌಲ್ಯಮಾಪನ, ಮನೆಯಲ್ಲೇ ಅಥವಾ ನಮ್ಮ ಕೇಂದ್ರದಲ್ಲಿ", "ನಿಮ್ಮ ಮುಂದೆಯೇ ಪರೀಕ್ಷೆ, 15 ನಿಮಿಷಗಳಲ್ಲಿ ಪಾವತಿ", "ಅತ್ಯುತ್ತಮ ಬೆಲೆಯ ಗ್ಯಾರಂಟಿ. ಮಾರುವ ಒತ್ತಾಯವಿಲ್ಲ"],
+    hero_points:    ["ಉಚಿತ ಮೌಲ್ಯಮಾಪನ, ಮನೆಯಲ್ಲೇ ಅಥವಾ ನಮ್ಮ ಕೇಂದ್ರದಲ್ಲಿ", "ನಿಮ್ಮ ಮುಂದೆಯೇ ಪರೀಕ್ಷೆ, 15 ನಿಮಿಷಗಳಲ್ಲಿ ಪಾವತಿ", "ಲೈವ್ ಮಾರುಕಟ್ಟೆ ದರ. ಮಾರುವ ಒತ್ತಾಯವಿಲ್ಲ."],
     hero_cta_wa:    "WhatsApp ನಲ್ಲಿ ನನ್ನ ಅಂದಾಜು ಪಡೆಯಿರಿ",
     hero_cta_calc:  'ನಿಮ್ಮ ಚಿನ್ನದ ಮೌಲ್ಯ ತಿಳಿಯಿರಿ',
     hero_stats:     "500+ ಗ್ರಾಹಕರು · ₹10 ಕೋಟಿ+ ಖರೀದಿ",
@@ -826,6 +860,7 @@ const STR = {
     git_book: "ಉಚಿತ ಭೇಟಿ ಬುಕ್ ಮಾಡಿ", git_call: 'ಈಗ ಕರೆ ಮಾಡಿ',
     git_consent: 'ಸಲ್ಲಿಸುವ ಮೂಲಕ, ನಿಮ್ಮ ಚಿನ್ನ ಮಾರಾಟದ ಕುರಿತು ನಿಮ್ಮನ್ನು ಸಂಪರ್ಕಿಸಲು ನೀವು ಒಪ್ಪುತ್ತೀರಿ.',
     git_err: 'ನಿಮ್ಮ ಹೆಸರು ಮತ್ತು ಸರಿಯಾದ 10 ಅಂಕಿಯ ಮೊಬೈಲ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ.', git_done_t: 'ವಿನಂತಿ ಸ್ವೀಕರಿಸಲಾಗಿದೆ', git_done_d: "ನಿಮ್ಮ ವಿವರಗಳೊಂದಿಗೆ WhatsApp ತೆರೆಯಲಾಗಿದೆ. ಅಲ್ಲಿ ಕಳುಹಿಸಿ ಒತ್ತಿ, ನಾವು ಶೀಘ್ರದಲ್ಲೇ ಸಮಯ ದೃಢಪಡಿಸುತ್ತೇವೆ. ಆ ದಿನ ಪರೀಕ್ಷೆ ಮತ್ತು ಪಾವತಿಗೆ ಸುಮಾರು 15 ನಿಮಿಷ ಸಾಕು.", git_again: "ಇನ್ನೊಂದು ಭೇಟಿ ಬುಕ್ ಮಾಡಿ",
+    ty_title: "ಧನ್ಯವಾದಗಳು! ನಿಮ್ಮ ವಿನಂತಿ ನಮಗೆ ತಲುಪಿದೆ.", ty_sub: "30 ನಿಮಿಷಗಳೊಳಗೆ ನಿಮಗೆ ಕರೆ ಮಾಡುತ್ತೇವೆ (ಬೆಳಿಗ್ಗೆ 9 ರಿಂದ ರಾತ್ರಿ 9). ನಿಮ್ಮ ಆಭರಣಗಳನ್ನು ಸಿದ್ಧವಾಗಿಡಿ — ಅವುಗಳನ್ನು ಸ್ವಚ್ಛಗೊಳಿಸುವ ಅಗತ್ಯವಿಲ್ಲ.", ty_wa: "ಈಗಲೇ WhatsApp ಮಾಡಿ", ty_call: "ಕರೆ ಮಾಡಿ: 816 987 4545", ty_back: "← ಮುಖಪುಟಕ್ಕೆ ಹಿಂತಿರುಗಿ", ty_rate: "ಲೈವ್ 24K ದರ", git_sending: "ಕಳುಹಿಸಲಾಗುತ್ತಿದೆ…", git_send_err: "ನಿಮ್ಮ ವಿನಂತಿಯನ್ನು ಕಳುಹಿಸಲು ಆಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು ಇಂಟರ್ನೆಟ್ ಪರಿಶೀಲಿಸಿ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ, ಅಥವಾ ನಮಗೆ ಕರೆ ಮಾಡಿ.",
     git_prefs: "ಭೇಟಿಯ ಆದ್ಯತೆಗಳು (ಐಚ್ಛಿಕ)", git_p_discreet: "ಗೌಪ್ಯ ಭೇಟಿ", git_p_discreet_d: "ಸಾಮಾನ್ಯ ಉಡುಪು, ಬ್ಯಾಗ್ ಅಥವಾ ವಾಹನದ ಮೇಲೆ ಲೋಗೋ ಇಲ್ಲ.",
     git_p_woman: "ಮಹಿಳಾ ಎಕ್ಸಿಕ್ಯೂಟಿವ್", git_p_urgent: "ತುರ್ತು, ಅದೇ ದಿನ", git_urgent_note: "ಸಂಜೆ 4 ಗಂಟೆಯೊಳಗೆ ಬುಕ್ ಮಾಡಿದರೆ ಇಂದೇ ಬರುತ್ತೇವೆ. 30 ನಿಮಿಷಗಳೊಳಗೆ ನಿಮಗೆ ಕರೆ ಮಾಡುತ್ತೇವೆ.",
     git_done_thanks: "ಇಷ್ಟು ಅಮೂಲ್ಯವಾದುದಕ್ಕೆ ನಮ್ಮನ್ನು ನಂಬಿದ್ದಕ್ಕಾಗಿ ಧನ್ಯವಾದಗಳು.", git_done_urgent: "ತುರ್ತು ಎಂದು ದಾಖಲಿಸಲಾಗಿದೆ: 30 ನಿಮಿಷಗಳೊಳಗೆ ನಿಮಗೆ ಕರೆ ಮಾಡುತ್ತೇವೆ.",
@@ -910,6 +945,13 @@ const fill = (s, vars) => String(s).replace(/\{(\w+)\}/g, (_, k) => (vars[k] !==
 
 function useLangState() {
   const [lang, setLangRaw] = useState(() => {
+    try {
+      const q = new URLSearchParams(window.location.search).get('lang');
+      if (/^\/thank-you\/?$/.test(window.location.pathname) && LANG_CODES.includes(q)) {
+        try { localStorage.setItem('cm_lang', q); } catch { /* private mode */ }
+        return q;
+      }
+    } catch { /* ignore */ }
     try { const v = localStorage.getItem('cm_lang'); return LANG_CODES.includes(v) ? v : 'en'; } catch { return 'en'; }
   });
   const setLang = useCallback(v => {
@@ -1144,6 +1186,22 @@ const GLOBAL_CSS = `
   .rv-track { display:flex; gap:16px; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; -webkit-overflow-scrolling:touch; padding:4px 2px 14px; }
   .rv-track::-webkit-scrollbar { display:none; }
   .rv-card { flex:0 0 86%; scroll-snap-align:start; }
+  .ty-wrap { padding-top:20px; padding-bottom:40px; max-width:680px; }
+  .ty-card { background:${C.plum}; border-radius:12px; border:1px solid rgba(224,183,101,.25); box-shadow:0 12px 36px rgba(43,20,80,.22); padding:24px 20px; display:flex; flex-direction:column; align-items:flex-start; gap:12px; }
+  .ty-h1 { font-family:var(--f-serif); font-size:clamp(25px, 6.4vw, 34px); font-weight:350; line-height:1.18; letter-spacing:-0.02em; color:${C.gold3}; margin:6px 0 0; }
+  .ty-sub { font-family:var(--f-sans); font-size:15.5px; line-height:1.6; color:rgba(241,215,141,.85); margin:0; }
+  .ty-ctas { display:grid; gap:10px; width:100%; margin-top:6px; }
+  @media (min-width:600px) { .ty-ctas { grid-template-columns:1fr 1fr; } .ty-card { padding:32px; } }
+  .ty-btn { display:flex; align-items:center; justify-content:center; gap:10px; min-height:54px; padding:12px 18px; border-radius:999px; font:600 17px/1.2 var(--f-sans); text-decoration:none; }
+  .ty-wa { background:${C.green}; color:${C.white}; }
+  .ty-call { background:${C.gold2}; color:${C.plum}; }
+  .ty-rate { display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 14px; margin-top:14px; padding:14px 18px; background:${C.white}; border:1px solid rgba(184,136,58,.3); border-radius:10px; }
+  .ty-rate-k { display:inline-flex; align-items:center; gap:7px; font:600 13px/1.3 var(--f-sans); color:${C.mute}; }
+  .ty-dot { width:7px; height:7px; border-radius:50%; background:${C.green}; }
+  .ty-rate-v { font-family:var(--f-serif); font-size:26px; font-weight:400; color:${C.plum}; letter-spacing:-0.02em; }
+  .ty-rate-v small { font-family:var(--f-sans); font-size:13px; color:${C.mute}; margin-left:2px; }
+  .ty-rate-t { font:italic 12.5px/1.4 var(--f-serif); color:${C.mute}; margin-left:auto; }
+  .ty-back { display:inline-block; margin-top:16px; font:600 14px/1.4 var(--f-sans); color:${C.goldInk}; text-decoration:underline; text-underline-offset:3px; }
   .rev-text.clamp { display:-webkit-box; -webkit-line-clamp:7; -webkit-box-orient:vertical; overflow:hidden; }
   .rev-rating { display:inline-flex; align-items:center; flex-wrap:wrap; justify-content:center; gap:6px 8px; margin-top:12px; font-family:var(--f-sans); font-size:14px; color:${C.ink2}; text-decoration:none; }
   .rev-rating b { font-family:var(--f-serif); font-size:22px; font-weight:500; color:${C.plum}; }
@@ -1314,7 +1372,7 @@ function CallPicker({ variant = 'outline', label, full = false, align = 'right',
       {open && (
         <div role="menu" style={{ position:'absolute', top:'calc(100% + 8px)', [align]:0, minWidth:'210px', width: full ? '100%' : 'auto', zIndex:120, background:C.white, borderRadius:'8px', border:'1px solid rgba(26,20,38,.1)', boxShadow:'0 8px 24px rgba(22,18,31,.18)', overflow:'hidden', animation:'fadeSlide .2s ease' }}>
           {CALL_NUMBERS.map((n, i) => (
-            <a key={n.tel} href={`tel:${n.tel}`} role="menuitem" onClick={() => { track('call_click', { number:n.tel, source }); setOpen(false); }}
+            <a key={n.tel} href={`tel:${n.tel}`} role="menuitem" onClick={() => setOpen(false)}
               style={{ display:'flex', alignItems:'center', gap:'10px', padding:'13px 16px', color:C.ink, textDecoration:'none', fontFamily:SANS, fontSize:'14px', fontWeight:600, borderTop: i === 0 ? 'none' : '1px solid rgba(26,20,38,.08)' }}>
               <Phone size={14} color={C.gold}/> {n.label}
             </a>
@@ -1464,7 +1522,7 @@ function TopBar({ spot, navigate, showLang = false }) {
         </nav>
         <div style={{ marginLeft:'auto', display:'flex', alignItems:'center', gap:'8px', flexShrink:0 }}>
           {showLang && <LangDropdown/>}
-          <a className="hide-m" href={WA_LINK} target="_blank" rel="noreferrer" onClick={() => track('whatsapp_click', { source:'topbar' })}
+          <a className="hide-m" href={WA_LINK} target="_blank" rel="noreferrer"
             style={{ display:'inline-flex', alignItems:'center', gap:'6px', background:C.green, color:C.ink, padding:'7px 12px', borderRadius:'999px', fontFamily:SANS, fontSize:'13px', fontWeight:600, textDecoration:'none', whiteSpace:'nowrap' }}>
             <WhatsAppGlyph size={15} color={C.ink}/> WhatsApp
           </a>
@@ -1484,7 +1542,7 @@ function TopBar({ spot, navigate, showLang = false }) {
             <div className="cm-wrap" style={{ paddingTop:'6px', paddingBottom:'20px' }}>
               {links.map(([id, label]) => <button key={id} type="button" onClick={() => go(id)} style={menuRow}>{label}</button>)}
               <Link to="/blog" navigate={navigate} style={menuRow}>{t('nav_blog')}</Link>
-              <a href={WA_LINK} target="_blank" rel="noreferrer" onClick={() => { track('whatsapp_click', { source:'menu' }); close(); }}
+              <a href={WA_LINK} target="_blank" rel="noreferrer" data-loc="menu" onClick={close}
                 style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:'8px', marginTop:'8px', padding:'14px', borderRadius:'999px', background:C.green, color:C.ink, fontFamily:SANS, fontWeight:600, fontSize:'15px', textDecoration:'none' }}>
                 <WhatsAppGlyph size={18} color={C.ink}/> {t('whatsapp')}
               </a>
@@ -1599,7 +1657,8 @@ function GetInTouch() {
   const [woman, setWoman]       = useState(false);
   const [hp, setHp]             = useState('');   // spam trap — real visitors never see it
   const [tried, setTried]       = useState(false);
-  const [sent, setSent]         = useState(false);
+  const [sending, setSending]   = useState(false);
+  const [sendErr, setSendErr]   = useState(false);
   const valid    = name.trim().length >= 2 && /^[6-9]\d{9}$/.test(mobile);
   const prefEn   = pref === 'doorstep' ? 'Home visit' : pref === 'centre' ? 'Kharghar centre' : 'Not specified';
   const door     = pref === 'doorstep';
@@ -1609,18 +1668,14 @@ function GetInTouch() {
   const LBLD     = { ...LBL, color:'rgba(241,215,141,.85)' };
   const hint     = { fontFamily:SANS, fontSize:'12.5px', color:'rgba(241,215,141,.78)', lineHeight:1.5, marginTop:'8px', animation:'fadeSlide .25s ease' };
 
-  const onBook = () => {
+  const onBook = async () => {
     if (!valid) { setTried(true); return; }
-    if (hp) return;
-    const extras = [isUrgent && 'Urgent (same day)', isDisc && 'Discreet visit', isWoman && 'Woman executive'].filter(Boolean);
-    postLead({ name:name.trim(), mobile, preference:prefEn, urgent:isUrgent, discreet:isDisc, woman_executive:isWoman, source:'Homepage · Book a free visit', lang, page:window.location.href });
-    track('generate_lead', { preference:prefEn, urgent:isUrgent ? 'yes' : 'no', discreet:isDisc ? 'yes' : 'no', woman_executive:isWoman ? 'yes' : 'no' });
-    const lines = ["Hi Carat Money — I'd like to book a free visit.", '', `Name: ${name.trim()}`, `Phone: +91${mobile}`, `Preference: ${prefEn}`];
-    if (extras.length) lines.push(`Visit preferences: ${extras.join(', ')}`);
-    openWA(lines.join('\n'), 'book_appointment');
-    setSent(true);
+    if (hp || sending) return;
+    setSending(true); setSendErr(false);
+    const ok = await postLead({ name:name.trim(), mobile, preference:prefEn, urgent:isUrgent, discreet:isDisc, woman_executive:isWoman, source:'Homepage · Book a free visit', lang, page:window.location.href });
+    if (!ok) { setSending(false); setSendErr(true); return; }
+    goTo(`/thank-you?lang=${encodeURIComponent(lang)}`);   // real page load; generate_lead fires there
   };
-  const reset = () => { setSent(false); setName(''); setMobile(''); setPref(''); setUrgent(false); setDiscreet(false); setWoman(false); setTried(false); };
 
   const chip = (key, label) => {
     const on = pref === key;
@@ -1643,21 +1698,6 @@ function GetInTouch() {
         <img src="/img-sell.jpg" alt="" width="1310" height="701" loading="lazy" decoding="async" style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'30% 25%' }}/>
         <div style={{ position:'absolute', inset:0, background:`linear-gradient(90deg, rgba(43,20,80,0) 75%, ${C.plum})` }}/>
       </div>
-      {sent ? (
-      <div className="git-body" role="status" style={{ display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'flex-start', gap:'12px', minHeight:'260px', animation:'fadeSlide .45s ease' }}>
-        <BankDrop/>
-        <h2 style={{ fontFamily:SERIF, fontSize:'clamp(24px, 3vw, 30px)', fontWeight:350, color:C.gold3, margin:'6px 0 0', letterSpacing:'-0.02em', lineHeight:1.15 }}>{t('git_done_t')}</h2>
-        <p className="it-en" style={{ fontFamily:SERIF, fontStyle:'italic', fontSize:'clamp(17px, 2vw, 19px)', fontWeight:350, color:C.gold2, margin:0, lineHeight:1.45, maxWidth:'520px' }}>{t('git_done_thanks')}</p>
-        <p style={{ fontFamily:SANS, fontSize:'15px', color:'rgba(241,215,141,.8)', margin:0, lineHeight:1.6, maxWidth:'520px' }}>{t('git_done_d')}</p>
-        {isUrgent && (
-          <p style={{ display:'flex', alignItems:'center', gap:'8px', fontFamily:SANS, fontSize:'14px', fontWeight:600, color:C.gold3, margin:0, padding:'8px 12px', borderRadius:'6px', background:'rgba(224,183,101,.12)' }}>
-            <Zap size={16} color={C.gold2} style={{ flexShrink:0 }}/>{t('git_done_urgent')}
-          </p>
-        )}
-        <button type="button" onClick={reset}
-          style={{ marginTop:'6px', background:'none', border:'none', padding:0, color:C.gold2, fontFamily:SANS, fontSize:'14px', fontWeight:600, cursor:'pointer', textDecoration:'underline', textUnderlineOffset:'3px' }}>{t('git_again')}</button>
-      </div>
-      ) : (
       <div className="git-body">
         <div className="git-fields">
           <div>
@@ -1697,13 +1737,13 @@ function GetInTouch() {
         <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" value={hp} onChange={e => setHp(e.target.value)}
           style={{ position:'absolute', left:'-9999px', width:'1px', height:'1px', opacity:0 }}/>
         <div className="git-actions">
-          <BtnWhatsApp onClick={onBook}><WhatsAppGlyph size={18} color={C.white}/> {t('git_book')}</BtnWhatsApp>
+          <BtnWhatsApp onClick={onBook} disabled={sending}><WhatsAppGlyph size={18} color={C.white}/> {sending ? t('git_sending') : t('git_book')}</BtnWhatsApp>
           <CallPicker variant="gold-outline" full label={t('git_call')} source="get_in_touch" align="left"/>
           <div className="git-consent" style={{ fontFamily:SANS, fontSize:'12px', color:'rgba(241,215,141,.7)', lineHeight:1.5 }}>{t('git_consent')}</div>
         </div>
         {tried && !valid && <div role="alert" style={{ marginTop:'10px', fontFamily:SANS, fontSize:'13px', color:'#FCA5A5', fontWeight:500 }}>{t('git_err')}</div>}
+        {sendErr && <div role="alert" style={{ marginTop:'10px', fontFamily:SANS, fontSize:'13px', color:'#FCA5A5', fontWeight:500 }}>{t('git_send_err')}</div>}
       </div>
-      )}
     </div>
   );
 }
@@ -2177,7 +2217,7 @@ function FAQSection() {
             <h3 style={{ fontFamily:SERIF, fontSize:'26px', fontWeight:350, color:C.gold3, margin:'0 0 8px', letterSpacing:'-0.02em', lineHeight:1.15 }}>{t('faq_panel_title')}</h3>
             <p style={{ fontFamily:SANS, fontSize:'14px', color:'rgba(241,215,141,.65)', lineHeight:1.6, margin:'0 0 20px' }}>{t('faq_panel_sub')}</p>
             <div style={{ display:'grid', gap:'10px' }}>
-              <a href={WA_LINK} target="_blank" rel="noreferrer" onClick={() => track('whatsapp_click', { source:'faq_panel' })} style={{ ...panelBtn, background:C.green, color:C.white, borderRadius:'999px', boxShadow:'0 6px 20px rgba(37,211,102,.3)' }}>
+              <a href={WA_LINK} target="_blank" rel="noreferrer" style={{ ...panelBtn, background:C.green, color:C.white, borderRadius:'999px', boxShadow:'0 6px 20px rgba(37,211,102,.3)' }}>
                 <WhatsAppGlyph size={18} color={C.white}/> {t('whatsapp')}
               </a>
               <CallPicker variant="outline" full source="faq_panel" align="left"/>
@@ -2449,10 +2489,10 @@ function SiteFooter({ navigate }) {
             <div style={line}><MapPin size={16} color={C.gold2} style={{ flexShrink:0, marginTop:'2px' }}/><address style={{ fontStyle:'normal' }}>{ADDRESS}</address></div>
             <div style={line}><Clock size={16} color={C.gold2} style={{ flexShrink:0, marginTop:'2px' }}/>{t('visit_hours')}</div>
             {CALL_NUMBERS.map(n => (
-              <a key={n.tel} href={`tel:${n.tel}`} onClick={() => track('call_click', { number:n.tel, source:'footer' })} style={line}><Phone size={16} color={C.gold2} style={{ flexShrink:0, marginTop:'2px' }}/>+91 {n.label}</a>
+              <a key={n.tel} href={`tel:${n.tel}`} style={line}><Phone size={16} color={C.gold2} style={{ flexShrink:0, marginTop:'2px' }}/>+91 {n.label}</a>
             ))}
             <a href={`mailto:${EMAIL}`} style={line}><Mail size={16} color={C.gold2} style={{ flexShrink:0, marginTop:'2px' }}/>{EMAIL}</a>
-            <a href={WA_LINK} target="_blank" rel="noreferrer" onClick={() => track('whatsapp_click', { source:'footer' })} style={line}><WhatsAppGlyph size={16} color={C.gold2}/>{t('whatsapp')}</a>
+            <a href={WA_LINK} target="_blank" rel="noreferrer" style={line}><WhatsAppGlyph size={16} color={C.gold2}/>{t('whatsapp')}</a>
           </div>
         </div>
         <div className="ft-pad" style={{ borderTop:'1px solid rgba(224,183,101,.15)', marginTop:'40px', paddingTop:'20px' }}>
@@ -2468,7 +2508,7 @@ function SiteFooter({ navigate }) {
 function FloatingWA() {
   const { t } = useT();
   return (
-    <a href={WA_LINK} target="_blank" rel="noreferrer" onClick={() => track('whatsapp_click', { source:'floating' })} aria-label={t('wa_float')} className="hide-d"
+    <a href={WA_LINK} target="_blank" rel="noreferrer" data-loc="floating" aria-label={t('wa_float')} className="hide-d"
       style={{ position:'fixed', right:'16px', bottom:'calc(16px + env(safe-area-inset-bottom, 0px))', zIndex:90, width:'56px', height:'56px', borderRadius:'50%', background:C.green, display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 6px 20px rgba(37,211,102,.4)' }}>
       <WhatsAppGlyph size={28} color={C.white}/>
     </a>
@@ -3563,15 +3603,71 @@ function PartnerRedirect() {
   );
 }
 
+// ─── Thank-you page (after a successful booking) ─────────────────────────────
+const TY_WA_URL = "https://wa.me/918169874545?text=Hi%20Carat%20Money%2C%20I%27d%20like%20a%20valuation%20for%20my%20gold%20ornaments.";
+function ThankYouPage({ navigate, spot }) {
+  const { t } = useT();
+  // generate_lead once per browser session, so refreshing this page doesn't double-count
+  useEffect(() => {
+    let seen = false;
+    try {
+      seen = sessionStorage.getItem('cm_lead_tracked') === '1';
+      if (!seen) sessionStorage.setItem('cm_lead_tracked', '1');
+    } catch { /* storage blocked: count this load */ }
+    if (!seen) track('generate_lead', { method:'booking_form' });
+  }, []);
+  // keep this page out of search results (vercel.json also sends X-Robots-Tag)
+  useEffect(() => {
+    let m = document.querySelector('meta[name="robots"]');
+    const prev = m ? m.getAttribute('content') : null;
+    if (!m) { m = document.createElement('meta'); m.setAttribute('name', 'robots'); document.head.appendChild(m); }
+    m.setAttribute('content', 'noindex, nofollow');
+    return () => { if (prev === null) m.remove(); else m.setAttribute('content', prev); };
+  }, []);
+  const r24  = spot.display;
+  const time = fmtTime(spot.updatedAt);
+  return (
+    <>
+      <TopBar spot={spot} navigate={navigate} showLang/>
+      <main style={{ paddingTop:'56px', background:C.paper, minHeight:'70vh' }}>
+        <div className="cm-wrap ty-wrap">
+          <div className="ty-card" role="status">
+            <BankDrop/>
+            <h1 className="ty-h1">{t('ty_title')}</h1>
+            <p className="ty-sub">{t('ty_sub')}</p>
+            <div className="ty-ctas">
+              <a href={TY_WA_URL} target="_blank" rel="noreferrer" data-loc="thank_you" className="ty-btn ty-wa">
+                <WhatsAppGlyph size={20} color={C.white}/> {t('ty_wa')}
+              </a>
+              <a href="tel:+918169874545" data-loc="thank_you" className="ty-btn ty-call">
+                <Phone size={19}/> {t('ty_call')}
+              </a>
+            </div>
+          </div>
+          <div className="ty-rate">
+            <span className="ty-rate-k"><span className="ty-dot" aria-hidden="true"/>{t('ty_rate')}</span>
+            <span className="ty-rate-v">{r24 ? <>₹{fmt(r24, 0)}<small>/g</small></> : <RateWait/>}</span>
+            <span className="ty-rate-t">{spot.error && !spot.updatedAt ? t('rate_unavailable') : time ? fill(t('rate_updated'), { time }) : t('rate_fetching')}</span>
+          </div>
+          <a href="/" className="ty-back">{t('ty_back')}</a>
+        </div>
+      </main>
+      <SiteFooter navigate={navigate}/>
+    </>
+  );
+}
+
 // ─── App ──────────────────────────────────────────────────────────────────────
 export default function App() {
   const { route, navigate, blogSlug } = useRoute();
   const spot = useSpotRate();
   const [lang, setLang] = useLangState();
-  useSEO(blogSlug ? null : route);
+  const isThanks = route === '/thank-you' || route === '/thank-you/';
+  useSEO(blogSlug ? null : (isThanks ? '/thank-you' : route));
+  useClickTracking();
 
-  // Language switch applies to the homepage only; other pages stay English.
-  const effLang = route === '/' ? lang : 'en';
+  // Language switch applies to the homepage and the thank-you page; other pages stay English.
+  const effLang = route === '/' || isThanks ? lang : 'en';
   useLayoutEffect(() => { document.documentElement.lang = effLang; }, [effLang]);
   const ctx = useMemo(() => ({ lang:effLang, setLang, t:makeT(effLang) }), [effLang, setLang]);
 
@@ -3581,6 +3677,7 @@ export default function App() {
   else if (route==='/margin')  page = <MarginPage      navigate={navigate} spot={spot}/>;
   else if (route==='/blog')    page = <BlogIndexPage   navigate={navigate} spot={spot}/>;
   else if (route==='/partner') page = <PartnerRedirect/>;
+  else if (isThanks)           page = <ThankYouPage    navigate={navigate} spot={spot}/>;
   else if (blogSlug)           page = <BlogArticlePage navigate={navigate} slug={blogSlug}/>;
   else                         page = <HomePage        navigate={navigate} spot={spot}/>;
   return <LangCtx.Provider value={ctx}><style>{GLOBAL_CSS}</style>{page}</LangCtx.Provider>;
