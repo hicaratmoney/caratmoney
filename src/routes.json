@@ -1,0 +1,35 @@
+{
+  "site": "https://carat.money",
+  "langPaths": { "/hi": "hi", "/mr": "mr", "/kn": "kn" },
+  "sectionPaths": {
+    "/reviews": "reviews",
+    "/live-gold-rate": "calculator",
+    "/how-it-works": "process",
+    "/home-visit": "book"
+  },
+  "hreflang": [
+    ["en-IN", "/"],
+    ["hi-IN", "/hi"],
+    ["mr-IN", "/mr"],
+    ["kn-IN", "/kn"],
+    ["x-default", "/"]
+  ],
+  "homeSeo": {
+    "en": {
+      "title": "Carat Money — Sell Gold at Best Price",
+      "desc": "Sell your gold at a fair price with free home pickup in Bangalore and Mumbai. Live gold rates, XRF testing in front of you and instant payment."
+    },
+    "hi": {
+      "title": "Carat Money — सबसे अच्छे दाम पर सोना बेचें",
+      "desc": "बैंगलोर और मुंबई में मुफ़्त होम पिकअप के साथ अपना सोना सही दाम पर बेचें। लाइव गोल्ड रेट, आपके सामने XRF जाँच और तुरंत पेमेंट।"
+    },
+    "mr": {
+      "title": "Carat Money — सर्वोत्तम दरात सोने विका",
+      "desc": "बंगळुरू आणि मुंबईत मोफत होम पिकअपसह तुमचे सोने योग्य दरात विका. लाइव्ह सोन्याचा दर, तुमच्यासमोर XRF चाचणी आणि त्वरित पेमेंट."
+    },
+    "kn": {
+      "title": "Carat Money — ಉತ್ತಮ ಬೆಲೆಗೆ ಚಿನ್ನ ಮಾರಿ",
+      "desc": "ಬೆಂಗಳೂರು ಮತ್ತು ಮುಂಬೈನಲ್ಲಿ ಉಚಿತ ಹೋಮ್ ಪಿಕಪ್‌ನೊಂದಿಗೆ ನಿಮ್ಮ ಚಿನ್ನವನ್ನು ನ್ಯಾಯಯುತ ಬೆಲೆಗೆ ಮಾರಿ. ಲೈವ್ ಚಿನ್ನದ ದರ, ನಿಮ್ಮ ಮುಂದೆಯೇ XRF ಪರೀಕ್ಷೆ ಮತ್ತು ತಕ್ಷಣ ಪಾವತಿ."
+    }
+  }
+}

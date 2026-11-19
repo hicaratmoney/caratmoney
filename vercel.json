@@ -1,4 +1,5 @@
 {
+  "trailingSlash": false,
   "redirects": [
     {
       "source": "/blog/gold-selling-tips-bangalore",
@@ -20,6 +21,34 @@
     {
       "source": "/thank-you",
       "destination": "/index.html"
+    },
+    {
+      "source": "/hi",
+      "destination": "/hi.html"
+    },
+    {
+      "source": "/mr",
+      "destination": "/mr.html"
+    },
+    {
+      "source": "/kn",
+      "destination": "/kn.html"
+    },
+    {
+      "source": "/reviews",
+      "destination": "/reviews.html"
+    },
+    {
+      "source": "/live-gold-rate",
+      "destination": "/live-gold-rate.html"
+    },
+    {
+      "source": "/how-it-works",
+      "destination": "/how-it-works.html"
+    },
+    {
+      "source": "/home-visit",
+      "destination": "/home-visit.html"
     },
     {
       "source": "/blog/:slug+",

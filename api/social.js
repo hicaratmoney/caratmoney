@@ -89,6 +89,7 @@ export default function handler(req, res) {
     .replace(/<link rel="canonical"[^>]*>/i, '')
     .replace(/<meta property="og:[^>]*>/gi, '')
     .replace(/<meta name="description"[^>]*>/i, '')
+    .replace(/<link rel="alternate" hreflang[^>]*>/gi, '')
     .replace(/<meta name="twitter:[^>]*>/gi, '')
     .replace('</head>', `${metaBlock}\n</head>`);
 

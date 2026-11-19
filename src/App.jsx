@@ -1,4 +1,5 @@
 import { createPortal } from 'react-dom';
+import ROUTES from './routes.json';
 import React, { useState, useMemo, useRef, useEffect, useLayoutEffect, useCallback, useContext, createContext } from 'react';
 import {
   MessageCircle, TrendingDown, Shield, Sparkles, Info,
@@ -387,8 +388,15 @@ function useClickTracking() {
   }, []);
 }
 // Scroll to a homepage section; from any other page, go home first.
+// Landing paths that all render the homepage: / , language paths (/hi …) and
+// Google Ads sitelink paths (/reviews …) that scroll to a section on load.
+const LANG_PATHS    = ROUTES.langPaths;     // { '/hi':'hi', '/mr':'mr', '/kn':'kn' }
+const SECTION_PATHS = ROUTES.sectionPaths;  // { '/reviews':'reviews', '/live-gold-rate':'calculator', … }
+const normPath   = p => (p && p.length > 1 ? p.replace(/\/+$/, '') : p) || '/';
+const isHomePath = p => { const n = normPath(p); return n === '/' || n in LANG_PATHS || n in SECTION_PATHS; };
+
 function goSection(id, navigate) {
-  if (window.location.pathname === '/') {
+  if (isHomePath(window.location.pathname)) {
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior:'smooth', block:'start' });
   } else if (navigate) {
@@ -405,9 +413,15 @@ function useRoute() {
   useEffect(() => {
     const h = () => setRoute(get());
     window.addEventListener('popstate', h);
-    return () => window.removeEventListener('popstate', h);
+    window.addEventListener('cm:route', h);   // URL swapped by the language toggle (replaceState)
+    return () => { window.removeEventListener('popstate', h); window.removeEventListener('cm:route', h); };
   }, []);
   const navigate = useCallback(path => {
+    // Going home keeps the visitor's language path (/ → /hi when Hindi was chosen)
+    if (path === '/' || path.startsWith('/#')) {
+      let l = null; try { l = localStorage.getItem('cm_lang'); } catch { /* private mode */ }
+      if (l && `/${l}` in LANG_PATHS) path = `/${l}${path.slice(1)}`;
+    }
     window.history.pushState({}, '', path);
     setRoute(get());
     window.scrollTo({ top:0, behavior:'instant' });
@@ -430,11 +444,23 @@ function setCanonical(href) {
   if (!link) { link = document.createElement('link'); link.setAttribute('rel', 'canonical'); document.head.appendChild(link); }
   link.setAttribute('href', href);
 }
-function useSEO(route) {
+// hreflang alternates belong on the homepage family only (/, /hi, /mr, /kn and sitelink paths)
+function setHreflang(on) {
+  const links = document.querySelectorAll('link[rel="alternate"][hreflang]');
+  if (!on) { links.forEach(l => l.remove()); return; }
+  if (links.length === ROUTES.hreflang.length) return;
+  links.forEach(l => l.remove());
+  ROUTES.hreflang.forEach(([hl, p]) => {
+    const l = document.createElement('link');
+    l.setAttribute('rel', 'alternate'); l.setAttribute('hreflang', hl); l.setAttribute('href', ROUTES.site + p);
+    document.head.appendChild(l);
+  });
+}
+function useSEO(route, homeLang) {
   useEffect(() => {
     if (!route) return;
     setCanonical(`https://carat.money${route}`);
-    const seo = SEO_MAP[route] || SEO_MAP['/'];
+    const seo = homeLang ? (ROUTES.homeSeo[homeLang] || ROUTES.homeSeo.en) : (SEO_MAP[route] || SEO_MAP['/']);
     document.title = seo.title;
     const em = (sel, attr, val, content) => {
       let el = document.querySelector(sel);
@@ -446,7 +472,7 @@ function useSEO(route) {
     em('meta[property="og:title"]',      'property', 'og:title',        seo.title);
     em('meta[property="og:description"]','property', 'og:description',  seo.desc);
     em('meta[property="og:type"]',       'property', 'og:type',         'website');
-  }, [route]);
+  }, [route, homeLang]);
 }
 
 // ─── Live spot rate ───────────────────────────────────────────────────────────
@@ -952,6 +978,8 @@ const fill = (s, vars) => String(s).replace(/\{(\w+)\}/g, (_, k) => (vars[k] !==
 
 function useLangState() {
   const [lang, setLangRaw] = useState(() => {
+    const pl = LANG_PATHS[normPath(window.location.pathname)];
+    if (pl) { try { localStorage.setItem('cm_lang', pl); } catch { /* private mode */ } return pl; }
     try {
       const q = new URLSearchParams(window.location.search).get('lang');
       if (/^\/thank-you\/?$/.test(window.location.pathname) && LANG_CODES.includes(q)) {
@@ -966,6 +994,17 @@ function useLangState() {
     setLangRaw(v);
     try { localStorage.setItem('cm_lang', v); } catch { /* private mode */ }
     track('language_change', { language:v });
+    // On / and /hi|/mr|/kn the address follows the language (no reload). Sitelink paths keep theirs.
+    try {
+      const p = normPath(window.location.pathname);
+      if (p === '/' || p in LANG_PATHS) {
+        const np = v === 'en' ? '/' : `/${v}`;
+        if (np !== p) {
+          window.history.replaceState(window.history.state, '', np + window.location.search + window.location.hash);
+          window.dispatchEvent(new Event('cm:route'));
+        }
+      }
+    } catch { /* ignore */ }
   }, []);
   return [lang, setLang];
 }
@@ -1488,7 +1527,7 @@ function TopBar({ spot, navigate, showLang = false }) {
   const go    = id => { close(); goSection(id, navigate); };
   const home  = e => {
     e.preventDefault(); close();
-    if (window.location.pathname === '/') window.scrollTo({ top:0, behavior:'smooth' });
+    if (isHomePath(window.location.pathname)) window.scrollTo({ top:0, behavior:'smooth' });
     else if (navigate) navigate('/');
     else window.location.href = '/';
   };
@@ -2546,6 +2585,30 @@ function HomePage({ navigate, spot }) {
     if (!id) return;
     const tm = setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior:'smooth', block:'start' }), 80);
     return () => clearTimeout(tm);
+  }, []);
+  // Arriving at a sitelink path (/reviews, /live-gold-rate, /how-it-works, /home-visit) → once fonts
+  // and layout have settled, smooth-scroll to the section below the fixed header. The URL stays as is.
+  useEffect(() => {
+    const id = SECTION_PATHS[normPath(window.location.pathname)];
+    if (!id) return;
+    try { window.history.scrollRestoration = 'manual'; } catch { /* ignore */ }
+    let stop = false, tm;
+    const halt = () => { stop = true; };
+    const opts = { passive:true, once:true };
+    ['wheel', 'touchstart', 'keydown'].forEach(ev => window.addEventListener(ev, halt, opts));
+    const go = () => {
+      if (stop) return;
+      const el = document.getElementById(id); if (!el) return;
+      const head = document.querySelector('header');
+      const top = Math.max(0, Math.round(el.getBoundingClientRect().top + window.scrollY - (head ? head.offsetHeight : 0) - 12));
+      if (Math.abs(top - window.scrollY) > 2) window.scrollTo({ top, behavior:'smooth' });
+    };
+    const fonts = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
+    fonts.then(() => requestAnimationFrame(() => requestAnimationFrame(() => {
+      go();
+      tm = setTimeout(go, 1100);   // correct once more if images above it changed the layout
+    })));
+    return () => { stop = true; clearTimeout(tm); ['wheel', 'touchstart', 'keydown'].forEach(ev => window.removeEventListener(ev, halt)); };
   }, []);
 
   return (
@@ -3670,11 +3733,15 @@ export default function App() {
   const spot = useSpotRate();
   const [lang, setLang] = useLangState();
   const isThanks = route === '/thank-you' || route === '/thank-you/';
-  useSEO(blogSlug ? null : (isThanks ? '/thank-you' : route));
+  const isHome   = isHomePath(route);
+  // Canonical: /hi, /mr, /kn are self-canonical; / and the sitelink paths point at /
+  const homeCanon = normPath(route) in LANG_PATHS ? normPath(route) : '/';
+  useSEO(blogSlug ? null : (isThanks ? '/thank-you' : isHome ? homeCanon : route), isHome ? lang : null);
+  useEffect(() => { setHreflang(isHome); }, [isHome]);
   useClickTracking();
 
-  // Language switch applies to the homepage and the thank-you page; other pages stay English.
-  const effLang = route === '/' || isThanks ? lang : 'en';
+  // Language switch applies to the homepage family and the thank-you page; other pages stay English.
+  const effLang = isHome || isThanks ? lang : 'en';
   useLayoutEffect(() => { document.documentElement.lang = effLang; }, [effLang]);
   const ctx = useMemo(() => ({ lang:effLang, setLang, t:makeT(effLang) }), [effLang, setLang]);
 

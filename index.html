@@ -1,10 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+<script>
+  /* Runs before anything else: a returning visitor on / who chose Hindi/Marathi/Kannada
+     gets /hi, /mr or /kn (before GA records the page view); sets <html lang> early. */
+  (function () {
+    try {
+      var L = { '/hi': 'hi', '/mr': 'mr', '/kn': 'kn' };
+      var p = location.pathname.replace(/\/+$/, '') || '/';
+      var l = L[p];
+      if (!l && p === '/') {
+        var s = null; try { s = localStorage.getItem('cm_lang'); } catch (e) {}
+        if (s === 'hi' || s === 'mr' || s === 'kn') { l = s; history.replaceState(history.state, '', '/' + s + location.search + location.hash); }
+      }
+      if (l) document.documentElement.lang = l;
+    } catch (e) {}
+  })();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&family=Noto+Sans+Devanagari:wght@400;500;600&family=Noto+Sans+Kannada:wght@400;500;600&display=swap">
 <meta name="robots" content="max-image-preview:large" />
+<meta name="description" content="Sell your gold at a fair price with free home pickup in Bangalore and Mumbai. Live gold rates, XRF testing in front of you and instant payment." />
+<link rel="canonical" href="https://carat.money/" />
+<link rel="alternate" hreflang="en-IN" href="https://carat.money/" />
+<link rel="alternate" hreflang="hi-IN" href="https://carat.money/hi" />
+<link rel="alternate" hreflang="mr-IN" href="https://carat.money/mr" />
+<link rel="alternate" hreflang="kn-IN" href="https://carat.money/kn" />
+<link rel="alternate" hreflang="x-default" href="https://carat.money/" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://carat.money/" />
 <meta property="og:site_name" content="Carat Money" />
