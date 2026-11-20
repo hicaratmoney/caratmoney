@@ -35,26 +35,6 @@
       "source": "/cash-for-gold/:path*",
       "destination": "/",
       "statusCode": 301
-    },
-    {
-      "source": "/sell-gold",
-      "destination": "/",
-      "statusCode": 301
-    },
-    {
-      "source": "/sell-gold/:path*",
-      "destination": "/",
-      "statusCode": 301
-    },
-    {
-      "source": "/cash-for-gold",
-      "destination": "/",
-      "statusCode": 301
-    },
-    {
-      "source": "/cash-for-gold/:path*",
-      "destination": "/",
-      "statusCode": 301
     }
   ],
   "rewrites": [
