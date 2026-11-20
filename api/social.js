@@ -41,7 +41,9 @@ export default function handler(req, res) {
   // for a page that isn't real. Serve the plain SPA shell and let the
   // client-side router show its 404 state.
   if (slug && !article) {
-    const html = fs.readFileSync(path.join(process.cwd(), 'dist', 'index.html'), 'utf8');
+    const html = fs.readFileSync(path.join(process.cwd(), 'dist', 'index.html'), 'utf8')
+      .replace(/<link rel="canonical"[^>]*>/i, '')
+      .replace(/<link rel="alternate" hreflang[^>]*>/gi, '');
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     return res.status(200).send(html);
   }

@@ -20,7 +20,27 @@
   "rewrites": [
     {
       "source": "/thank-you",
-      "destination": "/index.html"
+      "destination": "/thank-you.html"
+    },
+    {
+      "source": "/sell",
+      "destination": "/sell.html"
+    },
+    {
+      "source": "/buy",
+      "destination": "/buy.html"
+    },
+    {
+      "source": "/margin",
+      "destination": "/margin.html"
+    },
+    {
+      "source": "/blog",
+      "destination": "/blog.html"
+    },
+    {
+      "source": "/partner",
+      "destination": "/partner.html"
     },
     {
       "source": "/hi",
@@ -56,7 +76,7 @@
     },
     {
       "source": "/((?!api/).*)",
-      "destination": "/index.html"
+      "destination": "/app.html"
     }
   ],
   "headers": [

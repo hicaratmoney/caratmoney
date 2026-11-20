@@ -431,14 +431,7 @@ function useRoute() {
 }
 
 // ─── SEO ──────────────────────────────────────────────────────────────────────
-const SEO_MAP = {
-  '/':       { title:'Carat Money — Sell Gold at Best Price', desc:'Sell your gold at a fair price with free home pickup in Bangalore and Mumbai. Live gold rates, XRF testing in front of you and instant payment.' },
-  '/sell':   { title:'Sell Gold to Carat Money | Best Buying Rates', desc:'Get a free quote on WhatsApp and book a home pickup in Bangalore or Mumbai. Your gold is tested in front of you and paid for instantly.' },
-  '/buy':    { title:'Buy 24K Gold Coins | BIS-Hallmarked | Carat Money', desc:'Buy BIS-hallmarked 24K gold coins. 999.9 purity. 48-hour open-box delivery. WhatsApp to order.' },
-  '/margin': { title:'Gold Buyer Margin Calculator | Free Tool by Carat Money', desc:'Free tool to check what your gold buyer is keeping above the spot rate. Used by 5,000+ sellers across India.' },
-  '/thank-you': { title:'Thank you | Carat Money', desc:"We've received your request. We'll call you within 30 minutes." },
-  '/blog':   { title:'Gold Selling Tips & Insights | Carat Money Blog', desc:'Expert articles on gold selling, buyer margins, and getting the best price for your gold in India.' },
-};
+const SEO_MAP = { '/': ROUTES.homeSeo.en, ...ROUTES.pages };   // shared with vite.config.js (static per-route HTML)
 function setCanonical(href) {
   let link = document.querySelector('link[rel="canonical"]');
   if (!link) { link = document.createElement('link'); link.setAttribute('rel', 'canonical'); document.head.appendChild(link); }
@@ -3692,7 +3685,8 @@ function ThankYouPage({ navigate, spot }) {
     const prev = m ? m.getAttribute('content') : null;
     if (!m) { m = document.createElement('meta'); m.setAttribute('name', 'robots'); document.head.appendChild(m); }
     m.setAttribute('content', 'noindex, nofollow');
-    return () => { if (prev === null) m.remove(); else m.setAttribute('content', prev); };
+    const back = prev && !/noindex/i.test(prev) ? prev : 'max-image-preview:large';
+    return () => { m.setAttribute('content', back); };
   }, []);
   const r24  = spot.display;
   const time = fmtTime(spot.updatedAt);
