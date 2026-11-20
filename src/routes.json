@@ -9,7 +9,8 @@
     "/reviews": "reviews",
     "/live-gold-rate": "calculator",
     "/how-it-works": "process",
-    "/home-visit": "book"
+    "/home-visit": "book",
+    "/visit": "visit"
   },
   "hreflang": [
     [

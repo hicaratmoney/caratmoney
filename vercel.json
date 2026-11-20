@@ -91,6 +91,10 @@
       "destination": "/home-visit.html"
     },
     {
+      "source": "/visit",
+      "destination": "/visit.html"
+    },
+    {
       "source": "/blog/:slug+",
       "destination": "/api/social?path=/blog/:slug+"
     },
