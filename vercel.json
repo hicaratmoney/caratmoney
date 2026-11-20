@@ -15,6 +15,46 @@
       "source": "/p2",
       "destination": "/?utm_source=poster&utm_medium=sticker&utm_campaign=navi_mumbai&utm_content=hi",
       "permanent": false
+    },
+    {
+      "source": "/sell-gold",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/sell-gold/:path*",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/cash-for-gold",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/cash-for-gold/:path*",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/sell-gold",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/sell-gold/:path*",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/cash-for-gold",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/cash-for-gold/:path*",
+      "destination": "/",
+      "statusCode": 301
     }
   ],
   "rewrites": [
