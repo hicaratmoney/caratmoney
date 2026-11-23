@@ -6,6 +6,14 @@
      gets /hi, /mr or /kn (before GA records the page view); sets <html lang> early. */
   (function () {
     try {
+      /* Fallback for the brand-typo domains: vercel.json 301s them at the edge, but if this page is
+         ever served on karatmoney.com / .in anyway, send the visitor to carat.money with the UTM tags
+         before anything else loads (GA then records the visit on carat.money). */
+      var h = location.hostname.replace(/^www\./, '');
+      if (h === 'karatmoney.com' || h === 'karatmoney.in') {
+        location.replace('https://carat.money/?utm_source=' + h.replace('.', '_') + '&utm_medium=typo_domain&utm_campaign=brand_typo');
+        return;
+      }
       var L = { '/hi': 'hi', '/mr': 'mr', '/kn': 'kn' };
       var p = location.pathname.replace(/\/+$/, '') || '/';
       var l = L[p];
