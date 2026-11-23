@@ -31,6 +31,17 @@ const ARTICLES = [
   },
 ];
 
+// The shell's JSON-LD @graph carries the homepage WebPage + FAQPage; article pages keep only Organization.
+function orgOnlySchema(html) {
+  return html.replace(/(<script type="application\/ld\+json" id="cm-schema">)([\s\S]*?)(<\/script>)/, (m, a, body, c) => {
+    try {
+      const d = JSON.parse(body);
+      d['@graph'] = (d['@graph'] || []).filter(n => n['@type'] === 'Organization');
+      return `${a}${JSON.stringify(d).replace(/</g, '\\u003c')}${c}`;
+    } catch { return ''; }
+  });
+}
+
 export default function handler(req, res) {
   const reqPath   = (req.url || '').split('?')[0];
   const slugMatch = reqPath.match(/\/blog\/([^/?#]+)/);
@@ -41,7 +52,7 @@ export default function handler(req, res) {
   // for a page that isn't real. Serve the plain SPA shell and let the
   // client-side router show its 404 state.
   if (slug && !article) {
-    const html = fs.readFileSync(path.join(process.cwd(), 'dist', 'index.html'), 'utf8')
+    const html = orgOnlySchema(fs.readFileSync(path.join(process.cwd(), 'dist', 'index.html'), 'utf8'))
       .replace(/<link rel="canonical"[^>]*>/i, '')
       .replace(/<link rel="alternate" hreflang[^>]*>/gi, '');
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
@@ -86,7 +97,7 @@ export default function handler(req, res) {
   // Replace the shell's build-time <title> and inject our meta block
   // right after it. Also strip any hardcoded canonical/og tags the
   // shell already carries, so we don't end up with two of each.
-  const html = shell
+  const html = orgOnlySchema(shell)
     .replace(/<title>.*?<\/title>/is, '')
     .replace(/<link rel="canonical"[^>]*>/i, '')
     .replace(/<meta property="og:[^>]*>/gi, '')

@@ -2,6 +2,50 @@
   "trailingSlash": false,
   "redirects": [
     {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "karatmoney.com"
+        }
+      ],
+      "destination": "https://carat.money/?utm_source=karatmoney_com&utm_medium=typo_domain&utm_campaign=brand_typo",
+      "statusCode": 301
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.karatmoney.com"
+        }
+      ],
+      "destination": "https://carat.money/?utm_source=karatmoney_com&utm_medium=typo_domain&utm_campaign=brand_typo",
+      "statusCode": 301
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "karatmoney.in"
+        }
+      ],
+      "destination": "https://carat.money/?utm_source=karatmoney_in&utm_medium=typo_domain&utm_campaign=brand_typo",
+      "statusCode": 301
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.karatmoney.in"
+        }
+      ],
+      "destination": "https://carat.money/?utm_source=karatmoney_in&utm_medium=typo_domain&utm_campaign=brand_typo",
+      "statusCode": 301
+    },
+    {
       "source": "/blog/gold-selling-tips-bangalore",
       "destination": "/blog/gold-selling-tips",
       "permanent": true

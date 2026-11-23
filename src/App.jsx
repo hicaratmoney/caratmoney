@@ -1,5 +1,6 @@
 import { createPortal } from 'react-dom';
 import ROUTES from './routes.json';
+import FAQS_EN from './faqs-en.json';
 import React, { useState, useMemo, useRef, useEffect, useLayoutEffect, useCallback, useContext, createContext } from 'react';
 import {
   MessageCircle, TrendingDown, Shield, Sparkles, Info,
@@ -586,24 +587,7 @@ const STR = {
 
     faq_title: 'Frequently asked questions', faq_sub: 'Everything to know before you sell your gold.',
     faq_panel_title: 'Still have questions?', faq_panel_sub: 'Reach us on any of these, all days, 9 am to 9 pm.', email: 'Email',
-    faqs: [
-      { q:"How is my gold's price calculated?", a:"We weigh your gold, test its purity on an XRF machine and multiply the pure gold by our live rate shown on this page. You see every number before you decide." },
-      { q:"Will testing damage my jewellery?", a:"No. The XRF test doesn't scratch or melt anything. Your jewellery stays exactly as it is." },
-      { q:"Do you photograph my jewellery?", a:"Yes. Every piece is photographed before testing, so there is a clear record of exactly what you handed over." },
-      { q:"Do you offer a free home visit?", a:"Yes, across Navi Mumbai, Mumbai and Thane. Our executive comes at a time that suits you, tests your gold in front of you and makes a final offer on the spot." },
-      { q:"Can the visit be discreet?", a:"Yes. Tick \"Discreet visit\" when you book, and our executive comes in plain clothes, with no logo on the bag or vehicle. At our centre, every visit happens in a private consultation room." },
-      { q:"Can I ask for a woman executive?", a:"Yes. Tick \"Woman executive\" when you book a home visit. Visiting our centre? Just mention it on WhatsApp." },
-      { q:"I need money urgently. Can you come today?", a:"Yes. Tick \"Urgent, same day\" when you book a home visit. We call you within 30 minutes, and if you book before 4 pm, we visit you the same day." },
-      { q:"Is anything charged if I don't sell?", a:"No. Everything before you sell is free: the home visit, the testing and the valuation certificate. You sell only if you're happy with the final offer." },
-      { q:"Are there any deductions?", a:"Only the weight of the stones, which we measure and show you. No \"wastage\" cuts and no hidden charges." },
-      { q:"Do I get my stones back?", a:"Yes. Stones and any non-gold parts are removed with care and returned to you. You are paid for the gold." },
-      { q:"What if my jewellery is broken or not hallmarked?", a:"We buy all gold jewellery, including broken, old and non-hallmarked pieces. The XRF test finds the real purity, so you're paid for the gold you actually have." },
-      { q:"How will I be paid?", a:"Instantly, by bank transfer or UPI, as soon as you accept the final offer. We never pay in cash." },
-      { q:"Will I get any paperwork?", a:"Yes. You get an invoice for the sale and a free valuation certificate." },
-      { q:"How long does it take?", a:"About 15 minutes for most visits. Testing, the final offer and payment all happen in one sitting." },
-      { q:"Which documents do I need?", a:"Your Aadhaar and PAN, to confirm your identity." },
-      { q:"My gold is pledged for a loan. Can you still buy it?", a:"Yes. We help release gold pledged with a bank or gold-loan company and buy it at our live rate. WhatsApp us for details." },
-    ],
+    faqs: FAQS_EN,   // src/faqs-en.json: also feeds the static FAQPage schema in index.html
 
     visit_label: 'Visit our centre', visit_title: 'Carat Money, Kharghar', visit_hours: 'All days, 9 am to 9 pm', visit_dir: 'Get directions',
 
@@ -714,6 +698,7 @@ const STR = {
       { q:"इसमें कितना समय लगता है?", a:"ज़्यादातर विज़िट में लगभग 15 मिनट। जाँच, अंतिम ऑफ़र और पेमेंट सब एक ही बार में।" },
       { q:"कौन से दस्तावेज़ चाहिए?", a:"पहचान की पुष्टि के लिए आपका आधार और PAN।" },
       { q:"मेरा सोना लोन के लिए गिरवी है। क्या आप फिर भी खरीदेंगे?", a:"हाँ। हम बैंक या गोल्ड-लोन कंपनी में गिरवी रखा सोना छुड़ाने में मदद करते हैं और उसे हमारे लाइव रेट पर खरीदते हैं। जानकारी के लिए हमें WhatsApp करें।" },
+      { q:"Carat Money है या Karat Money?", a:"यह Carat Money (carat.money) है। अगर आपने Karat Money टाइप किया है, तो आप सही जगह पर हैं: karatmoney.com और karatmoney.in दोनों आपको यहीं लाते हैं।" },
     ],
 
     visit_label: 'हमारे सेंटर आएँ', visit_title: 'Carat Money, खारघर', visit_hours: 'हर दिन, सुबह 9 से रात 9 बजे तक', visit_dir: 'रास्ता देखें',
@@ -826,6 +811,7 @@ const STR = {
       { q:"याला किती वेळ लागतो?", a:"बहुतेक भेटींमध्ये सुमारे 15 मिनिटे. चाचणी, अंतिम ऑफर आणि पेमेंट सर्व एकाच वेळी." },
       { q:"कोणती कागदपत्रे लागतात?", a:"ओळख पटवण्यासाठी तुमचे आधार आणि PAN." },
       { q:"माझे सोने कर्जासाठी गहाण आहे. तरीही तुम्ही ते घ्याल का?", a:"हो. बँक किंवा गोल्ड-लोन कंपनीकडे गहाण असलेले सोने सोडवायला आम्ही मदत करतो आणि ते आमच्या लाइव्ह दराने विकत घेतो. माहितीसाठी आम्हाला WhatsApp करा." },
+      { q:"Carat Money की Karat Money?", a:"हे Carat Money (carat.money) आहे. तुम्ही Karat Money टाइप केले असेल, तरी तुम्ही योग्य ठिकाणी आहात: karatmoney.com आणि karatmoney.in दोन्ही तुम्हाला इथेच आणतात." },
     ],
 
     visit_label: 'आमच्या सेंटरला भेट द्या', visit_title: 'Carat Money, खारघर', visit_hours: 'दररोज, सकाळी 9 ते रात्री 9', visit_dir: 'मार्ग पहा',
@@ -937,6 +923,7 @@ const STR = {
       { q:"ಇದಕ್ಕೆ ಎಷ್ಟು ಸಮಯ ಬೇಕು?", a:"ಹೆಚ್ಚಿನ ಭೇಟಿಗಳಲ್ಲಿ ಸುಮಾರು 15 ನಿಮಿಷ. ಪರೀಕ್ಷೆ, ಅಂತಿಮ ಆಫರ್ ಮತ್ತು ಪಾವತಿ ಎಲ್ಲವೂ ಒಂದೇ ಸಲದಲ್ಲಿ." },
       { q:"ಯಾವ ದಾಖಲೆಗಳು ಬೇಕು?", a:"ನಿಮ್ಮ ಗುರುತು ದೃಢಪಡಿಸಲು ಆಧಾರ್ ಮತ್ತು PAN." },
       { q:"ನನ್ನ ಚಿನ್ನ ಸಾಲಕ್ಕಾಗಿ ಅಡವಿಟ್ಟಿದೆ. ಆದರೂ ನೀವು ಖರೀದಿಸುತ್ತೀರಾ?", a:"ಹೌದು. ಬ್ಯಾಂಕ್ ಅಥವಾ ಗೋಲ್ಡ್-ಲೋನ್ ಕಂಪನಿಯಲ್ಲಿ ಅಡವಿಟ್ಟ ಚಿನ್ನವನ್ನು ಬಿಡಿಸಲು ಸಹಾಯ ಮಾಡಿ, ನಮ್ಮ ಲೈವ್ ದರದಲ್ಲಿ ಖರೀದಿಸುತ್ತೇವೆ. ವಿವರಗಳಿಗೆ WhatsApp ಮಾಡಿ." },
+      { q:"ಇದು Carat Money ಅಥವಾ Karat Money?", a:"ಇದು Carat Money (carat.money). ನೀವು Karat Money ಎಂದು ಟೈಪ್ ಮಾಡಿದ್ದರೆ, ನೀವು ಸರಿಯಾದ ಸ್ಥಳದಲ್ಲಿದ್ದೀರಿ: karatmoney.com ಮತ್ತು karatmoney.in ಎರಡೂ ನಿಮ್ಮನ್ನು ಇಲ್ಲಿಗೇ ತರುತ್ತವೆ." },
     ],
 
     visit_label: 'ನಮ್ಮ ಕೇಂದ್ರಕ್ಕೆ ಭೇಟಿ ನೀಡಿ', visit_title: 'Carat Money, ಖಾರ್‌ಘರ್', visit_hours: 'ಪ್ರತಿದಿನ, ಬೆಳಿಗ್ಗೆ 9 ರಿಂದ ರಾತ್ರಿ 9 ರವರೆಗೆ', visit_dir: 'ದಾರಿ ತೋರಿಸಿ',
@@ -2558,20 +2545,6 @@ function FloatingWA() {
 function HomePage({ navigate, spot }) {
   const { lang } = useT();
   useRevealOnScroll([lang]);
-  // FAQ structured data (English) so the questions can show in Google results
-  useEffect(() => {
-    document.getElementById('cm-faq-schema')?.remove();
-    const el = document.createElement('script');
-    el.type = 'application/ld+json';
-    el.id   = 'cm-faq-schema';
-    el.text = JSON.stringify({
-      '@context':'https://schema.org',
-      '@type':'FAQPage',
-      mainEntity: STR.en.faqs.map(f => ({ '@type':'Question', name:f.q, acceptedAnswer:{ '@type':'Answer', text:f.a } })),
-    });
-    document.head.appendChild(el);
-    return () => el.remove();
-  }, []);
   // Arriving at /#section (from another page or a shared link) → scroll there
   useEffect(() => {
     const id = window.location.hash.slice(1);
