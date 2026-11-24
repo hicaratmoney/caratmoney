@@ -1052,6 +1052,8 @@ const GLOBAL_CSS = `
   @media (max-width:399.98px)  { .tb-k, .tb-live { display:none; } }
   @media (max-width:1279.98px) { .tb-links { display:none!important; } }
   @media (min-width:1280px)    { .tb-menu-btn { display:none!important; } }
+  .tb-callnum { display:none; font-family:${MONO}; font-size:13px; font-weight:500; color:${C.gold3}; white-space:nowrap; letter-spacing:.02em; user-select:all; }
+  @media (min-width:1025px)    { .tb-callnum { display:inline; } }
   .tb-navlink { background:none; border:none; color:rgba(241,215,141,.82)!important; font-family:var(--f-sans); font-size:13.5px; font-weight:500; padding:8px 9px; border-radius:4px; cursor:pointer; white-space:nowrap; text-decoration:none; }
   .tb-navlink:hover { color:${C.gold3}!important; background:rgba(224,183,101,.08); }
 
@@ -1552,7 +1554,13 @@ function TopBar({ spot, navigate, showLang = false }) {
             style={{ display:'inline-flex', alignItems:'center', gap:'6px', background:C.green, color:C.ink, padding:'7px 12px', borderRadius:'999px', fontFamily:SANS, fontSize:'13px', fontWeight:600, textDecoration:'none', whiteSpace:'nowrap' }}>
             <WhatsAppGlyph size={15} color={C.ink}/> WhatsApp
           </a>
-          <CallPicker source="topbar" variant="gold-sm" label={t('call_short')}/>
+          {/* Direct dial (no number picker). call_click {location:'header'} comes from the delegated
+              tel: handler; on desktops (>1024px), where tel: rarely dials, the number shows as text. */}
+          <span className="tb-callnum">816 987 4545</span>
+          <a href="tel:+918169874545" aria-label={`${t('call')} 816 987 4545`}
+            style={{ display:'inline-flex', alignItems:'center', justifyContent:'center', gap:'7px', padding:'7px 12px', borderRadius:'999px', fontFamily:SANS, fontSize:'13px', fontWeight:600, whiteSpace:'nowrap', textDecoration:'none', background:C.gold2, color:C.plum, border:`1px solid ${C.gold2}` }}>
+            <Phone size={14}/> {t('call_short')}
+          </a>
           <button type="button" className="tb-menu-btn" onClick={() => setMenuOpen(v => !v)} aria-label={t('menu')} aria-expanded={menuOpen}
             style={{ width:'36px', height:'36px', display:'inline-flex', alignItems:'center', justifyContent:'center', background:'transparent', border:'1px solid rgba(255,255,255,.25)', borderRadius:'8px', color:C.gold3, cursor:'pointer', flexShrink:0 }}>
             {menuOpen ? <X size={18}/> : <Menu size={18}/>}
