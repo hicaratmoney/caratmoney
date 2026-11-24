@@ -356,8 +356,10 @@ function postLead(payload) {
     method:'POST', mode:'no-cors', keepalive:true,
     headers:{ 'Content-Type':'text/plain;charset=utf-8' },
     body: JSON.stringify({ ...payload, ts: new Date().toISOString() }),
-  }).then(() => true, () => false);
-  const timeout = new Promise(res => setTimeout(() => res(false), 15000));
+  }).then(
+    r => { console.info('[lead] backend responded', { type: r.type, status: r.status }); return true; },
+    err => { console.warn('[lead] send failed', err); return false; });
+  const timeout = new Promise(res => setTimeout(() => { console.warn('[lead] send timed out after 15s'); res(false); }, 15000));
   return Promise.race([send, timeout]).catch(() => false);
 }
 // Full page load to another URL (the test harness can intercept it via window.__CM_NAV__).
@@ -1708,7 +1710,9 @@ function GetInTouch() {
     setSending(true); setSendErr(false);
     const ok = await postLead({ name:name.trim(), mobile, preference:prefEn, urgent:isUrgent, discreet:isDisc, woman_executive:isWoman, source:'Homepage · Book a free visit', lang, page:window.location.href });
     if (!ok) { setSending(false); setSendErr(true); return; }
-    goTo(`/thank-you?lang=${encodeURIComponent(lang)}`);   // real page load; generate_lead fires there
+    // Mark a real submission: /thank-you fires generate_lead only when this flag is present
+    try { sessionStorage.setItem('cm_lead_ok', '1'); } catch { /* storage blocked */ }
+    goTo(`/thank-you?lang=${encodeURIComponent(lang)}`);
   };
 
   const chip = (key, label) => {
@@ -1776,7 +1780,15 @@ function GetInTouch() {
           <div className="git-consent" style={{ fontFamily:SANS, fontSize:'12px', color:'rgba(241,215,141,.7)', lineHeight:1.5 }}>{t('git_consent')}</div>
         </div>
         {tried && !valid && <div role="alert" style={{ marginTop:'10px', fontFamily:SANS, fontSize:'13px', color:'#FCA5A5', fontWeight:500 }}>{t('git_err')}</div>}
-        {sendErr && <div role="alert" style={{ marginTop:'10px', fontFamily:SANS, fontSize:'13px', color:'#FCA5A5', fontWeight:500 }}>{t('git_send_err')}</div>}
+        {sendErr && (
+          <div role="alert" style={{ marginTop:'10px' }}>
+            <div style={{ fontFamily:SANS, fontSize:'13px', color:'#FCA5A5', fontWeight:500 }}>{t('git_send_err')}</div>
+            <a href={TY_WA_URL} target="_blank" rel="noreferrer" data-loc="booking_error"
+              style={{ marginTop:'10px', display:'flex', alignItems:'center', justifyContent:'center', gap:'8px', width:'100%', padding:'13px 18px', borderRadius:'4px', background:C.green, color:C.ink, fontFamily:SANS, fontSize:'15px', fontWeight:600, textDecoration:'none' }}>
+              <WhatsAppGlyph size={17} color={C.ink}/> {t('ty_wa')}
+            </a>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -3652,13 +3664,15 @@ const TY_WA_URL = "https://wa.me/918169874545?text=Hi%20Carat%20Money%2C%20I%27d
 function ThankYouPage({ navigate, spot }) {
   const { t } = useT();
   // generate_lead once per browser session, so refreshing this page doesn't double-count
+  // generate_lead only after a real form submission (flag set by the booking form), then the
+  // flag is cleared so a refresh or a direct visit to /thank-you never counts as a lead.
   useEffect(() => {
-    let seen = false;
+    let fromForm = false;
     try {
-      seen = sessionStorage.getItem('cm_lead_tracked') === '1';
-      if (!seen) sessionStorage.setItem('cm_lead_tracked', '1');
-    } catch { /* storage blocked: count this load */ }
-    if (!seen) track('generate_lead', { method:'booking_form' });
+      fromForm = sessionStorage.getItem('cm_lead_ok') === '1';
+      if (fromForm) sessionStorage.removeItem('cm_lead_ok');
+    } catch { /* storage blocked: can't confirm a submission, so no event */ }
+    if (fromForm) track('generate_lead', { method:'booking_form' });
   }, []);
   // keep this page out of search results (vercel.json also sends X-Robots-Tag)
   useEffect(() => {
